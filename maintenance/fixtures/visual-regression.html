@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>italki UI kit visual regression</title>
+    <base href="../../" />
+    <link rel="stylesheet" href="ui-kit/tokens.css" />
+    <link rel="stylesheet" href="ui-kit/italki-ui.css" />
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; padding: 40px; color: var(--ui-color-text); background: var(--ui-color-page); font-family: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      main { display: grid; gap: 32px; }
+      h1, h2 { margin: 0; color: var(--ui-color-title); }
+      h1 { font-size: 28px; line-height: 32px; }
+      h2 { font-size: 16px; line-height: 24px; }
+      section { display: grid; gap: 12px; border-bottom: 1px solid var(--ui-color-divider); padding-bottom: 24px; }
+      .row { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+      .stack { display: grid; gap: 12px; }
+      .select-fixture-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+      .select-fixture-cell { min-height: 72px; }
+      .select-fixture-cell:has(.ui-select.is-open) { min-height: 264px; }
+      .slider-marks { width: min(100%, 480px); display: flex; justify-content: space-between; color: var(--ui-color-secondary); font-size: 11px; line-height: 16px; }
+      .panel-row { display: flex; flex-wrap: wrap; gap: 24px; }
+      .sidebar-fixture-stack { display: grid; gap: 24px; }
+      .fixture-badge-anchor { width: 56px; height: 56px; display: grid; place-items: center; border-radius: var(--ui-radius-lg); background: var(--ui-color-hover); }
+      .fixture-badge-anchor img { width: 28px; height: 35px; display: block; object-fit: contain; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>UI kit visual regression</h1>
+      <section><h2>Button states</h2><div id="buttons" class="row"></div></section>
+      <section><h2>Choice states</h2><div id="choices" class="row"></div></section>
+      <section><h2>Checkbox group states</h2><div id="checkbox-groups" class="stack"></div></section>
+      <section><h2>Radio states</h2><div id="radios" class="stack"></div></section>
+      <section><h2>Selection states</h2><div id="selections" class="stack"></div></section>
+      <section><h2>Date picker states</h2><div id="date-pickers" class="stack"></div></section>
+      <section><h2>Tooltip states</h2><div id="tooltips" class="row"></div></section>
+      <section><h2>Modal states</h2><div id="modals" class="stack"></div></section>
+      <section><h2>Popup states</h2><div id="popups" class="row"></div></section>
+      <section><h2>Popconfirm states</h2><div id="popconfirms" class="row"></div></section>
+      <section><h2>Divider states</h2><div id="dividers" class="stack"></div></section>
+      <section><h2>Avatar states</h2><div id="avatars" class="row"></div></section>
+      <section><h2>Badge states</h2><div id="badges" class="row"></div></section>
+      <section><h2>Breadcrumb states</h2><div id="breadcrumbs" class="stack"></div></section>
+      <section><h2>Card states</h2><div id="cards" class="row"></div></section>
+      <section><h2>Alert states</h2><div id="alerts" class="stack"></div></section>
+      <section><h2>Tabs states</h2><div id="tabs" class="stack"></div></section>
+      <section><h2>Pagination states</h2><div id="pagination" class="stack"></div></section>
+      <section><h2>Rate states</h2><div id="rates" class="stack"></div></section>
+      <section><h2>Sidebar states</h2><div id="sidebars" class="sidebar-fixture-stack"></div></section>
+      <section><h2>Statistic states</h2><div id="statistics" class="row"></div></section>
+      <section><h2>Table states</h2><div id="tables" class="stack"></div></section>
+      <section><h2>Timeline states</h2><div id="timelines" class="stack"></div></section>
+      <section><h2>Top nav states</h2><div id="top-navs" class="stack"></div></section>
+      <section><h2>Input states</h2><div id="inputs" class="stack"></div></section>
+      <section><h2>Select states</h2><div id="selects" class="select-fixture-grid"></div></section>
+      <section><h2>Slider states</h2><div id="sliders" class="stack"></div></section>
+      <section><h2>Panel states</h2><div id="panels" class="panel-row"></div></section>
+      <section><h2>Form field states</h2><div id="form-fields" class="stack"></div></section>
+      <section><h2>Text input states</h2><div id="text-inputs" class="stack"></div></section>
+      <section><h2>Textarea states</h2><div id="textareas" class="stack"></div></section>
+      <section><h2>Number stepper states</h2><div id="number-steppers" class="row"></div></section>
+      <section><h2>Upload states</h2><div id="uploads" class="stack"></div></section>
+      <section><h2>Combobox states</h2><div id="comboboxes" class="select-fixture-grid"></div></section>
+      <section><h2>Stepper states</h2><div id="steppers" class="stack"></div></section>
+      <section><h2>Progress states</h2><div id="progress" class="stack"></div></section>
+      <section><h2>Toast states</h2><div id="toasts" class="stack"></div></section>
+      <section><h2>Skeleton states</h2><div id="skeletons" class="row"></div></section>
+      <section><h2>Dropdown menu states</h2><div id="dropdown-menus" class="row"></div></section>
+      <section><h2>Disclosure states</h2><div id="disclosures" class="stack"></div></section>
+      <section><h2>Segmented control states</h2><div id="segmented-controls" class="row"></div></section>
+      <section><h2>Time slot states</h2><div id="time-slots" class="row"></div></section>
+      <section><h2>Time picker states</h2><div id="time-pickers" class="select-fixture-grid"></div></section>
+      <section><h2>Calendar states</h2><div id="calendars" class="stack"></div></section>
+      <section><h2>Footer states</h2><div id="footers" class="stack"></div></section>
+      <section><h2>Drawer states</h2><div id="drawers" class="stack"></div></section>
+      <section><h2>Popover states</h2><div id="popovers" class="row"></div></section>
+    </main>
+    <script src="ui-kit/contracts.js"></script>
+    <script src="ui-kit/italki-ui.js"></script>
+    <script src="maintenance/fixtures/fixtures.js"></script>
+    <script>
+      const ui = window.ITalkiUI;
+      const fixture = window.ITalkiUIFixtures.build(ui);
+      document.getElementById("buttons").innerHTML = fixture.groups.buttons;
+      document.getElementById("choices").innerHTML = fixture.groups.choices;
+      document.getElementById("checkbox-groups").innerHTML = fixture.groups.checkboxGroups;
+      document.getElementById("radios").innerHTML = fixture.groups.radios;
+      document.getElementById("selections").innerHTML = fixture.groups.selections;
+      document.getElementById("date-pickers").innerHTML = fixture.groups.datePickers;
+      document.getElementById("tooltips").innerHTML = fixture.groups.tooltips;
+      document.getElementById("modals").innerHTML = fixture.groups.modals;
+      document.getElementById("popups").innerHTML = fixture.groups.popups;
+      document.getElementById("popconfirms").innerHTML = fixture.groups.popconfirms;
+      document.getElementById("dividers").innerHTML = fixture.groups.dividers;
+      document.getElementById("avatars").innerHTML = fixture.groups.avatars;
+      document.getElementById("badges").innerHTML = fixture.groups.badges;
+      document.getElementById("breadcrumbs").innerHTML = fixture.groups.breadcrumbs;
+      document.getElementById("cards").innerHTML = fixture.groups.cards;
+      document.getElementById("alerts").innerHTML = fixture.groups.alerts;
+      document.getElementById("tabs").innerHTML = fixture.groups.tabs;
+      document.getElementById("pagination").innerHTML = fixture.groups.pagination;
+      document.getElementById("rates").innerHTML = fixture.groups.rates;
+      document.getElementById("sidebars").innerHTML = fixture.groups.sidebars;
+      document.getElementById("statistics").innerHTML = fixture.groups.statistics;
+      document.getElementById("tables").innerHTML = fixture.groups.tables;
+      document.getElementById("timelines").innerHTML = fixture.groups.timelines;
+      document.getElementById("top-navs").innerHTML = fixture.groups.topNavs;
+      document.getElementById("inputs").innerHTML = fixture.groups.inputs;
+      document.getElementById("selects").innerHTML = fixture.groups.selects;
+      document.getElementById("sliders").innerHTML = fixture.groups.sliders;
+      document.getElementById("panels").innerHTML = fixture.groups.panels;
+      document.getElementById("form-fields").innerHTML = fixture.groups.formFields;
+      document.getElementById("text-inputs").innerHTML = fixture.groups.textInputs;
+      document.getElementById("textareas").innerHTML = fixture.groups.textareas;
+      document.getElementById("number-steppers").innerHTML = fixture.groups.numberSteppers;
+      document.getElementById("uploads").innerHTML = fixture.groups.uploads;
+      document.getElementById("comboboxes").innerHTML = fixture.groups.comboboxes;
+      document.getElementById("steppers").innerHTML = fixture.groups.steppers;
+      document.getElementById("progress").innerHTML = fixture.groups.progress;
+      document.getElementById("toasts").innerHTML = fixture.groups.toasts;
+      document.getElementById("skeletons").innerHTML = fixture.groups.skeletons;
+      document.getElementById("dropdown-menus").innerHTML = fixture.groups.dropdownMenus;
+      document.getElementById("disclosures").innerHTML = fixture.groups.disclosures;
+      document.getElementById("segmented-controls").innerHTML = fixture.groups.segmentedControls;
+      document.getElementById("time-slots").innerHTML = fixture.groups.timeSlots;
+      document.getElementById("time-pickers").innerHTML = fixture.groups.timePickers;
+      document.getElementById("calendars").innerHTML = fixture.groups.calendars;
+      document.getElementById("footers").innerHTML = fixture.groups.footers;
+      document.getElementById("drawers").innerHTML = fixture.groups.drawers;
+      document.getElementById("popovers").innerHTML = fixture.groups.popovers;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "italki-ui-kit-contracts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:contracts": "node scripts/build-contract-runtime.mjs",
+    "build:api": "node scripts/generate-component-api.mjs",
+    "component:check": "node scripts/check-component.mjs",
+    "serve:catalog": "node scripts/serve-catalog.mjs",
+    "test:contract": "npm run build:contracts && npm run build:api && node scripts/validate-contracts.mjs",
+    "pretest:visual": "npm run build:contracts",
+    "test:visual": "playwright test",
+    "test": "npm run test:contract && npm run test:visual"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0"
+  }
+}

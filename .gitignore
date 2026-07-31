@@ -1,0 +1,12 @@
+# macOS metadata
+.DS_Store
+**/.DS_Store
+
+# Local dependencies
+node_modules/
+maintenance/node_modules/
+
+# Generated test artifacts
+test-results/
+maintenance/test-results/
+playwright-report/
