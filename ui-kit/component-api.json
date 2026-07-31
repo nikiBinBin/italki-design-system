@@ -1,0 +1,3226 @@
+{
+  "schemaVersion": 1,
+  "sourceOfTruth": [
+    "ui-kit/contracts.json",
+    "ui-kit/italki-ui.js",
+    "ui-kit/tokens.css"
+  ],
+  "usagePolicy": {
+    "rule": "Consumers choose a registered component and pass documented props only. They must not add local CSS for a component or pass raw colors, spacing, radius, shadow, icon paths, or state styling.",
+    "allowedFamilies": [
+      "Color",
+      "Typography",
+      "Spacing",
+      "Radius",
+      "Shadow",
+      "Motion"
+    ],
+    "approvedAssetRoots": [
+      "Assets/Icons/",
+      "Assets/Flags/",
+      "Assets/Images/avatars/"
+    ],
+    "exceptions": "Only component-specific geometry explicitly registered in COMPONENTS.md and the executable contract may differ from the Foundation scale."
+  },
+  "components": {
+    "button": {
+      "renderer": "button",
+      "props": [
+        "label",
+        "variant",
+        "size",
+        "shape",
+        "state",
+        "leadingIcon",
+        "trailingIcon",
+        "iconOnly",
+        "disabled",
+        "loading",
+        "demo",
+        "ariaLabel",
+        "href",
+        "download",
+        "target",
+        "rel",
+        "ariaExpanded",
+        "ariaPressed",
+        "ariaDescribedBy",
+        "ariaControls"
+      ],
+      "defaults": {
+        "label": "\"\"",
+        "variant": "\"emphasis\"",
+        "size": "40",
+        "shape": "\"default\"",
+        "state": "\"default\"",
+        "leadingIcon": "\"\"",
+        "trailingIcon": "\"\"",
+        "iconOnly": "false",
+        "disabled": "false",
+        "loading": "false",
+        "demo": "\"\"",
+        "ariaLabel": "\"\"",
+        "href": "\"\"",
+        "download": "\"\"",
+        "target": "\"\"",
+        "rel": "\"\"",
+        "ariaExpanded": "required or context-provided",
+        "ariaPressed": "required or context-provided",
+        "ariaDescribedBy": "\"\"",
+        "ariaControls": "\"\""
+      },
+      "enums": {
+        "variant": [
+          "emphasis",
+          "red",
+          "secondary",
+          "white",
+          "ghost",
+          "text",
+          "link",
+          "danger",
+          "plus"
+        ],
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "pressed",
+          "disabled",
+          "loading"
+        ]
+      },
+      "states": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "loading"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "chip": {
+      "renderer": "chip",
+      "props": [
+        "label",
+        "size",
+        "surface",
+        "checked",
+        "selected",
+        "disabled",
+        "state",
+        "demo"
+      ],
+      "defaults": {
+        "label": "\"\"",
+        "size": "40",
+        "surface": "\"default\"",
+        "checked": "required or context-provided",
+        "selected": "false",
+        "disabled": "false",
+        "state": "\"default\"",
+        "demo": "\"\""
+      },
+      "enums": {
+        "size": [
+          24,
+          32,
+          40
+        ],
+        "surface": [
+          "default",
+          "white",
+          "transparent"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "checked",
+          "disabled"
+        ]
+      },
+      "states": [
+        "default",
+        "hover",
+        "checked",
+        "disabled"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "tag": {
+      "renderer": "tag",
+      "props": [
+        "label",
+        "value",
+        "size",
+        "tone",
+        "removable",
+        "removeDemo",
+        "removeAriaLabel"
+      ],
+      "defaults": {
+        "label": "\"\"",
+        "value": "label",
+        "size": "24",
+        "tone": "\"neutral\"",
+        "removable": "false",
+        "removeDemo": "\"\"",
+        "removeAriaLabel": "\"\""
+      },
+      "enums": {
+        "size": [
+          24,
+          32,
+          40
+        ],
+        "tone": [
+          "neutral",
+          "info",
+          "success",
+          "warning",
+          "error"
+        ]
+      },
+      "states": [
+        "default",
+        "removable"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "checkbox": {
+      "renderer": "checkbox",
+      "props": [
+        "id",
+        "label",
+        "checked",
+        "state",
+        "disabled",
+        "toggleMode",
+        "demo"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "label": "\"Checkbox\"",
+        "checked": "\"off\"",
+        "state": "\"default\"",
+        "disabled": "false",
+        "toggleMode": "\"binary\"",
+        "demo": "\"\""
+      },
+      "enums": {
+        "checked": [
+          "off",
+          "on",
+          "mixed"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ],
+        "toggleMode": [
+          "binary",
+          "indeterminate",
+          "controlled"
+        ]
+      },
+      "states": [
+        "off",
+        "on",
+        "mixed",
+        "disabled"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "checkbox-group": {
+      "renderer": "checkboxGroup",
+      "props": [
+        "id",
+        "label",
+        "description",
+        "options",
+        "selected",
+        "layout",
+        "selectAll",
+        "feedback",
+        "feedbackTone"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "label": "\"Checkbox group\"",
+        "description": "\"\"",
+        "options": "[]",
+        "selected": "[]",
+        "layout": "\"vertical\"",
+        "selectAll": "false",
+        "feedback": "\"\"",
+        "feedbackTone": "\"default\""
+      },
+      "enums": {
+        "layout": [
+          "vertical",
+          "inline"
+        ],
+        "feedbackTone": [
+          "default",
+          "error"
+        ]
+      },
+      "states": [
+        "default",
+        "inline",
+        "select-all",
+        "disabled",
+        "feedback"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "radio": {
+      "renderer": "radio",
+      "props": [
+        "label",
+        "value",
+        "checked",
+        "disabled",
+        "state",
+        "description",
+        "demo",
+        "tabIndex"
+      ],
+      "defaults": {
+        "label": "\"Radio\"",
+        "value": "label",
+        "checked": "false",
+        "disabled": "false",
+        "state": "\"default\"",
+        "description": "\"\"",
+        "demo": "\"\"",
+        "tabIndex": "checked ? 0 : -1"
+      },
+      "enums": {
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ]
+      },
+      "states": [
+        "default",
+        "checked",
+        "hover",
+        "disabled",
+        "inline",
+        "vertical",
+        "block"
+      ],
+      "subcomponents": {
+        "group": {
+          "acceptedProps": [
+            "label",
+            "options",
+            "selected",
+            "layout",
+            "block"
+          ]
+        }
+      },
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "selection": {
+      "renderer": "selection",
+      "props": [
+        "label",
+        "value",
+        "subtext",
+        "description",
+        "leading",
+        "badge",
+        "price",
+        "period",
+        "selected",
+        "selectedMarker",
+        "disabled",
+        "contentType",
+        "selectionMode",
+        "state",
+        "tabIndex",
+        "demo"
+      ],
+      "defaults": {
+        "label": "\"Selection\"",
+        "value": "label",
+        "subtext": "\"\"",
+        "description": "\"\"",
+        "leading": "\"\"",
+        "badge": "\"\"",
+        "price": "\"\"",
+        "period": "\"\"",
+        "selected": "false",
+        "selectedMarker": "false",
+        "disabled": "false",
+        "contentType": "\"icon-simple\"",
+        "selectionMode": "\"checkbox\"",
+        "state": "\"default\"",
+        "tabIndex": "selectionMode === \"checkbox\" ? 0 : (selected ? 0 : -1)",
+        "demo": "\"\""
+      },
+      "enums": {
+        "contentType": [
+          "standard",
+          "icon-simple",
+          "icon-card",
+          "avatar",
+          "payment-icon"
+        ],
+        "selectionMode": [
+          "radio",
+          "checkbox"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ]
+      },
+      "states": [
+        "icon-simple-default",
+        "icon-simple-selected",
+        "icon-simple-hover",
+        "icon-simple-focus",
+        "icon-simple-disabled",
+        "icon-card-default",
+        "avatar-default",
+        "payment-icon-default",
+        "radio-default",
+        "radio-selected",
+        "checkbox-default",
+        "checkbox-selected",
+        "desktop",
+        "mobile"
+      ],
+      "subcomponents": {
+        "group": {
+          "acceptedProps": [
+            "label",
+            "options",
+            "selected",
+            "contentType",
+            "selectionMode",
+            "selectedMarker",
+            "layout"
+          ],
+          "props": {
+            "layout": [
+              "stack",
+              "grid"
+            ]
+          }
+        }
+      },
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "date-picker": {
+      "renderer": "datePicker",
+      "props": [
+        "id",
+        "label",
+        "value",
+        "placeholder",
+        "size",
+        "shape",
+        "status",
+        "open",
+        "disabled",
+        "state",
+        "monthLabel",
+        "weekdays",
+        "days",
+        "months",
+        "monthIndex",
+        "selected",
+        "range",
+        "demo"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "label": "\"Choose a date\"",
+        "value": "\"\"",
+        "placeholder": "\"Choose a date\"",
+        "size": "40",
+        "shape": "\"default\"",
+        "status": "\"default\"",
+        "open": "false",
+        "disabled": "false",
+        "state": "\"default\"",
+        "monthLabel": "\"\"",
+        "weekdays": "defaultDateWeekdays",
+        "days": "[]",
+        "months": "[]",
+        "monthIndex": "0",
+        "selected": "\"\"",
+        "range": "[]",
+        "demo": "\"\""
+      },
+      "enums": {
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ]
+      },
+      "states": [
+        "default",
+        "open",
+        "disabled",
+        "selected",
+        "range"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "tooltip": {
+      "renderer": "tooltip",
+      "props": [
+        "id",
+        "content",
+        "trigger",
+        "triggerLabel",
+        "placement",
+        "arrow",
+        "open",
+        "disabled",
+        "demo"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "content": "\"\"",
+        "trigger": "\"\"",
+        "triggerLabel": "\"Hover me\"",
+        "placement": "\"top\"",
+        "arrow": "true",
+        "open": "false",
+        "disabled": "false",
+        "demo": "\"\""
+      },
+      "enums": {
+        "placement": [
+          "top",
+          "top-left",
+          "top-right",
+          "bottom",
+          "bottom-left",
+          "bottom-right",
+          "left",
+          "right"
+        ]
+      },
+      "states": [
+        "default",
+        "arrowless",
+        "placement",
+        "disabled"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "modal": {
+      "renderer": "modal",
+      "props": [
+        "id",
+        "title",
+        "body",
+        "footer",
+        "trigger",
+        "triggerLabel",
+        "open",
+        "size",
+        "titleAlign",
+        "stage",
+        "closable",
+        "maskClosable",
+        "keyboardClosable",
+        "demo"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "title": "\"Dialog\"",
+        "body": "\"\"",
+        "footer": "\"\"",
+        "trigger": "\"\"",
+        "triggerLabel": "\"Open modal\"",
+        "open": "false",
+        "size": "\"default\"",
+        "titleAlign": "\"start\"",
+        "stage": "\"demo\"",
+        "closable": "true",
+        "maskClosable": "true",
+        "keyboardClosable": "true",
+        "demo": "\"\""
+      },
+      "enums": {
+        "size": [
+          "default",
+          "wide"
+        ],
+        "titleAlign": [
+          "start",
+          "center"
+        ],
+        "stage": [
+          "demo",
+          "inline"
+        ]
+      },
+      "states": [
+        "closed",
+        "open",
+        "wide",
+        "non-closable"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "popup": {
+      "renderer": "popup",
+      "props": [
+        "id",
+        "title",
+        "body",
+        "actions",
+        "trigger",
+        "triggerLabel",
+        "open",
+        "placement",
+        "triggerMode",
+        "closeOnLeave",
+        "leaveDelay",
+        "demo",
+        "ariaLabel"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "title": "\"\"",
+        "body": "\"\"",
+        "actions": "\"\"",
+        "trigger": "\"\"",
+        "triggerLabel": "\"More details\"",
+        "open": "false",
+        "placement": "\"bottom\"",
+        "triggerMode": "\"click\"",
+        "closeOnLeave": "true",
+        "leaveDelay": "300",
+        "demo": "\"\"",
+        "ariaLabel": "\"\""
+      },
+      "enums": {
+        "placement": [
+          "top",
+          "bottom",
+          "left",
+          "right"
+        ],
+        "triggerMode": [
+          "click",
+          "hover",
+          "focus"
+        ],
+        "closeOnLeave": [
+          true,
+          false
+        ],
+        "leaveDelay": [
+          300
+        ]
+      },
+      "states": [
+        "closed",
+        "open",
+        "placement",
+        "with-actions",
+        "leave-delay"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "popconfirm": {
+      "renderer": "popconfirm",
+      "props": [
+        "id",
+        "title",
+        "description",
+        "trigger",
+        "triggerLabel",
+        "confirm",
+        "cancel",
+        "confirmLabel",
+        "cancelLabel",
+        "showCancel",
+        "open",
+        "placement",
+        "disabled",
+        "loading",
+        "demo",
+        "ariaLabel"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "title": "\"Confirm action?\"",
+        "description": "\"\"",
+        "trigger": "\"\"",
+        "triggerLabel": "\"Confirm\"",
+        "confirm": "\"\"",
+        "cancel": "\"\"",
+        "confirmLabel": "\"Confirm\"",
+        "cancelLabel": "\"Cancel\"",
+        "showCancel": "true",
+        "open": "false",
+        "placement": "\"bottom\"",
+        "disabled": "false",
+        "loading": "false",
+        "demo": "\"\"",
+        "ariaLabel": "\"\""
+      },
+      "enums": {
+        "placement": [
+          "top",
+          "bottom",
+          "left",
+          "right"
+        ],
+        "showCancel": [
+          true,
+          false
+        ],
+        "disabled": [
+          true,
+          false
+        ],
+        "loading": [
+          true,
+          false
+        ]
+      },
+      "states": [
+        "closed",
+        "open",
+        "with-cancel",
+        "loading",
+        "disabled"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "divider": {
+      "renderer": "divider",
+      "props": [
+        "type",
+        "label",
+        "orientation",
+        "orientationMargin",
+        "dashed",
+        "plain",
+        "tone",
+        "icon",
+        "ariaLabel"
+      ],
+      "defaults": {
+        "type": "\"horizontal\"",
+        "label": "\"\"",
+        "orientation": "\"center\"",
+        "orientationMargin": "\"\"",
+        "dashed": "false",
+        "plain": "false",
+        "tone": "\"divider\"",
+        "icon": "required or context-provided",
+        "ariaLabel": "\"\""
+      },
+      "enums": {
+        "type": [
+          "horizontal",
+          "vertical"
+        ],
+        "orientation": [
+          "left",
+          "center",
+          "right"
+        ],
+        "dashed": [
+          true,
+          false
+        ],
+        "plain": [
+          true,
+          false
+        ],
+        "tone": [
+          "divider",
+          "border"
+        ]
+      },
+      "states": [
+        "horizontal",
+        "vertical",
+        "label",
+        "left",
+        "right",
+        "dashed",
+        "plain"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "avatar": {
+      "renderer": "avatar",
+      "props": [
+        "name",
+        "image",
+        "initials",
+        "size",
+        "flag",
+        "flagLabel",
+        "variant",
+        "tone",
+        "interactive",
+        "state",
+        "ariaLabel"
+      ],
+      "defaults": {
+        "name": "\"\"",
+        "image": "\"\"",
+        "initials": "\"\"",
+        "size": "56",
+        "flag": "required or context-provided",
+        "flagLabel": "\"\"",
+        "variant": "countryCode ? \"with-flag\" : (image ? \"without-flag\" : \"empty\")",
+        "tone": "\"info\"",
+        "interactive": "false",
+        "state": "\"default\"",
+        "ariaLabel": "\"\""
+      },
+      "enums": {
+        "size": [
+          24,
+          32,
+          40,
+          48,
+          56,
+          64,
+          80,
+          120
+        ],
+        "variant": [
+          "without-flag",
+          "with-flag",
+          "empty",
+          "logo"
+        ],
+        "tone": [
+          "primary",
+          "info",
+          "success",
+          "warning"
+        ],
+        "interactive": [
+          true,
+          false
+        ],
+        "state": [
+          "default",
+          "hover"
+        ]
+      },
+      "states": [
+        "image",
+        "with-flag",
+        "empty",
+        "logo",
+        "hover",
+        "group",
+        "empty-group",
+        "flag"
+      ],
+      "subcomponents": {
+        "flag": {
+          "acceptedProps": [
+            "countryCode",
+            "countryLabel",
+            "size",
+            "decorative",
+            "ariaLabel"
+          ]
+        },
+        "group": {
+          "acceptedProps": [
+            "members",
+            "overflow",
+            "addLabel",
+            "size",
+            "ariaLabel"
+          ]
+        }
+      },
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "badge": {
+      "renderer": "badge",
+      "props": [
+        "type",
+        "anchor",
+        "count",
+        "label",
+        "tone",
+        "overflowCount",
+        "hidden",
+        "ariaLabel"
+      ],
+      "defaults": {
+        "type": "\"count\"",
+        "anchor": "\"\"",
+        "count": "0",
+        "label": "\"\"",
+        "tone": "\"default\"",
+        "overflowCount": "99",
+        "hidden": "false",
+        "ariaLabel": "\"\""
+      },
+      "enums": {
+        "type": [
+          "count",
+          "dot",
+          "status"
+        ],
+        "tone": [
+          "default",
+          "success",
+          "info",
+          "warning",
+          "error"
+        ],
+        "hidden": [
+          true,
+          false
+        ]
+      },
+      "states": [
+        "count",
+        "overflow",
+        "dot",
+        "status",
+        "hidden"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "breadcrumb": {
+      "renderer": "breadcrumb",
+      "props": [
+        "items",
+        "separator",
+        "ariaLabel",
+        "collapsedOpen",
+        "demo"
+      ],
+      "defaults": {
+        "items": "[]",
+        "separator": "\"Assets/Icons/arrow-right-sm.svg\"",
+        "ariaLabel": "\"Breadcrumb\"",
+        "collapsedOpen": "false",
+        "demo": "\"\""
+      },
+      "enums": {
+        "collapsedOpen": [
+          true,
+          false
+        ]
+      },
+      "states": [
+        "standard",
+        "icon-only",
+        "overflow",
+        "custom-separator"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "card": {
+      "renderer": "card",
+      "props": [
+        "interactive",
+        "outlined",
+        "media",
+        "mediaAlt",
+        "mediaRatio",
+        "eyebrow",
+        "title",
+        "body",
+        "meta",
+        "footer",
+        "density",
+        "ariaLabel",
+        "href",
+        "demo"
+      ],
+      "defaults": {
+        "interactive": "false",
+        "outlined": "true",
+        "media": "\"\"",
+        "mediaAlt": "\"\"",
+        "mediaRatio": "\"16:9\"",
+        "eyebrow": "\"\"",
+        "title": "\"\"",
+        "body": "\"\"",
+        "meta": "\"\"",
+        "footer": "\"\"",
+        "density": "\"default\"",
+        "ariaLabel": "\"\"",
+        "href": "\"\"",
+        "demo": "\"\""
+      },
+      "enums": {
+        "interactive": [
+          true,
+          false
+        ],
+        "outlined": [
+          true,
+          false
+        ],
+        "mediaRatio": [
+          "16:9",
+          "4:3",
+          "1:1"
+        ],
+        "density": [
+          "compact",
+          "default",
+          "comfortable"
+        ]
+      },
+      "states": [
+        "basic",
+        "media",
+        "interactive",
+        "compact",
+        "comfortable"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "alert": {
+      "renderer": "alert",
+      "props": [
+        "tone",
+        "title",
+        "description",
+        "closable",
+        "action",
+        "banner",
+        "ariaLabel",
+        "demo"
+      ],
+      "defaults": {
+        "tone": "\"info\"",
+        "title": "\"\"",
+        "description": "\"\"",
+        "closable": "false",
+        "action": "\"\"",
+        "banner": "false",
+        "ariaLabel": "\"\"",
+        "demo": "\"\""
+      },
+      "enums": {
+        "tone": [
+          "info",
+          "success",
+          "warning",
+          "error"
+        ],
+        "closable": [
+          true,
+          false
+        ],
+        "banner": [
+          true,
+          false
+        ]
+      },
+      "states": [
+        "info",
+        "success",
+        "warning",
+        "error",
+        "closable",
+        "with-action",
+        "banner"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "tabs": {
+      "renderer": "tabs",
+      "props": [
+        "id",
+        "items",
+        "activeId",
+        "extra",
+        "ariaLabel",
+        "orientation",
+        "activation",
+        "demo"
+      ],
+      "defaults": {
+        "id": "\"tabs\"",
+        "items": "[]",
+        "activeId": "\"\"",
+        "extra": "\"\"",
+        "ariaLabel": "\"Tabs\"",
+        "orientation": "\"horizontal\"",
+        "activation": "\"automatic\"",
+        "demo": "\"\""
+      },
+      "enums": {
+        "orientation": [
+          "horizontal"
+        ],
+        "activation": [
+          "manual",
+          "automatic"
+        ]
+      },
+      "states": [
+        "basic",
+        "icon-count",
+        "disabled",
+        "trailing-action"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "pagination": {
+      "renderer": "pagination",
+      "props": [
+        "pages",
+        "current",
+        "previousDisabled",
+        "nextDisabled",
+        "ariaLabel",
+        "demo"
+      ],
+      "defaults": {
+        "pages": "[]",
+        "current": "1",
+        "previousDisabled": "false",
+        "nextDisabled": "false",
+        "ariaLabel": "\"Pagination\"",
+        "demo": "\"\""
+      },
+      "enums": {
+        "previousDisabled": [
+          true,
+          false
+        ],
+        "nextDisabled": [
+          true,
+          false
+        ]
+      },
+      "states": [
+        "pages",
+        "current",
+        "disabled"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "rate": {
+      "renderer": "rate",
+      "props": [
+        "id",
+        "value",
+        "count",
+        "allowHalf",
+        "allowClear",
+        "disabled",
+        "labels",
+        "showText",
+        "label",
+        "state",
+        "demo"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "value": "0",
+        "count": "5",
+        "allowHalf": "false",
+        "allowClear": "true",
+        "disabled": "false",
+        "labels": "[]",
+        "showText": "false",
+        "label": "\"Rate this item\"",
+        "state": "\"default\"",
+        "demo": "\"\""
+      },
+      "enums": {
+        "allowHalf": [
+          true,
+          false
+        ],
+        "allowClear": [
+          true,
+          false
+        ],
+        "disabled": [
+          true,
+          false
+        ],
+        "showText": [
+          true,
+          false
+        ],
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ]
+      },
+      "states": [
+        "basic",
+        "labels",
+        "clearable",
+        "disabled"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "sidebar": {
+      "renderer": "sidebar",
+      "props": [
+        "id",
+        "variant",
+        "collapsed",
+        "items",
+        "sections",
+        "moreItems",
+        "moreOpen",
+        "footer",
+        "ariaLabel",
+        "demo"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "variant": "\"normal\"",
+        "collapsed": "false",
+        "items": "[]",
+        "sections": "[]",
+        "moreItems": "[]",
+        "moreOpen": "false",
+        "footer": "\"\"",
+        "ariaLabel": "\"Sidebar\"",
+        "demo": "\"\""
+      },
+      "enums": {
+        "variant": [
+          "normal",
+          "plus"
+        ],
+        "collapsed": [
+          true,
+          false
+        ],
+        "moreOpen": [
+          true,
+          false
+        ]
+      },
+      "states": [
+        "normal",
+        "plus",
+        "collapsed",
+        "expanded-section",
+        "more-open"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "statistic": {
+      "renderer": "statistic",
+      "props": [
+        "title",
+        "value",
+        "prefix",
+        "suffix",
+        "description",
+        "loading",
+        "ariaLabel",
+        "demo"
+      ],
+      "defaults": {
+        "title": "\"\"",
+        "value": "\"\"",
+        "prefix": "\"\"",
+        "suffix": "\"\"",
+        "description": "\"\"",
+        "loading": "false",
+        "ariaLabel": "\"\"",
+        "demo": "\"\""
+      },
+      "enums": {
+        "loading": [
+          true,
+          false
+        ]
+      },
+      "states": [
+        "default",
+        "with-affix",
+        "description",
+        "loading"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "table": {
+      "renderer": "table",
+      "props": [
+        "id",
+        "columns",
+        "rows",
+        "caption",
+        "density",
+        "loading",
+        "empty",
+        "ariaLabel",
+        "demo"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "columns": "[]",
+        "rows": "[]",
+        "caption": "\"\"",
+        "density": "\"default\"",
+        "loading": "false",
+        "empty": "\"\"",
+        "ariaLabel": "\"\"",
+        "demo": "\"\""
+      },
+      "enums": {
+        "density": [
+          "compact",
+          "default"
+        ],
+        "loading": [
+          true,
+          false
+        ]
+      },
+      "states": [
+        "default",
+        "with-action",
+        "loading",
+        "empty"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "timeline": {
+      "renderer": "timeline",
+      "props": [
+        "id",
+        "items",
+        "layout",
+        "reverse",
+        "tone",
+        "ariaLabel",
+        "demo"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "items": "[]",
+        "layout": "\"left\"",
+        "reverse": "false",
+        "tone": "\"\"",
+        "ariaLabel": "\"\"",
+        "demo": "\"\""
+      },
+      "enums": {
+        "layout": [
+          "left",
+          "right",
+          "alternate"
+        ],
+        "tone": [
+          "default",
+          "info",
+          "success",
+          "warning",
+          "error"
+        ],
+        "reverse": [
+          true,
+          false
+        ]
+      },
+      "states": [
+        "default",
+        "with-label",
+        "alternate",
+        "pending",
+        "reverse",
+        "single-tone"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "top-nav": {
+      "renderer": "topNav",
+      "props": [
+        "id",
+        "leading",
+        "center",
+        "trailing",
+        "ariaLabel",
+        "demo"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "leading": "\"\"",
+        "center": "\"\"",
+        "trailing": "\"\"",
+        "ariaLabel": "\"Top navigation\"",
+        "demo": "\"\""
+      },
+      "enums": {},
+      "states": [
+        "global-default",
+        "teacher-search",
+        "context-open",
+        "search-query",
+        "filtered"
+      ],
+      "subcomponents": {
+        "context": {
+          "acceptedProps": [
+            "id",
+            "mode",
+            "selected",
+            "options",
+            "open",
+            "ariaLabel",
+            "demo"
+          ],
+          "props": {
+            "mode": [
+              "labelled",
+              "compact"
+            ],
+            "open": [
+              true,
+              false
+            ]
+          }
+        },
+        "search": {
+          "acceptedProps": [
+            "id",
+            "value",
+            "placeholder",
+            "filter",
+            "filterLabel",
+            "filterIcon",
+            "filterCount",
+            "filtered",
+            "clearable",
+            "disabled",
+            "state",
+            "ariaLabel",
+            "demo"
+          ],
+          "props": {
+            "filter": [
+              true,
+              false
+            ],
+            "filtered": [
+              true,
+              false
+            ],
+            "clearable": [
+              true,
+              false
+            ],
+            "disabled": [
+              true,
+              false
+            ],
+            "state": [
+              "default",
+              "focus",
+              "disabled"
+            ]
+          }
+        }
+      },
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "slider": {
+      "renderer": "slider",
+      "props": [
+        "value",
+        "label",
+        "disabled",
+        "tooltip",
+        "reversed",
+        "state"
+      ],
+      "defaults": {
+        "value": "0",
+        "label": "\"Slider\"",
+        "disabled": "false",
+        "tooltip": "false",
+        "reversed": "false",
+        "state": "\"default\""
+      },
+      "enums": {
+        "orientation": [
+          "horizontal",
+          "vertical"
+        ],
+        "mode": [
+          "single",
+          "range"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ],
+        "reversed": [
+          true,
+          false
+        ]
+      },
+      "states": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "range",
+        "vertical",
+        "reverse"
+      ],
+      "subcomponents": {
+        "range": {
+          "acceptedProps": [
+            "lower",
+            "upper",
+            "label"
+          ]
+        },
+        "vertical": {
+          "acceptedProps": [
+            "value",
+            "label",
+            "disabled"
+          ]
+        }
+      },
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "panel": {
+      "renderer": "panel",
+      "props": [
+        "title",
+        "body",
+        "extra",
+        "divider",
+        "density"
+      ],
+      "defaults": {
+        "title": "\"\"",
+        "body": "\"\"",
+        "extra": "\"\"",
+        "divider": "false",
+        "density": "\"medium\""
+      },
+      "enums": {
+        "density": [
+          "small",
+          "medium",
+          "large"
+        ],
+        "divider": [
+          true,
+          false
+        ]
+      },
+      "states": [
+        "with-title",
+        "without-title"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "search": {
+      "renderer": "search",
+      "props": [
+        "id",
+        "value",
+        "placeholder",
+        "size",
+        "shape",
+        "state",
+        "clearable",
+        "disabled"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "value": "\"\"",
+        "placeholder": "\"Search\"",
+        "size": "40",
+        "shape": "\"pill\"",
+        "state": "\"default\"",
+        "clearable": "false",
+        "disabled": "false"
+      },
+      "enums": {
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "rounded",
+          "pill"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ]
+      },
+      "states": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "clearable"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "select": {
+      "renderer": "select",
+      "props": [
+        "id",
+        "label",
+        "placeholder",
+        "options",
+        "groups",
+        "selected",
+        "mode",
+        "size",
+        "shape",
+        "status",
+        "state",
+        "clearable",
+        "searchable",
+        "query",
+        "disabled",
+        "loading",
+        "open"
+      ],
+      "defaults": {
+        "id": "\"select\"",
+        "label": "\"Select an option\"",
+        "placeholder": "\"Select an option\"",
+        "options": "[]",
+        "groups": "[]",
+        "selected": "[]",
+        "mode": "\"single\"",
+        "size": "40",
+        "shape": "\"default\"",
+        "status": "\"default\"",
+        "state": "\"default\"",
+        "clearable": "false",
+        "searchable": "false",
+        "query": "\"\"",
+        "disabled": "false",
+        "loading": "false",
+        "open": "false"
+      },
+      "enums": {
+        "mode": [
+          "single",
+          "multiple"
+        ],
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled",
+          "loading"
+        ]
+      },
+      "states": [
+        "default",
+        "focus",
+        "disabled",
+        "warning",
+        "error",
+        "loading",
+        "clearable",
+        "multiple",
+        "searchable",
+        "grouped",
+        "empty-result",
+        "disabled-option"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "switch": {
+      "renderer": "switchControl",
+      "props": [
+        "checked",
+        "disabled",
+        "state",
+        "demo",
+        "label"
+      ],
+      "defaults": {
+        "checked": "false",
+        "disabled": "false",
+        "state": "\"default\"",
+        "demo": "\"\"",
+        "label": "\"Toggle\""
+      },
+      "enums": {
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ]
+      },
+      "states": [
+        "off",
+        "on",
+        "hover",
+        "disabled"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "drawer": {
+      "renderer": "drawer",
+      "props": [
+        "id",
+        "title",
+        "body",
+        "footer",
+        "trigger",
+        "triggerLabel",
+        "open",
+        "placement",
+        "size",
+        "closable",
+        "maskClosable",
+        "keyboardClosable",
+        "demo"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "title": "\"Drawer\"",
+        "body": "\"\"",
+        "footer": "\"\"",
+        "trigger": "\"\"",
+        "triggerLabel": "\"Open drawer\"",
+        "open": "false",
+        "placement": "\"right\"",
+        "size": "\"default\"",
+        "closable": "true",
+        "maskClosable": "true",
+        "keyboardClosable": "true",
+        "demo": "\"\""
+      },
+      "enums": {
+        "placement": [
+          "left",
+          "right",
+          "bottom"
+        ],
+        "size": [
+          "default",
+          "wide"
+        ]
+      },
+      "states": [
+        "closed",
+        "right",
+        "left",
+        "bottom",
+        "wide",
+        "non-closable"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "form-field": {
+      "renderer": "formField",
+      "props": [
+        "id",
+        "label",
+        "control",
+        "helper",
+        "error",
+        "status",
+        "size",
+        "shape",
+        "state",
+        "required",
+        "disabled"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "label": "\"Field label\"",
+        "control": "\"\"",
+        "helper": "\"\"",
+        "error": "\"\"",
+        "status": "\"default\"",
+        "size": "40",
+        "shape": "\"default\"",
+        "state": "\"default\"",
+        "required": "false",
+        "disabled": "false"
+      },
+      "enums": {
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ]
+      },
+      "states": [
+        "default",
+        "helper",
+        "leading-icon",
+        "trailing-action",
+        "warning",
+        "error",
+        "required",
+        "disabled"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "text-input": {
+      "renderer": "textInput",
+      "props": [
+        "id",
+        "value",
+        "placeholder",
+        "size",
+        "shape",
+        "status",
+        "state",
+        "disabled",
+        "readOnly",
+        "leadingIcon",
+        "trailingIcon",
+        "trailingAction",
+        "ariaLabel",
+        "demo"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "value": "\"\"",
+        "placeholder": "\"\"",
+        "size": "40",
+        "shape": "\"default\"",
+        "status": "\"default\"",
+        "state": "\"default\"",
+        "disabled": "false",
+        "readOnly": "false",
+        "leadingIcon": "\"\"",
+        "trailingIcon": "\"\"",
+        "trailingAction": "\"\"",
+        "ariaLabel": "\"\"",
+        "demo": "\"\""
+      },
+      "enums": {
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "warning",
+          "error",
+          "disabled"
+        ]
+      },
+      "states": [
+        "default",
+        "hover",
+        "focus",
+        "warning",
+        "error",
+        "disabled",
+        "read-only",
+        "with-leading-icon",
+        "with-trailing-icon"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "textarea": {
+      "renderer": "textarea",
+      "props": [
+        "id",
+        "value",
+        "placeholder",
+        "size",
+        "rows",
+        "maxLength",
+        "showCount",
+        "status",
+        "state",
+        "disabled",
+        "readOnly",
+        "ariaLabel",
+        "demo"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "value": "\"\"",
+        "placeholder": "\"\"",
+        "size": "40",
+        "rows": "3",
+        "maxLength": "0",
+        "showCount": "false",
+        "status": "\"default\"",
+        "state": "\"default\"",
+        "disabled": "false",
+        "readOnly": "false",
+        "ariaLabel": "\"\"",
+        "demo": "\"\""
+      },
+      "enums": {
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "warning",
+          "error",
+          "disabled"
+        ]
+      },
+      "states": [
+        "default",
+        "focus",
+        "count",
+        "warning",
+        "error",
+        "disabled",
+        "read-only"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "number-stepper": {
+      "renderer": "numberStepper",
+      "props": [
+        "id",
+        "value",
+        "min",
+        "max",
+        "step",
+        "size",
+        "shape",
+        "status",
+        "state",
+        "disabled",
+        "label",
+        "ariaLabel",
+        "demo"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "value": "1",
+        "min": "0",
+        "max": "99",
+        "step": "1",
+        "size": "40",
+        "shape": "\"default\"",
+        "status": "\"default\"",
+        "state": "\"default\"",
+        "disabled": "false",
+        "label": "\"Quantity\"",
+        "ariaLabel": "\"\"",
+        "demo": "\"\""
+      },
+      "enums": {
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ]
+      },
+      "states": [
+        "default",
+        "minimum",
+        "maximum",
+        "disabled"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "combobox": {
+      "renderer": "combobox",
+      "props": [
+        "id",
+        "label",
+        "placeholder",
+        "options",
+        "groups",
+        "selected",
+        "size",
+        "shape",
+        "status",
+        "state",
+        "clearable",
+        "disabled",
+        "loading",
+        "open",
+        "query"
+      ],
+      "defaults": {
+        "id": "\"combobox\"",
+        "label": "\"Find an option\"",
+        "placeholder": "\"Find an option\"",
+        "options": "[]",
+        "groups": "[]",
+        "selected": "[]",
+        "size": "48",
+        "shape": "\"default\"",
+        "status": "\"default\"",
+        "state": "\"default\"",
+        "clearable": "false",
+        "disabled": "false",
+        "loading": "false",
+        "open": "false",
+        "query": "\"\""
+      },
+      "enums": {
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled",
+          "loading"
+        ]
+      },
+      "states": [
+        "default",
+        "open",
+        "query",
+        "selected",
+        "empty-result",
+        "disabled"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "upload": {
+      "renderer": "upload",
+      "props": [
+        "id",
+        "label",
+        "description",
+        "accept",
+        "multiple",
+        "files",
+        "variant",
+        "state",
+        "disabled",
+        "actionLabel",
+        "maxSize",
+        "avatar",
+        "avatarAlt",
+        "error",
+        "ariaLabel",
+        "demo"
+      ],
+      "defaults": {
+        "id": "\"upload\"",
+        "label": "\"Upload files\"",
+        "description": "\"Drag and drop files here, or choose files from your device.\"",
+        "accept": "\"\"",
+        "multiple": "false",
+        "files": "[]",
+        "variant": "\"dropzone\"",
+        "state": "\"default\"",
+        "disabled": "false",
+        "actionLabel": "\"Choose file\"",
+        "maxSize": "\"\"",
+        "avatar": "\"\"",
+        "avatarAlt": "\"\"",
+        "error": "\"\"",
+        "ariaLabel": "\"File upload\"",
+        "demo": "\"\""
+      },
+      "enums": {
+        "variant": [
+          "dropzone",
+          "trigger",
+          "avatar"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled",
+          "uploading",
+          "error"
+        ]
+      },
+      "states": [
+        "dropzone",
+        "trigger",
+        "avatar-empty",
+        "avatar-filled",
+        "avatar-uploading",
+        "avatar-error",
+        "hover",
+        "focus",
+        "disabled",
+        "uploading",
+        "complete",
+        "error",
+        "multiple",
+        "accept"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "stepper": {
+      "renderer": "stepper",
+      "props": [
+        "id",
+        "items",
+        "current",
+        "variant",
+        "orientation",
+        "ariaLabel"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "items": "[]",
+        "current": "0",
+        "variant": "\"default\"",
+        "orientation": "\"horizontal\"",
+        "ariaLabel": "\"Steps\""
+      },
+      "enums": {
+        "variant": [
+          "default",
+          "flow-progress"
+        ],
+        "orientation": [
+          "horizontal",
+          "vertical"
+        ]
+      },
+      "states": [
+        "default",
+        "current",
+        "complete",
+        "vertical",
+        "flow-progress"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "progress": {
+      "renderer": "progress",
+      "props": [
+        "value",
+        "max",
+        "status",
+        "showLabel",
+        "indeterminate",
+        "ariaLabel"
+      ],
+      "defaults": {
+        "value": "0",
+        "max": "100",
+        "status": "\"default\"",
+        "showLabel": "true",
+        "indeterminate": "false",
+        "ariaLabel": "\"Progress\""
+      },
+      "enums": {
+        "status": [
+          "default",
+          "success",
+          "error"
+        ]
+      },
+      "states": [
+        "default",
+        "success",
+        "error",
+        "indeterminate"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "toast": {
+      "renderer": "toast",
+      "props": [
+        "id",
+        "tone",
+        "title",
+        "description",
+        "action",
+        "duration",
+        "closable",
+        "open",
+        "ariaLabel"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "tone": "\"info\"",
+        "title": "\"\"",
+        "description": "\"\"",
+        "action": "\"\"",
+        "duration": "0",
+        "closable": "true",
+        "open": "true",
+        "ariaLabel": "\"\""
+      },
+      "enums": {
+        "tone": [
+          "info",
+          "success",
+          "warning",
+          "error"
+        ]
+      },
+      "states": [
+        "info",
+        "success",
+        "warning",
+        "error",
+        "closable"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "notification": {
+      "renderer": "notification",
+      "props": [
+        "id",
+        "tone",
+        "title",
+        "description",
+        "action",
+        "closable",
+        "open",
+        "ariaLabel"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "tone": "\"info\"",
+        "title": "\"\"",
+        "description": "\"\"",
+        "action": "\"\"",
+        "closable": "true",
+        "open": "true",
+        "ariaLabel": "\"\""
+      },
+      "enums": {
+        "tone": [
+          "info",
+          "success",
+          "warning",
+          "error"
+        ]
+      },
+      "states": [
+        "info",
+        "success",
+        "warning",
+        "error",
+        "closable",
+        "with-action"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "result": {
+      "renderer": "result",
+      "props": [
+        "id",
+        "tone",
+        "title",
+        "description",
+        "action",
+        "secondaryAction",
+        "ariaLabel"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "tone": "\"success\"",
+        "title": "\"\"",
+        "description": "\"\"",
+        "action": "\"\"",
+        "secondaryAction": "\"\"",
+        "ariaLabel": "\"\""
+      },
+      "enums": {
+        "tone": [
+          "info",
+          "success",
+          "warning",
+          "error"
+        ]
+      },
+      "states": [
+        "success",
+        "info",
+        "warning",
+        "error",
+        "with-action",
+        "with-secondary-action"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "skeleton": {
+      "renderer": "skeleton",
+      "props": [
+        "type",
+        "lines",
+        "width",
+        "height",
+        "title",
+        "avatar",
+        "lastLineWidth",
+        "shape",
+        "round",
+        "animated",
+        "ariaLabel"
+      ],
+      "defaults": {
+        "type": "\"text\"",
+        "lines": "required or context-provided",
+        "width": "\"\"",
+        "height": "\"\"",
+        "title": "true",
+        "avatar": "false",
+        "lastLineWidth": "\"\"",
+        "shape": "\"default\"",
+        "round": "false",
+        "animated": "true",
+        "ariaLabel": "\"Loading content\""
+      },
+      "enums": {
+        "type": [
+          "text",
+          "content",
+          "avatar",
+          "button",
+          "input",
+          "image",
+          "card"
+        ],
+        "shape": [
+          "default",
+          "round",
+          "circle",
+          "square"
+        ]
+      },
+      "states": [
+        "text",
+        "content",
+        "avatar",
+        "button",
+        "input",
+        "image",
+        "card",
+        "reduced-motion"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "dropdown-menu": {
+      "renderer": "dropdownMenu",
+      "props": [
+        "id",
+        "trigger",
+        "triggerLabel",
+        "items",
+        "open",
+        "placement",
+        "ariaLabel"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "trigger": "\"\"",
+        "triggerLabel": "\"More actions\"",
+        "items": "[]",
+        "open": "false",
+        "placement": "\"bottom-start\"",
+        "ariaLabel": "\"Menu\""
+      },
+      "enums": {
+        "placement": [
+          "bottom-start",
+          "bottom-end"
+        ]
+      },
+      "states": [
+        "closed",
+        "open",
+        "disabled-item",
+        "destructive-item"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "disclosure": {
+      "renderer": "disclosure",
+      "props": [
+        "id",
+        "title",
+        "content",
+        "open",
+        "disabled",
+        "kind",
+        "ariaLabel"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "title": "\"Details\"",
+        "content": "\"\"",
+        "open": "false",
+        "disabled": "false",
+        "kind": "\"accordion\"",
+        "ariaLabel": "\"\""
+      },
+      "enums": {
+        "kind": [
+          "accordion",
+          "details"
+        ]
+      },
+      "states": [
+        "closed",
+        "open",
+        "disabled",
+        "details"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "segmented-control": {
+      "renderer": "segmentedControl",
+      "props": [
+        "id",
+        "options",
+        "selected",
+        "size",
+        "shape",
+        "disabled",
+        "ariaLabel"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "options": "[]",
+        "selected": "\"\"",
+        "size": "40",
+        "shape": "\"pill\"",
+        "disabled": "false",
+        "ariaLabel": "\"Segmented control\""
+      },
+      "enums": {
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "pill",
+          "rounded"
+        ]
+      },
+      "states": [
+        "default",
+        "pill",
+        "rounded",
+        "selected",
+        "disabled"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "time-slot": {
+      "renderer": "timeSlot",
+      "props": [
+        "id",
+        "label",
+        "time",
+        "secondary",
+        "appearance",
+        "state",
+        "selected",
+        "unavailable",
+        "held",
+        "loading",
+        "disabled",
+        "duration",
+        "teacher",
+        "calendarDay",
+        "calendarMinute",
+        "ariaLabel",
+        "tooltip",
+        "demo"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "label": "\"09:00\"",
+        "time": "\"\"",
+        "secondary": "\"\"",
+        "appearance": "\"availability\"",
+        "state": "\"available\"",
+        "selected": "false",
+        "unavailable": "false",
+        "held": "false",
+        "loading": "false",
+        "disabled": "false",
+        "duration": "15",
+        "teacher": "\"\"",
+        "calendarDay": "\"\"",
+        "calendarMinute": "null",
+        "ariaLabel": "\"\"",
+        "tooltip": "required or context-provided",
+        "demo": "\"\""
+      },
+      "enums": {
+        "appearance": [
+          "availability",
+          "option"
+        ],
+        "duration": [
+          15,
+          30,
+          60
+        ],
+        "state": [
+          "available",
+          "selected",
+          "unavailable",
+          "booked-by-others",
+          "booked-by-you",
+          "loading"
+        ]
+      },
+      "states": [
+        "available",
+        "selected",
+        "unavailable",
+        "booked-by-others",
+        "booked-by-you",
+        "loading",
+        "option"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "time-picker": {
+      "renderer": "timePicker",
+      "props": [
+        "id",
+        "label",
+        "placeholder",
+        "slots",
+        "selected",
+        "disabled",
+        "open",
+        "state",
+        "ariaLabel"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "label": "\"Time\"",
+        "placeholder": "\"Choose a time\"",
+        "slots": "[]",
+        "selected": "\"\"",
+        "disabled": "false",
+        "open": "false",
+        "state": "\"default\"",
+        "ariaLabel": "\"\""
+      },
+      "enums": {
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ]
+      },
+      "states": [
+        "default",
+        "open",
+        "selected",
+        "disabled"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "calendar": {
+      "renderer": "calendar",
+      "props": [
+        "id",
+        "variant",
+        "timezone",
+        "weekLabel",
+        "todayLabel",
+        "dates",
+        "rows",
+        "weekViews",
+        "activeWeek",
+        "todayWeek",
+        "timePicker",
+        "availabilityLabel",
+        "teacherAvailability",
+        "recordTitle",
+        "recordMonths",
+        "recordStats",
+        "weekdays",
+        "disabled",
+        "ariaLabel",
+        "demo"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "variant": "\"availability\"",
+        "timezone": "\"Asia/Shanghai\"",
+        "weekLabel": "\"15–21 December 2025\"",
+        "todayLabel": "\"Today\"",
+        "dates": "[]",
+        "rows": "[]",
+        "weekViews": "[]",
+        "activeWeek": "0",
+        "todayWeek": "0",
+        "timePicker": "required or context-provided",
+        "availabilityLabel": "\"\"",
+        "teacherAvailability": "[]",
+        "recordTitle": "\"My lessons\"",
+        "recordMonths": "[]",
+        "recordStats": "[]",
+        "weekdays": "[\"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\", \"Sun\"]",
+        "disabled": "false",
+        "ariaLabel": "\"Weekly availability\"",
+        "demo": "\"\""
+      },
+      "enums": {
+        "variant": [
+          "availability",
+          "teacher-availability",
+          "compact-availability",
+          "lesson-record"
+        ]
+      },
+      "states": [
+        "default",
+        "selected-slot",
+        "unavailable-slot",
+        "with-time-picker",
+        "teacher-availability",
+        "compact-availability",
+        "lesson-record"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "footer": {
+      "renderer": "footer",
+      "props": [
+        "id",
+        "columns",
+        "utilities",
+        "copyright",
+        "legalLinks",
+        "socialLinks",
+        "ariaLabel",
+        "demo"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "columns": "[]",
+        "utilities": "\"\"",
+        "copyright": "\"\"",
+        "legalLinks": "[]",
+        "socialLinks": "[]",
+        "ariaLabel": "\"Footer\"",
+        "demo": "\"\""
+      },
+      "enums": {},
+      "states": [
+        "standard",
+        "with-utilities",
+        "with-legal-links",
+        "with-social-links"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "popover": {
+      "renderer": "popover",
+      "props": [
+        "id",
+        "title",
+        "body",
+        "actions",
+        "trigger",
+        "triggerLabel",
+        "open",
+        "placement",
+        "triggerMode",
+        "closeOnLeave",
+        "leaveDelay",
+        "demo",
+        "ariaLabel"
+      ],
+      "defaults": {
+        "id": "required or context-provided",
+        "title": "required or context-provided",
+        "body": "required or context-provided",
+        "actions": "required or context-provided",
+        "trigger": "required or context-provided",
+        "triggerLabel": "required or context-provided",
+        "open": "required or context-provided",
+        "placement": "required or context-provided",
+        "triggerMode": "required or context-provided",
+        "closeOnLeave": "required or context-provided",
+        "leaveDelay": "required or context-provided",
+        "demo": "required or context-provided",
+        "ariaLabel": "required or context-provided"
+      },
+      "enums": {
+        "placement": [
+          "top",
+          "bottom",
+          "left",
+          "right"
+        ],
+        "triggerMode": [
+          "click",
+          "hover",
+          "focus"
+        ],
+        "closeOnLeave": [
+          true,
+          false
+        ],
+        "leaveDelay": [
+          300
+        ]
+      },
+      "states": [
+        "closed",
+        "open",
+        "placement",
+        "with-actions",
+        "leave-delay"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    }
+  }
+}
