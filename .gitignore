@@ -10,3 +10,8 @@ maintenance/node_modules/
 test-results/
 maintenance/test-results/
 playwright-report/
+
+# Local Claude Design upload staging (rebuild with maintenance/_build-ds-bundle.mjs)
+maintenance/ds-bundle/
+maintenance/_batch*.json
+maintenance/_build-ds-bundle.mjs
