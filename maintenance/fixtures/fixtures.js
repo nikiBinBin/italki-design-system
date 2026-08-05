@@ -75,9 +75,9 @@
       { id: "reminder", tone: "warning", title: "Reminder scheduled", description: "21 July · 14:20" }
     ];
     const topNavOptions = [
-      { id: "english", label: "English Teachers", flag: "Assets/Flags/iso/us.svg" },
-      { id: "french", label: "French Teachers", flag: "Assets/Flags/iso/fr.svg" },
-      { id: "spanish", label: "Spanish Teachers", flag: "Assets/Flags/iso/es.svg" }
+      { id: "english", label: "English Teachers", flag: "Assets/Flags/us.svg" },
+      { id: "french", label: "French Teachers", flag: "Assets/Flags/fr.svg" },
+      { id: "spanish", label: "Spanish Teachers", flag: "Assets/Flags/es.svg" }
     ];
     const topNavFixture = ({ id, compact = false, contextOpen = false, value = "", filtered = false, filter = true }) => ui.topNav({
       id,

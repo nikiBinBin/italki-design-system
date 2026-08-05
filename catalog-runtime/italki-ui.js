@@ -330,7 +330,7 @@
     if (!/^[a-z]{2}$/.test(code)) throw new Error("avatar.flag countryCode must be an ISO 3166-1 alpha-2 code");
     if (![16, 24].includes(size)) throw new Error(`avatar.flag does not accept size ${String(size)}`);
     const label = ariaLabel || countryLabel || code.toUpperCase();
-    return `<img class="ui-flag ui-flag--${size}" data-component="avatar" data-ui-avatar-part="flag" src="Assets/Flags/iso/${escapeHTML(code)}.svg" alt="${decorative ? "" : escapeHTML(label)}"${decorative ? ' aria-hidden="true"' : ""} />`;
+    return `<img class="ui-flag ui-flag--${size}" data-component="avatar" data-ui-avatar-part="flag" src="Assets/Flags/${escapeHTML(code)}.svg" alt="${decorative ? "" : escapeHTML(label)}"${decorative ? ' aria-hidden="true"' : ""} />`;
   }
 
   function avatar(props = {}) {
