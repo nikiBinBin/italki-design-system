@@ -1,0 +1,288 @@
+{
+  "schemaVersion": 1,
+  "sourceOfTruth": [
+    "catalog-runtime/contracts.json",
+    "@italki/panda theme tokens",
+    "current project ConfigProvider usage"
+  ],
+  "statusDefinitions": {
+    "aligned": "Panda exposes the matching semantic token with the Catalog value.",
+    "override": "Panda exposes the semantic token, but the current value differs and requires a reviewed ConfigProvider override.",
+    "gap": "No safe Panda semantic token or current project override exists. Do not substitute an approximate color."
+  },
+  "colors": {
+    "--ui-color-page": {
+      "value": "#FFFFFF",
+      "status": "gap",
+      "pandaToken": null,
+      "projectOverride": "No global page-background override. apps/mintaka/theme/themeConfig.ts currently provides token: {}.",
+      "notes": "Panda colorBgLayout is a layout surface and does not equal the Catalog white page. Keep the canvas layout-owned until a product-wide theme decision exists."
+    },
+    "--ui-color-card": {
+      "value": "#FFFFFF",
+      "status": "aligned",
+      "pandaToken": "colorBgCards",
+      "projectOverride": "Panda generated default in components/theme/themes/shared/genColorMapToken.ts; no app override.",
+      "notes": "Exact white card and focused-surface token."
+    },
+    "--ui-color-title": {
+      "value": "#313140",
+      "status": "aligned",
+      "pandaToken": "colorFgTitle",
+      "projectOverride": "Panda generated default; apps/alnitak TeacherIntro TAB_THEME applies the same value to Tabs only.",
+      "notes": "Exact strong-title token. Use it for headings and other confirmed strong text roles."
+    },
+    "--ui-color-text": {
+      "value": "#515164",
+      "status": "aligned",
+      "pandaToken": "colorFgPrimary",
+      "projectOverride": "Panda generated default; ProfileSettingsClient has a scoped legacy colorText override with the same value.",
+      "notes": "Exact default text token."
+    },
+    "--ui-color-secondary": {
+      "value": "#767687",
+      "status": "override",
+      "pandaToken": "colorFgSecondary",
+      "projectOverride": "No application override. Panda default is #9C9CAC, not the Catalog #767687.",
+      "notes": "Use a reviewed ConfigProvider theme override only where secondary text must match Catalog; do not substitute the placeholder token."
+    },
+    "--ui-color-placeholder": {
+      "value": "#9C9CAC",
+      "status": "aligned",
+      "pandaToken": "colorFgPlaceholder",
+      "projectOverride": "Panda generated default in components/theme/themes/shared/genColorMapToken.ts; no app override.",
+      "notes": "Exact input placeholder token."
+    },
+    "--ui-color-disabled": {
+      "value": "#C7CBD3",
+      "status": "override",
+      "pandaToken": "colorTextDisabled",
+      "projectOverride": "No application override for the Catalog #C7CBD3 disabled text value.",
+      "notes": "Panda exposes the semantic disabled token, but its current derived value is not the Catalog value. In ConfigProvider, set colorTextQuaternary because colorTextDisabled is derived from it."
+    },
+    "--ui-color-border": {
+      "value": "#E5E8ED",
+      "status": "aligned",
+      "pandaToken": "colorFgBorder",
+      "projectOverride": "Panda generated default in components/theme/themes/shared/genColorMapToken.ts; no app override.",
+      "notes": "Exact default input and component boundary token."
+    },
+    "--ui-color-divider": {
+      "value": "#F5F6F9",
+      "status": "aligned",
+      "pandaToken": "colorBgContent",
+      "projectOverride": "Panda generated default in components/theme/themes/shared/genColorMapToken.ts; no app override.",
+      "notes": "Exact quiet internal divider and light fill token."
+    },
+    "--ui-color-hover": {
+      "value": "#EBEDF1",
+      "status": "override",
+      "pandaToken": "colorFillContentHover",
+      "projectOverride": "No application override for the Catalog #EBEDF1 hover surface.",
+      "notes": "Panda exposes a hover-fill token, but its generated default differs from Catalog. In ConfigProvider, set colorFill because colorFillContentHover is derived from it."
+    },
+    "--ui-color-primary": {
+      "value": "#FF4338",
+      "status": "override",
+      "pandaToken": "colorPrimaryMain",
+      "projectOverride": "Panda generated default is #FF4438; no application override aligns it to the Catalog #FF4338.",
+      "notes": "Use the custom Panda primary-main token for red CTA behavior; a reviewed theme override is required for the exact Catalog value."
+    },
+    "--ui-color-primary-hover": {
+      "value": "#D3382F",
+      "status": "aligned",
+      "pandaToken": "colorPrimaryShade0",
+      "projectOverride": "Panda generated default in components/theme/themes/shared/genColorMapToken.ts; no app override.",
+      "notes": "Exact red hover, pressed, and destructive color."
+    },
+    "--ui-color-primary-shade-1": {
+      "value": "#FF8E87",
+      "status": "override",
+      "pandaToken": "colorPrimaryShade1",
+      "projectOverride": "Panda generated default is #FF7B73, not the Catalog #FF8E87.",
+      "notes": "Use an explicit reviewed override for the lower-priority warm accent."
+    },
+    "--ui-color-link": {
+      "value": "#59779A",
+      "status": "override",
+      "pandaToken": "colorLink",
+      "projectOverride": "No application override. Panda derives its link color from the info seed by default.",
+      "notes": "Panda supports the semantic link token, but it must be overridden to the Catalog #59779A."
+    },
+    "--ui-color-link-hover": {
+      "value": "#4B647D",
+      "status": "override",
+      "pandaToken": "colorLinkHover",
+      "projectOverride": "No application override for the Catalog #4B647D link hover value.",
+      "notes": "Set only alongside the approved link theme decision; do not derive an arbitrary darker color locally."
+    },
+    "--ui-color-info": {
+      "value": "#00B3BD",
+      "status": "aligned",
+      "pandaToken": "colorInfo",
+      "projectOverride": "Panda seed default in components/theme/themes/seed.ts; no app override.",
+      "notes": "Exact informational color."
+    },
+    "--ui-color-info-surface": {
+      "value": "#EDFAFA",
+      "status": "override",
+      "pandaToken": "colorInfoBg",
+      "projectOverride": "No application override for the Catalog #EDFAFA information surface.",
+      "notes": "Panda supports the semantic information background but its generated value must be verified or overridden."
+    },
+    "--ui-color-accessory-1": {
+      "value": "#FFF9E6",
+      "status": "override",
+      "pandaToken": "colorWarningBg",
+      "projectOverride": "No application override for the Catalog #FFF9E6 warning-derived accessory surface.",
+      "notes": "Use only where the Catalog role is warning-related; otherwise retain it as a local approved accessory surface."
+    },
+    "--ui-color-accessory-2": {
+      "value": "#E6F7F8",
+      "status": "gap",
+      "pandaToken": null,
+      "projectOverride": "No Panda semantic token or application override represents this #E6F7F8 decorative accessory surface.",
+      "notes": "Do not replace it with colorInfoBg without an approved semantic decision."
+    },
+    "--ui-color-accessory-3": {
+      "value": "#FFF2F1",
+      "status": "aligned",
+      "pandaToken": "colorPrimaryShade3",
+      "projectOverride": "Panda generated default in components/theme/themes/shared/genColorMapToken.ts; no app override.",
+      "notes": "Exact low-emphasis red surface."
+    },
+    "--ui-color-accessory-4": {
+      "value": "#E7FCF5",
+      "status": "gap",
+      "pandaToken": null,
+      "projectOverride": "No Panda semantic token or application override represents this #E7FCF5 accessory surface.",
+      "notes": "Do not treat an accessory color as Panda success without an approved semantic decision."
+    },
+    "--ui-color-available": {
+      "value": "#98D45F",
+      "status": "gap",
+      "pandaToken": null,
+      "projectOverride": "No Panda availability token or product-wide availability theme override exists.",
+      "notes": "Availability is a booking-domain state, not a substitute for Panda success."
+    },
+    "--ui-color-available-surface": {
+      "value": "#F4FBEA",
+      "status": "gap",
+      "pandaToken": null,
+      "projectOverride": "No Panda availability-surface token or product-wide availability theme override exists.",
+      "notes": "Keep this as a Calendar or booking adapter token until an availability theme contract is approved."
+    },
+    "--ui-color-available-current-day-surface": {
+      "value": "#E7FCF5",
+      "status": "gap",
+      "pandaToken": null,
+      "projectOverride": "No Panda current-availability-day token or product-wide availability theme override exists.",
+      "notes": "Calendar current-day availability remains a documented booking adapter concern."
+    },
+    "--ui-color-success": {
+      "value": "#0DE298",
+      "status": "aligned",
+      "pandaToken": "colorSuccess",
+      "projectOverride": "Panda seed default in components/theme/themes/seed.ts; no app override.",
+      "notes": "Exact success color."
+    },
+    "--ui-color-success-surface": {
+      "value": "#ECFFF9",
+      "status": "override",
+      "pandaToken": "colorSuccessBg",
+      "projectOverride": "No application override for the Catalog #ECFFF9 success surface.",
+      "notes": "Panda supports the semantic success background but its generated value must be verified or overridden."
+    },
+    "--ui-color-warning": {
+      "value": "#FFC400",
+      "status": "aligned",
+      "pandaToken": "colorWarning",
+      "projectOverride": "Panda seed default in components/theme/themes/seed.ts; no app override.",
+      "notes": "Exact warning color."
+    },
+    "--ui-color-warning-surface": {
+      "value": "#FFF9E6",
+      "status": "override",
+      "pandaToken": "colorWarningBg",
+      "projectOverride": "No application override for the Catalog #FFF9E6 warning surface.",
+      "notes": "Panda supports the semantic warning background but its generated value must be verified or overridden."
+    },
+    "--ui-color-error": {
+      "value": "#D3382F",
+      "status": "aligned",
+      "pandaToken": "colorError",
+      "projectOverride": "Panda seed default in components/theme/themes/seed.ts; no app override.",
+      "notes": "Exact error and destructive color."
+    },
+    "--ui-color-error-surface": {
+      "value": "#FFF1F1",
+      "status": "override",
+      "pandaToken": "colorErrorBg",
+      "projectOverride": "No application override for the Catalog #FFF1F1 error surface.",
+      "notes": "Use the semantic error background token only after its value is aligned through a reviewed theme decision."
+    },
+    "--ui-color-on-primary": {
+      "value": "#FFFFFF",
+      "status": "aligned",
+      "pandaToken": "colorTextLightSolid",
+      "projectOverride": "Panda generated default resolves to colorWhite; no app override.",
+      "notes": "Exact solid-on-color content token."
+    },
+    "--ui-color-modal-mask": {
+      "value": "rgb(49 49 64 / 24%)",
+      "status": "override",
+      "pandaToken": "colorBgMask",
+      "projectOverride": "No application override. Panda default is a 45% black mask, not the Catalog title-color 24% mask.",
+      "notes": "Use the semantic mask token only with an approved overlay theme override."
+    },
+    "--ui-color-upload-overlay": {
+      "value": "rgb(49 49 64 / 68%)",
+      "status": "gap",
+      "pandaToken": null,
+      "projectOverride": "No global Panda token or project override defines the Catalog upload overlay alpha.",
+      "notes": "This is Upload-specific feedback treatment and requires an approved component-level token or adapter."
+    },
+    "--ui-color-upload-loading": {
+      "value": "rgb(49 49 64 / 50%)",
+      "status": "gap",
+      "pandaToken": null,
+      "projectOverride": "No global Panda token or project override defines the Catalog upload loading alpha.",
+      "notes": "This is Upload-specific loading treatment and requires an approved component-level token or adapter."
+    },
+    "--ui-color-on-primary-muted": {
+      "value": "rgb(255 255 255 / 45%)",
+      "status": "gap",
+      "pandaToken": null,
+      "projectOverride": "No Panda semantic token or project override represents this 45% white content treatment.",
+      "notes": "Do not approximate with disabled text; it is contextual on-color content."
+    },
+    "--ui-color-on-emphasis-muted": {
+      "value": "rgb(255 255 255 / 55%)",
+      "status": "gap",
+      "pandaToken": null,
+      "projectOverride": "No Panda semantic token or project override represents this 55% white content treatment.",
+      "notes": "Do not approximate with disabled text; it is contextual on-emphasis content."
+    },
+    "--ui-color-emphasis-weak": {
+      "value": "rgb(49 49 64 / 28%)",
+      "status": "gap",
+      "pandaToken": null,
+      "projectOverride": "No Panda semantic token or project override represents this title-color alpha treatment.",
+      "notes": "This requires an approved component-level treatment rather than a generic Panda color substitution."
+    },
+    "--ui-color-disabled-weak": {
+      "value": "rgb(199 203 211 / 42%)",
+      "status": "gap",
+      "pandaToken": null,
+      "projectOverride": "No Panda semantic token or project override represents this disabled alpha treatment.",
+      "notes": "This requires an approved component-level treatment rather than a generic Panda color substitution."
+    },
+    "--ui-color-hover-overlay": {
+      "value": "rgb(49 49 64 / 8%)",
+      "status": "gap",
+      "pandaToken": null,
+      "projectOverride": "No Panda semantic token or project override represents this title-color hover overlay.",
+      "notes": "Use only through a reviewed component interaction token; do not replace it with an arbitrary grey."
+    }
+  }
+}

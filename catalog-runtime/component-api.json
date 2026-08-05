@@ -1,9 +1,9 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "sourceOfTruth": [
-    "ui-kit/contracts.json",
-    "ui-kit/italki-ui.js",
-    "ui-kit/tokens.css"
+    "catalog-runtime/contracts.json",
+    "catalog-runtime/italki-ui.js",
+    "catalog-runtime/tokens.css"
   ],
   "usagePolicy": {
     "rule": "Consumers choose a registered component and pass documented props only. They must not add local CSS for a component or pass raw colors, spacing, radius, shadow, icon paths, or state styling.",
@@ -115,7 +115,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "aligned",
+        "pandaExport": "Button",
+        "preferredImport": "@repo/components/ui",
+        "productionComponent": "Button",
+        "notes": "Use the existing Panda wrapper. Do not recreate button anatomy or translate Catalog variants directly without checking Panda props."
+      }
     },
     "chip": {
       "renderer": "chip",
@@ -131,7 +138,7 @@
       ],
       "defaults": {
         "label": "\"\"",
-        "size": "40",
+        "size": "32",
         "surface": "\"default\"",
         "checked": "required or context-provided",
         "selected": "false",
@@ -171,7 +178,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Chip",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Chip design-system adapter",
+        "notes": "Panda Chip does not cover the Catalog 24px geometry or semantic button behavior. Use the React design-system adapter; never use Chip as a checkbox or radio replacement."
+      }
     },
     "tag": {
       "renderer": "tag",
@@ -219,7 +233,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Tag",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Tag design-system adapter",
+        "notes": "Panda Tag does not guarantee the Catalog close affordance, size scale, or semantic tones. Use the React design-system adapter for compact descriptive labels."
+      }
     },
     "checkbox": {
       "renderer": "checkbox",
@@ -272,7 +293,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "aligned",
+        "pandaExport": "Checkbox",
+        "preferredImport": "@repo/components/ui",
+        "productionComponent": "Checkbox",
+        "notes": "Use Panda Checkbox for semantic multi-select choices and its documented group API."
+      }
     },
     "checkbox-group": {
       "renderer": "checkboxGroup",
@@ -323,7 +351,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "aligned",
+        "pandaExport": "Checkbox.Group",
+        "preferredImport": "@repo/components/ui",
+        "productionComponent": "Checkbox.Group",
+        "notes": "Use Panda Checkbox.Group for controlled groups; product-specific option data and validation remain outside the primitive."
+      }
     },
     "radio": {
       "renderer": "radio",
@@ -381,7 +416,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "aligned",
+        "pandaExport": "Radio",
+        "preferredImport": "@repo/components/ui",
+        "productionComponent": "Radio",
+        "notes": "Use Panda Radio or Radio.Group for one-of-many choices rather than custom selected rows."
+      }
     },
     "selection": {
       "renderer": "selection",
@@ -482,7 +524,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Selection",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Selection design-system adapter",
+        "notes": "Panda Selection does not cover the Catalog content types, selected marker, or radio and checkbox semantics. Use the React design-system adapter; use standalone Radio or Checkbox when a compact control is sufficient."
+      }
     },
     "date-picker": {
       "renderer": "datePicker",
@@ -564,7 +613,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "DatePicker",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "DatePicker design-system adapter",
+        "notes": "Use the React design-system adapter for Catalog size, shape, field status, controlled or uncontrolled opening, single or range selection, month navigation, and disabled days with YYYY-MM-DD values. Booking availability and timezone policy remain product concerns."
+      }
     },
     "tooltip": {
       "renderer": "tooltip",
@@ -616,7 +672,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Tooltip",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Tooltip design-system adapter",
+        "notes": "Use the React design-system adapter for placement, arrowless mode, focus behavior, and delayed hover presentation; do not make a Tooltip the only access path to essential content."
+      }
     },
     "modal": {
       "renderer": "modal",
@@ -680,7 +743,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "aligned",
+        "pandaExport": "Modal",
+        "preferredImport": "@repo/components/ui",
+        "productionComponent": "Modal",
+        "notes": "Use the Panda wrapper and an existing reviewed modal flow. Confirm focus restoration and custom footer behavior before extending it."
+      }
     },
     "popup": {
       "renderer": "popup",
@@ -749,7 +819,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Popup",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Popup design-system adapter",
+        "notes": "Use the React design-system adapter for Catalog-owned trigger modes, placement, outside dismissal, Escape behavior, and leave delay. Do not use Popup as an unreviewed menu or modal substitute."
+      }
     },
     "popconfirm": {
       "renderer": "popconfirm",
@@ -824,7 +901,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Popconfirm",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Popconfirm design-system adapter",
+        "notes": "Use the React design-system adapter for a local consequential action, controlled or uncontrolled open state, outside dismissal, Escape behavior, loading, and confirmation callbacks."
+      }
     },
     "divider": {
       "renderer": "divider",
@@ -890,7 +974,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "aligned",
+        "pandaExport": "Divider",
+        "preferredImport": "@repo/components/ui",
+        "productionComponent": "Divider",
+        "notes": "Use the existing Panda wrapper for structural separation and labelled dividers."
+      }
     },
     "avatar": {
       "renderer": "avatar",
@@ -989,7 +1080,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Avatar",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Avatar design-system adapter",
+        "notes": "Use the React design-system adapter for the Catalog size scale, image fallback, flag placement, logo treatment, and avatar-group overlap. Panda remains an internal implementation option, not the product import boundary."
+      }
     },
     "badge": {
       "renderer": "badge",
@@ -1046,7 +1144,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Badge",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Badge design-system adapter",
+        "notes": "Use the React design-system adapter for Catalog count, dot, status, overflow, and anchor behavior. Panda remains an internal implementation option, not the product import boundary."
+      }
     },
     "breadcrumb": {
       "renderer": "breadcrumb",
@@ -1084,7 +1189,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Breadcrumb",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Breadcrumb design-system adapter",
+        "notes": "Use the React design-system adapter for collapsed overflow, current-page semantics, and Catalog separator behavior. Page routing remains product-owned."
+      }
     },
     "card": {
       "renderer": "card",
@@ -1155,7 +1267,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Card",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Card design-system adapter",
+        "notes": "Use the React design-system adapter for the Catalog surface, media-ratio, density, and interactive-card contract. Business objects such as teacher cards remain composed product patterns."
+      }
     },
     "alert": {
       "renderer": "alert",
@@ -1212,7 +1331,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "aligned",
+        "pandaExport": "Alert",
+        "preferredImport": "@repo/components/ui",
+        "productionComponent": "Alert",
+        "notes": "Use the Panda wrapper for persistent in-context feedback, not field validation or transient notification behavior."
+      }
     },
     "tabs": {
       "renderer": "tabs",
@@ -1259,7 +1385,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Tabs",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Tabs design-system adapter",
+        "notes": "Use the React design-system adapter for Catalog labels, count treatment, trailing action, and automatic or manual keyboard activation."
+      }
     },
     "pagination": {
       "renderer": "pagination",
@@ -1302,7 +1435,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Pagination",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Pagination design-system adapter",
+        "notes": "Use the React design-system adapter for supplied page lists, ellipsis treatment, controlled current page, and disabled boundary actions. Page fetches, route state, and total-result semantics stay product-owned."
+      }
     },
     "rate": {
       "renderer": "rate",
@@ -1369,7 +1509,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Rate",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Rate design-system adapter",
+        "notes": "Use the React design-system adapter for Catalog half-step, clearable, preview, label, and keyboard rating behavior. Do not calculate rating aggregates in the component."
+      }
     },
     "sidebar": {
       "renderer": "sidebar",
@@ -1426,7 +1573,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": null,
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Sidebar design-system adapter",
+        "notes": "Use the React design-system Sidebar for controlled or local collapse, Pin and More movement, same-list drag ordering, bounded More disclosure, section animation, and internal smooth scrolling. Product adapters still supply destinations, state, approved icons, persistence, route behavior, and analytics."
+      }
     },
     "statistic": {
       "renderer": "statistic",
@@ -1470,7 +1624,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Statistic",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Statistic design-system adapter",
+        "notes": "Use the React design-system adapter for supplied values, affixes, descriptions, and loading presentation. Formatting and calculation remain product-owned."
+      }
     },
     "table": {
       "renderer": "table",
@@ -1520,7 +1681,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Table",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Table design-system adapter",
+        "notes": "Use the React design-system adapter for supplied columns, row headers, compact density, loading, empty state, and responsive overflow. Sorting, pagination, and selection remain product-owned."
+      }
     },
     "timeline": {
       "renderer": "timeline",
@@ -1576,7 +1744,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Timeline",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Timeline design-system adapter",
+        "notes": "Use the React design-system adapter for supplied event history, semantic dot tones, pending state, labels, reverse order, and alternate layout. Event meaning remains caller-owned."
+      }
     },
     "top-nav": {
       "renderer": "topNav",
@@ -1674,7 +1849,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": null,
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "TopNav design-system adapter",
+        "notes": "Use the React design-system TopNav, TopNavContext, and TopNavSearch for its three-slot 72px shell, centred search expansion, language/context menu, and reviewed icon geometry. Product adapters still supply navigation meaning, query effects, language state, account actions, routes, and analytics."
+      }
     },
     "slider": {
       "renderer": "slider",
@@ -1746,7 +1928,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Slider",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Slider design-system adapter",
+        "notes": "Use the React design-system adapter for single, range, vertical, reverse, disabled, tooltip, and controlled slider presentation. Domain values and validation remain product behavior."
+      }
     },
     "panel": {
       "renderer": "panel",
@@ -1787,7 +1976,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Panel",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Panel design-system adapter",
+        "notes": "Use the React design-system adapter for a titled content surface, supplied extra action, density, and optional structural divider. Avoid decorative nested cards."
+      }
     },
     "search": {
       "renderer": "search",
@@ -1843,7 +2039,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Input.Search",
+        "preferredImport": "@repo/components/ui",
+        "productionComponent": "Input.Search product adapter",
+        "notes": "Use Panda Input.Search for the field surface. Query timing, suggestions, results, and route synchronization require product behavior."
+      }
     },
     "select": {
       "renderer": "select",
@@ -1935,7 +2138,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "aligned",
+        "pandaExport": "Select",
+        "preferredImport": "@repo/components/ui",
+        "productionComponent": "Select",
+        "notes": "Use the Panda wrapper for confirmed selection behavior; option data, remote search, and business filters remain product-owned."
+      }
     },
     "switch": {
       "renderer": "switchControl",
@@ -1974,7 +2184,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Switch",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Switch design-system adapter",
+        "notes": "Use the React design-system adapter for immediate binary changes, semantic switch behavior, and the Catalog 44px control geometry. Persistence and confirmation remain caller-owned."
+      }
     },
     "drawer": {
       "renderer": "drawer",
@@ -2035,7 +2252,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "aligned",
+        "pandaExport": "Drawer",
+        "preferredImport": "@repo/components/ui",
+        "productionComponent": "Drawer",
+        "notes": "Use the Panda wrapper with an existing reviewed drawer flow; route, focus, dismissal, and responsive content behavior must be verified."
+      }
     },
     "form-field": {
       "renderer": "formField",
@@ -2106,7 +2330,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "aligned",
+        "pandaExport": "Form.Item",
+        "preferredImport": "@repo/components/ui",
+        "productionComponent": "Form.Item",
+        "notes": "Use Panda Form.Item for labels, help text, validation display, and required state around supported controls."
+      }
     },
     "text-input": {
       "renderer": "textInput",
@@ -2186,7 +2417,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "aligned",
+        "pandaExport": "Input",
+        "preferredImport": "@repo/components/ui",
+        "productionComponent": "Input",
+        "notes": "Use the Panda wrapper for text entry. Prefix, suffix, validation, and controlled value behavior must follow the current API."
+      }
     },
     "textarea": {
       "renderer": "textarea",
@@ -2257,7 +2495,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "aligned",
+        "pandaExport": "Input.TextArea",
+        "preferredImport": "@repo/components/ui",
+        "productionComponent": "Input.TextArea",
+        "notes": "Use Panda Input.TextArea for multiline entry and rely on its verified count, read-only, and status behavior."
+      }
     },
     "number-stepper": {
       "renderer": "numberStepper",
@@ -2328,7 +2573,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "InputNumber",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "NumberStepper design-system adapter",
+        "notes": "Use the React design-system adapter for Catalog size, shape, bounds, increment controls, and controlled numeric entry. Unit semantics and validation messages remain product behavior."
+      }
     },
     "combobox": {
       "renderer": "combobox",
@@ -2406,7 +2658,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "AutoComplete",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Combobox design-system adapter",
+        "notes": "Use the React design-system adapter for searchable single selection, query, loading, option groups, size, shape, and status. Fetching, ranking, and query policy remain product behavior."
+      }
     },
     "upload": {
       "renderer": "upload",
@@ -2485,7 +2744,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Upload",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Upload design-system adapter",
+        "notes": "Use the React design-system adapter for dropzone, trigger, avatar upload, local file list presentation, remove actions, complete/uploading/error states, and client-side selection. Upload targets, validation policy, server progress, and file lifecycle remain product-owned."
+      }
     },
     "stepper": {
       "renderer": "stepper",
@@ -2530,7 +2796,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Steps",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Stepper design-system adapter",
+        "notes": "Use the React design-system adapter for default and flow-progress step anatomy, orientation, current state, disabled steps, and controlled navigation. Completion rules remain in the flow adapter."
+      }
     },
     "progress": {
       "renderer": "progress",
@@ -2571,7 +2844,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Progress",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Progress design-system adapter",
+        "notes": "Use the React design-system adapter for supplied progress values, default/success/error status, indeterminate loading, and accessible progress semantics. Completion meaning remains product-owned."
+      }
     },
     "toast": {
       "renderer": "toast",
@@ -2620,7 +2900,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "message",
+        "preferredImport": "@repo/components/ui",
+        "productionComponent": "message",
+        "notes": "Use Panda message for transient feedback. Application context, queueing, duration, and recovery actions must follow a reviewed product pattern."
+      }
     },
     "notification": {
       "renderer": "notification",
@@ -2668,7 +2955,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "aligned",
+        "pandaExport": "notification",
+        "preferredImport": "@repo/components/ui",
+        "productionComponent": "notification",
+        "notes": "Use the Panda notification API for persistent transient feedback and keep product outcomes and actions in the caller."
+      }
     },
     "result": {
       "renderer": "result",
@@ -2714,7 +3008,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "aligned",
+        "pandaExport": "Result",
+        "preferredImport": "@italki/panda",
+        "productionComponent": "Result",
+        "notes": "Use Panda Result for terminal or recoverable outcome presentation; the next action remains a product decision."
+      }
     },
     "skeleton": {
       "renderer": "skeleton",
@@ -2779,7 +3080,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Skeleton",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Skeleton design-system adapter",
+        "notes": "Use the React design-system adapter for Catalog text, content, avatar, button, input, image, and card placeholders. It honors reduced motion; do not use it to hide missing required content."
+      }
     },
     "dropdown-menu": {
       "renderer": "dropdownMenu",
@@ -2821,7 +3129,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Dropdown",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "DropdownMenu design-system adapter",
+        "notes": "Use the React design-system adapter for menu placement, open state, icon sizing, disabled and destructive items, and keyboard dismissal. Item meaning, permissions, and analytics remain product behavior."
+      }
     },
     "disclosure": {
       "renderer": "disclosure",
@@ -2863,7 +3178,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Collapse",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Disclosure design-system adapter",
+        "notes": "Use the React design-system adapter for accordion/details anatomy, open state, disabled behavior, and the approved 24px disclosure icon."
+      }
     },
     "segmented-control": {
       "renderer": "segmentedControl",
@@ -2911,7 +3233,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Segmented",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "SegmentedControl design-system adapter",
+        "notes": "Use the React design-system adapter for the Catalog 32/40/48 geometry, rounded or pill shape, and immediate selected-mode state."
+      }
     },
     "time-slot": {
       "renderer": "timeSlot",
@@ -2991,7 +3320,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": null,
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "TimeSlot design-system primitive",
+        "notes": "Use the React design-system primitive for availability and option appearances, booking locks, duration, selected state, loading, and delayed tooltips. Booking permissions and availability data remain product behavior."
+      }
     },
     "time-picker": {
       "renderer": "timePicker",
@@ -3039,7 +3375,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "TimePicker",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "TimePicker design-system adapter",
+        "notes": "Use the React design-system adapter for controlled or uncontrolled open state, option-grid sizing, TimeSlot presentation, selected values, disabled state, and Escape/outside dismissal. Availability, timezone, and bookable-duration rules remain product-owned."
+      }
     },
     "calendar": {
       "renderer": "calendar",
@@ -3112,7 +3455,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Calendar",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Calendar design-system adapter",
+        "notes": "Use the React design-system adapter for availability, teacher availability, compact availability, and lesson record views. It owns responsive day columns, sticky date headers, scrollable time areas, TimeSlot state, one-hour selection from 15-minute cells, week/date switching, and tooltip placement. Availability data, booking policy, timezone conversion, and lesson history retrieval remain product behavior."
+      }
     },
     "footer": {
       "renderer": "footer",
@@ -3151,7 +3501,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": null,
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Footer design-system composition",
+        "notes": "Use the React design-system Footer for its reviewed layout and accessible link groups. Footer links, locale, legal copy, social destinations, and utility controls remain product-supplied content."
+      }
     },
     "popover": {
       "renderer": "popover",
@@ -3220,7 +3577,14 @@
         "Radius",
         "Shadow",
         "Motion"
-      ]
+      ],
+      "implementation": {
+        "status": "adapter",
+        "pandaExport": "Popover",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Popover design-system adapter",
+        "notes": "Use the React design-system adapter for reviewed contextual floating content. It shares Popup placement, trigger, dismissal, and hover-delay behavior; keep trigger meaning and actions in the caller."
+      }
     }
   }
 }

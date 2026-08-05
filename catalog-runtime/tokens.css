@@ -35,7 +35,7 @@
   --ui-color-upload-loading: rgb(49 49 64 / 50%);
   --ui-color-on-primary-muted: rgb(255 255 255 / 45%);
   --ui-gradient-pro: linear-gradient(88deg, #FF4438 9.48%, #1C07FF 99.43%);
-  --ui-gradient-pro-motion: linear-gradient(88deg, #FF4438 4.74%, #1C07FF 49.715%, #1C07FF 54.74%, #FF4438 99.715%);
+  --ui-gradient-pro-motion: linear-gradient(88deg, #1C07FF 4.74%, #FF4438 49.715%, #FF4438 54.74%, #1C07FF 99.715%);
   --ui-gradient-skeleton: linear-gradient(90deg, #EBEDF1 25%, #F5F6F9 37%, #EBEDF1 63%);
   --ui-color-on-emphasis-muted: rgb(255 255 255 / 55%);
   --ui-color-emphasis-weak: rgb(49 49 64 / 28%);

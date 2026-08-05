@@ -88,7 +88,7 @@
 
   function chip(props = {}) {
     assertProps("chip", props);
-    const { label = "", size = 40, surface = "default", checked, selected = false, disabled = false, state = "default", demo = "" } = props;
+    const { label = "", size = 32, surface = "default", checked, selected = false, disabled = false, state = "default", demo = "" } = props;
     const isChecked = checked === undefined ? selected : checked;
     enumValue("chip", "size", size);
     enumValue("chip", "surface", surface);
@@ -499,7 +499,7 @@
       warning: "Assets/Icons/warning.svg",
       error: "Assets/Icons/error.svg"
     };
-    const close = closable ? `<button class="ui-alert__close" type="button" data-demo="ui-alert-close" aria-label="Dismiss alert">${icon("Assets/Icons/24px/cross-sm.svg", "ui-alert__close-icon")}</button>` : "";
+    const close = closable ? `<button class="ui-alert__close" type="button" data-demo="ui-alert-close" aria-label="Dismiss alert">${icon("Assets/Icons/cross-sm.svg", "ui-alert__close-icon")}</button>` : "";
     const descriptionMarkup = description ? `<span class="ui-alert__description">${escapeHTML(description)}</span>` : "";
     const actionMarkup = action ? `<div class="ui-alert__action">${action}</div>` : "";
     const classes = ["ui-alert", `ui-alert--${tone}`, action ? "has-action" : "", closable ? "is-closable" : "", banner ? "is-banner" : ""].filter(Boolean).join(" ");
@@ -2274,7 +2274,7 @@
     const { id = "", tone = "info", title = "", description = "", action = "", duration = 0, closable = true, open = true, ariaLabel = "" } = props;
     enumValue("toast", "tone", tone);
     const iconByTone = { info: "Assets/Icons/info.svg", success: "Assets/Icons/check.svg", warning: "Assets/Icons/warning.svg", error: "Assets/Icons/error.svg" };
-    const close = closable ? `<button class="ui-toast__close" type="button" data-demo="ui-toast-close" aria-label="Dismiss notification">${icon("Assets/Icons/24px/cross-sm.svg", "ui-toast__close-icon")}</button>` : "";
+    const close = closable ? `<button class="ui-toast__close" type="button" data-demo="ui-toast-close" aria-label="Dismiss notification">${icon("Assets/Icons/cross-sm.svg", "ui-toast__close-icon")}</button>` : "";
     return `<section class="ui-toast ui-toast--${tone}${open ? " is-open" : ""}" data-component="toast"${id ? ` id="${escapeHTML(id)}"` : ""}${duration ? ` data-duration="${Math.max(0, Number(duration))}"` : ""} role="status" aria-live="polite" aria-label="${escapeHTML(ariaLabel || title || "Notification")}">${icon(iconByTone[tone], "ui-toast__icon")}<div class="ui-toast__copy">${title ? `<strong>${escapeHTML(title)}</strong>` : ""}${description ? `<p>${escapeHTML(description)}</p>` : ""}${action ? `<div class="ui-toast__action">${action}</div>` : ""}</div>${close}</section>`;
   }
 
@@ -2283,7 +2283,7 @@
     const { id = "", tone = "info", title = "", description = "", action = "", closable = true, open = true, ariaLabel = "" } = props;
     enumValue("notification", "tone", tone);
     const iconByTone = { info: "Assets/Icons/info.svg", success: "Assets/Icons/check.svg", warning: "Assets/Icons/warning.svg", error: "Assets/Icons/error.svg" };
-    const close = closable ? `<button class="ui-notification__close" type="button" data-demo="ui-notification-close" aria-label="Dismiss notification">${icon("Assets/Icons/24px/cross-sm.svg", "ui-notification__close-icon")}</button>` : "";
+    const close = closable ? `<button class="ui-notification__close" type="button" data-demo="ui-notification-close" aria-label="Dismiss notification">${icon("Assets/Icons/cross-sm.svg", "ui-notification__close-icon")}</button>` : "";
     const role = tone === "error" ? "alert" : "status";
     return `<section class="ui-notification ui-notification--${tone}${open ? " is-open" : ""}" data-component="notification"${id ? ` id="${escapeHTML(id)}"` : ""} role="${role}" aria-live="polite" aria-label="${escapeHTML(ariaLabel || title || "Notification")}">${icon(iconByTone[tone], "ui-notification__icon")}<div class="ui-notification__copy">${title ? `<strong>${escapeHTML(title)}</strong>` : ""}${description ? `<p>${escapeHTML(description)}</p>` : ""}${action ? `<div class="ui-notification__action">${action}</div>` : ""}</div>${close}</section>`;
   }
@@ -2573,14 +2573,20 @@
           const primary = units[0] || {};
           return { state: primary.state || "available", disabled: units.some((slot) => Boolean(slot.disabled)), tooltip: primary.tooltip || "", teacher: primary.teacher || "", units, startIndex };
         });
-        const segments = groups.map((group, segmentIndex) => {
-          const slot = group.units[0] || {};
-          const start = slot.time;
-          const end = timeAtOffset(row.label, (group.startIndex + 2) * 15);
-          const interval = `${start} – ${end}`;
-          const minute = rowStartMinute + group.startIndex * 15;
-          const control = timeSlot({ id: `${calendarId}-${row.id}-${date.id}-${segmentIndex + 1}`, time: interval, label: interval, secondary: slot.secondary || "", appearance: "availability", duration: 30, state: group.state, disabled: Boolean(disabled || group.disabled), teacher: slot.teacher || "", calendarDay: date.id, calendarMinute: minute, ariaLabel: slot.ariaLabel || `${date.label}${date.date ? ` ${date.date}` : ""}, ${interval}, ${group.state.replaceAll("-", " ")}`, tooltip: slot.tooltip || "", demo: "ui-calendar-slot" });
-          return `<div class="ui-calendar__slot-segment" role="gridcell">${control}</div>`;
+        const segments = groups.map((group) => {
+          /* The segment paints as one 30-minute block, but each quarter stays
+             its own control so hover previews and booking can start on any
+             15-minute boundary. */
+          const controls = group.units.map((slot, unitIndex) => {
+            const quarterIndex = group.startIndex + unitIndex;
+            const start = slot.time;
+            const end = timeAtOffset(row.label, (quarterIndex + 1) * 15);
+            const interval = `${start} – ${end}`;
+            const minute = rowStartMinute + quarterIndex * 15;
+            const state = slot.state || group.state;
+            return timeSlot({ id: `${calendarId}-${row.id}-${date.id}-${quarterIndex + 1}`, time: interval, label: interval, secondary: slot.secondary || "", appearance: "availability", duration: 15, state, disabled: Boolean(disabled || slot.disabled || group.disabled), teacher: slot.teacher || group.teacher || "", calendarDay: date.id, calendarMinute: minute, ariaLabel: slot.ariaLabel || `${date.label}${date.date ? ` ${date.date}` : ""}, ${interval}, ${state.replaceAll("-", " ")}`, tooltip: slot.tooltip || group.tooltip || "", demo: "ui-calendar-slot" });
+          }).join("");
+          return `<div class="ui-calendar__slot-segment" role="gridcell">${controls}</div>`;
         }).join("");
         return `<div class="ui-calendar__slot">${segments}</div>`;
       }).join("");
