@@ -3,8 +3,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
-const manifestPath = path.join(root, "ui-kit", "contracts.json");
-const outputPath = path.join(root, "ui-kit", "contracts.js");
+const manifestPath = path.join(root, "catalog-runtime", "contracts.json");
+const outputPath = path.join(root, "catalog-runtime", "contracts.js");
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 
 const runtimeContract = {

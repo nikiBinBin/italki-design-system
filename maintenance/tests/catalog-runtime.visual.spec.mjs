@@ -4,7 +4,7 @@ const fixture = "http://127.0.0.1:4173/maintenance/fixtures/visual-regression.ht
 
 test("documented component states remain visually stable", async ({ page }) => {
   await page.goto(fixture);
-  await expect(page.locator("[data-contract-state]")).toHaveCount(292);
+  await expect(page.locator("[data-contract-state]")).toHaveCount(300);
   await expect(page.locator('[data-contract-component="button"][data-contract-state="loading"] .ui-button')).toHaveAttribute("disabled", "");
   await expect(page.locator('[data-contract-component="checkbox"][data-contract-state="mixed"] [role="checkbox"]')).toHaveAttribute("aria-checked", "mixed");
   await expect(page.locator('[data-contract-component="checkbox-group"][data-contract-state="select-all"] [data-demo="ui-checkbox-group-all"]')).toHaveAttribute("aria-checked", "mixed");
@@ -12,11 +12,14 @@ test("documented component states remain visually stable", async ({ page }) => {
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="icon-simple-default"] .ui-selection')).toHaveClass(/ui-selection--icon-simple/);
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="icon-simple-selected"] .ui-selection')).toHaveClass(/is-selected/);
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="icon-simple-disabled"] .ui-selection')).toBeDisabled();
-  await expect(page.locator('[data-contract-component="selection"][data-contract-state="icon-simple-focus"] .ui-selection')).toHaveCSS("box-shadow", /rgb\(255, 255, 255\)/);
+  /* The focus stroke is the title-color inset ring from the shared kit. */
+  await expect(page.locator('[data-contract-component="selection"][data-contract-state="icon-simple-focus"] .ui-selection')).toHaveCSS("box-shadow", /rgb\(49, 49, 64\)/);
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="icon-card-default"] .ui-selection')).toHaveClass(/ui-selection--icon-card/);
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="radio-selected"] [role="radio"]')).toHaveAttribute("aria-checked", "true");
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="checkbox-selected"] [role="checkbox"]')).toHaveAttribute("aria-checked", "true");
-  await expect(page.locator('[data-contract-component="selection"][data-contract-state="md"] .ui-selection')).toHaveClass(/ui-selection--md/);
+  /* The size variants gave way to responsive desktop/mobile fixtures. */
+  await expect(page.locator('[data-contract-component="selection"][data-contract-state="desktop"] .ui-selection').first()).toBeVisible();
+  await expect(page.locator('[data-contract-component="selection"][data-contract-state="mobile"] .ui-selection').first()).toBeVisible();
   await expect(page.locator('[data-contract-component="date-picker"][data-contract-state="open"] [role="dialog"]')).toBeVisible();
   await expect(page.locator('[data-contract-component="date-picker"][data-contract-state="disabled"] .ui-date-picker__trigger')).toBeDisabled();
   await expect(page.locator('[data-contract-component="tooltip"][data-contract-state="placement"] [role="tooltip"]')).toBeVisible();
@@ -118,7 +121,8 @@ test("documented component states remain visually stable", async ({ page }) => {
   await expect(page.locator('[data-contract-component="time-slot"][data-contract-state="booked-by-you"] .ui-time-slot')).toHaveAttribute("data-time-slot-state", "booked-by-you");
   await expect(page.locator('[data-contract-component="time-picker"][data-contract-state="open"] [role="listbox"]')).toBeVisible();
   await expect(page.locator('[data-contract-component="calendar"][data-contract-state="default"] [role="grid"]')).toBeVisible();
-  await expect(page.locator('[data-contract-component="calendar"][data-contract-state="selected-slot"] .ui-time-slot.is-selected')).toHaveCount(1);
+  /* A selected hour spans four quarter-hour controls. */
+  await expect(page.locator('[data-contract-component="calendar"][data-contract-state="selected-slot"] .ui-time-slot.is-selected')).toHaveCount(4);
   await expect(page.locator('[data-contract-component="calendar"][data-contract-state="with-time-picker"] [data-ui-time-picker]')).toBeVisible();
   await expect(page.locator('[data-contract-component="calendar"][data-contract-state="teacher-availability"] [data-calendar-variant="teacher-availability"]')).toBeVisible();
   await expect(page.locator('[data-contract-component="calendar"][data-contract-state="teacher-availability"] .ui-calendar__teacher-date')).toHaveCount(7);

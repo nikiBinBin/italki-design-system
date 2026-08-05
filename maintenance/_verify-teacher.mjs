@@ -1,0 +1,16 @@
+import { chromium } from "playwright";
+const OUT = "/private/tmp/claude-501/-Users-nikiwen-Downloads-italkiDesignMD-0716/da7045cf-9031-4d01-a51d-222c3ae34006/scratchpad";
+const browser = await chromium.launch();
+const p = await browser.newPage({ viewport: { width: 1440, height: 1400 }, deviceScaleFactor: 1.5 });
+await p.goto("http://127.0.0.1:5199/#calendar", { waitUntil: "load" });
+await p.waitForTimeout(900);
+const section = p.locator("section", { has: p.getByText("Teacher availability") }).first();
+const rows = await p.evaluate(() => document.querySelectorAll("[class*='teacherRow']").length);
+const dates = await p.evaluate(() => Array.from(document.querySelectorAll("[class*='teacherDate'] strong")).map(e => e.textContent).join(","));
+await section.screenshot({ path: `${OUT}/teacher-week1.png` });
+await p.getByRole("button", { name: "Next week" }).click();
+await p.waitForTimeout(400);
+const dates2 = await p.evaluate(() => Array.from(document.querySelectorAll("[class*='teacherDate'] strong")).map(e => e.textContent).join(","));
+await section.screenshot({ path: `${OUT}/teacher-week2.png` });
+console.log(JSON.stringify({ rows, week1: dates, week2: dates2 }));
+await browser.close();

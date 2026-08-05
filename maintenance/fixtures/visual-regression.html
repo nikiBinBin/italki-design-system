@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>italki UI kit visual regression</title>
+    <title>italki Catalog runtime visual regression</title>
     <base href="../../" />
-    <link rel="stylesheet" href="ui-kit/tokens.css" />
-    <link rel="stylesheet" href="ui-kit/italki-ui.css" />
+    <link rel="stylesheet" href="catalog-runtime/tokens.css" />
+    <link rel="stylesheet" href="catalog-runtime/italki-ui.css" />
     <style>
       * { box-sizing: border-box; }
       body { margin: 0; padding: 40px; color: var(--ui-color-text); background: var(--ui-color-page); font-family: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
@@ -29,7 +29,7 @@
   </head>
   <body>
     <main>
-      <h1>UI kit visual regression</h1>
+      <h1>Catalog runtime visual regression</h1>
       <section><h2>Button states</h2><div id="buttons" class="row"></div></section>
       <section><h2>Choice states</h2><div id="choices" class="row"></div></section>
       <section><h2>Checkbox group states</h2><div id="checkbox-groups" class="stack"></div></section>
@@ -67,6 +67,8 @@
       <section><h2>Stepper states</h2><div id="steppers" class="stack"></div></section>
       <section><h2>Progress states</h2><div id="progress" class="stack"></div></section>
       <section><h2>Toast states</h2><div id="toasts" class="stack"></div></section>
+      <section><h2>Notification states</h2><div id="notifications" class="stack"></div></section>
+      <section><h2>Result states</h2><div id="results" class="stack"></div></section>
       <section><h2>Skeleton states</h2><div id="skeletons" class="row"></div></section>
       <section><h2>Dropdown menu states</h2><div id="dropdown-menus" class="row"></div></section>
       <section><h2>Disclosure states</h2><div id="disclosures" class="stack"></div></section>
@@ -78,8 +80,8 @@
       <section><h2>Drawer states</h2><div id="drawers" class="stack"></div></section>
       <section><h2>Popover states</h2><div id="popovers" class="row"></div></section>
     </main>
-    <script src="ui-kit/contracts.js"></script>
-    <script src="ui-kit/italki-ui.js"></script>
+    <script src="catalog-runtime/contracts.js"></script>
+    <script src="catalog-runtime/italki-ui.js"></script>
     <script src="maintenance/fixtures/fixtures.js"></script>
     <script>
       const ui = window.ITalkiUI;
@@ -121,6 +123,8 @@
       document.getElementById("steppers").innerHTML = fixture.groups.steppers;
       document.getElementById("progress").innerHTML = fixture.groups.progress;
       document.getElementById("toasts").innerHTML = fixture.groups.toasts;
+      document.getElementById("notifications").innerHTML = fixture.groups.notifications;
+      document.getElementById("results").innerHTML = fixture.groups.results;
       document.getElementById("skeletons").innerHTML = fixture.groups.skeletons;
       document.getElementById("dropdown-menus").innerHTML = fixture.groups.dropdownMenus;
       document.getElementById("disclosures").innerHTML = fixture.groups.disclosures;

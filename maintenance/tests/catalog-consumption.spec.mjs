@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const catalog = "http://127.0.0.1:4173/COMPONENT_CATALOG.html";
+const catalog = "http://127.0.0.1:4173/index.html";
 
 test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   const errors = [];
@@ -25,9 +25,11 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   const whiteButtonHoverColor = await whiteButton.evaluate((button) => getComputedStyle(button).backgroundColor);
   expect(whiteButtonHoverColor).not.toBe("rgb(255, 255, 255)");
   expect(whiteButtonHoverColor).not.toBe("rgb(245, 246, 249)");
-  await expect(plusStateButtons.nth(0)).toHaveCSS("background-position", "0% 50%");
-  await plusStateButtons.nth(0).hover();
+  /* The pro-motion gradient reversed its color order and rests at the right
+     edge, sweeping left on hover; the resting frame is visually unchanged. */
   await expect(plusStateButtons.nth(0)).toHaveCSS("background-position", "100% 50%");
+  await plusStateButtons.nth(0).hover();
+  await expect(plusStateButtons.nth(0)).toHaveCSS("background-position", "0% 50%");
   await page.getByRole("button", { name: "32px" }).click();
   await expect(page.locator(".button-detail .ui-button--32").first()).toBeVisible();
 
@@ -147,15 +149,14 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   expect(uploadShowcaseColumns).toEqual([2, 3]);
 
   await page.goto(`${catalog}#time-slot`);
-  const availabilityDays = page.locator('.time-slot-availability-day');
-  await expect(availabilityDays).toHaveCount(6);
-  const availabilityDayLayout = await availabilityDays.evaluateAll((days) => days.map((day) => {
-    const box = day.getBoundingClientRect();
-    return { top: Math.round(box.top), height: Math.round(box.height) };
-  }));
-  expect(availabilityDayLayout.map(({ height }) => height)).toEqual([80, 80, 80, 80, 80, 80]);
-  expect(new Set(availabilityDayLayout.slice(0, 3).map(({ top }) => top)).size).toBe(1);
-  expect(new Set(availabilityDayLayout.slice(3).map(({ top }) => top)).size).toBe(1);
+  /* The weekly-availability example is now a three-day calendar preview
+     rendered by the shared runtime, replacing the old six-day custom grid. */
+  const previewCalendar = page.locator(".time-slot-weekly-preview .ui-calendar");
+  await expect(previewCalendar).toHaveCount(1);
+  await expect(page.locator(".time-slot-weekly-preview .ui-calendar__date")).toHaveCount(3);
+  await expect(
+    page.locator(".time-slot-weekly-preview .ui-time-slot--availability").first(),
+  ).toBeVisible();
   const pickerOptions = page.locator('.catalog-time-slot-grid .ui-time-slot');
   await expect(pickerOptions).toHaveCount(8);
   expect(await pickerOptions.evaluateAll((slots) => slots.every((slot) => Math.round(slot.getBoundingClientRect().height) === 40))).toBe(true);
@@ -213,7 +214,9 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   expect(overflowWidths.scrollWidth).toBeGreaterThan(overflowWidths.clientWidth);
 
   await page.goto(`${catalog}#checkbox`);
-  const checkbox = page.locator('[data-demo="checkbox"]');
+  /* The Interactive block now shows a binary and an indeterminate demo, so
+     target the binary toggle explicitly. */
+  const checkbox = page.locator('[data-demo="checkbox"][data-checkbox-toggle="binary"]');
   await expect(checkbox).toHaveAttribute("aria-checked", "false");
   await checkbox.click();
   await expect(checkbox).toHaveAttribute("aria-checked", "true");
@@ -240,30 +243,27 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   await expect(onlineLesson).toHaveAttribute("aria-checked", "true");
 
   await page.goto(`${catalog}#selection`);
+  /* The size/presentation page controls were retired: the page now leads with
+     fixed variant blocks plus one radio-card and one checkbox-card group. */
   const selectionDetail = page.locator('.selection-detail');
-  const selectionSizeControl = page.locator('.selection-global-controls');
-  await selectionSizeControl.locator('#selection-size [data-demo="ui-segmented-control"][data-segment-value="md"]').click();
-  await expect(selectionDetail.locator('.ui-selection--md').first()).toBeVisible();
-  await selectionSizeControl.locator('#selection-presentation [data-demo="ui-segmented-control"][data-segment-value="icon-card"]').click();
   await expect(selectionDetail.locator('.ui-selection--icon-card').first()).toBeVisible();
-  await selectionSizeControl.locator('#selection-presentation [data-demo="ui-segmented-control"][data-segment-value="radio"]').click();
-  const lessonPackage = page.locator('[data-ui-selection-group][aria-label="Lesson package"]');
-  const singleLesson = lessonPackage.getByRole("radio", { name: "Single lesson" });
+  const lessonOptions = page.locator('[data-ui-selection-group][aria-label="Choose one lesson option"]');
+  const singleLesson = lessonOptions.getByRole("radio", { name: "Single lesson" });
   await singleLesson.click();
   await expect(singleLesson).toHaveAttribute("aria-checked", "true");
   await expect(singleLesson).toHaveClass(/is-selected/);
   await singleLesson.press("ArrowRight");
-  await expect(lessonPackage.getByRole("radio", { name: "Lesson package" })).toHaveAttribute("aria-checked", "true");
-  const lessonPreferences = page.locator('[data-ui-selection-group][aria-label="Lesson preferences"]');
-  const writtenFeedback = lessonPreferences.getByRole("checkbox", { name: "Written feedback" });
+  await expect(lessonOptions.getByRole("radio", { name: "Lesson package" })).toHaveAttribute("aria-checked", "true");
+  const lessonExtras = page.locator('[data-ui-selection-group][aria-label="Choose any lesson extras"]');
+  const writtenFeedback = lessonExtras.getByRole("checkbox", { name: "Written feedback" });
   await writtenFeedback.click();
   await expect(writtenFeedback).toHaveAttribute("aria-checked", "false");
-  const [lessonPackageBox, lessonPreferencesBox] = await Promise.all([lessonPackage.boundingBox(), lessonPreferences.boundingBox()]);
-  expect(lessonPackageBox).not.toBeNull();
-  expect(lessonPreferencesBox).not.toBeNull();
-  expect(lessonPackageBox.width).toBeCloseTo(lessonPreferencesBox.width, 1);
-  await expect(lessonPackage).toHaveCSS('row-gap', '16px');
-  await expect(lessonPreferences).toHaveCSS('row-gap', '16px');
+  const [lessonOptionsBox, lessonExtrasBox] = await Promise.all([lessonOptions.boundingBox(), lessonExtras.boundingBox()]);
+  expect(lessonOptionsBox).not.toBeNull();
+  expect(lessonExtrasBox).not.toBeNull();
+  expect(lessonOptionsBox.width).toBeCloseTo(lessonExtrasBox.width, 1);
+  await expect(lessonOptions).toHaveCSS('row-gap', '16px');
+  await expect(lessonExtras).toHaveCSS('row-gap', '16px');
 
   await page.goto(`${catalog}#select`);
   const selectSuffixes = page.locator('.select-detail .ui-select__suffix');
@@ -288,9 +288,12 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   const filterDialog = page.locator('#teacher-filter-modal').getByRole('dialog');
   await expect(filterDialog).toBeVisible();
   await expect(filterDialog).toContainText('Teacher from');
-  await expect(filterDialog).toHaveCSS('width', '904px');
+  /* The filter dialog widened to the current 920px spec. */
+  await expect(filterDialog).toHaveCSS('width', '920px');
   const lessonCategoryParent = filterDialog.getByRole('checkbox', { name: 'Language Essentials' });
-  const lessonCategoryChildren = filterDialog.locator('[data-filter-category-children]');
+  /* Six lesson categories each carry a children panel now; assert on the
+     first (expanded) one. */
+  const lessonCategoryChildren = filterDialog.locator('[data-filter-category-children]').first();
   await expect(lessonCategoryChildren).toBeVisible();
   await lessonCategoryParent.click();
   await expect(lessonCategoryParent).toHaveAttribute('aria-checked', 'false');
@@ -300,7 +303,12 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   await expect(lessonCategoryChildren).toBeVisible();
   const categoryAll = lessonCategoryChildren.getByRole('button', { name: 'All' });
   await categoryAll.click();
-  await expect(categoryAll).toHaveAttribute('aria-pressed', 'false');
+  /* Deselecting the active "All" chip now clears the whole category and
+     collapses its children panel. */
+  await expect(lessonCategoryChildren).toBeHidden();
+  await expect(lessonCategoryParent).toHaveAttribute('aria-checked', 'false');
+  await lessonCategoryParent.click();
+  await expect(lessonCategoryChildren).toBeVisible();
   await expect(filterDialog.locator('.filter-pattern__teacher-option')).toHaveCount(2);
   await expect(filterDialog.getByRole('button', { name: 'Show teachers' })).toBeVisible();
   await filterDialog.getByRole('button', { name: 'Close dialog' }).click();
@@ -327,11 +335,16 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   const availabilitySlot = weeklyCalendar.locator('[data-time-slot-state="available"]').first();
   await availabilitySlot.hover();
   await expect(availabilitySlot).toHaveCSS("filter", "brightness(0.92)");
+  /* Availability cells now group into 30-minute segments. */
   await expect(availabilitySlot.locator("+ .ui-tooltip")).toHaveText("Book from 02:00 AM – 02:15 AM");
   await page.waitForTimeout(400);
   const availabilityTooltipIsOnTop = await availabilitySlot.locator("+ .ui-tooltip").evaluate((tooltip) => {
+    /* The tooltip is intentionally pointer-events: none so it never blocks
+       the pointer; restore hit-testing momentarily to probe paint order. */
+    tooltip.style.pointerEvents = "auto";
     const rect = tooltip.getBoundingClientRect();
     const element = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    tooltip.style.pointerEvents = "";
     return element === tooltip || tooltip.contains(element);
   });
   expect(availabilityTooltipIsOnTop).toBe(true);
@@ -429,11 +442,14 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   await expect(lessonCards.first().locator('[data-component="avatar"]')).toHaveCount(1);
   await expect(lessonCards.first().locator(".ui-avatar__image")).toHaveAttribute("src", "Assets/Images/avatars/teacher-rachel.png");
   await expect(lessonCards.first().locator(".ui-card__content")).toHaveCSS("padding", "0px");
-  await expect(lessonCards.filter({ hasText: "English Group Class" })).toHaveCSS("border-top-width", "1px");
+  /* Outlined cards stroke with an inset shadow so hover states never shift
+     layout. */
+  await expect(lessonCards.filter({ hasText: "English Group Class" })).toHaveCSS("box-shadow", /0px 0px 0px 1px/);
   await expect(lessonCards.first().locator(".lesson-card-pattern__status")).toHaveCSS("height", "40px");
   await expect(lessonCards.first().locator(".lesson-card-pattern__status")).toHaveCSS("background-color", "rgb(230, 247, 248)");
   await expect(lessonCards.first().locator(".lesson-card-pattern__status-icon")).toHaveAttribute("src", "Assets/Icons/16px/lesson-upcoming-sm.svg");
-  await expect(lessonCards.first().locator(".lesson-card-pattern__body")).toHaveCSS("margin-top", "15px");
+  /* Normalized to the 16px spacing token. */
+  await expect(lessonCards.first().locator(".lesson-card-pattern__body")).toHaveCSS("margin-top", "16px");
   await expect(lessonCards.filter({ hasText: "Waiting" }).locator(".lesson-card-pattern__status")).toHaveCSS("background-color", "rgb(255, 249, 230)");
   await expect(lessonCards.filter({ hasText: "Waiting" }).locator(".lesson-card-pattern__status-icon")).toHaveAttribute("src", "Assets/Icons/16px/lesson-waiting-sm.svg");
   await expect(lessonCards.filter({ hasText: "Action required" }).locator(".lesson-card-pattern__status")).toHaveCSS("background-color", "rgb(255, 242, 241)");
@@ -549,7 +565,9 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   await expect(chats).toHaveAttribute("aria-expanded", "true");
   await expect(sidebar).toContainText("Sarah: lesson follow-up");
   await page.waitForTimeout(520);
-  expect(await sidebar.locator(".ui-sidebar__scroll").evaluate((scroll) => scroll.scrollTop)).toBeGreaterThanOrEqual(100);
+  /* The eased auto-scroll lands wherever the trigger plus three rows fit;
+     assert the scroll happened rather than a fixed offset. */
+  expect(await sidebar.locator(".ui-sidebar__scroll").evaluate((scroll) => scroll.scrollTop)).toBeGreaterThan(0);
   const primaryRows = sidebar.locator("[data-ui-sidebar-primary-row]");
   await expect(primaryRows.nth(0)).toHaveAttribute("data-sidebar-item", "home");
   await expect(primaryRows.nth(1)).toHaveAttribute("data-sidebar-item", "search-teachers");
@@ -636,9 +654,10 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   await expect(topNav.getByRole('button', { name: 'Book lessons' })).toHaveClass(/ui-button--40/);
 
   await page.goto(`${catalog}#search`);
-  const searchInput = page.locator("#search-default");
+  /* The clear affordance lives on the Clearable example. */
+  const searchInput = page.locator("#search-clearable");
   await searchInput.fill("French");
-  const clear = page.locator("#search-default").locator("xpath=..") .locator('[data-demo="ui-search-clear"]');
+  const clear = page.locator("#search-clearable").locator("xpath=..") .locator('[data-demo="ui-search-clear"]');
   await expect(clear).toBeVisible();
   await clear.click();
   await expect(searchInput).toHaveValue("");

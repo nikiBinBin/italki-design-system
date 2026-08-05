@@ -1,0 +1,10 @@
+import { chromium } from "playwright";
+const browser = await chromium.launch();
+const p = await browser.newPage();
+const errs = [];
+p.on("pageerror", (e) => errs.push(String(e).slice(0, 500)));
+p.on("console", (m) => { if (m.type() === "error") errs.push(m.text().slice(0, 500)); });
+await p.goto("http://127.0.0.1:5199/#upload", { waitUntil: "load" }).catch(e => errs.push(String(e)));
+await p.waitForTimeout(2500);
+console.log(errs.slice(0, 6).join("\n---\n") || "no errors; body:", (await p.evaluate(() => document.body.innerText.slice(0, 200))));
+await browser.close();
