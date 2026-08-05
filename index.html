@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>italki UI kit</title>
-    <link rel="stylesheet" href="ui-kit/tokens.css" />
-    <link rel="stylesheet" href="ui-kit/italki-ui.css" />
+    <title>italki Design Catalog</title>
+    <link rel="stylesheet" href="catalog-runtime/tokens.css" />
+    <link rel="stylesheet" href="catalog-runtime/italki-ui.css" />
     <link rel="stylesheet" href="catalog.css" />
   </head>
   <body>
@@ -26,8 +26,8 @@
         </div>
       </main>
     </div>
-    <script src="ui-kit/contracts.js"></script>
-    <script src="ui-kit/italki-ui.js"></script>
+    <script src="catalog-runtime/contracts.js"></script>
+    <script src="catalog-runtime/italki-ui.js"></script>
     <script>
       const ui = window.ITalkiUI;
       if (!ui) throw new Error("italki UI kit did not load");
@@ -72,8 +72,19 @@
         if (index !== -1) iconAssets.splice(index, 1, restoredPath);
       });
       iconAssets.unshift("Assets/Icons/logo-italki-plus.svg", "Assets/Icons/Plustag.svg", "Assets/Icons/teacher-professional.svg", "Assets/Icons/teacher-community.svg");
-      iconAssets.push("Assets/Icons/arrow-down-sm.svg", "Assets/Icons/arrow-left-sm.svg", "Assets/Icons/arrow-right-sm.svg");
-      iconAssets.push("Assets/Icons/24px/cross-sm.svg");
+      iconAssets.push("Assets/Icons/arrow-down-sm.svg", "Assets/Icons/arrow-left-sm.svg", "Assets/Icons/arrow-right-sm.svg", "Assets/Icons/arrow-up-sm.svg");
+      iconAssets.push("Assets/Icons/cross-sm.svg");
+      // Redundant Navigation arrows: each is pixel-identical to an asset the
+      // library already publishes, so the category listed the same glyph twice.
+      // back.svg duplicates arrow-left.svg; arrow-right-1.svg and arrow-up-1.svg
+      // are stray exports of the backup set's thin-stroke arrows, drawn in a
+      // black 1.5px stroke instead of the filled #515164 the 24px set uses.
+      // The files stay on disk for anything still pointing at them by path.
+      const duplicateNavigationIcons = ["Assets/Icons/back.svg", "Assets/Icons/arrow-right-1.svg", "Assets/Icons/arrow-up-1.svg"];
+      duplicateNavigationIcons.forEach((duplicatePath) => {
+        const index = iconAssets.indexOf(duplicatePath);
+        if (index !== -1) iconAssets.splice(index, 1);
+      });
       // Bundled from the approved Flags library: 252 unique ISO 3166-1 alpha-2 countries and territories.
       const flagCodes = `ad ae af ag ai al am ao aq ar as at au aw ax az ba bb bd be bf bg bh bi bj bl bm bn bo bq br bs bt bv bw by bz ca cc cd cf cg ch ci ck cl cm cn co cr cu cv cw cx cy cz de dj dk dm do dz ec ee eg eh er es et eu fi fj fk fm fo fr ga gb gd ge gf gg gh gi gl gm gn gp gq gr gs gt gu gw gy hk hm hn hr ht hu id ie il im in io iq ir is it je jm jo jp ke kg kh ki km kn kp kr kw ky kz la lb lc li lk lr ls lt lu lv ly ma mc md me mf mg mh mk ml mm mn mo mp mq mr ms mt mu mv mw mx my mz na nc ne nf ng ni nl no np nr nu nz om pa pe pf pg ph pk pl pm pn pr ps pt pw py qa re ro rs ru rw sa sb sc sd se sg sh si sj sk sl sm sn so sr ss st sv sx sy sz tc td tf tg th tj tk tl tm tn to tr tt tv tw tz ua ug um un us uy uz va vc ve vg vi vn vu wf ws xk ye yt za zm zw`.split(/\s+/);
       const flagLabelOverrides = { gb: "UK", us: "USA", kr: "Korea", kp: "North Korea", cz: "Czechia" };
@@ -730,7 +741,7 @@
         });
         const teacherOption = (label, description, icon) => `<div class="filter-pattern__teacher-option">${ui.selection({ label, value: label, description, selected: true, selectedMarker: true, contentType: "icon-simple", selectionMode: "checkbox", leading: `<img src="${icon}" alt="" />`, demo: "ui-selection-card" })}</div>`;
         const lessonCategory = `<section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Lesson category</h3></header><div class="filter-pattern__check-list">${lessonCategoryGroup("language-essentials", "Language Essentials", ["All", "Pronunciation", "Grammar", "Spelling", "Reading", "Listening", "Writing", "Speaking"], true)}${lessonCategoryGroup("conversation", "Conversation", ["All", "Everyday conversation", "Speaking confidence", "Small talk"])}${lessonCategoryGroup("business", "Business", ["All", "Meetings", "Presentations", "Interviews"])}${lessonCategoryGroup("test-preparation", "Test Preparation", ["All", "IELTS", "TOEFL", "TOEIC"])}${lessonCategoryGroup("medical", "Medical", ["All", "Healthcare", "Nursing", "Medical interviews"])}${lessonCategoryGroup("technology", "Technology", ["All", "Software engineering", "Product", "Data science"])}</div></section>`;
-        const teacherType = `<section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Teacher type</h3></header><div class="filter-pattern__teacher-type">${ui.checkbox({ id: "filter-plus", label: "Plus features available", checked: "on", demo: "checkbox" }).replace("<span>Plus features available</span>", '<span><img src="Assets/Icons/Plustag.svg" alt="" /><span>Plus features available</span></span>')}${teacherOption("Professional teacher", "Certified teachers with a wealth of experience", "Assets/Icons/Icons/teacher-professional.svg")}${teacherOption("Community tutor", "Guide language learners with real-world practice", "Assets/Icons/Icons/teacher-community.svg")}</div></section>`;
+        const teacherType = `<section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Teacher type</h3></header><div class="filter-pattern__teacher-type">${ui.checkbox({ id: "filter-plus", label: "Plus features available", checked: "on", demo: "checkbox" }).replace("<span>Plus features available</span>", '<span><img src="Assets/Icons/Plustag.svg" alt="" /><span>Plus features available</span></span>')}${teacherOption("Professional teacher", "Certified teachers with a wealth of experience", "Assets/Icons/teacher-professional.svg")}${teacherOption("Community tutor", "Guide language learners with real-world practice", "Assets/Icons/teacher-community.svg")}</div></section>`;
         const body = `<div class="filter-pattern__body"><section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Teacher from</h3>${iconButton("Search teacher origin")}</header><div class="filter-pattern__chip-row">${chip("Native speaker")}</div>${field("Popular countries/regions", ["United States", "United Kingdom", "Canada", "Australia", "South Africa", "Ireland"].map((label) => chip(label)).join(""))}${field("Other countries/regions", ["Hong Kong", "United Arab Emirates", "Portugal", "Russia"].map((label) => chip(label)).join(""))}</section><section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Also speak</h3>${iconButton("Search additional language")}</header>${field("My speaking language", ["Chinese (Mandarin)", "Japanese"].map((label) => chip(label)).join(""))}${field("Popular languages", ["English", "Spanish", "French", "Korean", "German", "Italian", "Portuguese", "Russian"].map((label) => chip(label)).join(""))}</section><section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Price range</h3></header><div class="filter-pattern__price-chart" aria-hidden="true">${histogram}</div><div class="filter-pattern__price-range">${ui.sliderRange({ lower: 20, upper: 70, label: "Lesson price" })}<div class="filter-pattern__range-values"><span>Minimum<output>$12</output></span><span>Maximum<output>$227</output></span></div></div></section><section class="filter-pattern__card filter-pattern__availability"><header class="filter-pattern__card-head"><h3>Availability</h3></header>${availability}</section>${lessonCategory}${teacherType}</div>`;
         return `<div class="filter-pattern-detail" data-ui-preview-stage="filter-modal">${ui.modal({ id: "teacher-filter-modal", title: "Filter", body, footer: `${buttonComponent({ label: "Reset", variant: "text", size: 32, shape: "pill" })}${buttonComponent({ label: "Show teachers", variant: "red", size: 32, shape: "pill" })}`, trigger: buttonComponent({ label: "Open filters", variant: "secondary", size: 32, shape: "pill", demo: "ui-modal-open" }), open: true, size: "wide", demo: "ui-modal-open" })}</div>`;
       }
@@ -833,7 +844,7 @@
         heading.classList.toggle("is-stuck", getCatalogScrollTop() > 0 && heading.getBoundingClientRect().top <= 0);
       }
       function downloadDocument(file, label) {
-        return buttonComponent({ label: `Download ${label}`, variant: "secondary", size: 32, shape: "pill", leadingIcon: "Assets/Icons/download.svg", href: file, download: file });
+        return buttonComponent({ label: `Download ${label}`, variant: "secondary", size: 32, shape: "pill", leadingIcon: "Assets/Icons/download.svg", href: file, download: label });
       }
       function overviewComponentSection(group, showHeading = true) {
         return `<section class="component-section">${showHeading ? `<div class="section-heading"><h3>${group.title}</h3>${group.description ? `<p>${group.description}</p>` : ""}</div>` : ""}<div class="component-grid">${group.data.map((entry) => item({ ...entry, group })).join("")}</div></section>`;
@@ -873,7 +884,7 @@
         const foundationGroup = groups.find((group) => group.id === "foundation");
         const componentGroups = [...groups.filter((group) => !["principles", "foundation"].includes(group.id)), navigationGroup];
         document.getElementById("page-title").textContent = "Overview";
-        document.getElementById("total").innerHTML = downloadDocument("COMPONENTS.md", "COMPONENTS.md");
+        document.getElementById("total").innerHTML = downloadDocument("docs/core/COMPONENTS.md", "COMPONENTS.md");
         document.querySelector(".page-heading").classList.add("has-heading-action");
         gallery.innerHTML = `${taskStartSection()}${overviewComponentSection(principlesGroup)}${overviewCatalogGroup({ id: "foundation", title: "Foundation", description: "Visual tokens and shared system constraints.", groups: [foundationGroup], showChildHeadings: false })}${overviewCatalogGroup({ id: "components", title: "Components", description: "Reusable UI contracts, grouped by their task and visual role.", groups: componentGroups })}${overviewCatalogGroup({ id: "patterns", title: "Patterns", description: "Product-specific compositions built from documented components and supplied business data.", groups: [patternsGroup], showChildHeadings: false })}`;
         updateNavigation();
@@ -1254,7 +1265,7 @@
         const isRadius = byName(entry) === "radius";
         const isSpacing = byName(entry) === "spacing";
         const isColor = byName(entry) === "color";
-        document.getElementById("total").innerHTML = isPrinciples ? downloadDocument("DESIGN.md", "DESIGN.md") : (isColor ? colorUsageModal() : (isRadius ? buttonComponent({ label: "When To Use", variant: "secondary", size: 32, shape: "pill", demo: "open-radius-usage" }) : (isSpacing ? buttonComponent({ label: "When To Use", variant: "secondary", size: 32, shape: "pill", demo: "open-spacing-usage" }) : (isFoundation || isTeacherCard || isLessonCard ? "" : entry.group.title))));
+        document.getElementById("total").innerHTML = isPrinciples ? downloadDocument("docs/core/DESIGN.md", "DESIGN.md") : (isColor ? colorUsageModal() : (isRadius ? buttonComponent({ label: "When To Use", variant: "secondary", size: 32, shape: "pill", demo: "open-radius-usage" }) : (isSpacing ? buttonComponent({ label: "When To Use", variant: "secondary", size: 32, shape: "pill", demo: "open-spacing-usage" }) : (isFoundation || isTeacherCard || isLessonCard ? "" : entry.group.title))));
         document.querySelector(".page-heading").classList.toggle("has-heading-action", isPrinciples || isColor || isRadius || isSpacing);
         gallery.innerHTML = `<article class="component-detail${isButton ? " button-detail button-size-md shape-default" : ""}${byName(entry) === "color" ? " color-detail-page" : ""}${byName(entry) === "icon library" ? " icon-library-detail" : ""}${byName(entry) === "typography" ? " typography-detail" : ""}">${isFoundation || isPrinciples || isTeacherCard || isLessonCard || isFilterPattern ? "" : `<p class="detail-kicker">${entry.group.title}</p><p class="intro">${entry.description}</p>`}${detailContent(entry)}${isButtonVariants ? buttonUsageModal() : ""}${isRadius ? radiusUsageModal() : ""}${isSpacing ? spacingUsageModal() : ""}</article>`;
         sortCatalogSections(gallery);
