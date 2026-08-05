@@ -15,3 +15,6 @@ playwright-report/
 maintenance/ds-bundle/
 maintenance/_batch*.json
 maintenance/_build-ds-bundle.mjs
+
+# Claude Design 上传载荷（由 maintenance/scripts/build-ds-project.mjs 生成）
+maintenance/ds-project/

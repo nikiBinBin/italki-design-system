@@ -351,8 +351,8 @@ for (const [component, markup] of fixtures) {
   assert(markup.includes(`data-component=\"${component}\"`), `Fixture does not render registered component: ${component}`);
 }
 const numberStepperMarkup = ui.numberStepper({ id: "contract-stepper-icons", value: 2, min: 1, max: 8 });
-assert(numberStepperMarkup.includes("Assets/Icons/backup/minus-circle.svg"), "Number stepper must render the approved circular decrement icon");
-assert(numberStepperMarkup.includes("Assets/Icons/backup/plus-circle.svg"), "Number stepper must render the approved circular increment icon");
+assert(numberStepperMarkup.includes("Assets/Icons/minus-circle.svg"), "Number stepper must render the approved circular decrement icon");
+assert(numberStepperMarkup.includes("Assets/Icons/plus-circle.svg"), "Number stepper must render the approved circular increment icon");
 assert.match(ui.numberStepper({ size: 32, shape: "pill" }), /ui-number-stepper--32 ui-number-stepper--pill/, "Number stepper must support compact Pill presentation");
 assert.match(ui.numberStepper({ size: 48, shape: "rounded" }), /ui-number-stepper--48 ui-number-stepper--rounded/, "Number stepper must support spacious Rounded presentation");
 assert.match(ui.modal({ id: "contract-modal-inline-stage", title: "Color guidance", body: "Content", stage: "inline" }), /ui-modal-stage--inline/, "Modal must support an inline trigger stage without a demo surface");
@@ -400,7 +400,7 @@ assert.match(ui.radio({ label: "Online lesson", value: "online", checked: true }
 assert.match(ui.radioGroup({ label: "Lesson length", options: ["30 min", "45 min"], selected: "45 min" }), /role="radiogroup"[^>]*aria-label="Lesson length"/, "Radio group must expose a named radiogroup");
 assert(componentCSS.includes(".ui-selection__feature { width: 32px; height: 32px;") && componentCSS.includes("border-radius: var(--ui-radius-md); background: var(--ui-color-card); }"), "Selection leading feature must use the shared rounded surface token");
 assert.match(ui.selectionGroup({ label: "Lesson type", options: ["Private lesson"] }), /role="radiogroup"[^>]*aria-label="Lesson type"/, "Selection group must expose a named radiogroup");
-assert.match(ui.footer({ columns: [{ heading: "Explore", links: ["Teachers"] }], socialLinks: [{ label: "YouTube", icon: "Assets/Icons/backup/youtube.svg" }] }), /data-component="footer"/, "Footer must expose its shared component root");
+assert.match(ui.footer({ columns: [{ heading: "Explore", links: ["Teachers"] }], socialLinks: [{ label: "YouTube", icon: "Assets/Icons/youtube.svg" }] }), /data-component="footer"/, "Footer must expose its shared component root");
 const groupedFooter = ui.footer({ columns: [{ groups: [{ heading: "Language teachers", links: ["English teachers"] }, { heading: "More", links: ["FAQ"] }] }], utilities: ui.select({ id: "footer-contract-language", label: "Language", options: ["English"], selected: "English", size: 40, shape: "rounded" }) });
 assert.match(groupedFooter, /class="ui-footer__group"/, "Footer must support semantic link groups within one supplied column");
 assert.match(groupedFooter, /data-component="select"/, "Footer utilities must be able to consume the shared Select component");
@@ -417,7 +417,7 @@ assert.match(ui.flag({ countryCode: "us", countryLabel: "USA", size: 24 }), /alt
 assert.match(ui.avatarGroup({ members: [{ name: "Maya Chen", initials: "MC" }], size: "xs", ariaLabel: "Teacher group" }), /role="group"[^>]*aria-label="Teacher group"/, "Avatar group must expose a named group");
 assert.match(ui.badge({ type: "count", anchor: "<span>Inbox</span>", count: 8, ariaLabel: "8 unread inbox messages" }), /role="status"[^>]*aria-label="8 unread inbox messages"/, "Badge count must expose an accessible status name");
 assert.match(ui.badge({ type: "status", tone: "success", label: "Available" }), /role="status"[^>]*aria-label="Available"/, "Badge status must expose its readable status name");
-assert.match(ui.breadcrumb({ ariaLabel: "Teacher path", items: [{ icon: "Assets/Icons/backup/home-01.svg", ariaLabel: "Home" }, { label: "Lesson details", current: true }] }), /<nav[^>]*aria-label="Teacher path"/, "Breadcrumb must expose a named navigation region");
+assert.match(ui.breadcrumb({ ariaLabel: "Teacher path", items: [{ icon: "Assets/Icons/home-01.svg", ariaLabel: "Home" }, { label: "Lesson details", current: true }] }), /<nav[^>]*aria-label="Teacher path"/, "Breadcrumb must expose a named navigation region");
 assert.match(ui.breadcrumb({ items: [{ label: "Home" }, { label: "Lesson details", current: true }] }), /aria-current="page"/, "Breadcrumb must expose the supplied current item");
 assert.match(ui.card({ title: "Conversation prompts", body: "<p>Content</p>" }), /<article[^>]*data-component="card"/, "Static Card must expose an article root");
 assert.match(ui.card({ title: "Lesson materials", interactive: true, outlined: false, ariaLabel: "Open lesson materials" }), /<button[^>]*data-component="card"[^>]*aria-label="Open lesson materials"/, "Interactive Card must expose one accessible button root");

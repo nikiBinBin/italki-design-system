@@ -2,17 +2,26 @@
 
 This directory contains validation-only tooling for the local design-system Catalog. It is not required to view or distribute `index.html`.
 
-- `scripts/` builds the browser-readable component, Foundation, and Panda API indexes, and checks tokens, props, ARIA, asset roots, production mappings, and Catalog consumption.
+- `scripts/` builds the browser-readable component, Foundation, and Panda API indexes, and checks tokens, props, ARIA, asset roots, production mappings, and Catalog consumption. `build-ds-project.mjs` builds the claude.ai/design payload from the catalog runtime.
 - `fixtures/` contains visual regression inputs.
-- `tests/` and `test-results/` contain Playwright checks, snapshots, and transient output.
-- `node_modules/` is local test tooling only.
+- `tests/` contains the Playwright checks and their snapshots.
 
 Run from the design-system root:
 
 ```bash
 npm --prefix maintenance run component:check -- button
 npm --prefix maintenance run serve:catalog
-npm --prefix maintenance run test
+npm --prefix maintenance run test:contract
+```
+
+**Dependencies are not kept in the tree.** `test:contract` (contracts, tokens,
+assets, runtime, Catalog consumption, foundation lint) and
+`build-ds-project.mjs` run on plain Node with nothing installed — that covers
+almost every check. Only `test:visual` needs Playwright, so install it just
+before you need it and remove it afterwards:
+
+```bash
+npm --prefix maintenance ci && npm --prefix maintenance run test:visual
 ```
 
 `serve:catalog` exposes the static files only on `127.0.0.1:4173`; it is for local review and browser automation, not deployment. Open `http://127.0.0.1:4173/index.html` instead of the `file://` URL when Browser Use or visual tests need to inspect the Catalog.
