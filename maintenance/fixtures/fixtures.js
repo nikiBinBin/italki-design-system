@@ -210,7 +210,7 @@
       ],
       breadcrumb: [
         fixture("breadcrumb", "standard", ui.breadcrumb({ items: [{ label: "Home" }, { label: "Find a teacher" }, { label: "English tutors", current: true }] })),
-        fixture("breadcrumb", "icon-only", ui.breadcrumb({ items: [{ icon: "Assets/Icons/backup/home-01.svg", ariaLabel: "Home" }, { label: "Lessons" }, { label: "Lesson details", current: true }] })),
+        fixture("breadcrumb", "icon-only", ui.breadcrumb({ items: [{ icon: "Assets/Icons/home-01.svg", ariaLabel: "Home" }, { label: "Lessons" }, { label: "Lesson details", current: true }] })),
         fixture("breadcrumb", "overflow", ui.breadcrumb({ items: [{ label: "Home" }, { label: "Learning", collapsed: true }, { label: "Language", collapsed: true }, { label: "Learning plan" }, { label: "Speaking practice", current: true }], collapsedOpen: true })),
         fixture("breadcrumb", "custom-separator", ui.breadcrumb({ separator: "/", items: [{ label: "Home" }, { label: "Community" }, { label: "Language exchange", current: true }] }))
       ],
@@ -476,7 +476,7 @@
         fixture("footer", "standard", ui.footer({ id: "fixture-footer-standard", columns: [{ heading: "Explore", links: ["Teachers", "Lessons"] }] })),
         fixture("footer", "with-utilities", ui.footer({ id: "fixture-footer-utilities", columns: [{ heading: "Explore", links: ["Teachers"] }], utilities: ui.select({ id: "fixture-footer-language", label: "Language", options: ["English", "French"], selected: "English", size: 40, shape: "rounded" }) })),
         fixture("footer", "with-legal-links", ui.footer({ id: "fixture-footer-legal", columns: [{ heading: "Explore", links: ["Teachers"] }], copyright: "© italki", legalLinks: ["Terms", "Privacy"] })),
-        fixture("footer", "with-social-links", ui.footer({ id: "fixture-footer-social", columns: [{ heading: "Explore", links: ["Teachers"] }], socialLinks: [{ label: "YouTube", icon: "Assets/Icons/backup/youtube.svg" }] }))
+        fixture("footer", "with-social-links", ui.footer({ id: "fixture-footer-social", columns: [{ heading: "Explore", links: ["Teachers"] }], socialLinks: [{ label: "YouTube", icon: "Assets/Icons/youtube.svg" }] }))
       ],
       popover: [
         fixture("popover", "closed", ui.popover({ id: "fixture-popover-closed", title: "Teacher profile", body: "Content" })),
