@@ -1,5 +1,5 @@
 {
-  "name": "italki-ui-kit-contracts",
+  "name": "italki-catalog-runtime",
   "private": true,
   "type": "module",
   "scripts": {
@@ -7,10 +7,11 @@
     "build:api": "node scripts/generate-component-api.mjs",
     "component:check": "node scripts/check-component.mjs",
     "serve:catalog": "node scripts/serve-catalog.mjs",
-    "test:contract": "npm run build:contracts && npm run build:api && node scripts/validate-contracts.mjs",
+    "test:contract": "npm run build:contracts && npm run build:api && node scripts/validate-contracts.mjs && npm run lint:foundation",
     "pretest:visual": "npm run build:contracts",
     "test:visual": "playwright test",
-    "test": "npm run test:contract && npm run test:visual"
+    "test": "npm run test:contract && npm run test:visual",
+    "lint:foundation": "node scripts/lint-foundation.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0"
