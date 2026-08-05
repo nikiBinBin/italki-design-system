@@ -1,0 +1,1437 @@
+{
+  "schemaVersion": 4,
+  "assetRoots": [
+    "Assets/Icons/",
+    "Assets/Flags/",
+    "Assets/Images/avatars/"
+  ],
+  "migration": {
+    "migrated": ["button", "chip", "tag", "checkbox", "checkbox-group", "radio", "selection", "date-picker", "tooltip", "modal", "popup", "popconfirm", "divider", "avatar", "badge", "breadcrumb", "card", "alert", "tabs", "pagination", "rate", "sidebar", "statistic", "table", "timeline", "top-nav", "slider", "panel", "search", "select", "switch", "drawer", "form-field", "text-input", "textarea", "number-stepper", "combobox", "upload", "stepper", "progress", "toast", "notification", "result", "skeleton", "dropdown-menu", "disclosure", "segmented-control", "time-slot", "time-picker", "calendar", "popover", "footer"],
+    "pending": []
+  },
+  "tokens": {
+    "--ui-color-page": "#FFFFFF",
+    "--ui-color-card": "#FFFFFF",
+    "--ui-color-title": "#313140",
+    "--ui-color-text": "#515164",
+    "--ui-color-secondary": "#767687",
+    "--ui-color-placeholder": "#9C9CAC",
+    "--ui-color-disabled": "#C7CBD3",
+    "--ui-color-border": "#E5E8ED",
+    "--ui-color-divider": "#F5F6F9",
+    "--ui-color-hover": "#EBEDF1",
+    "--ui-color-primary": "#FF4338",
+    "--ui-color-primary-hover": "#D3382F",
+    "--ui-color-primary-shade-1": "#FF8E87",
+    "--ui-color-link": "#59779A",
+    "--ui-color-link-hover": "#4B647D",
+    "--ui-color-info": "#00B3BD",
+    "--ui-color-info-surface": "#EDFAFA",
+    "--ui-color-accessory-1": "#FFF9E6",
+    "--ui-color-accessory-2": "#E6F7F8",
+    "--ui-color-accessory-3": "#FFF2F1",
+    "--ui-color-accessory-4": "#E7FCF5",
+    "--ui-color-available": "#98D45F",
+    "--ui-color-available-surface": "#F4FBEA",
+    "--ui-color-available-current-day-surface": "#E7FCF5",
+    "--ui-color-success": "#0DE298",
+    "--ui-color-success-surface": "#ECFFF9",
+    "--ui-color-warning": "#FFC400",
+    "--ui-color-warning-surface": "#FFF9E6",
+    "--ui-color-error": "#D3382F",
+    "--ui-color-error-surface": "#FFF1F1",
+    "--ui-color-on-primary": "#FFFFFF",
+    "--ui-color-modal-mask": "rgb(49 49 64 / 24%)",
+    "--ui-color-upload-overlay": "rgb(49 49 64 / 68%)",
+    "--ui-color-upload-loading": "rgb(49 49 64 / 50%)",
+    "--ui-color-on-primary-muted": "rgb(255 255 255 / 45%)",
+    "--ui-gradient-pro": "linear-gradient(88deg, #FF4438 9.48%, #1C07FF 99.43%)",
+    "--ui-gradient-pro-motion": "linear-gradient(88deg, #1C07FF 4.74%, #FF4438 49.715%, #FF4438 54.74%, #1C07FF 99.715%)",
+    "--ui-gradient-skeleton": "linear-gradient(90deg, #EBEDF1 25%, #F5F6F9 37%, #EBEDF1 63%)",
+    "--ui-color-on-emphasis-muted": "rgb(255 255 255 / 55%)",
+    "--ui-color-emphasis-weak": "rgb(49 49 64 / 28%)",
+    "--ui-color-disabled-weak": "rgb(199 203 211 / 42%)",
+    "--ui-color-hover-overlay": "rgb(49 49 64 / 8%)",
+    "--ui-shadow-card-hover": "0 1px 2px 0 #0F172A00, 0 4px 12px 0 #0F172A0A",
+    "--ui-shadow-card": "0 0 0 0 #0F172A00",
+    "--ui-shadow-stroke-card": "0 0 0 1px #E9EBF3",
+    "--ui-shadow-md": "0 2px 4px 0 #001A5608, 0 4px 8px 0 #00174E0A",
+    "--ui-shadow-lg": "0 4px 8px 0 #00174F08, 0 12px 24px 0 #0019530E",
+    "--ui-shadow-xl": "0 8px 16px 0 #00195309, 0 24px 48px 0 #00195312",
+    "--ui-shadow-thumb": "0 1px 3px rgb(49 49 64 / 12%)",
+    "--ui-shadow-thumb-focus": "0 0 0 4px rgb(49 49 64 / 12%)",
+    "--ui-shadow-switch": "0 1px 3px rgb(49 49 64 / 18%)",
+    "--ui-radius-xs": "4px",
+    "--ui-radius-md": "8px",
+    "--ui-radius-lg": "12px",
+    "--ui-radius-xl": "16px",
+    "--ui-radius-2xl": "24px",
+    "--ui-radius-full": "9999px",
+    "--ui-space-0": "0px",
+    "--ui-space-half": "2px",
+    "--ui-space-1": "4px",
+    "--ui-space-2": "8px",
+    "--ui-space-3": "12px",
+    "--ui-space-4": "16px",
+    "--ui-space-6": "24px",
+    "--ui-space-7": "32px",
+    "--ui-space-8": "40px",
+    "--ui-space-9": "48px",
+    "--ui-space-10": "64px",
+    "--ui-space-11": "80px",
+    "--ui-space-12": "96px"
+  },
+  "productionTokenMappings": {
+    "color": {
+      "--ui-color-page": {
+        "status": "gap",
+        "pandaToken": null,
+        "projectOverride": "No global page-background override. apps/mintaka/theme/themeConfig.ts currently provides token: {}.",
+        "notes": "Panda colorBgLayout is a layout surface and does not equal the Catalog white page. Keep the canvas layout-owned until a product-wide theme decision exists."
+      },
+      "--ui-color-card": {
+        "status": "aligned",
+        "pandaToken": "colorBgCards",
+        "projectOverride": "Panda generated default in components/theme/themes/shared/genColorMapToken.ts; no app override.",
+        "notes": "Exact white card and focused-surface token."
+      },
+      "--ui-color-title": {
+        "status": "aligned",
+        "pandaToken": "colorFgTitle",
+        "projectOverride": "Panda generated default; apps/alnitak TeacherIntro TAB_THEME applies the same value to Tabs only.",
+        "notes": "Exact strong-title token. Use it for headings and other confirmed strong text roles."
+      },
+      "--ui-color-text": {
+        "status": "aligned",
+        "pandaToken": "colorFgPrimary",
+        "projectOverride": "Panda generated default; ProfileSettingsClient has a scoped legacy colorText override with the same value.",
+        "notes": "Exact default text token."
+      },
+      "--ui-color-secondary": {
+        "status": "override",
+        "pandaToken": "colorFgSecondary",
+        "projectOverride": "No application override. Panda default is #9C9CAC, not the Catalog #767687.",
+        "notes": "Use a reviewed ConfigProvider theme override only where secondary text must match Catalog; do not substitute the placeholder token."
+      },
+      "--ui-color-placeholder": {
+        "status": "aligned",
+        "pandaToken": "colorFgPlaceholder",
+        "projectOverride": "Panda generated default in components/theme/themes/shared/genColorMapToken.ts; no app override.",
+        "notes": "Exact input placeholder token."
+      },
+      "--ui-color-disabled": {
+        "status": "override",
+        "pandaToken": "colorTextDisabled",
+        "projectOverride": "No application override for the Catalog #C7CBD3 disabled text value.",
+        "notes": "Panda exposes the semantic disabled token, but its current derived value is not the Catalog value. In ConfigProvider, set colorTextQuaternary because colorTextDisabled is derived from it."
+      },
+      "--ui-color-border": {
+        "status": "aligned",
+        "pandaToken": "colorFgBorder",
+        "projectOverride": "Panda generated default in components/theme/themes/shared/genColorMapToken.ts; no app override.",
+        "notes": "Exact default input and component boundary token."
+      },
+      "--ui-color-divider": {
+        "status": "aligned",
+        "pandaToken": "colorBgContent",
+        "projectOverride": "Panda generated default in components/theme/themes/shared/genColorMapToken.ts; no app override.",
+        "notes": "Exact quiet internal divider and light fill token."
+      },
+      "--ui-color-hover": {
+        "status": "override",
+        "pandaToken": "colorFillContentHover",
+        "projectOverride": "No application override for the Catalog #EBEDF1 hover surface.",
+        "notes": "Panda exposes a hover-fill token, but its generated default differs from Catalog. In ConfigProvider, set colorFill because colorFillContentHover is derived from it."
+      },
+      "--ui-color-primary": {
+        "status": "override",
+        "pandaToken": "colorPrimaryMain",
+        "projectOverride": "Panda generated default is #FF4438; no application override aligns it to the Catalog #FF4338.",
+        "notes": "Use the custom Panda primary-main token for red CTA behavior; a reviewed theme override is required for the exact Catalog value."
+      },
+      "--ui-color-primary-hover": {
+        "status": "aligned",
+        "pandaToken": "colorPrimaryShade0",
+        "projectOverride": "Panda generated default in components/theme/themes/shared/genColorMapToken.ts; no app override.",
+        "notes": "Exact red hover, pressed, and destructive color."
+      },
+      "--ui-color-primary-shade-1": {
+        "status": "override",
+        "pandaToken": "colorPrimaryShade1",
+        "projectOverride": "Panda generated default is #FF7B73, not the Catalog #FF8E87.",
+        "notes": "Use an explicit reviewed override for the lower-priority warm accent."
+      },
+      "--ui-color-link": {
+        "status": "override",
+        "pandaToken": "colorLink",
+        "projectOverride": "No application override. Panda derives its link color from the info seed by default.",
+        "notes": "Panda supports the semantic link token, but it must be overridden to the Catalog #59779A."
+      },
+      "--ui-color-link-hover": {
+        "status": "override",
+        "pandaToken": "colorLinkHover",
+        "projectOverride": "No application override for the Catalog #4B647D link hover value.",
+        "notes": "Set only alongside the approved link theme decision; do not derive an arbitrary darker color locally."
+      },
+      "--ui-color-info": {
+        "status": "aligned",
+        "pandaToken": "colorInfo",
+        "projectOverride": "Panda seed default in components/theme/themes/seed.ts; no app override.",
+        "notes": "Exact informational color."
+      },
+      "--ui-color-info-surface": {
+        "status": "override",
+        "pandaToken": "colorInfoBg",
+        "projectOverride": "No application override for the Catalog #EDFAFA information surface.",
+        "notes": "Panda supports the semantic information background but its generated value must be verified or overridden."
+      },
+      "--ui-color-accessory-1": {
+        "status": "override",
+        "pandaToken": "colorWarningBg",
+        "projectOverride": "No application override for the Catalog #FFF9E6 warning-derived accessory surface.",
+        "notes": "Use only where the Catalog role is warning-related; otherwise retain it as a local approved accessory surface."
+      },
+      "--ui-color-accessory-2": {
+        "status": "gap",
+        "pandaToken": null,
+        "projectOverride": "No Panda semantic token or application override represents this #E6F7F8 decorative accessory surface.",
+        "notes": "Do not replace it with colorInfoBg without an approved semantic decision."
+      },
+      "--ui-color-accessory-3": {
+        "status": "aligned",
+        "pandaToken": "colorPrimaryShade3",
+        "projectOverride": "Panda generated default in components/theme/themes/shared/genColorMapToken.ts; no app override.",
+        "notes": "Exact low-emphasis red surface."
+      },
+      "--ui-color-accessory-4": {
+        "status": "gap",
+        "pandaToken": null,
+        "projectOverride": "No Panda semantic token or application override represents this #E7FCF5 accessory surface.",
+        "notes": "Do not treat an accessory color as Panda success without an approved semantic decision."
+      },
+      "--ui-color-available": {
+        "status": "gap",
+        "pandaToken": null,
+        "projectOverride": "No Panda availability token or product-wide availability theme override exists.",
+        "notes": "Availability is a booking-domain state, not a substitute for Panda success."
+      },
+      "--ui-color-available-surface": {
+        "status": "gap",
+        "pandaToken": null,
+        "projectOverride": "No Panda availability-surface token or product-wide availability theme override exists.",
+        "notes": "Keep this as a Calendar or booking adapter token until an availability theme contract is approved."
+      },
+      "--ui-color-available-current-day-surface": {
+        "status": "gap",
+        "pandaToken": null,
+        "projectOverride": "No Panda current-availability-day token or product-wide availability theme override exists.",
+        "notes": "Calendar current-day availability remains a documented booking adapter concern."
+      },
+      "--ui-color-success": {
+        "status": "aligned",
+        "pandaToken": "colorSuccess",
+        "projectOverride": "Panda seed default in components/theme/themes/seed.ts; no app override.",
+        "notes": "Exact success color."
+      },
+      "--ui-color-success-surface": {
+        "status": "override",
+        "pandaToken": "colorSuccessBg",
+        "projectOverride": "No application override for the Catalog #ECFFF9 success surface.",
+        "notes": "Panda supports the semantic success background but its generated value must be verified or overridden."
+      },
+      "--ui-color-warning": {
+        "status": "aligned",
+        "pandaToken": "colorWarning",
+        "projectOverride": "Panda seed default in components/theme/themes/seed.ts; no app override.",
+        "notes": "Exact warning color."
+      },
+      "--ui-color-warning-surface": {
+        "status": "override",
+        "pandaToken": "colorWarningBg",
+        "projectOverride": "No application override for the Catalog #FFF9E6 warning surface.",
+        "notes": "Panda supports the semantic warning background but its generated value must be verified or overridden."
+      },
+      "--ui-color-error": {
+        "status": "aligned",
+        "pandaToken": "colorError",
+        "projectOverride": "Panda seed default in components/theme/themes/seed.ts; no app override.",
+        "notes": "Exact error and destructive color."
+      },
+      "--ui-color-error-surface": {
+        "status": "override",
+        "pandaToken": "colorErrorBg",
+        "projectOverride": "No application override for the Catalog #FFF1F1 error surface.",
+        "notes": "Use the semantic error background token only after its value is aligned through a reviewed theme decision."
+      },
+      "--ui-color-on-primary": {
+        "status": "aligned",
+        "pandaToken": "colorTextLightSolid",
+        "projectOverride": "Panda generated default resolves to colorWhite; no app override.",
+        "notes": "Exact solid-on-color content token."
+      },
+      "--ui-color-modal-mask": {
+        "status": "override",
+        "pandaToken": "colorBgMask",
+        "projectOverride": "No application override. Panda default is a 45% black mask, not the Catalog title-color 24% mask.",
+        "notes": "Use the semantic mask token only with an approved overlay theme override."
+      },
+      "--ui-color-upload-overlay": {
+        "status": "gap",
+        "pandaToken": null,
+        "projectOverride": "No global Panda token or project override defines the Catalog upload overlay alpha.",
+        "notes": "This is Upload-specific feedback treatment and requires an approved component-level token or adapter."
+      },
+      "--ui-color-upload-loading": {
+        "status": "gap",
+        "pandaToken": null,
+        "projectOverride": "No global Panda token or project override defines the Catalog upload loading alpha.",
+        "notes": "This is Upload-specific loading treatment and requires an approved component-level token or adapter."
+      },
+      "--ui-color-on-primary-muted": {
+        "status": "gap",
+        "pandaToken": null,
+        "projectOverride": "No Panda semantic token or project override represents this 45% white content treatment.",
+        "notes": "Do not approximate with disabled text; it is contextual on-color content."
+      },
+      "--ui-color-on-emphasis-muted": {
+        "status": "gap",
+        "pandaToken": null,
+        "projectOverride": "No Panda semantic token or project override represents this 55% white content treatment.",
+        "notes": "Do not approximate with disabled text; it is contextual on-emphasis content."
+      },
+      "--ui-color-emphasis-weak": {
+        "status": "gap",
+        "pandaToken": null,
+        "projectOverride": "No Panda semantic token or project override represents this title-color alpha treatment.",
+        "notes": "This requires an approved component-level treatment rather than a generic Panda color substitution."
+      },
+      "--ui-color-disabled-weak": {
+        "status": "gap",
+        "pandaToken": null,
+        "projectOverride": "No Panda semantic token or project override represents this disabled alpha treatment.",
+        "notes": "This requires an approved component-level treatment rather than a generic Panda color substitution."
+      },
+      "--ui-color-hover-overlay": {
+        "status": "gap",
+        "pandaToken": null,
+        "projectOverride": "No Panda semantic token or project override represents this title-color hover overlay.",
+        "notes": "Use only through a reviewed component interaction token; do not replace it with an arbitrary grey."
+      }
+    }
+  },
+  "components": {
+    "button": {
+      "acceptedProps": ["label", "variant", "size", "shape", "state", "leadingIcon", "trailingIcon", "iconOnly", "disabled", "loading", "demo", "ariaLabel", "href", "download", "target", "rel", "ariaExpanded", "ariaPressed", "ariaDescribedBy", "ariaControls"],
+      "props": {
+        "variant": ["emphasis", "red", "secondary", "white", "ghost", "text", "link", "danger", "plus"],
+        "size": [32, 40, 48],
+        "shape": ["default", "rounded", "pill"],
+        "state": ["default", "hover", "focus", "pressed", "disabled", "loading"]
+      },
+      "requiredStates": ["default", "hover", "focus", "disabled", "loading"]
+    },
+    "chip": {
+      "acceptedProps": ["label", "size", "surface", "checked", "selected", "disabled", "state", "demo"],
+      "props": {
+        "size": [24, 32, 40],
+        "surface": ["default", "white", "transparent"],
+        "state": ["default", "hover", "checked", "disabled"]
+      },
+      "requiredStates": ["default", "hover", "checked", "disabled"]
+    },
+    "tag": {
+      "acceptedProps": ["label", "value", "size", "tone", "removable", "removeDemo", "removeAriaLabel"],
+      "props": {
+        "size": [24, 32, 40],
+        "tone": ["neutral", "info", "success", "warning", "error"]
+      },
+      "requiredStates": ["default", "removable"]
+    },
+    "checkbox": {
+      "acceptedProps": ["id", "label", "checked", "state", "disabled", "toggleMode", "demo"],
+      "props": {
+        "checked": ["off", "on", "mixed"],
+        "state": ["default", "hover", "disabled"],
+        "toggleMode": ["binary", "indeterminate", "controlled"]
+      },
+      "requiredStates": ["off", "on", "mixed", "disabled"]
+    },
+    "checkbox-group": {
+      "acceptedProps": ["id", "label", "description", "options", "selected", "layout", "selectAll", "feedback", "feedbackTone"],
+      "props": {
+        "layout": ["vertical", "inline"],
+        "feedbackTone": ["default", "error"]
+      },
+      "requiredStates": ["default", "inline", "select-all", "disabled", "feedback"]
+    },
+    "radio": {
+      "acceptedProps": ["label", "value", "checked", "disabled", "state", "description", "demo", "tabIndex"],
+      "subcomponents": {
+        "group": { "acceptedProps": ["label", "options", "selected", "layout", "block"] }
+      },
+      "props": {
+        "state": ["default", "hover", "disabled"]
+      },
+      "requiredStates": ["default", "checked", "hover", "disabled", "inline", "vertical", "block"]
+    },
+    "selection": {
+      "acceptedProps": ["label", "value", "subtext", "description", "leading", "badge", "price", "period", "selected", "selectedMarker", "disabled", "contentType", "selectionMode", "state", "tabIndex", "demo"],
+      "subcomponents": {
+        "group": {
+          "acceptedProps": ["label", "options", "selected", "contentType", "selectionMode", "selectedMarker", "layout"],
+          "props": { "layout": ["stack", "grid"] }
+        }
+      },
+      "props": {
+        "contentType": ["standard", "icon-simple", "icon-card", "avatar", "payment-icon"],
+        "selectionMode": ["radio", "checkbox"],
+        "state": ["default", "hover", "focus", "disabled"]
+      },
+      "requiredStates": ["icon-simple-default", "icon-simple-selected", "icon-simple-hover", "icon-simple-focus", "icon-simple-disabled", "icon-card-default", "avatar-default", "payment-icon-default", "radio-default", "radio-selected", "checkbox-default", "checkbox-selected", "desktop", "mobile"]
+    },
+    "date-picker": {
+      "acceptedProps": ["id", "label", "value", "placeholder", "size", "shape", "status", "open", "disabled", "state", "monthLabel", "weekdays", "days", "months", "monthIndex", "selected", "range", "demo"],
+      "props": {
+        "size": [32, 40, 48],
+        "shape": ["default", "rounded", "pill"],
+        "status": ["default", "warning", "error"],
+        "state": ["default", "hover", "focus", "disabled"]
+      },
+      "requiredStates": ["default", "open", "disabled", "selected", "range"]
+    },
+    "tooltip": {
+      "acceptedProps": ["id", "content", "trigger", "triggerLabel", "placement", "arrow", "open", "disabled", "demo"],
+      "props": {
+        "placement": ["top", "top-left", "top-right", "bottom", "bottom-left", "bottom-right", "left", "right"]
+      },
+      "requiredStates": ["default", "arrowless", "placement", "disabled"]
+    },
+    "modal": {
+      "acceptedProps": ["id", "title", "body", "footer", "trigger", "triggerLabel", "open", "size", "titleAlign", "stage", "closable", "maskClosable", "keyboardClosable", "demo"],
+      "props": {
+        "size": ["default", "wide"],
+        "titleAlign": ["start", "center"],
+        "stage": ["demo", "inline"]
+      },
+      "requiredStates": ["closed", "open", "wide", "non-closable"]
+    },
+    "popup": {
+      "acceptedProps": ["id", "title", "body", "actions", "trigger", "triggerLabel", "open", "placement", "triggerMode", "closeOnLeave", "leaveDelay", "demo", "ariaLabel"],
+      "props": {
+        "placement": ["top", "bottom", "left", "right"],
+        "triggerMode": ["click", "hover", "focus"],
+        "closeOnLeave": [true, false],
+        "leaveDelay": [300]
+      },
+      "requiredStates": ["closed", "open", "placement", "with-actions", "leave-delay"]
+    },
+    "popconfirm": {
+      "acceptedProps": ["id", "title", "description", "trigger", "triggerLabel", "confirm", "cancel", "confirmLabel", "cancelLabel", "showCancel", "open", "placement", "disabled", "loading", "demo", "ariaLabel"],
+      "props": {
+        "placement": ["top", "bottom", "left", "right"],
+        "showCancel": [true, false],
+        "disabled": [true, false],
+        "loading": [true, false]
+      },
+      "requiredStates": ["closed", "open", "with-cancel", "loading", "disabled"]
+    },
+    "divider": {
+      "acceptedProps": ["type", "label", "orientation", "orientationMargin", "dashed", "plain", "tone", "icon", "ariaLabel"],
+      "props": {
+        "type": ["horizontal", "vertical"],
+        "orientation": ["left", "center", "right"],
+        "dashed": [true, false],
+        "plain": [true, false],
+        "tone": ["divider", "border"]
+      },
+      "requiredStates": ["horizontal", "vertical", "label", "left", "right", "dashed", "plain"]
+    },
+    "avatar": {
+      "acceptedProps": ["name", "image", "initials", "size", "flag", "flagLabel", "variant", "tone", "interactive", "state", "ariaLabel"],
+      "subcomponents": {
+        "flag": { "acceptedProps": ["countryCode", "countryLabel", "size", "decorative", "ariaLabel"] },
+        "group": { "acceptedProps": ["members", "overflow", "addLabel", "size", "ariaLabel"] }
+      },
+      "props": {
+        "size": [24, 32, 40, 48, 56, 64, 80, 120],
+        "variant": ["without-flag", "with-flag", "empty", "logo"],
+        "tone": ["primary", "info", "success", "warning"],
+        "interactive": [true, false],
+        "state": ["default", "hover"]
+      },
+      "requiredStates": ["image", "with-flag", "empty", "logo", "hover", "group", "empty-group", "flag"]
+    },
+    "badge": {
+      "acceptedProps": ["type", "anchor", "count", "label", "tone", "overflowCount", "hidden", "ariaLabel"],
+      "props": {
+        "type": ["count", "dot", "status"],
+        "tone": ["default", "success", "info", "warning", "error"],
+        "hidden": [true, false]
+      },
+      "requiredStates": ["count", "overflow", "dot", "status", "hidden"]
+    },
+    "breadcrumb": {
+      "acceptedProps": ["items", "separator", "ariaLabel", "collapsedOpen", "demo"],
+      "props": {
+        "collapsedOpen": [true, false]
+      },
+      "requiredStates": ["standard", "icon-only", "overflow", "custom-separator"]
+    },
+    "card": {
+      "acceptedProps": ["interactive", "outlined", "media", "mediaAlt", "mediaRatio", "eyebrow", "title", "body", "meta", "footer", "density", "ariaLabel", "href", "demo"],
+      "props": {
+        "interactive": [true, false],
+        "outlined": [true, false],
+        "mediaRatio": ["16:9", "4:3", "1:1"],
+        "density": ["compact", "default", "comfortable"]
+      },
+      "requiredStates": ["basic", "media", "interactive", "compact", "comfortable"]
+    },
+    "alert": {
+      "acceptedProps": ["tone", "title", "description", "closable", "action", "banner", "ariaLabel", "demo"],
+      "props": {
+        "tone": ["info", "success", "warning", "error"],
+        "closable": [true, false],
+        "banner": [true, false]
+      },
+      "requiredStates": ["info", "success", "warning", "error", "closable", "with-action", "banner"]
+    },
+    "tabs": {
+      "acceptedProps": ["id", "items", "activeId", "extra", "ariaLabel", "orientation", "activation", "demo"],
+      "props": {
+        "orientation": ["horizontal"],
+        "activation": ["manual", "automatic"]
+      },
+      "requiredStates": ["basic", "icon-count", "disabled", "trailing-action"]
+    },
+    "pagination": {
+      "acceptedProps": ["pages", "current", "previousDisabled", "nextDisabled", "ariaLabel", "demo"],
+      "props": {
+        "previousDisabled": [true, false],
+        "nextDisabled": [true, false]
+      },
+      "requiredStates": ["pages", "current", "disabled"]
+    },
+    "rate": {
+      "acceptedProps": ["id", "value", "count", "allowHalf", "allowClear", "disabled", "labels", "showText", "label", "state", "demo"],
+      "props": {
+        "allowHalf": [true, false],
+        "allowClear": [true, false],
+        "disabled": [true, false],
+        "showText": [true, false],
+        "state": ["default", "hover", "disabled"]
+      },
+      "requiredStates": ["basic", "labels", "clearable", "disabled"]
+    },
+    "sidebar": {
+      "acceptedProps": ["id", "variant", "collapsed", "items", "sections", "moreItems", "moreOpen", "footer", "ariaLabel", "demo"],
+      "props": {
+        "variant": ["normal", "plus"],
+        "collapsed": [true, false],
+        "moreOpen": [true, false]
+      },
+      "requiredStates": ["normal", "plus", "collapsed", "expanded-section", "more-open"]
+    },
+    "statistic": {
+      "acceptedProps": ["title", "value", "prefix", "suffix", "description", "loading", "ariaLabel", "demo"],
+      "props": {
+        "loading": [true, false]
+      },
+      "requiredStates": ["default", "with-affix", "description", "loading"]
+    },
+    "table": {
+      "acceptedProps": ["id", "columns", "rows", "caption", "density", "loading", "empty", "ariaLabel", "demo"],
+      "props": {
+        "density": ["compact", "default"],
+        "loading": [true, false]
+      },
+      "requiredStates": ["default", "with-action", "loading", "empty"]
+    },
+    "timeline": {
+      "acceptedProps": ["id", "items", "layout", "reverse", "tone", "ariaLabel", "demo"],
+      "props": {
+        "layout": ["left", "right", "alternate"],
+        "tone": ["default", "info", "success", "warning", "error"],
+        "reverse": [true, false]
+      },
+      "requiredStates": ["default", "with-label", "alternate", "pending", "reverse", "single-tone"]
+    },
+    "top-nav": {
+      "acceptedProps": ["id", "leading", "center", "trailing", "ariaLabel", "demo"],
+      "subcomponents": {
+        "context": {
+          "acceptedProps": ["id", "mode", "selected", "options", "open", "ariaLabel", "demo"],
+          "props": {
+            "mode": ["labelled", "compact"],
+            "open": [true, false]
+          }
+        },
+        "search": {
+          "acceptedProps": ["id", "value", "placeholder", "filter", "filterLabel", "filterIcon", "filterCount", "filtered", "clearable", "disabled", "state", "ariaLabel", "demo"],
+          "props": {
+            "filter": [true, false],
+            "filtered": [true, false],
+            "clearable": [true, false],
+            "disabled": [true, false],
+            "state": ["default", "focus", "disabled"]
+          }
+        }
+      },
+      "props": {},
+      "requiredStates": ["global-default", "teacher-search", "context-open", "search-query", "filtered"]
+    },
+    "slider": {
+      "acceptedProps": ["value", "label", "disabled", "tooltip", "reversed", "state"],
+      "subcomponents": {
+        "range": { "acceptedProps": ["lower", "upper", "label"] },
+        "vertical": { "acceptedProps": ["value", "label", "disabled"] }
+      },
+      "props": {
+        "orientation": ["horizontal", "vertical"],
+        "mode": ["single", "range"],
+        "state": ["default", "hover", "focus", "disabled"],
+        "reversed": [true, false]
+      },
+      "requiredStates": ["default", "hover", "focus", "disabled", "range", "vertical", "reverse"]
+    },
+    "panel": {
+      "acceptedProps": ["title", "body", "extra", "divider", "density"],
+      "props": {
+        "density": ["small", "medium", "large"],
+        "divider": [true, false]
+      },
+      "requiredStates": ["with-title", "without-title"]
+    },
+    "search": {
+      "acceptedProps": ["id", "value", "placeholder", "size", "shape", "state", "clearable", "disabled"],
+      "props": {
+        "size": [32, 40, 48],
+        "shape": ["rounded", "pill"],
+        "state": ["default", "hover", "focus", "disabled"]
+      },
+      "requiredStates": ["default", "hover", "focus", "disabled", "clearable"]
+    },
+    "select": {
+      "acceptedProps": ["id", "label", "placeholder", "options", "groups", "selected", "mode", "size", "shape", "status", "state", "clearable", "searchable", "query", "disabled", "loading", "open"],
+      "props": {
+        "mode": ["single", "multiple"],
+        "size": [32, 40, 48],
+        "shape": ["default", "rounded", "pill"],
+        "status": ["default", "warning", "error"],
+        "state": ["default", "hover", "focus", "disabled", "loading"]
+      },
+      "requiredStates": ["default", "focus", "disabled", "warning", "error", "loading", "clearable", "multiple", "searchable", "grouped", "empty-result", "disabled-option"]
+    },
+    "switch": {
+      "acceptedProps": ["checked", "disabled", "state", "demo", "label"],
+      "props": {
+        "state": ["default", "hover", "disabled"]
+      },
+      "requiredStates": ["off", "on", "hover", "disabled"]
+    },
+    "drawer": {
+      "acceptedProps": ["id", "title", "body", "footer", "trigger", "triggerLabel", "open", "placement", "size", "closable", "maskClosable", "keyboardClosable", "demo"],
+      "props": {
+        "placement": ["left", "right", "bottom"],
+        "size": ["default", "wide"]
+      },
+      "requiredStates": ["closed", "right", "left", "bottom", "wide", "non-closable"]
+    },
+    "form-field": {
+      "acceptedProps": ["id", "label", "control", "helper", "error", "status", "size", "shape", "state", "required", "disabled"],
+      "props": {
+        "size": [32, 40, 48],
+        "shape": ["default", "rounded", "pill"],
+        "status": ["default", "warning", "error"],
+        "state": ["default", "hover", "focus", "disabled"]
+      },
+      "requiredStates": ["default", "helper", "leading-icon", "trailing-action", "warning", "error", "required", "disabled"]
+    },
+    "text-input": {
+      "acceptedProps": ["id", "value", "placeholder", "size", "shape", "status", "state", "disabled", "readOnly", "leadingIcon", "trailingIcon", "trailingAction", "ariaLabel", "demo"],
+      "props": {
+        "size": [32, 40, 48],
+        "shape": ["default", "rounded", "pill"],
+        "status": ["default", "warning", "error"],
+        "state": ["default", "hover", "focus", "warning", "error", "disabled"]
+      },
+      "requiredStates": ["default", "hover", "focus", "warning", "error", "disabled", "read-only", "with-leading-icon", "with-trailing-icon"]
+    },
+    "textarea": {
+      "acceptedProps": ["id", "value", "placeholder", "size", "rows", "maxLength", "showCount", "status", "state", "disabled", "readOnly", "ariaLabel", "demo"],
+      "props": {
+        "size": [32, 40, 48],
+        "status": ["default", "warning", "error"],
+        "state": ["default", "hover", "focus", "warning", "error", "disabled"]
+      },
+      "requiredStates": ["default", "focus", "count", "warning", "error", "disabled", "read-only"]
+    },
+    "number-stepper": {
+      "acceptedProps": ["id", "value", "min", "max", "step", "size", "shape", "status", "state", "disabled", "label", "ariaLabel", "demo"],
+      "props": {
+        "size": [32, 40, 48],
+        "shape": ["default", "rounded", "pill"],
+        "status": ["default", "warning", "error"],
+        "state": ["default", "hover", "focus", "disabled"]
+      },
+      "requiredStates": ["default", "minimum", "maximum", "disabled"]
+    },
+    "combobox": {
+      "acceptedProps": ["id", "label", "placeholder", "options", "groups", "selected", "size", "shape", "status", "state", "clearable", "disabled", "loading", "open", "query"],
+      "props": {
+        "size": [32, 40, 48],
+        "shape": ["default", "rounded", "pill"],
+        "status": ["default", "warning", "error"],
+        "state": ["default", "hover", "focus", "disabled", "loading"]
+      },
+      "requiredStates": ["default", "open", "query", "selected", "empty-result", "disabled"]
+    },
+    "upload": {
+      "acceptedProps": ["id", "label", "description", "accept", "multiple", "files", "variant", "state", "disabled", "actionLabel", "maxSize", "avatar", "avatarAlt", "error", "ariaLabel", "demo"],
+      "props": {
+        "variant": ["dropzone", "trigger", "avatar"],
+        "state": ["default", "hover", "focus", "disabled", "uploading", "error"]
+      },
+      "requiredStates": ["dropzone", "trigger", "avatar-empty", "avatar-filled", "avatar-uploading", "avatar-error", "hover", "focus", "disabled", "uploading", "complete", "error", "multiple", "accept"]
+    },
+    "stepper": {
+      "acceptedProps": ["id", "items", "current", "variant", "orientation", "ariaLabel"],
+      "props": {
+        "variant": ["default", "flow-progress"],
+        "orientation": ["horizontal", "vertical"]
+      },
+      "requiredStates": ["default", "current", "complete", "vertical", "flow-progress"]
+    },
+    "progress": {
+      "acceptedProps": ["value", "max", "status", "showLabel", "indeterminate", "ariaLabel"],
+      "props": {
+        "status": ["default", "success", "error"]
+      },
+      "requiredStates": ["default", "success", "error", "indeterminate"]
+    },
+    "toast": {
+      "acceptedProps": ["id", "tone", "title", "description", "action", "duration", "closable", "open", "ariaLabel"],
+      "props": {
+        "tone": ["info", "success", "warning", "error"]
+      },
+      "requiredStates": ["info", "success", "warning", "error", "closable"]
+    },
+    "notification": {
+      "acceptedProps": ["id", "tone", "title", "description", "action", "closable", "open", "ariaLabel"],
+      "props": {
+        "tone": ["info", "success", "warning", "error"]
+      },
+      "requiredStates": ["info", "success", "warning", "error", "closable", "with-action"]
+    },
+    "result": {
+      "acceptedProps": ["id", "tone", "title", "description", "action", "secondaryAction", "ariaLabel"],
+      "props": {
+        "tone": ["info", "success", "warning", "error"]
+      },
+      "requiredStates": ["success", "info", "warning", "error", "with-action", "with-secondary-action"]
+    },
+    "skeleton": {
+      "acceptedProps": ["type", "lines", "width", "height", "title", "avatar", "lastLineWidth", "shape", "round", "animated", "ariaLabel"],
+      "props": {
+        "type": ["text", "content", "avatar", "button", "input", "image", "card"],
+        "shape": ["default", "round", "circle", "square"]
+      },
+      "requiredStates": ["text", "content", "avatar", "button", "input", "image", "card", "reduced-motion"]
+    },
+    "dropdown-menu": {
+      "acceptedProps": ["id", "trigger", "triggerLabel", "items", "open", "placement", "ariaLabel"],
+      "props": {
+        "placement": ["bottom-start", "bottom-end"]
+      },
+      "requiredStates": ["closed", "open", "disabled-item", "destructive-item"]
+    },
+    "disclosure": {
+      "acceptedProps": ["id", "title", "content", "open", "disabled", "kind", "ariaLabel"],
+      "props": {
+        "kind": ["accordion", "details"]
+      },
+      "requiredStates": ["closed", "open", "disabled", "details"]
+    },
+    "segmented-control": {
+      "acceptedProps": ["id", "options", "selected", "size", "shape", "disabled", "ariaLabel"],
+      "props": {
+        "size": [32, 40, 48],
+        "shape": ["pill", "rounded"]
+      },
+      "requiredStates": ["default", "pill", "rounded", "selected", "disabled"]
+    },
+    "time-slot": {
+      "acceptedProps": ["id", "label", "time", "secondary", "appearance", "state", "selected", "unavailable", "held", "loading", "disabled", "duration", "teacher", "calendarDay", "calendarMinute", "ariaLabel", "tooltip", "demo"],
+      "props": {
+        "appearance": ["availability", "option"],
+        "duration": [15, 30, 60],
+        "state": ["available", "selected", "unavailable", "booked-by-others", "booked-by-you", "loading"]
+      },
+      "requiredStates": ["available", "selected", "unavailable", "booked-by-others", "booked-by-you", "loading", "option"]
+    },
+    "time-picker": {
+      "acceptedProps": ["id", "label", "placeholder", "slots", "selected", "disabled", "open", "state", "ariaLabel"],
+      "props": {
+        "state": ["default", "hover", "focus", "disabled"]
+      },
+      "requiredStates": ["default", "open", "selected", "disabled"]
+    },
+    "calendar": {
+      "acceptedProps": ["id", "variant", "timezone", "weekLabel", "todayLabel", "dates", "rows", "weekViews", "activeWeek", "todayWeek", "timePicker", "availabilityLabel", "teacherAvailability", "recordTitle", "recordMonths", "recordStats", "weekdays", "disabled", "ariaLabel", "demo"],
+      "props": {
+        "variant": ["availability", "teacher-availability", "compact-availability", "lesson-record"]
+      },
+      "requiredStates": ["default", "selected-slot", "unavailable-slot", "with-time-picker", "teacher-availability", "compact-availability", "lesson-record"]
+    },
+    "footer": {
+      "acceptedProps": ["id", "columns", "utilities", "copyright", "legalLinks", "socialLinks", "ariaLabel", "demo"],
+      "props": {},
+      "requiredStates": ["standard", "with-utilities", "with-legal-links", "with-social-links"]
+    },
+    "popover": {
+      "acceptedProps": ["id", "title", "body", "actions", "trigger", "triggerLabel", "open", "placement", "triggerMode", "closeOnLeave", "leaveDelay", "demo", "ariaLabel"],
+      "props": {
+        "placement": ["top", "bottom", "left", "right"],
+        "triggerMode": ["click", "hover", "focus"],
+        "closeOnLeave": [true, false],
+        "leaveDelay": [300]
+      },
+      "requiredStates": ["closed", "open", "placement", "with-actions", "leave-delay"]
+    }
+  },
+  "productionApiMappings": {
+    "statusDefinitions": {
+      "direct": "The Catalog prop has a confirmed Panda prop or native attribute destination.",
+      "adapter": "The value is supported only through a documented Panda composition or product adapter.",
+      "catalog-only": "The prop controls a Catalog fixture or example state and must not be copied into production code.",
+      "gap": "No confirmed Panda API safely represents this Catalog prop. Report the gap instead of styling around it."
+    },
+    "coverage": {
+      "mapped": ["button", "checkbox", "checkbox-group", "radio", "modal", "search", "select", "drawer", "form-field", "text-input", "textarea", "toast", "notification"],
+      "pending": ["chip", "tag", "selection", "date-picker", "tooltip", "popup", "popconfirm", "divider", "avatar", "badge", "breadcrumb", "card", "alert", "tabs", "pagination", "rate", "sidebar", "statistic", "table", "timeline", "top-nav", "slider", "panel", "switch", "number-stepper", "combobox", "upload", "stepper", "progress", "result", "skeleton", "dropdown-menu", "disclosure", "segmented-control", "time-slot", "time-picker", "calendar", "popover", "footer"]
+    },
+    "components": {
+      "button": {
+        "pandaComponent": "Button",
+        "preferredImport": "@repo/components/ui",
+        "source": "@italki/panda ButtonProps",
+        "notes": "Use the product wrapper. Catalog variants are not a second Button API; resolve the variant through this map before implementation.",
+        "props": {
+          "label": { "status": "direct", "pandaProp": "children", "notes": "Pass the visible button label as children." },
+          "variant": { "status": "adapter", "pandaProp": "type | text | outlined | special | ghost | danger", "notes": "Map each Catalog variant through the approved product convention. Confirm ghost, danger, plus, and emphasis visuals before use; do not infer them from another library." },
+          "size": { "status": "adapter", "pandaProp": "size", "notes": "Panda uses semantic sizes rather than Catalog pixel values. The application adapter owns the 32/40/48 mapping." },
+          "shape": { "status": "adapter", "pandaProp": "shape", "notes": "Panda supports default, circle, and round. Resolve Catalog rounded and pill values through the product wrapper." },
+          "state": { "status": "catalog-only", "pandaProp": null, "notes": "The Catalog fixture displays interaction states; Panda derives them from behavior and props." },
+          "leadingIcon": { "status": "direct", "pandaProp": "icon", "notes": "Panda Button renders its icon before children." },
+          "trailingIcon": { "status": "adapter", "pandaProp": "children composition", "notes": "Panda has no dedicated trailing-icon prop. Use an approved content composition without changing Button anatomy." },
+          "iconOnly": { "status": "adapter", "pandaProp": "icon + aria-label", "notes": "Use the Panda icon path with an accessible name; this is not an independent Boolean Panda prop." },
+          "disabled": { "status": "direct", "pandaProp": "disabled", "notes": "Use Panda disabled behavior." },
+          "loading": { "status": "direct", "pandaProp": "loading", "notes": "Use Panda loading behavior." },
+          "demo": { "status": "catalog-only", "pandaProp": null, "notes": "Fixture identifier only." },
+          "ariaLabel": { "status": "direct", "pandaProp": "aria-label", "notes": "Native ARIA attribute forwarded by Button." },
+          "href": { "status": "direct", "pandaProp": "href", "notes": "Panda renders the supported link form." },
+          "download": { "status": "direct", "pandaProp": "download", "notes": "Native anchor attribute supported by the link form." },
+          "target": { "status": "direct", "pandaProp": "target", "notes": "Native anchor attribute supported by the link form." },
+          "rel": { "status": "direct", "pandaProp": "rel", "notes": "Native anchor attribute supported by the link form." },
+          "ariaExpanded": { "status": "direct", "pandaProp": "aria-expanded", "notes": "Native ARIA attribute forwarded by Button." },
+          "ariaPressed": { "status": "direct", "pandaProp": "aria-pressed", "notes": "Native ARIA attribute forwarded by Button." },
+          "ariaDescribedBy": { "status": "direct", "pandaProp": "aria-describedby", "notes": "Native ARIA attribute forwarded by Button." },
+          "ariaControls": { "status": "direct", "pandaProp": "aria-controls", "notes": "Native ARIA attribute forwarded by Button." }
+        }
+      },
+      "checkbox": {
+        "pandaComponent": "Checkbox",
+        "preferredImport": "@repo/components/ui",
+        "source": "@italki/panda CheckboxProps",
+        "notes": "Use Checkbox for semantic multi-select choices. Group handling belongs to Checkbox.Group.",
+        "props": {
+          "id": { "status": "direct", "pandaProp": "id", "notes": "Native control identifier." },
+          "label": { "status": "direct", "pandaProp": "children", "notes": "Visible choice label." },
+          "checked": { "status": "direct", "pandaProp": "checked", "notes": "Controlled checked state." },
+          "state": { "status": "catalog-only", "pandaProp": null, "notes": "Fixture interaction state; not a Panda prop." },
+          "disabled": { "status": "direct", "pandaProp": "disabled", "notes": "Use Panda disabled behavior." },
+          "toggleMode": { "status": "adapter", "pandaProp": "checked | indeterminate + onChange", "notes": "Binary, mixed, and controlled modes describe usage patterns rather than one Panda prop." },
+          "demo": { "status": "catalog-only", "pandaProp": null, "notes": "Fixture identifier only." }
+        }
+      },
+      "checkbox-group": {
+        "pandaComponent": "Checkbox.Group",
+        "preferredImport": "@repo/components/ui",
+        "source": "@italki/panda CheckboxGroupProps",
+        "notes": "Use the Group for controlled multi-select values. Labels, validation, and select-all are composed concerns.",
+        "props": {
+          "id": { "status": "adapter", "pandaProp": "id or name", "notes": "Choose the accessible field identifier in the Form/fieldset adapter." },
+          "label": { "status": "adapter", "pandaProp": "Form.Item label or legend", "notes": "Checkbox.Group has no visible-label prop." },
+          "description": { "status": "adapter", "pandaProp": "Form.Item help or described-by content", "notes": "Group has no description prop." },
+          "options": { "status": "direct", "pandaProp": "options", "notes": "Use Panda option objects with label, value, and optional disabled state." },
+          "selected": { "status": "direct", "pandaProp": "value", "notes": "Controlled array of selected values." },
+          "layout": { "status": "adapter", "pandaProp": "approved group layout wrapper", "notes": "Panda Group does not expose a vertical/inline layout prop." },
+          "selectAll": { "status": "adapter", "pandaProp": "Checkbox + Checkbox.Group value", "notes": "Derive select-all and mixed state in the product adapter." },
+          "feedback": { "status": "adapter", "pandaProp": "Form.Item help", "notes": "Validation copy belongs to the field wrapper." },
+          "feedbackTone": { "status": "adapter", "pandaProp": "Form.Item validateStatus", "notes": "Resolve semantic feedback tone through Form.Item." }
+        }
+      },
+      "radio": {
+        "pandaComponent": "Radio / Radio.Group",
+        "preferredImport": "@repo/components/ui",
+        "source": "@italki/panda RadioProps and RadioGroupProps",
+        "notes": "Use Radio for one-of-many choices and Radio.Group for controlled group state.",
+        "props": {
+          "label": { "status": "direct", "pandaProp": "children", "notes": "Visible radio label." },
+          "value": { "status": "direct", "pandaProp": "value", "notes": "Choice value consumed by Radio.Group." },
+          "checked": { "status": "direct", "pandaProp": "checked", "notes": "Controlled standalone radio state." },
+          "disabled": { "status": "direct", "pandaProp": "disabled", "notes": "Use Panda disabled behavior." },
+          "state": { "status": "catalog-only", "pandaProp": null, "notes": "Fixture interaction state; not a Panda prop." },
+          "description": { "status": "adapter", "pandaProp": "children composition + aria-describedby", "notes": "Panda Radio has no dedicated description prop." },
+          "demo": { "status": "catalog-only", "pandaProp": null, "notes": "Fixture identifier only." },
+          "tabIndex": { "status": "direct", "pandaProp": "tabIndex", "notes": "Native focus-order attribute supported by Radio." }
+        }
+      },
+      "modal": {
+        "pandaComponent": "Modal",
+        "preferredImport": "@repo/components/ui",
+        "source": "@italki/panda ModalProps",
+        "notes": "Modal trigger ownership and lifecycle live in the calling feature. Use the existing reviewed modal flow.",
+        "props": {
+          "id": { "status": "adapter", "pandaProp": "wrapProps or labelled content", "notes": "Modal has no top-level id prop; assign identifiers in a reviewed accessibility wrapper." },
+          "title": { "status": "direct", "pandaProp": "title", "notes": "Modal heading slot." },
+          "body": { "status": "direct", "pandaProp": "children", "notes": "Modal body content." },
+          "footer": { "status": "direct", "pandaProp": "footer", "notes": "Modal footer slot." },
+          "trigger": { "status": "adapter", "pandaProp": "feature state + open", "notes": "Panda Modal does not own its trigger." },
+          "triggerLabel": { "status": "adapter", "pandaProp": "feature trigger content", "notes": "The trigger label belongs to the invoking control." },
+          "open": { "status": "direct", "pandaProp": "open", "notes": "Controlled modal visibility." },
+          "size": { "status": "adapter", "pandaProp": "width", "notes": "Map Catalog 520/744 sizes to the verified Panda width value." },
+          "titleAlign": { "status": "adapter", "pandaProp": "styles.header through approved wrapper", "notes": "No semantic alignment prop exists; do not add local modal CSS." },
+          "stage": { "status": "catalog-only", "pandaProp": null, "notes": "Catalog example stage only." },
+          "closable": { "status": "direct", "pandaProp": "closable", "notes": "Use Panda close affordance behavior." },
+          "maskClosable": { "status": "direct", "pandaProp": "maskClosable", "notes": "Controls mask dismissal." },
+          "keyboardClosable": { "status": "direct", "pandaProp": "keyboard", "notes": "Controls Escape dismissal." },
+          "demo": { "status": "catalog-only", "pandaProp": null, "notes": "Fixture identifier only." }
+        }
+      },
+      "search": {
+        "pandaComponent": "Input.Search",
+        "preferredImport": "@repo/components/ui",
+        "source": "@italki/panda Input.Search props",
+        "notes": "Panda owns the field surface; query timing, suggestions, results, and route synchronization remain feature behavior.",
+        "props": {
+          "id": { "status": "direct", "pandaProp": "id", "notes": "Native control identifier." },
+          "value": { "status": "direct", "pandaProp": "value", "notes": "Controlled search value; the feature supplies onChange." },
+          "placeholder": { "status": "direct", "pandaProp": "placeholder", "notes": "Native input placeholder." },
+          "size": { "status": "adapter", "pandaProp": "size", "notes": "Resolve Catalog pixel size to Panda semantic size in the product adapter." },
+          "shape": { "status": "gap", "pandaProp": null, "notes": "Panda Input.Search has no confirmed semantic rounded/pill API. Do not add an ad-hoc class." },
+          "state": { "status": "catalog-only", "pandaProp": null, "notes": "Fixture interaction state; not a Panda prop." },
+          "clearable": { "status": "direct", "pandaProp": "allowClear", "notes": "Use Panda clear behavior." },
+          "disabled": { "status": "direct", "pandaProp": "disabled", "notes": "Use Panda disabled behavior." }
+        }
+      },
+      "select": {
+        "pandaComponent": "Select",
+        "preferredImport": "@repo/components/ui",
+        "source": "@italki/panda SelectProps",
+        "notes": "Use Panda Select for selection mechanics. Remote query, option data, labels, and filtering remain feature-owned.",
+        "props": {
+          "id": { "status": "direct", "pandaProp": "id", "notes": "Identifier forwarded to the select control." },
+          "label": { "status": "adapter", "pandaProp": "Form.Item label", "notes": "Select does not own a separate visible field label." },
+          "placeholder": { "status": "direct", "pandaProp": "placeholder", "notes": "Select placeholder." },
+          "options": { "status": "direct", "pandaProp": "options", "notes": "Use Panda option records with supported labels, values, and disabled state." },
+          "groups": { "status": "adapter", "pandaProp": "options[].options", "notes": "Translate Catalog groups to Panda's nested option structure." },
+          "selected": { "status": "direct", "pandaProp": "value", "notes": "Controlled selected value or values." },
+          "mode": { "status": "adapter", "pandaProp": "mode", "notes": "Catalog single means omit mode; multiple maps to Panda mode=multiple." },
+          "size": { "status": "adapter", "pandaProp": "size", "notes": "Resolve Catalog pixel size to Panda semantic size in the product adapter." },
+          "shape": { "status": "gap", "pandaProp": null, "notes": "Panda Select has no confirmed semantic rounded/pill API. Do not add an ad-hoc class." },
+          "status": { "status": "direct", "pandaProp": "status", "notes": "Use Panda warning or error input status." },
+          "state": { "status": "catalog-only", "pandaProp": null, "notes": "Fixture interaction state; loading and open have their own Panda props." },
+          "clearable": { "status": "direct", "pandaProp": "allowClear", "notes": "Use Panda clear behavior." },
+          "searchable": { "status": "direct", "pandaProp": "showSearch", "notes": "Enable Panda search behavior." },
+          "query": { "status": "adapter", "pandaProp": "searchValue + onSearch", "notes": "Controlled search text requires feature query handling and should be used with showSearch." },
+          "disabled": { "status": "direct", "pandaProp": "disabled", "notes": "Use Panda disabled behavior." },
+          "loading": { "status": "direct", "pandaProp": "loading", "notes": "Use Panda loading behavior." },
+          "open": { "status": "direct", "pandaProp": "open", "notes": "Controlled popup visibility." }
+        }
+      },
+      "drawer": {
+        "pandaComponent": "Drawer",
+        "preferredImport": "@repo/components/ui",
+        "source": "@italki/panda DrawerProps",
+        "notes": "Drawer trigger ownership and lifecycle live in the calling feature. Use the existing reviewed drawer flow.",
+        "props": {
+          "id": { "status": "adapter", "pandaProp": "labelled content or approved wrapper", "notes": "Drawer has no top-level id prop for the Catalog fixture identifier." },
+          "title": { "status": "direct", "pandaProp": "title", "notes": "Drawer heading slot." },
+          "body": { "status": "direct", "pandaProp": "children", "notes": "Drawer body content." },
+          "footer": { "status": "direct", "pandaProp": "footer", "notes": "Drawer footer slot." },
+          "trigger": { "status": "adapter", "pandaProp": "feature state + open", "notes": "Panda Drawer does not own its trigger." },
+          "triggerLabel": { "status": "adapter", "pandaProp": "feature trigger content", "notes": "The trigger label belongs to the invoking control." },
+          "open": { "status": "direct", "pandaProp": "open", "notes": "Controlled drawer visibility." },
+          "placement": { "status": "direct", "pandaProp": "placement", "notes": "Use Panda's supported drawer placement." },
+          "size": { "status": "adapter", "pandaProp": "size | width | height", "notes": "Panda provides default/large plus explicit width and height. Resolve Catalog default/wide per direction in the product adapter." },
+          "closable": { "status": "direct", "pandaProp": "closable", "notes": "Use Panda close affordance behavior." },
+          "maskClosable": { "status": "direct", "pandaProp": "maskClosable", "notes": "Controls mask dismissal." },
+          "keyboardClosable": { "status": "direct", "pandaProp": "keyboard", "notes": "Controls Escape dismissal." },
+          "demo": { "status": "catalog-only", "pandaProp": null, "notes": "Fixture identifier only." }
+        }
+      },
+      "form-field": {
+        "pandaComponent": "Form.Item",
+        "preferredImport": "@repo/components/ui",
+        "source": "@italki/panda FormItemProps",
+        "notes": "Form.Item owns labels, help, validation, and required state around a supported control. Field control shape remains a component decision.",
+        "props": {
+          "id": { "status": "direct", "pandaProp": "id", "notes": "Form.Item identifier." },
+          "label": { "status": "direct", "pandaProp": "label", "notes": "Visible field label." },
+          "control": { "status": "direct", "pandaProp": "children", "notes": "Place the supported Panda control in Form.Item children." },
+          "helper": { "status": "direct", "pandaProp": "help", "notes": "Form.Item helper or validation copy." },
+          "error": { "status": "adapter", "pandaProp": "validateStatus=error + help", "notes": "Error text needs both Panda validation state and help content." },
+          "status": { "status": "direct", "pandaProp": "validateStatus", "notes": "Use Panda validation status." },
+          "size": { "status": "adapter", "pandaProp": "Form size or child control size", "notes": "Form.Item does not translate Catalog pixels; resolve the supported control's size in the field adapter." },
+          "shape": { "status": "gap", "pandaProp": null, "notes": "Form.Item has no shape API. Do not style the wrapper to mimic Catalog shapes." },
+          "state": { "status": "catalog-only", "pandaProp": null, "notes": "Fixture interaction state; control behavior owns focus and hover." },
+          "required": { "status": "direct", "pandaProp": "required", "notes": "Use Panda required marker behavior; validation rules remain feature-owned." },
+          "disabled": { "status": "adapter", "pandaProp": "Form disabled or child disabled", "notes": "Choose the correct scope in the form adapter; Form.Item itself has no disabled prop." }
+        }
+      },
+      "text-input": {
+        "pandaComponent": "Input",
+        "preferredImport": "@repo/components/ui",
+        "source": "@italki/panda InputProps",
+        "notes": "Use Panda Input for text entry and keep controlled value lifecycle in the calling feature.",
+        "props": {
+          "id": { "status": "direct", "pandaProp": "id", "notes": "Native control identifier." },
+          "value": { "status": "direct", "pandaProp": "value", "notes": "Controlled input value; the feature supplies onChange." },
+          "placeholder": { "status": "direct", "pandaProp": "placeholder", "notes": "Native input placeholder." },
+          "size": { "status": "adapter", "pandaProp": "size", "notes": "Resolve Catalog pixel size to Panda semantic size in the product adapter." },
+          "shape": { "status": "gap", "pandaProp": null, "notes": "Panda Input has no confirmed semantic rounded/pill API. Do not add an ad-hoc class." },
+          "status": { "status": "direct", "pandaProp": "status", "notes": "Use Panda warning or error input status." },
+          "state": { "status": "catalog-only", "pandaProp": null, "notes": "Fixture interaction state; not a Panda prop." },
+          "disabled": { "status": "direct", "pandaProp": "disabled", "notes": "Use Panda disabled behavior." },
+          "readOnly": { "status": "direct", "pandaProp": "readOnly", "notes": "Native read-only input behavior." },
+          "leadingIcon": { "status": "direct", "pandaProp": "prefix", "notes": "Panda prefix slot." },
+          "trailingIcon": { "status": "direct", "pandaProp": "suffix", "notes": "Panda suffix slot." },
+          "trailingAction": { "status": "adapter", "pandaProp": "suffix or addonAfter", "notes": "Choose the approved slot based on whether the action belongs inside or after the field." },
+          "ariaLabel": { "status": "direct", "pandaProp": "aria-label", "notes": "Native ARIA attribute forwarded to Input." },
+          "demo": { "status": "catalog-only", "pandaProp": null, "notes": "Fixture identifier only." }
+        }
+      },
+      "textarea": {
+        "pandaComponent": "Input.TextArea",
+        "preferredImport": "@repo/components/ui",
+        "source": "@italki/panda Input.TextArea props",
+        "notes": "Use Panda Input.TextArea for multiline entry and keep controlled value lifecycle in the calling feature.",
+        "props": {
+          "id": { "status": "direct", "pandaProp": "id", "notes": "Native control identifier." },
+          "value": { "status": "direct", "pandaProp": "value", "notes": "Controlled textarea value; the feature supplies onChange." },
+          "placeholder": { "status": "direct", "pandaProp": "placeholder", "notes": "Native textarea placeholder." },
+          "size": { "status": "adapter", "pandaProp": "size", "notes": "Resolve Catalog pixel size to Panda semantic size in the product adapter." },
+          "rows": { "status": "direct", "pandaProp": "rows", "notes": "Native textarea row count." },
+          "maxLength": { "status": "direct", "pandaProp": "maxLength", "notes": "Native maximum character count." },
+          "showCount": { "status": "direct", "pandaProp": "showCount", "notes": "Use Panda character counter behavior." },
+          "status": { "status": "direct", "pandaProp": "status", "notes": "Use Panda warning or error input status." },
+          "state": { "status": "catalog-only", "pandaProp": null, "notes": "Fixture interaction state; not a Panda prop." },
+          "disabled": { "status": "direct", "pandaProp": "disabled", "notes": "Use Panda disabled behavior." },
+          "readOnly": { "status": "direct", "pandaProp": "readOnly", "notes": "Native read-only textarea behavior." },
+          "ariaLabel": { "status": "direct", "pandaProp": "aria-label", "notes": "Native ARIA attribute forwarded to TextArea." },
+          "demo": { "status": "catalog-only", "pandaProp": null, "notes": "Fixture identifier only." }
+        }
+      },
+      "toast": {
+        "pandaComponent": "message",
+        "preferredImport": "@repo/components/ui",
+        "source": "@italki/panda message ArgsProps",
+        "notes": "Panda message is an imperative transient-feedback API, not a mounted Toast component. Use a reviewed notification lifecycle.",
+        "props": {
+          "id": { "status": "direct", "pandaProp": "key", "notes": "Stable message identity." },
+          "tone": { "status": "direct", "pandaProp": "type", "notes": "Use Panda info, success, warning, or error type." },
+          "title": { "status": "adapter", "pandaProp": "content", "notes": "Message has one content node; compose the title using an approved toast content pattern." },
+          "description": { "status": "adapter", "pandaProp": "content", "notes": "Message has no description slot; compose content only through an approved pattern." },
+          "action": { "status": "adapter", "pandaProp": "content", "notes": "Message has no action slot; recovery actions require an approved content pattern." },
+          "duration": { "status": "direct", "pandaProp": "duration", "notes": "Use Panda message duration." },
+          "closable": { "status": "gap", "pandaProp": null, "notes": "Panda message ArgsProps has no close-icon prop. Do not fabricate one inside the message surface." },
+          "open": { "status": "adapter", "pandaProp": "message.open(args)", "notes": "Opening is an imperative lifecycle call rather than a React prop." },
+          "ariaLabel": { "status": "gap", "pandaProp": null, "notes": "Panda message ArgsProps has no confirmed aria-label prop. Preserve accessible feedback through the approved message API." }
+        }
+      },
+      "notification": {
+        "pandaComponent": "notification",
+        "preferredImport": "@repo/components/ui",
+        "source": "@italki/panda notification ArgsProps",
+        "notes": "Panda notification is an imperative feedback API. Use an approved feature lifecycle and recovery action boundary.",
+        "props": {
+          "id": { "status": "direct", "pandaProp": "key", "notes": "Stable notification identity." },
+          "tone": { "status": "direct", "pandaProp": "type", "notes": "Use Panda info, success, warning, or error type." },
+          "title": { "status": "direct", "pandaProp": "message", "notes": "Notification title slot." },
+          "description": { "status": "direct", "pandaProp": "description", "notes": "Notification description slot." },
+          "action": { "status": "direct", "pandaProp": "btn", "notes": "Notification action slot." },
+          "closable": { "status": "direct", "pandaProp": "closeIcon", "notes": "Use Panda close icon behavior, including false when the approved flow must not dismiss." },
+          "open": { "status": "adapter", "pandaProp": "notification.open(args)", "notes": "Opening is an imperative lifecycle call rather than a React prop." },
+          "ariaLabel": { "status": "adapter", "pandaProp": "props['aria-label']", "notes": "Panda accepts native div props through the nested props object." }
+        }
+      }
+    }
+  },
+  "productionMappings": {
+    "button": {
+      "status": "aligned",
+      "pandaExport": "Button",
+      "preferredImport": "@repo/components/ui",
+      "productionComponent": "Button",
+      "notes": "Use the existing Panda wrapper. Do not recreate button anatomy or translate Catalog variants directly without checking Panda props."
+    },
+    "chip": {
+      "status": "adapter",
+      "pandaExport": "Chip",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Chip design-system adapter",
+      "notes": "Panda Chip does not cover the Catalog 24px geometry or semantic button behavior. Use the React design-system adapter; never use Chip as a checkbox or radio replacement."
+    },
+    "tag": {
+      "status": "adapter",
+      "pandaExport": "Tag",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Tag design-system adapter",
+      "notes": "Panda Tag does not guarantee the Catalog close affordance, size scale, or semantic tones. Use the React design-system adapter for compact descriptive labels."
+    },
+    "checkbox": {
+      "status": "aligned",
+      "pandaExport": "Checkbox",
+      "preferredImport": "@repo/components/ui",
+      "productionComponent": "Checkbox",
+      "notes": "Use Panda Checkbox for semantic multi-select choices and its documented group API."
+    },
+    "checkbox-group": {
+      "status": "aligned",
+      "pandaExport": "Checkbox.Group",
+      "preferredImport": "@repo/components/ui",
+      "productionComponent": "Checkbox.Group",
+      "notes": "Use Panda Checkbox.Group for controlled groups; product-specific option data and validation remain outside the primitive."
+    },
+    "radio": {
+      "status": "aligned",
+      "pandaExport": "Radio",
+      "preferredImport": "@repo/components/ui",
+      "productionComponent": "Radio",
+      "notes": "Use Panda Radio or Radio.Group for one-of-many choices rather than custom selected rows."
+    },
+    "selection": {
+      "status": "adapter",
+      "pandaExport": "Selection",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Selection design-system adapter",
+      "notes": "Panda Selection does not cover the Catalog content types, selected marker, or radio and checkbox semantics. Use the React design-system adapter; use standalone Radio or Checkbox when a compact control is sufficient."
+    },
+    "date-picker": {
+      "status": "adapter",
+      "pandaExport": "DatePicker",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "DatePicker design-system adapter",
+      "notes": "Use the React design-system adapter for Catalog size, shape, field status, controlled or uncontrolled opening, single or range selection, month navigation, and disabled days with YYYY-MM-DD values. Booking availability and timezone policy remain product concerns."
+    },
+    "tooltip": {
+      "status": "adapter",
+      "pandaExport": "Tooltip",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Tooltip design-system adapter",
+      "notes": "Use the React design-system adapter for placement, arrowless mode, focus behavior, and delayed hover presentation; do not make a Tooltip the only access path to essential content."
+    },
+    "modal": {
+      "status": "aligned",
+      "pandaExport": "Modal",
+      "preferredImport": "@repo/components/ui",
+      "productionComponent": "Modal",
+      "notes": "Use the Panda wrapper and an existing reviewed modal flow. Confirm focus restoration and custom footer behavior before extending it."
+    },
+    "popup": {
+      "status": "adapter",
+      "pandaExport": "Popup",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Popup design-system adapter",
+      "notes": "Use the React design-system adapter for Catalog-owned trigger modes, placement, outside dismissal, Escape behavior, and leave delay. Do not use Popup as an unreviewed menu or modal substitute."
+    },
+    "popconfirm": {
+      "status": "adapter",
+      "pandaExport": "Popconfirm",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Popconfirm design-system adapter",
+      "notes": "Use the React design-system adapter for a local consequential action, controlled or uncontrolled open state, outside dismissal, Escape behavior, loading, and confirmation callbacks."
+    },
+    "divider": {
+      "status": "aligned",
+      "pandaExport": "Divider",
+      "preferredImport": "@repo/components/ui",
+      "productionComponent": "Divider",
+      "notes": "Use the existing Panda wrapper for structural separation and labelled dividers."
+    },
+    "avatar": {
+      "status": "adapter",
+      "pandaExport": "Avatar",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Avatar design-system adapter",
+      "notes": "Use the React design-system adapter for the Catalog size scale, image fallback, flag placement, logo treatment, and avatar-group overlap. Panda remains an internal implementation option, not the product import boundary."
+    },
+    "badge": {
+      "status": "adapter",
+      "pandaExport": "Badge",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Badge design-system adapter",
+      "notes": "Use the React design-system adapter for Catalog count, dot, status, overflow, and anchor behavior. Panda remains an internal implementation option, not the product import boundary."
+    },
+    "breadcrumb": {
+      "status": "adapter",
+      "pandaExport": "Breadcrumb",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Breadcrumb design-system adapter",
+      "notes": "Use the React design-system adapter for collapsed overflow, current-page semantics, and Catalog separator behavior. Page routing remains product-owned."
+    },
+    "card": {
+      "status": "adapter",
+      "pandaExport": "Card",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Card design-system adapter",
+      "notes": "Use the React design-system adapter for the Catalog surface, media-ratio, density, and interactive-card contract. Business objects such as teacher cards remain composed product patterns."
+    },
+    "alert": {
+      "status": "aligned",
+      "pandaExport": "Alert",
+      "preferredImport": "@repo/components/ui",
+      "productionComponent": "Alert",
+      "notes": "Use the Panda wrapper for persistent in-context feedback, not field validation or transient notification behavior."
+    },
+    "tabs": {
+      "status": "adapter",
+      "pandaExport": "Tabs",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Tabs design-system adapter",
+      "notes": "Use the React design-system adapter for Catalog labels, count treatment, trailing action, and automatic or manual keyboard activation."
+    },
+    "pagination": {
+      "status": "adapter",
+      "pandaExport": "Pagination",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Pagination design-system adapter",
+      "notes": "Use the React design-system adapter for supplied page lists, ellipsis treatment, controlled current page, and disabled boundary actions. Page fetches, route state, and total-result semantics stay product-owned."
+    },
+    "rate": {
+      "status": "adapter",
+      "pandaExport": "Rate",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Rate design-system adapter",
+      "notes": "Use the React design-system adapter for Catalog half-step, clearable, preview, label, and keyboard rating behavior. Do not calculate rating aggregates in the component."
+    },
+    "sidebar": {
+      "status": "adapter",
+      "pandaExport": null,
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Sidebar design-system adapter",
+      "notes": "Use the React design-system Sidebar for controlled or local collapse, Pin and More movement, same-list drag ordering, bounded More disclosure, section animation, and internal smooth scrolling. Product adapters still supply destinations, state, approved icons, persistence, route behavior, and analytics."
+    },
+    "statistic": {
+      "status": "adapter",
+      "pandaExport": "Statistic",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Statistic design-system adapter",
+      "notes": "Use the React design-system adapter for supplied values, affixes, descriptions, and loading presentation. Formatting and calculation remain product-owned."
+    },
+    "table": {
+      "status": "adapter",
+      "pandaExport": "Table",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Table design-system adapter",
+      "notes": "Use the React design-system adapter for supplied columns, row headers, compact density, loading, empty state, and responsive overflow. Sorting, pagination, and selection remain product-owned."
+    },
+    "timeline": {
+      "status": "adapter",
+      "pandaExport": "Timeline",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Timeline design-system adapter",
+      "notes": "Use the React design-system adapter for supplied event history, semantic dot tones, pending state, labels, reverse order, and alternate layout. Event meaning remains caller-owned."
+    },
+    "top-nav": {
+      "status": "adapter",
+      "pandaExport": null,
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "TopNav design-system adapter",
+      "notes": "Use the React design-system TopNav, TopNavContext, and TopNavSearch for its three-slot 72px shell, centred search expansion, language/context menu, and reviewed icon geometry. Product adapters still supply navigation meaning, query effects, language state, account actions, routes, and analytics."
+    },
+    "slider": {
+      "status": "adapter",
+      "pandaExport": "Slider",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Slider design-system adapter",
+      "notes": "Use the React design-system adapter for single, range, vertical, reverse, disabled, tooltip, and controlled slider presentation. Domain values and validation remain product behavior."
+    },
+    "panel": {
+      "status": "adapter",
+      "pandaExport": "Panel",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Panel design-system adapter",
+      "notes": "Use the React design-system adapter for a titled content surface, supplied extra action, density, and optional structural divider. Avoid decorative nested cards."
+    },
+    "search": {
+      "status": "adapter",
+      "pandaExport": "Input.Search",
+      "preferredImport": "@repo/components/ui",
+      "productionComponent": "Input.Search product adapter",
+      "notes": "Use Panda Input.Search for the field surface. Query timing, suggestions, results, and route synchronization require product behavior."
+    },
+    "select": {
+      "status": "aligned",
+      "pandaExport": "Select",
+      "preferredImport": "@repo/components/ui",
+      "productionComponent": "Select",
+      "notes": "Use the Panda wrapper for confirmed selection behavior; option data, remote search, and business filters remain product-owned."
+    },
+    "switch": {
+      "status": "adapter",
+      "pandaExport": "Switch",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Switch design-system adapter",
+      "notes": "Use the React design-system adapter for immediate binary changes, semantic switch behavior, and the Catalog 44px control geometry. Persistence and confirmation remain caller-owned."
+    },
+    "drawer": {
+      "status": "aligned",
+      "pandaExport": "Drawer",
+      "preferredImport": "@repo/components/ui",
+      "productionComponent": "Drawer",
+      "notes": "Use the Panda wrapper with an existing reviewed drawer flow; route, focus, dismissal, and responsive content behavior must be verified."
+    },
+    "form-field": {
+      "status": "aligned",
+      "pandaExport": "Form.Item",
+      "preferredImport": "@repo/components/ui",
+      "productionComponent": "Form.Item",
+      "notes": "Use Panda Form.Item for labels, help text, validation display, and required state around supported controls."
+    },
+    "text-input": {
+      "status": "aligned",
+      "pandaExport": "Input",
+      "preferredImport": "@repo/components/ui",
+      "productionComponent": "Input",
+      "notes": "Use the Panda wrapper for text entry. Prefix, suffix, validation, and controlled value behavior must follow the current API."
+    },
+    "textarea": {
+      "status": "aligned",
+      "pandaExport": "Input.TextArea",
+      "preferredImport": "@repo/components/ui",
+      "productionComponent": "Input.TextArea",
+      "notes": "Use Panda Input.TextArea for multiline entry and rely on its verified count, read-only, and status behavior."
+    },
+    "number-stepper": {
+      "status": "adapter",
+      "pandaExport": "InputNumber",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "NumberStepper design-system adapter",
+      "notes": "Use the React design-system adapter for Catalog size, shape, bounds, increment controls, and controlled numeric entry. Unit semantics and validation messages remain product behavior."
+    },
+    "combobox": {
+      "status": "adapter",
+      "pandaExport": "AutoComplete",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Combobox design-system adapter",
+      "notes": "Use the React design-system adapter for searchable single selection, query, loading, option groups, size, shape, and status. Fetching, ranking, and query policy remain product behavior."
+    },
+    "upload": {
+      "status": "adapter",
+      "pandaExport": "Upload",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Upload design-system adapter",
+      "notes": "Use the React design-system adapter for dropzone, trigger, avatar upload, local file list presentation, remove actions, complete/uploading/error states, and client-side selection. Upload targets, validation policy, server progress, and file lifecycle remain product-owned."
+    },
+    "stepper": {
+      "status": "adapter",
+      "pandaExport": "Steps",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Stepper design-system adapter",
+      "notes": "Use the React design-system adapter for default and flow-progress step anatomy, orientation, current state, disabled steps, and controlled navigation. Completion rules remain in the flow adapter."
+    },
+    "progress": {
+      "status": "adapter",
+      "pandaExport": "Progress",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Progress design-system adapter",
+      "notes": "Use the React design-system adapter for supplied progress values, default/success/error status, indeterminate loading, and accessible progress semantics. Completion meaning remains product-owned."
+    },
+    "toast": {
+      "status": "adapter",
+      "pandaExport": "message",
+      "preferredImport": "@repo/components/ui",
+      "productionComponent": "message",
+      "notes": "Use Panda message for transient feedback. Application context, queueing, duration, and recovery actions must follow a reviewed product pattern."
+    },
+    "notification": {
+      "status": "aligned",
+      "pandaExport": "notification",
+      "preferredImport": "@repo/components/ui",
+      "productionComponent": "notification",
+      "notes": "Use the Panda notification API for persistent transient feedback and keep product outcomes and actions in the caller."
+    },
+    "result": {
+      "status": "aligned",
+      "pandaExport": "Result",
+      "preferredImport": "@italki/panda",
+      "productionComponent": "Result",
+      "notes": "Use Panda Result for terminal or recoverable outcome presentation; the next action remains a product decision."
+    },
+    "skeleton": {
+      "status": "adapter",
+      "pandaExport": "Skeleton",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Skeleton design-system adapter",
+      "notes": "Use the React design-system adapter for Catalog text, content, avatar, button, input, image, and card placeholders. It honors reduced motion; do not use it to hide missing required content."
+    },
+    "dropdown-menu": {
+      "status": "adapter",
+      "pandaExport": "Dropdown",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "DropdownMenu design-system adapter",
+      "notes": "Use the React design-system adapter for menu placement, open state, icon sizing, disabled and destructive items, and keyboard dismissal. Item meaning, permissions, and analytics remain product behavior."
+    },
+    "disclosure": {
+      "status": "adapter",
+      "pandaExport": "Collapse",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Disclosure design-system adapter",
+      "notes": "Use the React design-system adapter for accordion/details anatomy, open state, disabled behavior, and the approved 24px disclosure icon."
+    },
+    "segmented-control": {
+      "status": "adapter",
+      "pandaExport": "Segmented",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "SegmentedControl design-system adapter",
+      "notes": "Use the React design-system adapter for the Catalog 32/40/48 geometry, rounded or pill shape, and immediate selected-mode state."
+    },
+    "time-slot": {
+      "status": "adapter",
+      "pandaExport": null,
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "TimeSlot design-system primitive",
+      "notes": "Use the React design-system primitive for availability and option appearances, booking locks, duration, selected state, loading, and delayed tooltips. Booking permissions and availability data remain product behavior."
+    },
+    "time-picker": {
+      "status": "adapter",
+      "pandaExport": "TimePicker",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "TimePicker design-system adapter",
+      "notes": "Use the React design-system adapter for controlled or uncontrolled open state, option-grid sizing, TimeSlot presentation, selected values, disabled state, and Escape/outside dismissal. Availability, timezone, and bookable-duration rules remain product-owned."
+    },
+    "calendar": {
+      "status": "adapter",
+      "pandaExport": "Calendar",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Calendar design-system adapter",
+      "notes": "Use the React design-system adapter for availability, teacher availability, compact availability, and lesson record views. It owns responsive day columns, sticky date headers, scrollable time areas, TimeSlot state, one-hour selection from 15-minute cells, week/date switching, and tooltip placement. Availability data, booking policy, timezone conversion, and lesson history retrieval remain product behavior."
+    },
+    "footer": {
+      "status": "adapter",
+      "pandaExport": null,
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Footer design-system composition",
+      "notes": "Use the React design-system Footer for its reviewed layout and accessible link groups. Footer links, locale, legal copy, social destinations, and utility controls remain product-supplied content."
+    },
+    "popover": {
+      "status": "adapter",
+      "pandaExport": "Popover",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Popover design-system adapter",
+      "notes": "Use the React design-system adapter for reviewed contextual floating content. It shares Popup placement, trigger, dismissal, and hover-delay behavior; keep trigger meaning and actions in the caller."
+    }
+  }
+}
