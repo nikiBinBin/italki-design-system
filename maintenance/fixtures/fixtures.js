@@ -533,6 +533,8 @@
         steppers: entries.stepper.map((item) => item.markup).join(""),
         progress: entries.progress.map((item) => item.markup).join(""),
         toasts: entries.toast.map((item) => item.markup).join(""),
+        notifications: entries.notification.map((item) => item.markup).join(""),
+        results: entries.result.map((item) => item.markup).join(""),
         skeletons: entries.skeleton.map((item) => item.markup).join(""),
         dropdownMenus: entries["dropdown-menu"].map((item) => item.markup).join(""),
         disclosures: entries.disclosure.map((item) => item.markup).join(""),

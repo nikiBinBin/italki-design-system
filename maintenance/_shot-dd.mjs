@@ -1,0 +1,12 @@
+import { chromium } from "playwright";
+const OUT = "/private/tmp/claude-501/-Users-nikiwen-Downloads-italkiDesignMD-0716/da7045cf-9031-4d01-a51d-222c3ae34006/scratchpad";
+const browser = await chromium.launch();
+const p = await browser.newPage({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 1.5 });
+await p.goto("http://127.0.0.1:5199/#dropdown-menu", { waitUntil: "load" });
+await p.waitForTimeout(700);
+await p.locator(".component-doc-block button").first().click();
+await p.waitForTimeout(400);
+const menu = await p.locator("[role='menu']").first().boundingBox();
+console.log("menu box:", JSON.stringify(menu));
+await p.screenshot({ path: `${OUT}/react-dd-open.png`, clip: { x: 60, y: 80, width: 700, height: 500 } });
+await browser.close();

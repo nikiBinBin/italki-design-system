@@ -21,7 +21,7 @@ const mimeTypes = {
 };
 
 function resolvedPath(urlPath) {
-  const requestPath = decodeURIComponent(urlPath === "/" ? "/COMPONENT_CATALOG.html" : urlPath);
+  const requestPath = decodeURIComponent(urlPath === "/" ? "/index.html" : urlPath);
   const filePath = path.resolve(root, `.${requestPath}`);
   return filePath.startsWith(`${root}${path.sep}`) ? filePath : null;
 }
@@ -52,5 +52,5 @@ server.on("error", (error) => {
 });
 
 server.listen(port, host, () => {
-  console.log(`italki UI Kit available at http://${host}:${port}/COMPONENT_CATALOG.html`);
+  console.log(`italki UI Kit available at http://${host}:${port}/index.html`);
 });
