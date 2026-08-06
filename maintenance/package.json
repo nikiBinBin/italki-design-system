@@ -13,7 +13,8 @@
     "test": "npm run test:contract && npm run test:visual",
     "lint:foundation": "node scripts/lint-foundation.mjs",
     "build:icons": "node scripts/build-icon-manifest.mjs",
-    "build:ds": "node scripts/build-ds-project.mjs && node scripts/build-ds-patterns.mjs"
+    "build:ds": "node scripts/build-ds-project.mjs && node scripts/build-ds-cards.mjs",
+    "audit:ds": "node scripts/audit-ds-cards.mjs .. ds-project"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0"

@@ -47,63 +47,113 @@ if (!UI) throw new Error('window.ITalkiUI was not installed — check catalog-ru
 // name: card + export name · fn: runtime renderer · key: contract key
 // group: display group the DS pane shows · slug: path segment (kept identical
 // to the previous upload so card URLs and the picker stay stable).
-const GROUPS = { A: 'Actions', DD: 'Data Display', F: 'Forms', FB: 'Feedback', O: 'Overlays', N: 'Navigation' };
-const SLUGS = { Actions: 'actions', 'Data Display': 'data-display', Forms: 'forms-inputs', Feedback: 'feedback', Overlays: 'overlays', Navigation: 'navigation' };
+// The Design pane groups by each card's `@dsCard group="…"` marker. Those
+// groups used to be invented here — Actions/Forms/… — and 28 of the 52
+// components landed in a section the Catalog does not put them in: Tabs under
+// Navigation instead of Data Display, Stepper under Feedback instead of Layout,
+// Dropdown menu under Actions instead of Overlays. Read the Catalog's own
+// taxonomy instead, so the two cannot disagree.
+//
+// Paths keep their original slug: the pane indexes by the marker, not the path,
+// and re-slugging would fork every card URL while the old files stayed behind.
+const CATALOG_HTML = readFileSync(join(REPO, 'index.html'), 'utf8');
+const catalogTaxonomy = () => {
+  const start = CATALOG_HTML.indexOf('const groups = [');
+  const end = CATALOG_HTML.indexOf('const navigationComponents', start);
+  if (start < 0 || end < 0) throw new Error('Could not find the Catalog group tables in index.html');
+  const table = new Map();
+  let rank = 0;
+  const take = (title, list) => {
+    for (const entry of list.split(';')) {
+      const label = entry.split('|')[0].trim();
+      if (label) table.set(label.toLowerCase(), { group: title, rank: rank++ });
+    }
+  };
+  const groupRule = /title:\s*"([^"]+)"[\s\S]{0,400}?parse\("([^"]*)"\)/g;
+  for (const m of CATALOG_HTML.slice(start, end).matchAll(groupRule)) {
+    if (m[1] === 'Principles' || m[1] === 'Foundation') continue;
+    take(m[1], m[2]);
+  }
+  const nav = CATALOG_HTML.match(/const navigationComponents = parse\("([^"]*)"\)/);
+  if (nav) take('Navigation', nav[1]);
+  if (table.size < 40) throw new Error(`Catalog taxonomy looked wrong: ${table.size} entries`);
+  return table;
+};
+const TAXONOMY = catalogTaxonomy();
+
+// Contract keys the Catalog lists under a different display name.
+const CATALOG_NAME = {
+  button: 'button variants', 'top-nav': 'top nav', 'dropdown-menu': 'dropdown menu',
+  'segmented-control': 'segmented control', 'text-input': 'text input',
+  'number-stepper': 'number stepper', 'form-field': 'form field',
+  'date-picker': 'date picker', 'time-picker': 'time picker', 'time-slot': 'time slot',
+  // Shipped renderers with their own contracts that the Catalog folds into a
+  // parent route rather than listing separately.
+  'checkbox-group': 'checkbox', combobox: 'select',
+};
+const SLUGS = {
+  General: 'actions', 'Data Entry': 'forms-inputs', 'Data Display': 'data-display',
+  Layout: 'data-display', Overlays: 'overlays', Feedback: 'feedback', Navigation: 'navigation',
+};
 
 const COMPONENTS = [
-  ['Button', 'button', 'button', GROUPS.A],
-  ['Chip', 'chip', 'chip', GROUPS.A],
-  ['DropdownMenu', 'dropdownMenu', 'dropdown-menu', GROUPS.A],
-  ['SegmentedControl', 'segmentedControl', 'segmented-control', GROUPS.A],
-  ['Avatar', 'avatar', 'avatar', GROUPS.DD],
-  ['Badge', 'badge', 'badge', GROUPS.DD],
-  ['Card', 'card', 'card', GROUPS.DD],
-  ['Disclosure', 'disclosure', 'disclosure', GROUPS.DD],
-  ['Divider', 'divider', 'divider', GROUPS.DD],
-  ['Panel', 'panel', 'panel', GROUPS.DD],
-  ['Statistic', 'statistic', 'statistic', GROUPS.DD],
-  ['Table', 'table', 'table', GROUPS.DD],
-  ['Tag', 'tag', 'tag', GROUPS.DD],
-  ['Timeline', 'timeline', 'timeline', GROUPS.DD],
-  ['Alert', 'alert', 'alert', GROUPS.FB],
-  ['Notification', 'notification', 'notification', GROUPS.FB],
-  ['Progress', 'progress', 'progress', GROUPS.FB],
-  ['Result', 'result', 'result', GROUPS.FB],
-  ['Skeleton', 'skeleton', 'skeleton', GROUPS.FB],
-  ['Stepper', 'stepper', 'stepper', GROUPS.FB],
-  ['Toast', 'toast', 'toast', GROUPS.FB],
-  ['Tooltip', 'tooltip', 'tooltip', GROUPS.FB],
-  ['Calendar', 'calendar', 'calendar', GROUPS.F],
-  ['Checkbox', 'checkbox', 'checkbox', GROUPS.F],
-  ['CheckboxGroup', 'checkboxGroup', 'checkbox-group', GROUPS.F],
-  ['Combobox', 'combobox', 'combobox', GROUPS.F],
-  ['DatePicker', 'datePicker', 'date-picker', GROUPS.F],
-  ['FormField', 'formField', 'form-field', GROUPS.F],
-  ['NumberStepper', 'numberStepper', 'number-stepper', GROUPS.F],
-  ['Radio', 'radio', 'radio', GROUPS.F],
-  ['Rate', 'rate', 'rate', GROUPS.F],
-  ['Search', 'search', 'search', GROUPS.F],
-  ['Select', 'select', 'select', GROUPS.F],
-  ['Selection', 'selection', 'selection', GROUPS.F],
-  ['Slider', 'slider', 'slider', GROUPS.F],
-  ['Switch', 'switchControl', 'switch', GROUPS.F],
-  ['TextInput', 'textInput', 'text-input', GROUPS.F],
-  ['Textarea', 'textarea', 'textarea', GROUPS.F],
-  ['TimePicker', 'timePicker', 'time-picker', GROUPS.F],
-  ['TimeSlot', 'timeSlot', 'time-slot', GROUPS.F],
-  ['Upload', 'upload', 'upload', GROUPS.F],
-  ['Breadcrumb', 'breadcrumb', 'breadcrumb', GROUPS.N],
-  ['Footer', 'footer', 'footer', GROUPS.N],
-  ['Pagination', 'pagination', 'pagination', GROUPS.N],
-  ['Sidebar', 'sidebar', 'sidebar', GROUPS.N],
-  ['Tabs', 'tabs', 'tabs', GROUPS.N],
-  ['TopNav', 'topNav', 'top-nav', GROUPS.N],
-  ['Drawer', 'drawer', 'drawer', GROUPS.O],
-  ['Modal', 'modal', 'modal', GROUPS.O],
-  ['Popconfirm', 'popconfirm', 'popconfirm', GROUPS.O],
-  ['Popover', 'popover', 'popover', GROUPS.O],
-  ['Popup', 'popup', 'popup', GROUPS.O],
-].map(([name, fn, key, group]) => ({ name, fn, key, group, slug: SLUGS[group] }));
+  ['Button', 'button', 'button', 'actions'],
+  ['Chip', 'chip', 'chip', 'actions'],
+  ['DropdownMenu', 'dropdownMenu', 'dropdown-menu', 'actions'],
+  ['SegmentedControl', 'segmentedControl', 'segmented-control', 'actions'],
+  ['Avatar', 'avatar', 'avatar', 'data-display'],
+  ['Badge', 'badge', 'badge', 'data-display'],
+  ['Card', 'card', 'card', 'data-display'],
+  ['Disclosure', 'disclosure', 'disclosure', 'data-display'],
+  ['Divider', 'divider', 'divider', 'data-display'],
+  ['Panel', 'panel', 'panel', 'data-display'],
+  ['Statistic', 'statistic', 'statistic', 'data-display'],
+  ['Table', 'table', 'table', 'data-display'],
+  ['Tag', 'tag', 'tag', 'data-display'],
+  ['Timeline', 'timeline', 'timeline', 'data-display'],
+  ['Alert', 'alert', 'alert', 'feedback'],
+  ['Notification', 'notification', 'notification', 'feedback'],
+  ['Progress', 'progress', 'progress', 'feedback'],
+  ['Result', 'result', 'result', 'feedback'],
+  ['Skeleton', 'skeleton', 'skeleton', 'feedback'],
+  ['Stepper', 'stepper', 'stepper', 'feedback'],
+  ['Toast', 'toast', 'toast', 'feedback'],
+  ['Tooltip', 'tooltip', 'tooltip', 'feedback'],
+  ['Calendar', 'calendar', 'calendar', 'forms-inputs'],
+  ['Checkbox', 'checkbox', 'checkbox', 'forms-inputs'],
+  ['CheckboxGroup', 'checkboxGroup', 'checkbox-group', 'forms-inputs'],
+  ['Combobox', 'combobox', 'combobox', 'forms-inputs'],
+  ['DatePicker', 'datePicker', 'date-picker', 'forms-inputs'],
+  ['FormField', 'formField', 'form-field', 'forms-inputs'],
+  ['NumberStepper', 'numberStepper', 'number-stepper', 'forms-inputs'],
+  ['Radio', 'radio', 'radio', 'forms-inputs'],
+  ['Rate', 'rate', 'rate', 'forms-inputs'],
+  ['Search', 'search', 'search', 'forms-inputs'],
+  ['Select', 'select', 'select', 'forms-inputs'],
+  ['Selection', 'selection', 'selection', 'forms-inputs'],
+  ['Slider', 'slider', 'slider', 'forms-inputs'],
+  ['Switch', 'switchControl', 'switch', 'forms-inputs'],
+  ['TextInput', 'textInput', 'text-input', 'forms-inputs'],
+  ['Textarea', 'textarea', 'textarea', 'forms-inputs'],
+  ['TimePicker', 'timePicker', 'time-picker', 'forms-inputs'],
+  ['TimeSlot', 'timeSlot', 'time-slot', 'forms-inputs'],
+  ['Upload', 'upload', 'upload', 'forms-inputs'],
+  ['Breadcrumb', 'breadcrumb', 'breadcrumb', 'navigation'],
+  ['Footer', 'footer', 'footer', 'navigation'],
+  ['Pagination', 'pagination', 'pagination', 'navigation'],
+  ['Sidebar', 'sidebar', 'sidebar', 'navigation'],
+  ['Tabs', 'tabs', 'tabs', 'navigation'],
+  ['TopNav', 'topNav', 'top-nav', 'navigation'],
+  ['Drawer', 'drawer', 'drawer', 'overlays'],
+  ['Modal', 'modal', 'modal', 'overlays'],
+  ['Popconfirm', 'popconfirm', 'popconfirm', 'overlays'],
+  ['Popover', 'popover', 'popover', 'overlays'],
+  ['Popup', 'popup', 'popup', 'overlays'],
+].map(([name, fn, key, publishedSlug]) => {
+  const entry = TAXONOMY.get(CATALOG_NAME[key] ?? key.replace(/-/g, ' '));
+  if (!entry) throw new Error(`${name} is not in the Catalog taxonomy — add it to index.html or to CATALOG_NAME`);
+  return { name, fn, key, group: entry.group, rank: entry.rank, slug: publishedSlug };
+}).sort((a, b) => a.rank - b.rank);
 
 // Most of the kit is width-filling: `.ui-stepper { width: min(100%, 720px) }`
 // and 30 other roots size themselves against their container. In a
