@@ -263,12 +263,15 @@ const CELLS = {
       { id: 'mira', label: 'Mira', icon: 'Assets/Icons/mira.svg' },
       { id: 'more', label: 'More', icon: 'Assets/Icons/more.svg', more: true },
     ];
-    const sections = [
-      { id: 'chats', label: 'Chats', open: false, items: [
-        { id: 'chat-0', label: 'Sarah: lesson follow-up' },
-        { id: 'chat-1', label: 'How can I improve my pronunciation?' },
-      ] },
-      { id: 'lessons', label: 'Lessons', open: false, items: [
+    const chatRows = [['SL', 'Sarah: lesson follow-up'], ['HY', 'How can I improve my pronunciation?']];
+    const sections = (open) => [
+      // Chat rows lead with a 24px empty avatar; lesson rows carry a count
+      // prefix, a divider, and a secondary line. This is the exact shape the
+      // Catalog's #sidebar route renders — templates should copy it.
+      { id: 'chats', label: 'Chats', open, items: chatRows.map(([initials, label], index) => (
+        { id: `chat-${index}`, label, leading: UI.avatar({ name: label, initials, size: 24, variant: 'empty' }) }
+      )) },
+      { id: 'lessons', label: 'Lessons', open, items: [
         { id: 'lesson-0', prefix: '108', divider: true, label: 'Scarlet Lorraine', secondary: 'English' },
         { id: 'lesson-1', prefix: '32', divider: true, label: 'Sunshine Yolanda', secondary: 'Chinese (Mandarin)' },
       ] },
@@ -281,10 +284,11 @@ const CELLS = {
       label: '$3355.50 USD', variant: 'secondary', size: 40, shape: 'pill',
       leadingIcon: 'Assets/Icons/wallet.svg',
     }) + UI.avatar({ name: 'Open account', initials: 'NK', size: 40, variant: 'empty' });
-    const base = { items, sections, moreItems, footer, ariaLabel: 'Workspace sidebar' };
+    const base = { items, sections: sections(false), moreItems, footer, ariaLabel: 'Workspace sidebar' };
     return [
       ['variant = normal', { ...base, id: 'sidebar-normal', variant: 'normal' }],
       ['variant = plus', { ...base, id: 'sidebar-plus', variant: 'plus' }],
+      ['sections expanded', { ...base, id: 'sidebar-expanded', variant: 'normal', sections: sections(true) }],
     ];
   })(),
   badge: (() => {
@@ -390,7 +394,7 @@ function cellsFor(c) {
   const push = (label, props) => {
     try {
       const html = UI[c.fn](props);
-      if (typeof html === 'string' && html.trim()) cells.push({ label, html });
+      if (typeof html === 'string' && html.trim()) cells.push({ label, html, props });
       else cells.push({ label, html: '', error: 'renderer returned nothing' });
     } catch (e) {
       cells.push({ label, html: '', error: e.message });
@@ -476,6 +480,35 @@ export declare const ${c.name}: React.ComponentType<${c.name}Props>;
 `);
 
   const axisNote = axis ? `\nPrimary variant axis: \`${axis}\` — ${enums[axis].map((v) => `\`${v}\``).join(', ')}.\n` : '';
+
+  // The props interface names structured props (items, sections, footer…) but
+  // cannot express their shapes, and a generator that guesses a shape produces
+  // rows the renderer silently degrades — the teacher-search template invented
+  // {label, secondary} chat items and lost the avatars the Catalog shows. So
+  // every prompt carries the exact props its card rendered with. Long strings
+  // (rendered HTML passed into slots) are elided but keep their head, which is
+  // enough to see that a slot takes rendered markup from another component.
+  const elide = (value) => {
+    if (typeof value === 'string' && value.length > 96) return `${value.slice(0, 93)}…`;
+    if (Array.isArray(value)) return value.map(elide);
+    if (value && typeof value === 'object') {
+      return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, elide(v)]));
+    }
+    return value;
+  };
+  const exampleCell = cells.find((x) => !x.error && x.props);
+  const exampleNote = exampleCell ? `
+## Example — the exact props behind the card's “${exampleCell.label}” cell
+
+\`\`\`json
+${JSON.stringify(elide(exampleCell.props), null, 2)}
+\`\`\`
+
+Structured props (arrays, section/item objects, HTML slot strings) must follow
+these shapes — inventing a leaner shape renders, but silently drops the parts
+the shape carries (leading avatars, prefixes, dividers). Values ending in \`…\`
+are elided rendered-HTML strings; build them with \`window.ItalkiUI.raw.<fn>()\`.
+` : '';
   write(`${dir}/${c.name}.prompt.md`, `${c.name} from the italki UI Kit. Use via \`window.ItalkiUI.${c.name}\` (bundle loaded from the root \`_ds_bundle.js\`). No provider wrapper is needed — the component renders the catalog runtime's own markup and reads its styling from \`styles.css\`.
 ${axisNote}
 ## Props
@@ -489,7 +522,7 @@ ${propLines.join('\n')}
 Props are asserted at runtime against \`contracts.js\`: passing a prop this
 component does not accept throws \`${c.key} does not accept prop <name>\`. The
 accepted set above is therefore exhaustive.
-
+${exampleNote}
 ## Cells shown on the card
 
 ${cells.filter((x) => !x.error).map((x) => `- ${x.label}`).join('\n')}
