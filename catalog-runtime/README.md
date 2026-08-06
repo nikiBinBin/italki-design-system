@@ -12,7 +12,7 @@ This folder powers the shareable static Design Catalog. It is not a React packag
 
 ## Boundary
 
-`index.html` consumes this folder. `react-web/` is the React Web implementation that product applications consume. Panda remains the underlying technical library; this runtime does not modify Panda.
+`index.html` consumes this folder. `react-web/` is the React Web implementation that product applications consume.
 
 ## Generated Files
 

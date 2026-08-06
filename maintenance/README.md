@@ -2,7 +2,7 @@
 
 This directory contains validation-only tooling for the local design-system Catalog. It is not required to view or distribute `index.html`.
 
-- `scripts/` builds the browser-readable component, Foundation, and Panda API indexes, and checks tokens, props, ARIA, asset roots, production mappings, and Catalog consumption. `build-ds-project.mjs` builds the claude.ai/design payload from the catalog runtime.
+- `scripts/` builds the browser-readable component and Foundation API indexes, and checks tokens, props, ARIA, asset roots, production mappings, and Catalog consumption. `build-ds-project.mjs` builds the claude.ai/design payload from the catalog runtime.
 - `fixtures/` contains visual regression inputs.
 - `tests/` contains the Playwright checks and their snapshots.
 

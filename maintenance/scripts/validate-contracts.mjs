@@ -16,8 +16,6 @@ const catalogStyle = read("catalog.css");
 const componentsDoc = read("docs/COMPONENTS.md");
 const componentApi = JSON.parse(read("catalog-runtime/component-api.json"));
 const foundationApi = JSON.parse(read("catalog-runtime/foundation-api.json"));
-const productionMappingStatuses = new Set(["aligned", "adapter", "composed", "gap", "legacy"]);
-const productionTokenMappingStatuses = new Set(["aligned", "override", "gap"]);
 
 assert(catalog.includes('<link rel="stylesheet" href="catalog.css" />'), "Catalog shell styles must live outside the document");
 assert(!catalog.includes("<style>"), "Catalog must not embed its presentation CSS");
@@ -25,38 +23,21 @@ assert.deepEqual(Object.keys(componentApi.components).sort(), Object.keys(manife
 assert.deepEqual(componentApi.usagePolicy.allowedFamilies, ["Color", "Typography", "Spacing", "Radius", "Shadow", "Motion"], "Component API must constrain consumers to registered Foundation token families");
 const catalogColorTokens = Object.keys(manifest.tokens).filter((name) => name.startsWith("--ui-color-"));
 assert.deepEqual(Object.keys(foundationApi.colors).sort(), catalogColorTokens.sort(), "Foundation API must index every Catalog color token");
+/* The Catalog no longer declares how a token maps to any upstream library, so
+   the only thing left to assert is that the generated Foundation API still
+   carries the value the Foundation defines. */
 for (const name of catalogColorTokens) {
-  const mapping = manifest.productionTokenMappings?.color?.[name];
-  const apiMapping = foundationApi.colors[name];
-  assert(mapping, `Production color mapping is required for: ${name}`);
-  assert(productionTokenMappingStatuses.has(mapping.status), `Production color mapping has an invalid status for: ${name}`);
-  assert(typeof mapping.projectOverride === "string" && mapping.projectOverride.length > 0, `Production color mapping must record the project override location for: ${name}`);
-  assert(typeof mapping.notes === "string" && mapping.notes.length > 0, `Production color mapping must explain the implementation boundary for: ${name}`);
-  assert.equal(apiMapping.value, manifest.tokens[name], `Foundation API color value drifted for: ${name}`);
-  assert.deepEqual(
-    { status: apiMapping.status, pandaToken: apiMapping.pandaToken, projectOverride: apiMapping.projectOverride, notes: apiMapping.notes },
-    mapping,
-    `Foundation API production mapping drifted for: ${name}`
-  );
+  assert.equal(foundationApi.colors[name].value, manifest.tokens[name], `Foundation API color value drifted for: ${name}`);
 }
-assert.deepEqual(Object.keys(manifest.productionTokenMappings?.color || {}).sort(), catalogColorTokens.sort(), "Every Catalog color token must have exactly one production mapping");
 for (const [name, contract] of Object.entries(manifest.components)) {
   const apiContract = componentApi.components[name];
-  const implementation = manifest.productionMappings?.[name];
   assert.deepEqual(apiContract.props, contract.acceptedProps, `Component API props drifted for: ${name}`);
   assert.deepEqual(apiContract.enums, contract.props || {}, `Component API enums drifted for: ${name}`);
   assert.deepEqual(apiContract.states, contract.requiredStates || [], `Component API states drifted for: ${name}`);
   assert.deepEqual(Object.keys(apiContract.defaults), contract.acceptedProps, `Component API defaults drifted for: ${name}`);
   assert.deepEqual(apiContract.allowedTokens, componentApi.usagePolicy.allowedFamilies, `Component API token policy drifted for: ${name}`);
-  assert(implementation, `Production mapping is required for: ${name}`);
-  assert(productionMappingStatuses.has(implementation.status), `Production mapping has an invalid status for: ${name}`);
-  assert(typeof implementation.preferredImport === "string" && implementation.preferredImport.length > 0, `Production mapping must declare a preferred import for: ${name}`);
-  assert(typeof implementation.productionComponent === "string" && implementation.productionComponent.length > 0, `Production mapping must declare a production component for: ${name}`);
-  assert(typeof implementation.notes === "string" && implementation.notes.length > 0, `Production mapping must explain the implementation boundary for: ${name}`);
-  assert.deepEqual(apiContract.implementation, implementation, `Component API production mapping drifted for: ${name}`);
 }
 
-assert.deepEqual(Object.keys(manifest.productionMappings || {}).sort(), Object.keys(manifest.components).sort(), "Every registered component must have exactly one production mapping");
 
 const migrated = new Set(manifest.migration?.migrated || []);
 const pending = new Set(manifest.migration?.pending || []);
@@ -418,7 +399,7 @@ assert.match(ui.timeline({ id: "timeline-accessibility", items: [{ id: "booked",
 assert.match(ui.topNav({ id: "top-nav-accessibility", leading: "Context" }), /<header[^>]*data-component="top-nav"[^>]*aria-label="Top navigation"/, "Top nav must expose a named navigation banner");
 assert.match(ui.topNavContext({ id: "top-nav-context-accessibility", selected: { id: "english", label: "English Teachers", flag: "Assets/Flags/us.svg" }, options: [{ id: "english", label: "English Teachers", flag: "Assets/Flags/us.svg" }], ariaLabel: "Teacher language" }), /aria-haspopup="menu"[^>]*aria-controls="top-nav-context-accessibility-menu"/, "Top nav context must expose its menu relationship");
 assert.match(ui.topNavSearch({ id: "top-nav-search-accessibility", placeholder: "Search teachers", ariaLabel: "Search teachers" }), /role="search"/, "Top nav search must expose a search region");
-assert.match(ui.chip({ label: "Default" }), /ui-chip--default/, "Chip must expose Panda's default content-fill surface");
+assert.match(ui.chip({ label: "Default" }), /ui-chip--default/, "Chip must expose its default content-fill surface");
 assert.match(ui.chip({ label: "White", surface: "white" }), /ui-chip--white/, "Chip must retain a distinct white surface");
 assert.match(ui.chip({ label: "Checked", checked: true }), /is-selected[^>]*aria-pressed="true"/, "Chip checked state must remain controlled and announced");
 assert.match(ui.chip({ label: "Compatibility", selected: true }), /is-selected[^>]*aria-pressed="true"/, "Chip selected alias must remain compatible with existing consumers");
@@ -481,7 +462,7 @@ assert.match(ui.notification({ tone: "error", title: "Payment needs updating" })
 assert.match(ui.result({ id: "result-accessibility", tone: "success", title: "Lesson booked" }), /role="status"[^>]*aria-labelledby="result-accessibility-title"/, "Result must expose its visible outcome title");
 assert.match(ui.result({ tone: "error", title: "Payment could not be completed" }), /role="alert"/, "Error Result must expose an alert outcome");
 assert(componentCSS.includes(".ui-timeline__dot:not(.has-custom-dot):not(.ui-timeline__dot--pending)::after { width: 4px; height: 4px;"), "Timeline semantic dots must retain their white inner dot");
-assert.match(ui.skeleton({ type: "content", avatar: true, lines: 2 }), /ui-skeleton--content[^]*ui-skeleton__header[^]*ui-skeleton__title[^]*ui-skeleton__paragraph/, "Skeleton must support Panda-style content composition with optional avatar, title, and paragraph slots");
+assert.match(ui.skeleton({ type: "content", avatar: true, lines: 2 }), /ui-skeleton--content[^]*ui-skeleton__header[^]*ui-skeleton__title[^]*ui-skeleton__paragraph/, "Skeleton must support composition-first content with optional avatar, title, and paragraph slots");
 const skeletonButtonMarkup = ui.skeleton({ type: "button", shape: "round" });
 assert.match(skeletonButtonMarkup, /ui-skeleton--button/, "Skeleton must provide the documented Button element");
 assert.match(skeletonButtonMarkup, /ui-skeleton--round/, "Skeleton must provide the documented Button element shape");

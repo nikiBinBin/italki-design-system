@@ -91,7 +91,6 @@ const components = Object.fromEntries(Object.entries(manifest.components).map(([
     states: contract.requiredStates || [],
     subcomponents: contract.subcomponents || {},
     allowedTokens: tokenPolicy.allowedFamilies,
-    implementation: manifest.productionMappings?.[name] || null
   }];
 }));
 
@@ -107,24 +106,16 @@ write("catalog-runtime/component-api.json", `${JSON.stringify(api, null, 2)}\n`)
 const titleCase = (value) => value.replace(/(^|[-\s])(\w)/g, (_, prefix, letter) => `${prefix}${letter.toUpperCase()}`);
 const enumText = (values) => values.map((value) => `\`${String(value)}\``).join(", ");
 const colorTokens = Object.fromEntries(Object.entries(manifest.tokens).filter(([name]) => name.startsWith("--ui-color-")));
-const colorMappings = manifest.productionTokenMappings?.color || {};
 const foundationApi = {
   schemaVersion: 1,
-  sourceOfTruth: ["catalog-runtime/contracts.json", "@italki/panda theme tokens", "current project ConfigProvider usage"],
-  statusDefinitions: {
-    aligned: "Panda exposes the matching semantic token with the Catalog value.",
-    override: "Panda exposes the semantic token, but the current value differs and requires a reviewed ConfigProvider override.",
-    gap: "No safe Panda semantic token or current project override exists. Do not substitute an approximate color."
-  },
-  colors: Object.fromEntries(Object.entries(colorTokens).map(([name, value]) => [name, {
-    value,
-    ...(colorMappings[name] || {})
-  }]))
+  sourceOfTruth: ["catalog-runtime/tokens.css via catalog-runtime/contracts.json"],
+  colors: Object.fromEntries(Object.entries(colorTokens).map(([name, value]) => [name, { value }]))
 };
 write("catalog-runtime/foundation-api.json", `${JSON.stringify(foundationApi, null, 2)}\n`);
 
-// The Panda mapping layer (panda-api.json, docs/reference/*.md and the
-// PANDA_IMPLEMENTATION_SUMMARY block in COMPONENTS.md) was removed: the
-// catalog is no longer mapped to Panda. The underlying data still lives in
-// contracts.json (productionMappings / productionApiMappings) — dormant, so
-// re-enabling is a matter of restoring this generator, not re-authoring it.
+// The Panda mapping layer is gone entirely. 368740a removed its documents but
+// left the data — productionMappings, productionTokenMappings and
+// productionApiMappings in contracts.json — dormant, which meant the contract
+// still asserted that every component and every colour declared how it mapped
+// to a library the Catalog no longer tracks. The contract now describes only
+// the Catalog itself.
