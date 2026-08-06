@@ -5,12 +5,11 @@ This repository is the framework-neutral (pure JS) italki Design Catalog: the ex
 ## Entry Points
 
 - **Live Catalog:** https://design.italkiux.com/ — browsable components and every documented state.
-- **For non-designers:** [docs/FOR-NON-DESIGNERS.md](docs/FOR-NON-DESIGNERS.md) — a three-step, copy-paste workflow for generating in-system UI with AI.
 
 ## Start Here
 
 - `index.html` and `catalog.css`: the shareable visual Catalog. Keep both at the repository root because the deployed static site loads them directly.
-- `docs/core/`: the authored system rules. Read `DESIGN.md`, `COMPONENTS.md`, `PATTERNS.md`, and `EXECUTION.md` in that order for a product implementation.
+- `docs/`: the four authored system documents. Read `DESIGN.md`, `COMPONENTS.md`, `PATTERNS.md`, and `EXECUTION.md` in that order for a product implementation.
 - `catalog-runtime/`: framework-neutral renderer, tokens, contracts, and generated API indexes used only by the Catalog and its validation tooling.
 - `Assets/`: approved icons, flags, and images.
 - `maintenance/`: contract generation, validation, local Catalog serving, and visual regression tests.
