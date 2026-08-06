@@ -29,6 +29,18 @@ const PORT = Number(flag('port', '4319'));
 
 // Route slug → card name. The group is the Design pane's section label; the
 // Catalog files these under Patterns, so the project does too.
+/* The Foundation pages are where the token values live — the colour ramp, the
+   type scale, the spacing and radius tables. They were never in the project at
+   all, which left an AI reading it with components but no scales. */
+const FOUNDATIONS = [
+  ['color', 'Color', 'Color'],
+  ['typography', 'Typography', 'Typography'],
+  ['spacing', 'Spacing', 'Spacing'],
+  ['grid', 'Grid', 'Grid'],
+  ['radius', 'Radius', 'Radius'],
+  ['shadow', 'Shadow', 'Shadow'],
+];
+
 const PATTERNS = [
   ['workspace-shell', 'WorkspaceShell', 'Workspace shell'],
   ['teacher-discovery', 'TeacherDiscovery', 'Teacher discovery'],
@@ -44,10 +56,14 @@ const PATTERNS = [
 /* Components: discovered from what build-ds-project.mjs wrote, so the two
    cannot fall out of step. The route is the card name kebab-cased, except
    where the Catalog files it under another name. */
-const ROUTE_ALIAS = {
-  Button: 'button-variants', CheckboxGroup: 'checkbox', Combobox: 'select',
-  Icon: 'icon-library', Logo: 'icon-library',
-};
+const ROUTE_ALIAS = { Button: 'button-variants', Icon: 'icon-library' };
+
+/* Cards with no Catalog route of their own. Pointing them at a neighbour's
+   route makes two cards render the same page: Logo and Icon both took
+   icon-library and came out byte-identical. These keep the sheet
+   build-ds-project.mjs generates for them from the contracts and the icon
+   manifest, which is the only place their content exists. */
+const KEEP_GENERATED = new Set(['Logo', 'CheckboxGroup', 'Combobox']);
 const kebab = (name) => name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 
 const componentTargets = () => {
@@ -60,6 +76,7 @@ const componentTargets = () => {
       if (entry.isDirectory()) { walk(full); continue; }
       if (!entry.name.endsWith('.html')) continue;
       const name = entry.name.replace(/\.html$/, '');
+      if (KEEP_GENERATED.has(name)) continue;
       out.push({ name, route: ROUTE_ALIAS[name] ?? kebab(name), file: full, kind: 'component' });
     }
   };
@@ -98,6 +115,7 @@ const usedClasses = new Set();
 
 const TARGETS = [
   ...PATTERNS.map(([route, name, title]) => ({ route, name, title, kind: 'pattern' })),
+  ...FOUNDATIONS.map(([route, name, title]) => ({ route, name, title, kind: 'foundation' })),
   ...componentTargets(),
 ];
 
@@ -105,6 +123,10 @@ for (const target of TARGETS) {
   const { route, name, kind } = target;
   const title = target.title ?? name;
   const isPattern = kind === 'pattern';
+  const isFoundation = kind === 'foundation';
+  /* Foundation pages are single documents, like patterns — the colour page has
+     no doc blocks at all, it is one composed sheet. */
+  const wholePage = isPattern || isFoundation;
   const page = await browser.newPage({ viewport: { width: 1440, height: 1600 } });
   await page.goto(`http://127.0.0.1:${PORT}/index.html?route=${route}#${route}`, { waitUntil: 'load' });
   try {
@@ -120,8 +142,12 @@ for (const target of TARGETS) {
   await page.waitForTimeout(500);
 
   const { blocks, intro } = await page.evaluate((wholeArticle) => {
-    /* Hover tooltips are transient and would freeze into the snapshot. */
-    document.querySelectorAll('.ui-tooltip').forEach((n) => n.remove());
+    /* Tooltips are hidden by CSS until their wrapper is hovered, and the card
+       is a live page, so they must ship — removing them left the Tooltip card
+       with twelve triggers and nothing to show. Only a tooltip the Catalog has
+       actively pinned open is transient; drop that state, not the element. */
+    document.querySelectorAll('.is-calendar-tooltip-active, .ui-tooltip-wrap.is-open')
+      .forEach((n) => n.classList.remove('is-calendar-tooltip-active', 'is-open'));
     /* A pattern is a page-level composition, so the unit is the whole detail
        article. Splitting on .component-doc-block loses everything the route
        renders outside one: the Teacher card route puts its two cards directly
@@ -147,7 +173,7 @@ for (const target of TARGETS) {
       }
     }
     return { blocks: found, intro: document.querySelector('main .intro')?.textContent?.trim() ?? '' };
-  }, isPattern);
+  }, wholePage);
   await page.close();
 
   if (!blocks.length) {
@@ -178,10 +204,12 @@ for (const target of TARGETS) {
 
   /* Components keep the group marker build-ds-project.mjs derived from the
      Catalog taxonomy, and their published path, so nothing re-slugs. */
-  const group = isPattern
-    ? 'Patterns'
+  const group = isPattern ? 'Patterns'
+    : isFoundation ? 'Foundation'
     : (readFileSync(target.file, 'utf8').match(/@dsCard group="([^"]+)"/)?.[1] ?? 'Components');
-  const dir = isPattern ? `patterns/${name}` : dirname(target.file).slice(OUT.length + 1);
+  const dir = isPattern ? `patterns/${name}`
+    : isFoundation ? `components/foundations/${name}`
+    : dirname(target.file).slice(OUT.length + 1);
   write(`${dir}/${name}.html`, `<!-- @dsCard group="${group}" -->
 <!doctype html>
 <html lang="en"><head>
@@ -195,6 +223,13 @@ for (const target of TARGETS) {
   .ds-grid{display:flex;flex-direction:column;gap:var(--ui-space-8,32px)}
   .cell{min-width:0}
   .cell-label{font-size:12px;line-height:16px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ui-color-secondary);margin:0 0 var(--ui-space-2,8px)}
+  /* Calendar and TimeSlot gate their tooltips on a class the runtime adds while
+     pointing at a slot, so on a static card — which ships no handlers — they
+     could never appear. Let plain :hover stand in, so the card shows the same
+     thing the Catalog does when you hover a slot. */
+  .ui-calendar__slot .ui-tooltip-wrap:hover > .ui-tooltip,
+  .ui-time-slot .ui-tooltip-wrap:hover > .ui-tooltip,
+  .ui-tooltip-wrap:hover > .ui-tooltip{opacity:1;pointer-events:auto;visibility:visible}
 </style>
 </head><body>
 <div class="ds-grid">
@@ -203,6 +238,17 @@ ${body}
 </body></html>
 `);
 
+  if (isFoundation) write(`${dir}/${name}.prompt.md`, `${title} — an italki Foundation page, not a component.
+
+${intro}
+
+These are the values every component is built from. Use the tokens, never the
+literals: \`var(--ui-color-…)\`, \`var(--ui-space-…)\`, \`var(--ui-radius-…)\`,
+\`var(--ui-shadow-…)\`, all defined in \`tokens/tokens.css\`. A value that is not
+on these scales is off-system even when it looks right.
+
+The rendered card is the reference.
+`);
   if (isPattern) write(`${dir}/${name}.prompt.md`, `${title} — an italki product pattern, not a component.
 
 ${intro}

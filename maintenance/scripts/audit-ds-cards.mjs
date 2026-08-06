@@ -7,11 +7,15 @@ import path from 'node:path';
    reproduce, so drift is found here rather than by the person reading the
    published project.
 
-   Three questions per card, each one a defect a screenshot would show:
+   Four questions per card, each one a defect a screenshot would show:
      coverage  — does the card render the states the Catalog route renders?
      integrity — does anything overflow, clip, 404, or fail to paint?
      styling   — is anything landing with no styles (a class whose rules were
-                 never shipped, which is how the Filter pattern collapsed)? */
+                 never shipped, which is how the Filter pattern collapsed)?
+     identity  — is this card a copy of another one?
+     hover     — do the tooltips actually reveal? The extractor once stripped
+                 every bubble, leaving the Tooltip card with twelve triggers
+                 and nothing behind them, and no static check saw it. */
 
 const REPO = process.argv[2];
 const STAGE = process.argv[3];
@@ -34,9 +38,12 @@ const ROUTE = {
   Button: 'button-variants', SegmentedControl: 'segmented-control', DropdownMenu: 'dropdown-menu',
   TopNav: 'top-nav', TextInput: 'text-input', NumberStepper: 'number-stepper',
   FormField: 'form-field', DatePicker: 'date-picker', TimePicker: 'time-picker',
-  TimeSlot: 'time-slot', CheckboxGroup: 'checkbox', Combobox: 'select',
-  Icon: 'icon-library', Logo: 'icon-library',
+  TimeSlot: 'time-slot', Icon: 'icon-library',
 };
+/* Cards the Catalog has no page for — their content is generated from the
+   contracts and the icon manifest, so there is no route to compare against.
+   Integrity and duplicate checks still apply; coverage does not. */
+const NO_ROUTE = new Set(['Logo', 'CheckboxGroup', 'Combobox']);
 const routeFor = (name) => ROUTE[name] ?? name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 
 const measure = (root) => {
@@ -91,9 +98,10 @@ for (const root of ['components', 'patterns']) {
 }
 
 const findings = [];
+const fingerprints = new Map();
 for (const rel of cards.sort()) {
   const name = path.basename(rel, '.html');
-  const route = routeFor(name);
+  const route = NO_ROUTE.has(name) ? null : routeFor(name);
 
   const cardPage = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
   const broken = [];
@@ -103,11 +111,36 @@ for (const rel of cards.sort()) {
   await cardPage.goto(`http://127.0.0.1:4461/${rel}`, { waitUntil: 'networkidle' });
   await cardPage.waitForTimeout(120);
   const card = await cardPage.evaluate(measure, 'card');
+
+  /* Hover a few wrappers for real: a tooltip that never reveals is invisible
+     to any check of the markup alone. */
+  let hoverTried = 0, hoverShown = 0;
+  for (const wrap of (await cardPage.$$('.ui-tooltip-wrap')).slice(0, 3)) {
+    const bubble = await wrap.$('.ui-tooltip');
+    if (!bubble) continue;
+    /* A wrapper the kit deliberately silences is not a failure to reveal. */
+    if (await wrap.evaluate((n) => n.classList.contains('is-tooltip-disabled'))) continue;
+    hoverTried++;
+    try {
+      /* Park the pointer first: Calendar's 15-minute strips are 10px tall, so
+         the bubble from the previous hover sits over the next one and the
+         check would blame the card for the test's own leftovers. */
+      await cardPage.mouse.move(0, 0);
+      await cardPage.waitForTimeout(60);
+      await wrap.hover({ timeout: 1500 });
+      await cardPage.waitForTimeout(220);
+      const shown = await bubble.evaluate((n) => {
+        const cs = getComputedStyle(n);
+        return cs.opacity !== '0' && cs.visibility !== 'hidden';
+      });
+      if (shown) hoverShown++;
+    } catch { /* not hoverable at this viewport; counted as not shown */ }
+  }
   await cardPage.close();
 
-  const catalogPage = await browser.newPage({ viewport: { width: 1440, height: 1400 } });
   let catalog = null;
-  await catalogPage.goto(`http://127.0.0.1:4460/index.html?route=${route}#${route}`, { waitUntil: 'load' });
+  const catalogPage = route ? await browser.newPage({ viewport: { width: 1440, height: 1400 } }) : null;
+  if (catalogPage) { await catalogPage.goto(`http://127.0.0.1:4460/index.html?route=${route}#${route}`, { waitUntil: 'load' });
   try {
     await catalogPage.waitForFunction(
       () => (document.querySelector('main')?.innerText ?? '').trim().length > 0,
@@ -116,7 +149,7 @@ for (const rel of cards.sort()) {
     await catalogPage.waitForTimeout(350);
     catalog = await catalogPage.evaluate(measure, 'catalog');
   } catch { /* route missing — reported below */ }
-  await catalogPage.close();
+  await catalogPage.close(); }
 
   const issues = [];
   if (broken.length) issues.push(`404 ×${broken.length} (${[...new Set(broken)].slice(0, 2).join(', ')})`);
@@ -124,8 +157,9 @@ for (const rel of cards.sort()) {
   if (!card || card.painted === 0) issues.push('renders nothing');
   if (card?.offpage) issues.push(`${card.offpage} element(s) off-page`);
   if (card?.unstyled) issues.push(`${card.unstyled} element(s) look unstyled`);
-  if (!catalog) issues.push(`no Catalog route "${route}"`);
-  else if (card) {
+  if (hoverTried && hoverShown < hoverTried) issues.push(`tooltip does not reveal on hover (${hoverShown}/${hoverTried})`);
+  if (route && !catalog) issues.push(`no Catalog route "${route}"`);
+  else if (catalog && card) {
     const missing = catalog.kinds.filter((k) => !card.kinds.includes(k));
     if (missing.length) issues.push(`missing component kinds: ${missing.join(', ')}`);
     /* Text is a blunt proxy, but a card at a third of its route's content is
@@ -134,6 +168,13 @@ for (const rel of cards.sort()) {
       issues.push(`content thin: ${card.text} vs ${catalog.text} chars`);
     }
   }
+  /* Two cards rendering the same page is invisible to every check above —
+     both are full, both match their route. Icon and Logo shipped byte-identical
+     because they were pointed at the same route. */
+  const body = fs.readFileSync(path.join(STAGE, rel), 'utf8').replace(/^.*?<body>/s, '');
+  const seen = fingerprints.get(body);
+  if (seen) issues.push(`identical to ${seen}`); else fingerprints.set(body, name);
+
   if (issues.length) findings.push({ name, route, issues });
 }
 
@@ -146,7 +187,7 @@ if (!findings.length) {
   console.log('no discrepancies');
 } else {
   for (const f of findings) {
-    console.log(`  ${f.name}  (route: ${f.route})`);
+    console.log(`  ${f.name}  (route: ${f.route ?? 'none — generated'})`);
     for (const i of f.issues) console.log(`      · ${i}`);
   }
   console.log(`\n${findings.length} card(s) with findings`);
