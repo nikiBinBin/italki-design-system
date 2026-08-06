@@ -67,9 +67,9 @@ A good design decision should make at least one principle stronger without serio
 
 This file is the product and design-direction source of truth. It defines why an experience should exist, which tradeoffs are acceptable, and the visual and behavioral character it must preserve.
 
-- `docs/core/COMPONENTS.md` defines Foundations, Content Style, and reusable UI component contracts.
-- `docs/core/PATTERNS.md` defines italki product compositions and object relationships using those components.
-- `docs/core/EXECUTION.md` defines page-level responsive behavior, interaction, state, accessibility behavior, and implementation constraints.
+- `docs/COMPONENTS.md` defines Foundations, Content Style, and reusable UI component contracts.
+- `docs/PATTERNS.md` defines italki product compositions and object relationships using those components.
+- `docs/EXECUTION.md` defines page-level responsive behavior, interaction, state, accessibility behavior, and implementation constraints.
 - `index.html` is the visual browser for reviewed design-principle content, Foundations, components, and documented product patterns. It keeps components and patterns in separate navigation groups and is not an additional prose specification.
 
 ## Product Design Direction
