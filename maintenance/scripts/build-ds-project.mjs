@@ -105,6 +105,87 @@ const COMPONENTS = [
   ['Popup', 'popup', 'popup', GROUPS.O],
 ].map(([name, fn, key, group]) => ({ name, fn, key, group, slug: SLUGS[group] }));
 
+// Most of the kit is width-filling: `.ui-stepper { width: min(100%, 720px) }`
+// and 30 other roots size themselves against their container. In a
+// shrink-to-fit flex cell that `100%` is circular and collapses to the
+// content's minimum, which is why Stepper's labels sat on top of its
+// connectors. Rather than hand-maintain a width per card, read the intended
+// width out of the stylesheet the component actually ships with.
+const COMPONENT_CSS = readFileSync(join(RUNTIME, 'italki-ui.css'), 'utf8');
+const TOKEN_CSS = readFileSync(join(RUNTIME, 'tokens.css'), 'utf8');
+const widthToken = (name) => {
+  const hit = TOKEN_CSS.match(new RegExp(`${name}:\\s*([0-9]+)px`));
+  return hit ? Number(hit[1]) : null;
+};
+const ruleWidth = (selector) => {
+  const rule = COMPONENT_CSS.match(new RegExp(`\\${selector} \\{([^}]*)\\}`));
+  if (!rule) return null;
+  const decl = rule[1].match(/(?:^|;)\s*width:\s*([^;]+)/);
+  if (!decl) return null;
+  const value = decl[1].trim();
+  if (value === '100%') return 'full';
+  const px = value.match(/^min\(100%,\s*([0-9]+)px\)$/);
+  if (px) return Number(px[1]);
+  const token = value.match(/^min\(100%,\s*var\((--ui-width-[a-z-]+)\)\)$/);
+  if (token) return widthToken(token[1]);
+  return null;
+};
+// The rendered markup names its own root class, so the lookup follows whatever
+// the renderer actually emitted rather than a mapping that can drift.
+const intendedWidth = (html) => {
+  const classes = html.match(/^<[a-z]+[^>]*\sclass="([^"]+)"/);
+  if (!classes) return null;
+  const names = classes[1].split(/\s+/).filter((n) => n.startsWith('ui-'));
+  // Modifiers are more specific than the base, so try them first.
+  for (const name of [...names].reverse()) {
+    const found = ruleWidth(`.${name}`);
+    if (found !== null) return found;
+  }
+  return null;
+};
+
+// Five contracts declare subcomponents with their own renderers, and the enum
+// sweep — which only ever calls one renderer — could not reach them. The Avatar
+// card showed four `variant` values and no avatar group at all, even though
+// `group` is one of its documented states. Each entry renders after the sweep.
+const SUBCOMPONENTS = {
+  avatar: [
+    ['group', 'avatarGroup', { members: [
+      { name: 'Maya Chen', initials: 'MC' }, { name: 'Elena Ruiz', initials: 'ER' },
+      { name: 'James Park', initials: 'JP' },
+    ], overflow: 5, addLabel: 'Add member', size: 'md', ariaLabel: 'Teacher group' }],
+    ['group — empty tones', 'avatarGroup', { members: [
+      { name: 'Avery', initials: 'A', variant: 'empty', tone: 'warning' },
+      { name: 'Bao', initials: 'B', variant: 'empty', tone: 'success' },
+      { name: 'Carmen', initials: 'C', variant: 'empty', tone: 'info' },
+      { name: 'italki', variant: 'logo' },
+    ], size: 'md', ariaLabel: 'Empty avatar group' }],
+    ['flag', 'flag', { countryCode: 'us', countryLabel: 'USA', size: 24 }],
+  ],
+  radio: [
+    ['group', 'radioGroup', { label: 'Lesson length', selected: '60', options: [
+      { value: '30', label: '30 minutes' }, { value: '60', label: '60 minutes' }, { value: '90', label: '90 minutes' },
+    ] }],
+  ],
+  selection: [
+    ['group', 'selectionGroup', { label: 'Lesson type', selectionMode: 'radio', selected: 'trial', options: [
+      { value: 'trial', label: 'Trial lesson', description: 'A shorter first lesson.' },
+      { value: 'regular', label: 'Regular lesson', description: 'A full-length lesson.' },
+    ] }],
+  ],
+  topNav: [
+    ['context', 'topNavContext', { selected: { id: 'spanish', label: 'Spanish teachers', flag: 'Assets/Flags/es.svg' }, options: [
+      { id: 'spanish', label: 'Spanish teachers', flag: 'Assets/Flags/es.svg' },
+      { id: 'english', label: 'English teachers', flag: 'Assets/Flags/gb.svg' },
+    ] }],
+    ['search', 'topNavSearch', { placeholder: 'Search topics', filter: true, filterLabel: 'Filter' }],
+  ],
+  slider: [
+    ['range', 'sliderRange', { label: 'Price per hour', lower: 20, upper: 70 }],
+    ['vertical', 'sliderVertical', { label: 'Volume', value: 60 }],
+  ],
+};
+
 // Overlay components render outside their trigger's box, so a shrink-to-fit
 // grid cell is the wrong container for them and the card shows the damage:
 // anchored surfaces (absolutely positioned against the trigger) collide with
@@ -415,14 +496,26 @@ function cellsFor(c) {
   const push = (label, props) => {
     try {
       const html = UI[c.fn](props);
-      if (typeof html === 'string' && html.trim()) cells.push({ label, html, props });
+      if (typeof html === 'string' && html.trim()) cells.push({ label, html, props, width: intendedWidth(html) });
       else cells.push({ label, html: '', error: 'renderer returned nothing' });
     } catch (e) {
       cells.push({ label, html: '', error: e.message });
     }
   };
+  const pushSub = () => {
+    for (const [label, fn, props] of SUBCOMPONENTS[c.fn] ?? []) {
+      try {
+        const html = UI[fn](props);
+        if (typeof html === 'string' && html.trim()) cells.push({ label, html, props, width: intendedWidth(html) });
+        else cells.push({ label, html: '', error: `${fn} returned nothing` });
+      } catch (e) {
+        cells.push({ label, html: '', error: e.message });
+      }
+    }
+  };
   if (explicit) {
     for (const [label, props] of explicit) push(label, { ...base, ...props });
+    pushSub();
     return { cells, axis: null };
   }
   if (axis) for (const v of values) push(`${axis} = ${v}`, { ...base, [axis]: v });
@@ -431,6 +524,7 @@ function cellsFor(c) {
   // often needed and least often obvious from the axis sweep.
   const accepted = CONTRACTS[c.key]?.acceptedProps ?? [];
   if (accepted.includes('disabled')) push('disabled', { ...base, disabled: true });
+  pushSub();
   return { cells, axis };
 }
 
@@ -473,12 +567,17 @@ for (const c of COMPONENTS) {
   .cell--anchored{flex:0 0 100%;width:100%}
   .cell--anchored>.cell-body{display:grid;place-items:center;padding:var(--ui-space-12,96px) 0}
   /* Full-surface overlays take their own row so width:100% has a width. */
-  .cell--surface{flex:0 0 100%;width:100%}
+  .cell--surface,.cell--full{flex:0 0 100%;width:100%}
   .cell-label{font-size:12px;line-height:16px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ui-color-secondary);margin:0 0 var(--ui-space-2,8px)}
 </style>
 </head><body>
 <div class="ds-grid">
-${cells.filter((x) => !x.error).map((x) => `  <div class="cell${STAGE[c.fn] ? ` cell--${STAGE[c.fn]}` : ''}"><div class="cell-label">${escape(x.label)}</div><div class="cell-body">${localizeAssets(x.html)}</div></div>`).join('\n')}
+${cells.filter((x) => !x.error).map((x) => {
+  const stage = STAGE[c.fn] ? ` cell--${STAGE[c.fn]}` : '';
+  const sized = stage || x.width === null ? '' : x.width === 'full' ? ' cell--full' : ` style="width:${x.width}px"`;
+  const attrs = sized.startsWith(' style') ? `class="cell${stage}"${sized}` : `class="cell${stage}${sized}"`;
+  return `  <div ${attrs}><div class="cell-label">${escape(x.label)}</div><div class="cell-body">${localizeAssets(x.html)}</div></div>`;
+}).join('\n')}
 </div>
 </body></html>
 `);
@@ -727,6 +826,65 @@ exposes the runtime's full set of renderers (including subcomponents such as
 is the machine-readable contract the assertions come from.
 `);
 
+// ── Foundation cards ──────────────────────────────────────────────────────
+// components/foundations/{Icon,Logo} were hand-authored in the very first
+// upload and never regenerated, so the Icon card still showed the 19 glyphs
+// that upload happened to include while the library grew to 305. Generate both
+// from icon-manifest.js — the same generated listing the Catalog's Icon Library
+// renders — so they cannot drift again.
+{
+  const manifest = readFileSync(join(RUNTIME, 'icon-manifest.js'), 'utf8');
+  const icons = [...manifest.matchAll(/"(Assets\/Icons\/[^"]+)"/g)].map((m) => m[1]);
+  if (!icons.length) throw new Error('icon-manifest.js listed no icons — run build-icon-manifest.mjs');
+  const label = (asset) => asset.split('/').pop().replace(/\.svg$/i, '');
+  const isLogo = (asset) => /logo-italki|Plustag|plus-features-label/.test(asset);
+
+  const tile = (asset, size) => `    <figure class="icon-tile"><img src="../../../${asset}" alt="" width="${size}" height="${size}" loading="lazy"><figcaption>${escape(label(asset))}</figcaption></figure>`;
+  const sheet = (name, title, group, entries, size, note) => {
+    const dir = `components/foundations/${name}`;
+    write(`${dir}/${name}.html`, `<!-- @dsCard group="${group}" -->
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>${title} — italki UI Kit</title>
+<link rel="stylesheet" href="../../../styles.css">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page,#FFFFFF);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ui-color-text)}
+  .icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:var(--ui-space-3,12px)}
+  .icon-tile{display:grid;justify-items:center;gap:var(--ui-space-2,8px);margin:0;padding:var(--ui-space-4,16px) var(--ui-space-2,8px);border-radius:var(--ui-radius-lg,12px);background:var(--ui-color-divider)}
+  .icon-tile figcaption{color:var(--ui-color-secondary);font-size:12px;line-height:16px;text-align:center;overflow-wrap:anywhere}
+</style>
+</head><body>
+<div class="icon-grid">
+${entries.map((a) => tile(a, size)).join('\n')}
+</div>
+</body></html>
+`);
+    write(`${dir}/${name}.prompt.md`, `${title} — the approved ${title.toLowerCase()} assets, ${entries.length} in total.
+
+${note}
+
+Reference them by path from the project root, e.g. \`<img src="Assets/Icons/${label(entries[0])}.svg" alt="">\`.
+Only these paths are approved: \`contracts.js\` restricts the kit to
+\`Assets/Icons/\` and \`Assets/Flags/\`, and a renderer given anything else throws.
+Never invent an icon name — if none of these fits, say so.
+
+Generated from \`catalog-runtime/icon-manifest.js\`; run
+\`maintenance/scripts/build-icon-manifest.mjs\` after adding assets.
+`);
+    return entries.length;
+  };
+
+  const logos = icons.filter(isLogo);
+  const glyphs = icons.filter((a) => !isLogo(a));
+  const logoCount = sheet('Logo', 'Logo', 'Foundation', logos, 40,
+    'Brand marks. Use the wordmark where the brand is being asserted and the logomark where space is constrained; the -white variants are for dark surfaces.');
+  const iconCount = sheet('Icon', 'Icon', 'Foundation', glyphs, 24,
+    'Icons live at two sizes: `Assets/Icons/<name>.svg` is the 24px set and `Assets/Icons/16px/<name>-sm.svg` the 16px set. Match the icon size to the control, never scale one to the other.');
+  report.foundations = `Icon ${iconCount} · Logo ${logoCount}`;
+}
+
 // ── styling ───────────────────────────────────────────────────────────────
 write('_ds_bundle.css', readFileSync(join(RUNTIME, 'italki-ui.css'), 'utf8'));
 write('tokens/tokens.css', readFileSync(join(RUNTIME, 'tokens.css'), 'utf8'));
@@ -735,6 +893,7 @@ write('_ds_needs_recompile', '{"by":"build-ds-project"}\n');
 
 console.log(`✓ ${OUT}`);
 console.log(`  components: ${report.ok.length}/${COMPONENTS.length}`);
+if (report.foundations) console.log(`  foundations: ${report.foundations}`);
 if (report.failed.length) {
   console.log(`  issues (${report.failed.length}):`);
   for (const f of report.failed) console.log(`    ! ${f}`);
