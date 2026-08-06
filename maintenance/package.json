@@ -7,14 +7,15 @@
     "build:api": "node scripts/generate-component-api.mjs",
     "component:check": "node scripts/check-component.mjs",
     "serve:catalog": "node scripts/serve-catalog.mjs",
-    "test:contract": "npm run build:contracts && npm run build:api && npm run build:icons && node scripts/validate-contracts.mjs && npm run lint:foundation",
+    "test:contract": "npm run build:contracts && npm run build:api && npm run build:icons && node scripts/validate-contracts.mjs && npm run lint:foundation && npm run lint:type",
     "pretest:visual": "npm run build:contracts",
     "test:visual": "playwright test",
     "test": "npm run test:contract && npm run test:visual",
     "lint:foundation": "node scripts/lint-foundation.mjs",
     "build:icons": "node scripts/build-icon-manifest.mjs",
     "build:ds": "node scripts/build-ds-project.mjs && node scripts/build-ds-cards.mjs",
-    "audit:ds": "node scripts/audit-ds-cards.mjs .. ds-project"
+    "audit:ds": "node scripts/audit-ds-cards.mjs .. ds-project",
+    "lint:type": "node scripts/migrate-type-tokens.mjs --check"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0"
