@@ -56,17 +56,40 @@ function portrait(name) {
   const skin = pick(SKIN, seed, 7);
   const hair = pick(HAIR, seed, 31);
   const shirt = pick(SHIRT, seed, 131);
-  const long = seed % 2 === 0;
-  const fringe = seed % 3 === 0;
+  const style = seed % 4;          // 0 long · 1 bob · 2 short · 3 bun
+  const id = name.replace(/[^a-z0-9]/gi, '');
+
+  /* Shading is the same hue darkened, so a portrait never introduces a colour
+     the palette does not have. */
+  const shade = (hex, amount) => '#' + hex.slice(1).match(/../g)
+    .map((c) => Math.max(0, Math.round(parseInt(c, 16) * amount)).toString(16).padStart(2, '0')).join('');
+
+  const backHair = {
+    0: `<path d="M22 54c0-19 10-32 26-32s26 13 26 32v30H22z"/>`,
+    1: `<path d="M25 50c0-17 9-28 23-28s23 11 23 28v18c0 5-4 8-9 7-4-1-6-5-6-10H40c0 5-2 9-6 10-5 1-9-2-9-7z"/>`,
+    2: '',
+    3: `<circle cx="48" cy="17" r="9"/><path d="M26 52c0-18 9-30 22-30s22 12 22 30v8H26z"/>`,
+  }[style];
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Illustrated avatar">
-  <rect width="96" height="96" fill="${backdrop}"/>
-  ${long ? `<path d="M24 52c0-16 8-28 24-28s24 12 24 28v26H24z" fill="${hair}"/>` : ''}
-  <path d="M30 78c0-11 8-18 18-18s18 7 18 18v18H30z" fill="${shirt}"/>
-  <rect x="41" y="47" width="14" height="14" rx="7" fill="${skin}"/>
-  <ellipse cx="48" cy="38" rx="15" ry="17" fill="${skin}"/>
-  <path d="M33 36c0-10 6-16 15-16s15 6 15 16c0-4-3-6-6-7-3 3-9 4-15 4-4 0-7 1-9 3z" fill="${hair}"/>
-  ${fringe ? `<path d="M33 36c3-4 9-6 15-6s12 2 15 6c0-10-6-16-15-16s-15 6-15 16z" fill="${hair}"/>` : ''}
+  <defs>
+    <clipPath id="f${id}"><rect width="96" height="96"/></clipPath>
+    <linearGradient id="b${id}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${backdrop}"/><stop offset="1" stop-color="${shade(backdrop, 0.94)}"/>
+    </linearGradient>
+  </defs>
+  <g clip-path="url(#f${id})">
+    <rect width="96" height="96" fill="url(#b${id})"/>
+    ${backHair ? `<g fill="${hair}">${backHair}</g>` : ''}
+    <path d="M48 62c14 0 25 10 27 24l1 10H20l1-10c2-14 13-24 27-24z" fill="${shirt}"/>
+    <path d="M48 62c5 0 9 1 13 3l-6 8-7 5-7-5-6-8c4-2 8-3 13-3z" fill="${shade(shirt, 0.88)}"/>
+    <path d="M41 50h14v13a7 7 0 0 1-14 0z" fill="${shade(skin, 0.92)}"/>
+    <ellipse cx="48" cy="40" rx="16" ry="18" fill="${skin}"/>
+    <path d="M32 40c0-11 7-18 16-18s16 7 16 18c0 3-1 6-2 8 1-6 0-10-2-13-4 3-11 4-18 3-4 0-7 2-8 5-1 2-2 4-2 5-1-2-2-5-2-8z" fill="${hair}"/>
+    <ellipse cx="42" cy="40" rx="1.6" ry="2.1" fill="${shade(skin, 0.35)}"/>
+    <ellipse cx="54" cy="40" rx="1.6" ry="2.1" fill="${shade(skin, 0.35)}"/>
+    <path d="M44 47c1.2 1.4 2.6 2.1 4 2.1s2.8-.7 4-2.1" fill="none" stroke="${shade(skin, 0.55)}" stroke-width="1.6" stroke-linecap="round"/>
+  </g>
 </svg>
 `;
 }

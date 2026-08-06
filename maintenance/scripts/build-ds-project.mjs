@@ -890,7 +890,14 @@ is the machine-readable contract the assertions come from.
   const label = (asset) => asset.split('/').pop().replace(/\.svg$/i, '');
   const isLogo = (asset) => /logo-italki|Plustag|plus-features-label/.test(asset);
 
-  const tile = (asset, size) => `    <figure class="icon-tile"><img src="../../../${asset}" alt="" width="${size}" height="${size}" loading="lazy"><figcaption>${escape(label(asset))}</figcaption></figure>`;
+  /* The two sets are different sizes and must be shown at their own: rendering
+     a 16px glyph in a 24px box is exactly the "don't scale one to the other"
+     the prompt warns against. */
+  const nativeSize = (asset) => (asset.includes('/16px/') ? 16 : 24);
+  const tile = (asset, fallback) => {
+    const size = fallback ?? nativeSize(asset);
+    return `    <figure class="icon-tile"><img src="../../../${asset}" alt="" width="${size}" height="${size}" loading="lazy"><figcaption>${escape(label(asset))}</figcaption></figure>`;
+  };
   const sheet = (name, title, group, entries, size, note) => {
     const dir = `components/foundations/${name}`;
     write(`${dir}/${name}.html`, `<!-- @dsCard group="${group}" -->
@@ -931,7 +938,7 @@ Generated from \`catalog-runtime/icon-manifest.js\`; run
   const glyphs = icons.filter((a) => !isLogo(a));
   const logoCount = sheet('Logo', 'Logo', 'Foundation', logos, 40,
     'Brand marks. Use the wordmark where the brand is being asserted and the logomark where space is constrained; the -white variants are for dark surfaces.');
-  const iconCount = sheet('Icon', 'Icon', 'Foundation', glyphs, 24,
+  const iconCount = sheet('Icon', 'Icon', 'Foundation', glyphs, null,
     'Icons live at two sizes: `Assets/Icons/<name>.svg` is the 24px set and `Assets/Icons/16px/<name>-sm.svg` the 16px set. Match the icon size to the control, never scale one to the other.');
   report.foundations = `Icon ${iconCount} · Logo ${logoCount}`;
 }
