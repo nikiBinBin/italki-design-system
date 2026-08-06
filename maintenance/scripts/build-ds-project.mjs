@@ -221,6 +221,83 @@ const CELLS = {
     ['tone sweep', { initials: 'MC', name: 'Maya Chen', size: 56, tone: 'info' }],
     ['interactive', { initials: 'MC', name: 'Maya Chen', size: 40, interactive: true, ariaLabel: 'Open your profile' }],
   ],
+  // TopNav, Sidebar and Badge are composed, not enumerable: their content is
+  // other components (a context switcher, a search field, navigation rows with
+  // icons) or real anchors, so a single-prop sweep renders an empty shell or a
+  // placeholder square. These mirror the Catalog's own detail demos.
+  topNav: (() => {
+    const options = [
+      { id: 'english', label: 'English Teachers', flag: 'Assets/Flags/us.svg' },
+      { id: 'french', label: 'French Teachers', flag: 'Assets/Flags/fr.svg' },
+      { id: 'spanish', label: 'Spanish Teachers', flag: 'Assets/Flags/es.svg' },
+    ];
+    const shell = (id, { compact = false, filter = true }) => ({
+      id: `top-nav-${id}`,
+      ariaLabel: 'Top navigation',
+      leading: UI.topNavContext({
+        id: `top-nav-context-${id}`, mode: compact ? 'compact' : 'labelled',
+        selected: options[0], options, ariaLabel: 'Teacher language',
+      }),
+      center: UI.topNavSearch({
+        id: `top-nav-search-${id}`, placeholder: 'Search goals',
+        ariaLabel: 'Search teachers', filter, filterCount: 4,
+      }),
+      trailing: UI.button({
+        label: 'Book lessons', variant: 'emphasis', size: 40, shape: 'pill',
+        leadingIcon: 'Assets/Icons/plus.svg',
+      }),
+    });
+    return [
+      ['Global default', shell('global', { compact: true, filter: false })],
+      ['Teacher search', shell('teacher', {})],
+    ];
+  })(),
+  sidebar: (() => {
+    const items = [
+      { id: 'home', label: 'Home', icon: 'Assets/Icons/dashboard.svg', active: true, fixed: true },
+      { id: 'search-teachers', label: 'Search Teachers', icon: 'Assets/Icons/search-list.svg', fixed: true },
+      { id: 'my-lessons', label: 'My Lessons', icon: 'Assets/Icons/lesson.svg' },
+      { id: 'my-calendar', label: 'My Calendar', icon: 'Assets/Icons/calendar.svg' },
+      { id: 'learn', label: 'Learn', icon: 'Assets/Icons/tabbar-learn.svg' },
+      { id: 'progress', label: 'Progress', icon: 'Assets/Icons/chart.svg' },
+      { id: 'mira', label: 'Mira', icon: 'Assets/Icons/mira.svg' },
+      { id: 'more', label: 'More', icon: 'Assets/Icons/more.svg', more: true },
+    ];
+    const sections = [
+      { id: 'chats', label: 'Chats', open: false, items: [
+        { id: 'chat-0', label: 'Sarah: lesson follow-up' },
+        { id: 'chat-1', label: 'How can I improve my pronunciation?' },
+      ] },
+      { id: 'lessons', label: 'Lessons', open: false, items: [
+        { id: 'lesson-0', prefix: '108', divider: true, label: 'Scarlet Lorraine', secondary: 'English' },
+        { id: 'lesson-1', prefix: '32', divider: true, label: 'Sunshine Yolanda', secondary: 'Chinese (Mandarin)' },
+      ] },
+    ];
+    const moreItems = [
+      { id: 'my-teachers', label: 'My Teachers', icon: 'Assets/Icons/teacher.svg' },
+      { id: 'group-class', label: 'Group Class', icon: 'Assets/Icons/group.svg', dividerBefore: true },
+    ];
+    const footer = UI.button({
+      label: '$3355.50 USD', variant: 'secondary', size: 40, shape: 'pill',
+      leadingIcon: 'Assets/Icons/wallet.svg',
+    }) + UI.avatar({ name: 'Open account', initials: 'NK', size: 40, variant: 'empty' });
+    const base = { items, sections, moreItems, footer, ariaLabel: 'Workspace sidebar' };
+    return [
+      ['variant = normal', { ...base, id: 'sidebar-normal', variant: 'normal' }],
+      ['variant = plus', { ...base, id: 'sidebar-plus', variant: 'plus' }],
+    ];
+  })(),
+  badge: (() => {
+    const anchor = `<span style="display:inline-flex;width:40px;height:40px;border-radius:10px;background:var(--ui-color-primary-surface,#FFF1F1);align-items:center;justify-content:center"><img src="Assets/Icons/logo-italki-logomark.svg" alt="" style="width:20px;height:20px" /></span>`;
+    return [
+      ['Marker variants', { anchor, count: 8, ariaLabel: '8 unread inbox messages' }],
+      ['Overflow count', { anchor, count: 100, overflowCount: 99, ariaLabel: '99 or more updates' }],
+      ['Marker = dot', { anchor, type: 'dot', ariaLabel: 'Mira has new activity' }],
+      ['Status = success', { type: 'status', tone: 'success', label: 'Available', ariaLabel: 'Available' }],
+      ['Status = info', { type: 'status', tone: 'info', label: 'In progress', ariaLabel: 'In progress' }],
+      ['Status = error', { type: 'status', tone: 'error', label: 'Unavailable', ariaLabel: 'Unavailable' }],
+    ];
+  })(),
   calendar: [
     ['variant = availability', {
       variant: 'availability',
