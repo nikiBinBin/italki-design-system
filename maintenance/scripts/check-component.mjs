@@ -6,8 +6,6 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", ".
 const manifest = JSON.parse(fs.readFileSync(path.join(root, "catalog-runtime", "contracts.json"), "utf8"));
 const apiPath = path.join(root, "catalog-runtime", "component-api.json");
 const api = fs.existsSync(apiPath) ? JSON.parse(fs.readFileSync(apiPath, "utf8")) : null;
-const pandaApiPath = path.join(root, "catalog-runtime", "panda-api.json");
-const pandaApi = fs.existsSync(pandaApiPath) ? JSON.parse(fs.readFileSync(pandaApiPath, "utf8")) : null;
 const requested = process.argv[2]?.trim().toLowerCase();
 
 if (!requested) {
@@ -35,9 +33,5 @@ console.log(JSON.stringify({
   requiredStates: contract.requiredStates,
   subcomponents: contract.subcomponents || {},
   allowedTokens: apiComponent?.allowedTokens || api?.usagePolicy?.allowedFamilies || [],
-  implementation: apiComponent?.implementation || manifest.productionMappings?.[name] || null,
-  apiMapping: pandaApi?.components?.[name] || {
-    coverageStatus: "pending",
-    notes: "No prop-level Panda mapping is registered yet. Check the confirmed Panda component API before implementation; do not infer prop names from the Catalog."
-  }
+  implementation: apiComponent?.implementation || manifest.productionMappings?.[name] || null
 }, null, 2));

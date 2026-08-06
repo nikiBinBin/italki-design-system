@@ -28,4 +28,3 @@ npm --prefix maintenance ci && npm --prefix maintenance run test:visual
 
 Runtime files remain at the root in `catalog-runtime/` because `index.html` loads them directly through relative paths.
 
-`docs/reference/PANDA_API.md` and `catalog-runtime/panda-api.json` are the prop-level bridge from Catalog examples to the current Panda implementation. They distinguish direct Panda props from product adapters, Catalog-only fixture controls, and implementation gaps.

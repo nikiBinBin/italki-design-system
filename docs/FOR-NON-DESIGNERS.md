@@ -22,7 +22,7 @@
 
 ```
 请先读取并遵守这份设计系统指令包：
-https://design.italkiux.com/AI.md
+https://design.italkiux.com/docs/core/EXECUTION.md
 
 然后按它的规则，为我生成下面这个需求的界面方案。
 
@@ -103,6 +103,6 @@ AI 会自动遵守，但你评审时看到下面这些情况可以直接打回�
 | Claude / ChatGPT 等，配合上面的 prompt | **够用** —— 它会去读指令包 |
 | 不给指令包，直接让 AI「按 italki 风格设计」 | **别这么做** —— 它会凭想象编 |
 
-指令包在这里，AI 读的就是它：**https://design.italkiux.com/AI.md**
+指令包在这里，AI 读的就是它：**https://design.italkiux.com/docs/core/EXECUTION.md**
 
 有问题找设计团队。
