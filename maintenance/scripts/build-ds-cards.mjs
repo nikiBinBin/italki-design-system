@@ -1,0 +1,270 @@
+#!/usr/bin/env node
+// Build every Design card's visual from the Catalog route it documents.
+//
+// build-ds-project.mjs derives the contract side of each card — props, .d.ts,
+// prompt — by calling renderers directly. It also emitted the card HTML, by
+// sweeping one prop's enum values, and that was always an approximation: the
+// Catalog's Radio route curates six demos (inline, vertical and block groups,
+// disabled, a states matrix) where the sweep produced one row. Comparing the
+// two found 34 cards thinner than their route.
+//
+// So the visual comes from the Catalog instead. This renders each route in a
+// real browser and lifts its doc blocks, which is also the only way to get
+// patterns at all — they have no renderer, being compositions assembled inside
+// index.html. Contract-derived files are left alone; only the .html is rewritten.
+//
+// Run after build-ds-project.mjs, against the same --out:
+//   node maintenance/scripts/build-ds-cards.mjs --out maintenance/ds-project
+
+import { chromium } from 'playwright';
+import http from 'node:http';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, extname, join, resolve } from 'node:path';
+
+const argv = process.argv.slice(2);
+const flag = (n, d) => { const i = argv.indexOf(`--${n}`); return i < 0 ? d : argv[i + 1]; };
+const REPO = resolve(flag('repo', '.'));
+const OUT = resolve(flag('out', 'maintenance/ds-project'));
+const PORT = Number(flag('port', '4319'));
+
+// Route slug → card name. The group is the Design pane's section label; the
+// Catalog files these under Patterns, so the project does too.
+const PATTERNS = [
+  ['workspace-shell', 'WorkspaceShell', 'Workspace shell'],
+  ['teacher-discovery', 'TeacherDiscovery', 'Teacher discovery'],
+  ['filter', 'Filter', 'Filter'],
+  ['teacher-card', 'TeacherCard', 'Teacher card'],
+  ['lesson-card', 'LessonCard', 'Lesson card'],
+  ['teacher-detail', 'TeacherDetail', 'Teacher detail'],
+  ['booking-commitment', 'BookingCommitment', 'Booking commitment'],
+  ['payment-checkout', 'PaymentCheckout', 'Payment checkout'],
+  ['mira-module', 'MiraModule', 'Mira module'],
+];
+
+/* Components: discovered from what build-ds-project.mjs wrote, so the two
+   cannot fall out of step. The route is the card name kebab-cased, except
+   where the Catalog files it under another name. */
+const ROUTE_ALIAS = {
+  Button: 'button-variants', CheckboxGroup: 'checkbox', Combobox: 'select',
+  Icon: 'icon-library', Logo: 'icon-library',
+};
+const kebab = (name) => name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+
+const componentTargets = () => {
+  const base = join(OUT, 'components');
+  if (!existsSync(base)) return [];
+  const out = [];
+  const walk = (dir) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) { walk(full); continue; }
+      if (!entry.name.endsWith('.html')) continue;
+      const name = entry.name.replace(/\.html$/, '');
+      out.push({ name, route: ROUTE_ALIAS[name] ?? kebab(name), file: full, kind: 'component' });
+    }
+  };
+  walk(base);
+  return out;
+};
+
+const TYPES = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png', '.json': 'application/json' };
+const server = http.createServer((req, res) => {
+  const file = join(REPO, decodeURIComponent(req.url.split('?')[0]));
+  /* Read before writing the header: a miss after writeHead cannot be turned
+     back into a 404. */
+  let body;
+  try { body = readFileSync(file); } catch { res.writeHead(404); res.end(); return; }
+  res.writeHead(200, { 'content-type': TYPES[extname(file)] ?? 'application/octet-stream' });
+  res.end(body);
+});
+await new Promise((r) => server.listen(PORT, r));
+
+const write = (rel, body) => {
+  const file = join(OUT, rel);
+  mkdirSync(dirname(file), { recursive: true });
+  writeFileSync(file, body);
+};
+const escape = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+const browser = await chromium.launch();
+const report = { ok: [], stubs: [], skipped: [] };
+/* Pattern markup carries Catalog-only classes (.filter-pattern__*, and 20 more
+   for Filter alone) whose rules live in catalog.css, which the Design project
+   does not ship — so the first upload landed the markup unstyled and the Filter
+   modal collapsed out of its stage. Collect every class the patterns actually
+   use and emit exactly the rules that match, rather than shipping the whole
+   Catalog shell stylesheet. */
+const usedClasses = new Set();
+
+const TARGETS = [
+  ...PATTERNS.map(([route, name, title]) => ({ route, name, title, kind: 'pattern' })),
+  ...componentTargets(),
+];
+
+for (const target of TARGETS) {
+  const { route, name, kind } = target;
+  const title = target.title ?? name;
+  const isPattern = kind === 'pattern';
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1600 } });
+  await page.goto(`http://127.0.0.1:${PORT}/index.html?route=${route}#${route}`, { waitUntil: 'load' });
+  try {
+    await page.waitForFunction(
+      () => (document.querySelector('main')?.innerText ?? '').trim().length > 0,
+      undefined, { timeout: 15000 },
+    );
+  } catch {
+    report.skipped.push(`${name}: route never rendered`);
+    await page.close();
+    continue;
+  }
+  await page.waitForTimeout(500);
+
+  const { blocks, intro } = await page.evaluate((wholeArticle) => {
+    /* Hover tooltips are transient and would freeze into the snapshot. */
+    document.querySelectorAll('.ui-tooltip').forEach((n) => n.remove());
+    /* A pattern is a page-level composition, so the unit is the whole detail
+       article. Splitting on .component-doc-block loses everything the route
+       renders outside one: the Teacher card route puts its two cards directly
+       in the article and wraps only the recommendation group, so block-wise
+       extraction captured a third of it. */
+    const found = [];
+    if (!wholeArticle) {
+      /* Components: one cell per curated demo, keeping the Catalog's own
+         variants/features/states ordering. */
+      for (const block of document.querySelectorAll('.component-doc-block')) {
+        const html = block.querySelector('.component-doc-content')?.innerHTML?.trim() ?? '';
+        if (html) found.push({ label: block.querySelector('.component-doc-header h2')?.textContent?.trim() ?? '', html });
+      }
+    }
+    if (!found.length) {
+      const detail = document.querySelector('main .component-detail, main article');
+      if (detail) {
+        const clone = detail.cloneNode(true);
+        /* Page chrome, not the component: the kicker and intro repeat the
+           prompt, and the size/shape controls belong to the Catalog shell. */
+        clone.querySelectorAll('.detail-kicker, .intro, .ds-page-controls, .component-controls').forEach((n) => n.remove());
+        found.push({ label: 'Composition', html: clone.innerHTML.trim() });
+      }
+    }
+    return { blocks: found, intro: document.querySelector('main .intro')?.textContent?.trim() ?? '' };
+  }, isPattern);
+  await page.close();
+
+  if (!blocks.length) {
+    report.skipped.push(`${name}: no blocks extracted`);
+    continue;
+  }
+
+  /* Six of the nine patterns are stubs in the Catalog itself: patternDetail()
+     renders a paragraph pointing at PATTERNS.md and a list of entry names, with
+     no composition behind it. Capturing that and filing it as a preview would
+     imply a reference rendering exists, so the card and its prompt say plainly
+     that one does not. */
+  const isStub = blocks.some((b) => b.html.includes('This is a product-specific composition'));
+
+  /* Cards live two levels down from the project root, so page-relative asset
+     paths the Catalog emits have to be rebased. */
+  for (const b of blocks) {
+    for (const m of b.html.matchAll(/class="([^"]+)"/g)) {
+      for (const name of m[1].split(/\s+/)) if (name && !name.startsWith('ui-')) usedClasses.add(name);
+    }
+  }
+
+  const depth = isPattern ? '../../' : '../../../';
+  const rebase = (html) => html.replaceAll('="Assets/', `="${depth}Assets/`);
+  const body = blocks
+    .map(({ label, html }) => `  <div class="cell"><div class="cell-label">${escape(label)}</div><div class="cell-body">${rebase(html)}</div></div>`)
+    .join('\n');
+
+  /* Components keep the group marker build-ds-project.mjs derived from the
+     Catalog taxonomy, and their published path, so nothing re-slugs. */
+  const group = isPattern
+    ? 'Patterns'
+    : (readFileSync(target.file, 'utf8').match(/@dsCard group="([^"]+)"/)?.[1] ?? 'Components');
+  const dir = isPattern ? `patterns/${name}` : dirname(target.file).slice(OUT.length + 1);
+  write(`${dir}/${name}.html`, `<!-- @dsCard group="${group}" -->
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>${title} — italki UI Kit</title>
+<link rel="stylesheet" href="${depth}styles.css">\n<link rel="stylesheet" href="${depth}_cards.css">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page,#FFFFFF);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ui-color-text)}
+  /* A demo is a page-level slice of the Catalog, so each takes a full row. */
+  .ds-grid{display:flex;flex-direction:column;gap:var(--ui-space-8,32px)}
+  .cell{min-width:0}
+  .cell-label{font-size:12px;line-height:16px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ui-color-secondary);margin:0 0 var(--ui-space-2,8px)}
+</style>
+</head><body>
+<div class="ds-grid">
+${body}
+</div>
+</body></html>
+`);
+
+  if (isPattern) write(`${dir}/${name}.prompt.md`, `${title} — an italki product pattern, not a component.
+
+${intro}
+
+${isStub ? `**No reference rendering exists.** The Catalog documents this pattern by
+name and lists its entries, but does not build it, and PATTERNS.md does not
+specify it beyond that. Treat the entry list below as the only constraint, ask
+before inventing an arrangement, and report the gap rather than filling it.` : `A pattern is a composition of kit components with a fixed information order and
+action hierarchy. There is no \`window.ItalkiUI.${name}\`: build it from the
+components below, in this arrangement. Changing which component carries a given
+piece of information changes the pattern.`}
+
+## Blocks on the card
+
+${blocks.map((b) => `- ${b.label}`).join('\n')}
+
+## Components this pattern composes
+
+${[...new Set(blocks.flatMap((b) => [...b.html.matchAll(/data-component="([a-z-]+)"/g)].map((m) => m[1])))]
+  .sort().map((k) => `- \`${k}\``).join('\n') || '- (none detected)'}
+
+${isStub ? 'There is nothing here to match yet — this file records that the pattern is named but unbuilt.' : 'The rendered card is the reference. Match its structure before changing content.'}
+`);
+
+  report[isStub ? 'stubs' : 'ok'].push(`${name}${isStub ? ' — spec stub, no rendering' : ` (${blocks.length})`}`);
+}
+
+await browser.close();
+server.close();
+
+/* Slice catalog.css down to the rules these patterns reference. The Catalog's
+   own :root block comes along because those rules are written against
+   Catalog-local variables (--space-*, --radius-card, --border …) that the
+   Foundation tokens do not carry under those names. */
+{
+  const catalogCSS = readFileSync(join(REPO, 'catalog.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const kept = [];
+  const rootBlock = catalogCSS.match(/:root\s*\{[^}]*\}/);
+  if (rootBlock) kept.push(rootBlock[0]);
+  /* One nesting level is enough: catalog.css only wraps rules in @media. */
+  const atRule = /@media[^{]*\{(?:[^{}]*\{[^}]*\})*[^{}]*\}/g;
+  const wants = (selector) => [...usedClasses].some((c) => selector.includes(`.${c}`));
+  const plain = catalogCSS.replace(atRule, '');
+  for (const rule of plain.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    if (wants(rule[1])) kept.push(`${rule[1].trim()} {${rule[2]}}`);
+  }
+  for (const block of catalogCSS.match(atRule) ?? []) {
+    const head = block.slice(0, block.indexOf('{') + 1);
+    const inner = [...block.matchAll(/([^{}]+)\{([^{}]*)\}/g)].filter((r) => wants(r[1]));
+    if (inner.length) kept.push(`${head}\n${inner.map((r) => `  ${r[1].trim()} {${r[2]}}`).join('\n')}\n}`);
+  }
+  write('_cards.css',
+    `/* Generated by maintenance/scripts/build-ds-patterns.mjs — do not edit.\n` +
+    `   The slice of catalog.css the pattern compositions depend on: ${kept.length} rules\n` +
+    `   matching ${usedClasses.size} Catalog-only classes, plus the Catalog's :root. */\n` +
+    kept.join('\n') + '\n');
+  report.css = `${kept.length} rules for ${usedClasses.size} classes`;
+}
+
+console.log(`✓ patterns → ${OUT}/patterns`);
+for (const line of report.ok) console.log(`    ${line}`);
+for (const line of report.stubs) console.log(`  · ${line}`);
+if (report.css) console.log(`  _patterns.css: ${report.css}`);
+for (const line of report.skipped) console.log(`  ! ${line}`);
+if (report.skipped.length) process.exitCode = 1;
