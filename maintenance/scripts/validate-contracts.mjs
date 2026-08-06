@@ -326,6 +326,25 @@ for (const [sourcePath, assets] of [["index.html", catalogRenderedAssets], ["mai
   for (const asset of assets) assert(fs.existsSync(path.join(root, asset)), `Missing registered asset in ${sourcePath}: ${asset}`);
 }
 
+// The Icon Library page renders the generated manifest; regenerate with
+// maintenance/scripts/build-icon-manifest.mjs whenever Assets/Icons changes.
+{
+  const manifestSource = read("catalog-runtime/icon-manifest.js");
+  const listed = new Set(Array.from(manifestSource.matchAll(/"(Assets\/Icons\/[^"]+)"/g), (match) => match[1]));
+  const excluded = new Set(["Assets/Icons/back.svg", "Assets/Icons/arrow-right-1.svg", "Assets/Icons/arrow-up-1.svg"]);
+  const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const full = path.join(dir, entry.name);
+    return entry.isDirectory() ? walk(full) : entry.name.endsWith(".svg") ? [path.relative(root, full)] : [];
+  });
+  for (const asset of walk(path.join(root, "Assets", "Icons"))) {
+    if (excluded.has(asset)) continue;
+    assert(listed.has(asset), `Icon on disk but missing from icon-manifest.js (run build-icon-manifest.mjs): ${asset}`);
+  }
+  for (const asset of listed) {
+    assert(fs.existsSync(path.join(root, asset)), `icon-manifest.js lists a file not on disk: ${asset}`);
+  }
+}
+
 const stateFixtures = runtime.window.ITalkiUIFixtures.build(ui).entries;
 for (const [component, contract] of Object.entries(manifest.components)) {
   const documentedStates = new Set((stateFixtures[component] || []).map((fixture) => fixture.state));
