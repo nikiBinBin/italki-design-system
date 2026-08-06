@@ -107,7 +107,7 @@ const COMPONENTS = [
 
 // A count/dot Badge overlays the top-right of its anchor, so the anchor needs
 // enough area to stay visible underneath it.
-const ICON_TILE = '<span style="display:inline-flex;width:40px;height:40px;border-radius:10px;background:#EBEDF1"></span>';
+const ICON_TILE = '<span style="display:inline-flex;width:40px;height:40px;border-radius:var(--ui-radius-md,8px);background:var(--ui-color-hover,#EBEDF1)"></span>';
 
 // ── per-component base props, in italki's own language ────────────────────
 // Only what the renderer needs to look real; the axis sweep below supplies
@@ -288,7 +288,7 @@ const CELLS = {
     ];
   })(),
   badge: (() => {
-    const anchor = `<span style="display:inline-flex;width:40px;height:40px;border-radius:10px;background:var(--ui-color-primary-surface,#FFF1F1);align-items:center;justify-content:center"><img src="Assets/Icons/logo-italki-logomark.svg" alt="" style="width:20px;height:20px" /></span>`;
+    const anchor = `<span style="display:inline-flex;width:40px;height:40px;border-radius:var(--ui-radius-md,8px);background:var(--ui-color-primary-surface,#FFF1F1);align-items:center;justify-content:center"><img src="Assets/Icons/logo-italki-logomark.svg" alt="" style="width:20px;height:20px" /></span>`;
     return [
       ['Marker variants', { anchor, count: 8, ariaLabel: '8 unread inbox messages' }],
       ['Overflow count', { anchor, count: 100, overflowCount: 99, ariaLabel: '99 or more updates' }],
@@ -437,10 +437,10 @@ for (const c of COMPONENTS) {
 <link rel="stylesheet" href="../../../styles.css">
 <style>
   *{box-sizing:border-box}
-  body{margin:0;padding:22px;background:#fff;font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ui-color-text)}
-  .ds-grid{display:flex;flex-wrap:wrap;gap:26px 30px;align-items:flex-start}
+  body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page,#FFFFFF);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ui-color-text)}
+  .ds-grid{display:flex;flex-wrap:wrap;gap:var(--ui-space-6,24px) var(--ui-space-8,32px);align-items:flex-start}
   .cell{min-width:0}
-  .cell-label{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ui-color-secondary);margin:0 0 10px}
+  .cell-label{font-size:12px;line-height:16px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ui-color-secondary);margin:0 0 var(--ui-space-2,8px)}
 </style>
 </head><body>
 <div class="ds-grid">
@@ -532,7 +532,7 @@ ${runtimeSrc.replace(/\}\)\(window\);\s*$/, '})(global);')}
     function Component(props) {
       var html = '';
       try { html = UI[fn](props || {}); }
-      catch (e) { html = '<div style="color:#D3382F;font:12px system-ui">' + (e && e.message || e) + '</div>'; }
+      catch (e) { html = '<div style="color:var(--ui-color-error,#D3382F);font:12px system-ui">' + (e && e.message || e) + '</div>'; }
       return React.createElement('div', {
         className: 'italki-ui-embed',
         dangerouslySetInnerHTML: { __html: html },
