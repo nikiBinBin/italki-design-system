@@ -17,8 +17,7 @@
     ],
     "approvedAssetRoots": [
       "Assets/Icons/",
-      "Assets/Flags/",
-      "Assets/Images/avatars/"
+      "Assets/Flags/"
     ],
     "exceptions": "Only component-specific geometry explicitly registered in COMPONENTS.md and the executable contract may differ from the Foundation scale."
   },

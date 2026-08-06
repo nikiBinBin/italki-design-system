@@ -485,7 +485,6 @@
       .avatar-detail .detail-section h2 { margin-bottom: 16px; }
       .avatar-detail .detail-sample { min-height: 0; padding: 0; background: transparent; }
       .avatar-item { display: grid; justify-items: center; gap: 8px; color: var(--secondary); font-size: 12px; line-height: 18px; }
-      .radius-nested-avatar:hover, .teacher-pattern-avatar:hover > img:first-child, .teacher-recommendation-avatar:hover > img:first-child { box-shadow: 0 0 0 1px var(--border); }
       .avatar-sizes { display: flex; flex-wrap: wrap; align-items: end; gap: var(--space-6); }
       .avatar-flag-block .component-doc-header { min-height: 56px; display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding: var(--space-2) var(--space-6); }
       .avatar-flag-block .component-doc-content { min-height: 0; display: block; padding: var(--space-6); }
@@ -673,7 +672,7 @@
       .radius-nested-card { display: grid; gap: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: var(--space-4); background: var(--card); }
       .radius-nested-image { width: 100%; height: 144px; display: block; border-radius: var(--radius-lg); object-fit: cover; }
       .radius-nested-content { display: flex; align-items: center; gap: var(--space-3); }
-      .radius-nested-avatar { width: 32px; height: 32px; flex: 0 0 32px; overflow: hidden; border-radius: var(--radius-full); object-fit: cover; }
+      .radius-nested-avatar { display: flex; flex: 0 0 32px; }
       .radius-nested-copy { min-width: 0; display: grid; gap: 2px; }
       .radius-nested-copy strong { color: var(--title); font-size: 14px; line-height: 20px; }
       .radius-nested-copy span { color: var(--secondary); font-size: 12px; line-height: 18px; }
@@ -926,8 +925,6 @@
       .teacher-recommendation-card { min-width: 0; min-height: 260px; display: flex; flex-direction: column; gap: var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-card); padding: var(--space-4); background: var(--card); text-align: left; }
       .teacher-recommendation-head { display: flex; align-items: center; gap: var(--space-3); }
       .teacher-recommendation-avatar { width: 56px; height: 56px; flex: 0 0 56px; position: relative; }
-      .teacher-recommendation-avatar > img:first-child { width: 56px; height: 56px; display: block; border-radius: var(--radius-full); object-fit: cover; }
-      .teacher-recommendation-avatar .avatar-flag { width: 16px; height: 16px; position: absolute; right: -2px; bottom: -2px; border: 0; border-radius: var(--radius-full); box-shadow: 0 0 0 1px var(--border); }
       .teacher-recommendation-copy { min-width: 0; display: grid; gap: var(--space-1); }
       .teacher-recommendation-copy h3, .teacher-recommendation-copy p { overflow: hidden; margin: 0; text-overflow: ellipsis; white-space: nowrap; }
       .teacher-recommendation-copy h3 { color: var(--title); font-size: 14px; font-weight: 700; line-height: 20px; }

@@ -648,7 +648,7 @@ Icons and flags are referenced **page-relative**, which resolves correctly for a
 design rendered at the project root:
 
 \`\`\`
-Assets/Icons/<name>.svg      Assets/Flags/<iso-2>.svg      Assets/Images/avatars/<name>.png
+Assets/Icons/<name>.svg      Assets/Flags/<iso-2>.svg
 \`\`\`
 
 ## Components

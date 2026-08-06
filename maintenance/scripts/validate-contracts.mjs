@@ -163,8 +163,8 @@ assert(!/#[0-9A-Fa-f]{3,8}\b/.test(componentCSS), "Component CSS must not contai
 assert(!/\brgb\(/.test(componentCSS), "Component CSS must not contain raw rgb colors");
 assert(!/#[0-9A-Fa-f]{3,8}\b|\brgb\(/.test(read("catalog-runtime/italki-ui.js")), "Component implementation must not contain raw colors");
 assert(!/#[0-9A-Fa-f]{3,8}\b|\brgb\(/.test(fixtureSource), "Visual fixtures must not contain raw colors");
-assert(!/Assets\/(?!Icons\/|Flags\/|Images\/avatars\/)/.test(read("catalog-runtime/italki-ui.js")), "Catalog runtime may only use registered local asset roots");
-assert(!/Assets\/(?!Icons\/|Flags\/|Images\/avatars\/)/.test(catalog), "Catalog may only reference registered local asset roots");
+assert(!/Assets\/(?!Icons\/|Flags\/)/.test(read("catalog-runtime/italki-ui.js")), "Catalog runtime may only use registered local asset roots");
+assert(!/Assets\/(?!Icons\/|Flags\/)/.test(catalog), "Catalog may only reference registered local asset roots");
 assert(catalog.includes('const CATALOG_SECTION_ORDER = Object.freeze({ variants: 1, features: 2, states: 3 });'), "Catalog must define one shared component-section order");
 assert(catalog.includes('function sortCatalogSections(root)'), "Catalog must sort component sections through the shared taxonomy");
 assert(catalog.includes('data-catalog-section="${sectionKind}"'), "Catalog sections must expose their taxonomy for verification");
@@ -425,7 +425,7 @@ assert.match(uploadMarkup, /role="status"[^>]*aria-label="Upload complete"/, "Co
 assert.match(ui.upload({ id: "upload-error", label: "Lesson documents", files: [{ id: "failed", name: "large.pdf", status: "error", error: "Too large" }] }), /role="alert">Too large/, "Failed Upload files must announce their supplied error message without a competing error icon");
 assert.match(uploadMarkup, /Assets\/Icons\/16px\/cross-sm\.svg/, "Upload file removal must use the approved 16px close icon");
 assert.match(ui.upload({ id: "upload-trigger", variant: "trigger", label: "Lesson documents" }), /data-demo="ui-upload-trigger"/, "Upload trigger rows must reuse the shared interactive Button contract");
-const avatarUploadMarkup = ui.upload({ id: "upload-avatar", variant: "avatar", label: "Profile photo", avatar: "Assets/Images/avatars/teacher-rachel.png", avatarAlt: "Elena Ruiz profile photo" });
+const avatarUploadMarkup = ui.upload({ id: "upload-avatar", variant: "avatar", label: "Profile photo", avatar: "Assets/Icons/user.svg", avatarAlt: "Elena Ruiz profile photo" });
 assert.match(avatarUploadMarkup, /ui-upload--avatar/, "Upload must provide an Avatar upload variant");
 assert.match(avatarUploadMarkup, /type="file"[^>]*accept="\.jpg,\.jpeg,\.png"/, "Avatar Upload must default to one supported image-selection contract");
 assert.match(avatarUploadMarkup, /ui-upload__avatar-image/, "Avatar Upload must render a supplied controlled profile preview");

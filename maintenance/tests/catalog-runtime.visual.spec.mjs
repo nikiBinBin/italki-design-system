@@ -99,7 +99,7 @@ test("documented component states remain visually stable", async ({ page }) => {
   await expect(page.locator('[data-contract-component="upload"][data-contract-state="dropzone"] input[type="file"]')).toHaveAttribute("accept", ".pdf,.docx,.png,.jpg");
   await expect(page.locator('[data-contract-component="upload"][data-contract-state="trigger"] [data-demo="ui-upload-trigger"]')).toBeVisible();
   await expect(page.locator('[data-contract-component="upload"][data-contract-state="avatar-empty"] .ui-upload__avatar')).toBeVisible();
-  await expect(page.locator('[data-contract-component="upload"][data-contract-state="avatar-filled"] .ui-upload__avatar-image')).toHaveAttribute("src", "Assets/Images/avatars/teacher-rachel.png");
+  await expect(page.locator('[data-contract-component="upload"][data-contract-state="avatar-filled"] .ui-upload__avatar-image')).toHaveAttribute("src", "Assets/Icons/user.svg");
   await expect(page.locator('[data-contract-component="upload"][data-contract-state="avatar-uploading"] .ui-upload__avatar-loading .ui-upload__file-spinner')).toBeVisible();
   await expect(page.locator('[data-contract-component="upload"][data-contract-state="avatar-error"] .ui-upload__avatar-copy small[role="alert"]')).toHaveText(/smaller than 5 MB/);
   await expect(page.locator('[data-contract-component="upload"][data-contract-state="uploading"] .ui-upload__file-spinner')).toBeVisible();
