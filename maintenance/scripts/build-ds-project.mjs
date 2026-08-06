@@ -105,6 +105,27 @@ const COMPONENTS = [
   ['Popup', 'popup', 'popup', GROUPS.O],
 ].map(([name, fn, key, group]) => ({ name, fn, key, group, slug: SLUGS[group] }));
 
+// Overlay components render outside their trigger's box, so a shrink-to-fit
+// grid cell is the wrong container for them and the card shows the damage:
+// anchored surfaces (absolutely positioned against the trigger) collide with
+// neighbouring cells and clip at the card edge, while full-surface overlays
+// ship their own `width:100%` stage that collapses inside an auto-sized flex
+// item — which is why Modal wrapped to one character per line.
+//
+// 'anchored' reserves room around the trigger in every direction, the way the
+// Catalog's .ds-anchored-overlay-example does. 'surface' gives the cell a full
+// row so the runtime's own .ui-modal-stage / .ui-drawer-stage can resolve.
+// Values are on the Foundation spacing scale.
+const STAGE = {
+  tooltip: 'anchored',
+  popconfirm: 'anchored',
+  popover: 'anchored',
+  popup: 'anchored',
+  dropdownMenu: 'anchored',
+  modal: 'surface',
+  drawer: 'surface',
+};
+
 // A count/dot Badge overlays the top-right of its anchor, so the anchor needs
 // enough area to stay visible underneath it.
 const ICON_TILE = '<span style="display:inline-flex;width:40px;height:40px;border-radius:var(--ui-radius-md,8px);background:var(--ui-color-hover,#EBEDF1)"></span>';
@@ -444,11 +465,20 @@ for (const c of COMPONENTS) {
   body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page,#FFFFFF);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ui-color-text)}
   .ds-grid{display:flex;flex-wrap:wrap;gap:var(--ui-space-6,24px) var(--ui-space-8,32px);align-items:flex-start}
   .cell{min-width:0}
+  /* Anchored overlays are open in a static card, so the reservation must be
+     real in every direction. Sideways placements push a whole surface (up to
+     320px) clear of the trigger, which no padding on a shrink-to-fit cell can
+     absorb — so each takes half a row and gets the slack horizontally, and
+     only the vertical clearance is padded. */
+  .cell--anchored{flex:0 0 100%;width:100%}
+  .cell--anchored>.cell-body{display:grid;place-items:center;padding:var(--ui-space-12,96px) 0}
+  /* Full-surface overlays take their own row so width:100% has a width. */
+  .cell--surface{flex:0 0 100%;width:100%}
   .cell-label{font-size:12px;line-height:16px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ui-color-secondary);margin:0 0 var(--ui-space-2,8px)}
 </style>
 </head><body>
 <div class="ds-grid">
-${cells.filter((x) => !x.error).map((x) => `  <div class="cell"><div class="cell-label">${escape(x.label)}</div><div class="cell-body">${localizeAssets(x.html)}</div></div>`).join('\n')}
+${cells.filter((x) => !x.error).map((x) => `  <div class="cell${STAGE[c.fn] ? ` cell--${STAGE[c.fn]}` : ''}"><div class="cell-label">${escape(x.label)}</div><div class="cell-body">${localizeAssets(x.html)}</div></div>`).join('\n')}
 </div>
 </body></html>
 `);
