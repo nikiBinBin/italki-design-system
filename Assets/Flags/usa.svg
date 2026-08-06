@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="United States">
-  <defs><clipPath id="clip"><circle cx="12" cy="12" r="12"/></clipPath></defs>
-  <g clip-path="url(#clip)">
-    <rect width="24" height="24" fill="#fff"/>
-    <path d="M0 0h24v1.85H0zm0 3.7h24v1.85H0zm0 3.7h24v1.85H0zm0 3.7h24v1.85H0zm0 3.7h24v1.85H0zm0 3.7h24v1.85H0zm0 3.7h24v1.85H0z" fill="#b22234"/>
-    <rect width="12.5" height="10.2" fill="#3c3b6e"/>
-    <g fill="#fff"><circle cx="2.1" cy="2" r=".55"/><circle cx="5.2" cy="2" r=".55"/><circle cx="8.3" cy="2" r=".55"/><circle cx="11" cy="2" r=".55"/><circle cx="3.65" cy="4.1" r=".55"/><circle cx="6.75" cy="4.1" r=".55"/><circle cx="9.85" cy="4.1" r=".55"/><circle cx="2.1" cy="6.2" r=".55"/><circle cx="5.2" cy="6.2" r=".55"/><circle cx="8.3" cy="6.2" r=".55"/><circle cx="11" cy="6.2" r=".55"/><circle cx="3.65" cy="8.3" r=".55"/><circle cx="6.75" cy="8.3" r=".55"/><circle cx="9.85" cy="8.3" r=".55"/></g>
-  </g>
-</svg>
