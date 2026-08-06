@@ -220,8 +220,14 @@ const SYSTEM_STYLESHEETS = ["catalog-runtime/italki-ui.css", "catalog.css"];
 const SHELL_STYLESHEETS = [];
 
 /* The runtime inlines a handful of SVG data URIs, which legitimately carry
-   their own fills; only real markup is scanned for inline colour. */
-const markup = ["index.html"];
+   their own fills; only real markup is scanned for inline colour. The Design
+   project generator is included because it emits style="" attributes into
+   published cards — an audit found it carrying token values as raw hex. */
+const markup = [
+  "index.html",
+  "maintenance/fixtures/visual-regression.html",
+  "maintenance/scripts/build-ds-project.mjs",
+];
 
 const findings = [
   ...SYSTEM_STYLESHEETS.flatMap(lintStylesheet),
