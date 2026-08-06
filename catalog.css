@@ -890,6 +890,11 @@
       .teacher-card-pattern-variant > h2 { margin: 0; color: var(--secondary); font-size: 12px; font-weight: 600; line-height: 18px; }
       .teacher-card-pattern-detail .component-doc-content { min-height: 0; justify-content: flex-start; padding: var(--space-6); }
       .teacher-pattern-card { width: min(100%, 754px); display: grid; grid-template-columns: 120px minmax(0, 1fr); align-items: start; gap: var(--space-7); border: 1px solid var(--border); border-radius: var(--radius-card); padding: var(--space-6); background: var(--card); }
+      /* The whole card is the destination — the teacher profile — so it carries
+         the affordance. Buttons inside it stay separate targets and must stop
+         their own clicks from reaching the card. */
+      .teacher-pattern-card { cursor: pointer; transition: border-color 120ms ease, box-shadow 120ms ease; }
+      .teacher-pattern-card:hover { border-color: var(--title); box-shadow: var(--ui-shadow-md); }
       .teacher-pattern-side { display: grid; justify-items: center; gap: var(--space-3); }
       .teacher-pattern-avatar { width: 120px; height: 120px; position: relative; }
       .teacher-pattern-avatar > img:first-child { width: 120px; height: 120px; display: block; border-radius: var(--radius-full); object-fit: cover; }
