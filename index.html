@@ -26,6 +26,7 @@
         </div>
       </main>
     </div>
+    <script src="catalog-runtime/icon-manifest.js"></script>
     <script src="catalog-runtime/contracts.js"></script>
     <script src="catalog-runtime/italki-ui.js"></script>
     <script>
@@ -59,32 +60,12 @@
         },
         { id: "patterns", title: "Patterns", groups: [{ id: "pattern-items", title: "", data: patternComponents }] }
       ];
-      const iconAssets = ["Assets/Icons/16px/Art.svg","Assets/Icons/16px/Finance.svg","Assets/Icons/16px/Food.svg","Assets/Icons/16px/Gaming.svg","Assets/Icons/16px/General-interest.svg","Assets/Icons/16px/Health.svg","Assets/Icons/16px/History.svg","Assets/Icons/16px/Movies-1.svg","Assets/Icons/16px/Movies.svg","Assets/Icons/16px/Music.svg","Assets/Icons/16px/Science.svg","Assets/Icons/16px/Tech.svg","Assets/Icons/16px/Travel.svg","Assets/Icons/16px/Writing.svg","Assets/Icons/16px/afternoon-sm.svg","Assets/Icons/16px/alert-circle.svg","Assets/Icons/16px/calendar-add.svg","Assets/Icons/16px/category-sm.svg","Assets/Icons/16px/classroom-audio-sm.svg","Assets/Icons/16px/classroom-camera-sm.svg","Assets/Icons/16px/comics.svg","Assets/Icons/16px/comments-sm.svg","Assets/Icons/16px/completed-sm.svg","Assets/Icons/16px/coupon-sm.svg","Assets/Icons/16px/cross-sm.svg","Assets/Icons/16px/delete-sm.svg","Assets/Icons/16px/download-sm.svg","Assets/Icons/16px/earth-sm.svg","Assets/Icons/16px/edit-sm.svg","Assets/Icons/16px/evening-sm.svg","Assets/Icons/16px/fashion.svg","Assets/Icons/16px/filter-sm.svg","Assets/Icons/16px/gift-sm.svg","Assets/Icons/16px/help-icon.svg","Assets/Icons/16px/help-sm.svg","Assets/Icons/16px/hot-sm.svg","Assets/Icons/16px/legal.svg","Assets/Icons/16px/lesson-sm.svg","Assets/Icons/16px/location-sm.svg","Assets/Icons/16px/mail-01.svg","Assets/Icons/16px/marketing.svg","Assets/Icons/16px/more-sm.svg","Assets/Icons/16px/morning-sm.svg","Assets/Icons/16px/nature.svg","Assets/Icons/16px/new-sm.svg","Assets/Icons/16px/night-sm.svg","Assets/Icons/16px/notification-sm.svg","Assets/Icons/16px/package-sm.svg","Assets/Icons/16px/password-sm.svg","Assets/Icons/16px/pet.svg","Assets/Icons/16px/recommendation-sm.svg","Assets/Icons/16px/refresh-sm.svg","Assets/Icons/16px/search-sm.svg","Assets/Icons/16px/share-sm.svg","Assets/Icons/16px/smart-lesson.svg","Assets/Icons/16px/sport.svg","Assets/Icons/16px/teacher-sm.svg","Assets/Icons/16px/time-sm.svg","Assets/Icons/16px/today-sm.svg","Assets/Icons/16px/topic-sm.svg","Assets/Icons/16px/upcoming-sm.svg","Assets/Icons/16px/upvote-sm.svg","Assets/Icons/16px/view-sm.svg","Assets/Icons/16px/whiteboard-translate-sm.svg","Assets/Icons/16px/whiteboard-upload-sm.svg","Assets/Icons/add-chat.svg","Assets/Icons/add.svg","Assets/Icons/afternoon.svg","Assets/Icons/arrow-down.svg","Assets/Icons/arrow-left.svg","Assets/Icons/arrow-right-1.svg","Assets/Icons/arrow-right.svg","Assets/Icons/arrow-up-1.svg","Assets/Icons/arrow-up.svg","Assets/Icons/back-to-bottom.svg","Assets/Icons/back-to-top.svg","Assets/Icons/back.svg","Assets/Icons/chevron-right.svg","Assets/Icons/home-01.svg","Assets/Icons/minus-circle.svg","Assets/Icons/plus-circle.svg","Assets/Icons/youtube.svg","Assets/Icons/briefcase.svg","Assets/Icons/calendar.svg","Assets/Icons/chart.svg","Assets/Icons/check.svg","Assets/Icons/classroom-amplify.svg","Assets/Icons/classroom-audio-off.svg","Assets/Icons/classroom-audio.svg","Assets/Icons/classroom-camera.svg","Assets/Icons/classroom-images.svg","Assets/Icons/classroom-narrow.svg","Assets/Icons/classroom-network-off.svg","Assets/Icons/classroom-network.svg","Assets/Icons/classroom-play.svg","Assets/Icons/classroom-prompt-medium.svg","Assets/Icons/classroom-screen-share.svg","Assets/Icons/classroom-stop.svg","Assets/Icons/classroom-tools-selected.svg","Assets/Icons/classroom-turn-camera.svg","Assets/Icons/classroom-video-outline.svg","Assets/Icons/classroom-video-solid.svg","Assets/Icons/classroom-volume-off.svg","Assets/Icons/classroom-volume.svg","Assets/Icons/community.svg","Assets/Icons/confirm-sm.svg","Assets/Icons/confirm.svg","Assets/Icons/copy.svg","Assets/Icons/coupon.svg","Assets/Icons/credit.svg","Assets/Icons/cross.svg","Assets/Icons/dashboard.svg","Assets/Icons/delete.svg","Assets/Icons/download.svg","Assets/Icons/earth.svg","Assets/Icons/edit.svg","Assets/Icons/error.svg","Assets/Icons/evening.svg","Assets/Icons/exit.svg","Assets/Icons/favorite-outline.svg","Assets/Icons/favorite-solid.svg","Assets/Icons/file-image.svg","Assets/Icons/file.svg","Assets/Icons/filter-sliders.svg","Assets/Icons/filter.svg","Assets/Icons/flowy.svg","Assets/Icons/form.svg","Assets/Icons/gift-card.svg","Assets/Icons/group.svg","Assets/Icons/hamburger.svg","Assets/Icons/info.svg","Assets/Icons/keyboard.svg","Assets/Icons/layout-left.svg","Assets/Icons/learn-ai.svg","Assets/Icons/lesson.svg","Assets/Icons/location.svg","Assets/Icons/logo-italki-logomark-white.svg","Assets/Icons/logo-italki-logomark.svg","Assets/Icons/logo-italki-wordmark-white.svg","Assets/Icons/logo-italki-wordmark.svg","Assets/Icons/message.svg","Assets/Icons/mira.svg","Assets/Icons/more.svg","Assets/Icons/morning.svg","Assets/Icons/night.svg","Assets/Icons/pin-outline.svg","Assets/Icons/pin-solid.svg","Assets/Icons/plus.svg","Assets/Icons/premium.svg","Assets/Icons/pronounce-sm-outline.svg","Assets/Icons/pronounce-sm-solid.svg","Assets/Icons/recall.svg","Assets/Icons/referral.svg","Assets/Icons/refresh.svg","Assets/Icons/replace.svg","Assets/Icons/report.svg","Assets/Icons/save-as-draft.svg","Assets/Icons/scan.svg","Assets/Icons/schedule.svg","Assets/Icons/search-list.svg","Assets/Icons/search-md.svg","Assets/Icons/search.svg","Assets/Icons/search_teacher_2.svg","Assets/Icons/sent.svg","Assets/Icons/settings.svg","Assets/Icons/share.svg","Assets/Icons/sign.svg","Assets/Icons/sort.svg","Assets/Icons/speak-ai.svg","Assets/Icons/star-outline.svg","Assets/Icons/star-solid.svg","Assets/Icons/student.svg","Assets/Icons/support.svg","Assets/Icons/switch.svg","Assets/Icons/tabbar-learn.svg","Assets/Icons/teacher.svg","Assets/Icons/test-alt.svg","Assets/Icons/test.svg","Assets/Icons/tips.svg","Assets/Icons/topic.svg","Assets/Icons/translate.svg","Assets/Icons/upvote-outline.svg","Assets/Icons/upvote-solid.svg","Assets/Icons/user.svg","Assets/Icons/video-classroom.svg","Assets/Icons/video-googleHangouts.svg","Assets/Icons/video-lesson.svg","Assets/Icons/video-qq.svg","Assets/Icons/video-skype.svg","Assets/Icons/video-teams.svg","Assets/Icons/video-wechat.svg","Assets/Icons/video-zoom.svg","Assets/Icons/vocabulary.svg","Assets/Icons/wallet.svg","Assets/Icons/warning.svg","Assets/Icons/whiteboard-add-canvas.svg","Assets/Icons/whiteboard-attachment.svg","Assets/Icons/whiteboard-clear.svg","Assets/Icons/whiteboard-device-check.svg","Assets/Icons/whiteboard-doc.svg","Assets/Icons/whiteboard-eraser.svg","Assets/Icons/whiteboard-highlighter.svg","Assets/Icons/whiteboard-lesson-plan.svg","Assets/Icons/whiteboard-notes.svg","Assets/Icons/whiteboard-pencil.svg","Assets/Icons/whiteboard-picture-in-picture.svg","Assets/Icons/whiteboard-privacy.svg","Assets/Icons/whiteboard-select.svg","Assets/Icons/whiteboard-shape.svg","Assets/Icons/whiteboard-stop.svg","Assets/Icons/whiteboard-take-note.svg","Assets/Icons/whiteboard-text.svg","Assets/Icons/whiteboard-tool-collection.svg","Assets/Icons/whiteboard-translate.svg","Assets/Icons/whiteboard-upload.svg","Assets/Icons/x-close.svg"];
-      const restored24Icons = {
-        "Assets/Icons/16px/alert-circle.svg": "Assets/Icons/alert-circle.svg",
-        "Assets/Icons/16px/calendar-add.svg": "Assets/Icons/calendar-add.svg",
-        "Assets/Icons/16px/classroom-audio-sm.svg": "Assets/Icons/classroom-audio-sm.svg",
-        "Assets/Icons/16px/help-icon.svg": "Assets/Icons/help-icon.svg",
-        "Assets/Icons/16px/smart-lesson.svg": "Assets/Icons/smart-lesson.svg"
-      };
-      Object.entries(restored24Icons).forEach(([legacyPath, restoredPath]) => {
-        const index = iconAssets.indexOf(legacyPath);
-        if (index !== -1) iconAssets.splice(index, 1, restoredPath);
-      });
-      iconAssets.unshift("Assets/Icons/logo-italki-plus.svg", "Assets/Icons/Plustag.svg", "Assets/Icons/teacher-professional.svg", "Assets/Icons/teacher-community.svg");
-      iconAssets.push("Assets/Icons/arrow-down-sm.svg", "Assets/Icons/arrow-left-sm.svg", "Assets/Icons/arrow-right-sm.svg", "Assets/Icons/arrow-up-sm.svg");
-      iconAssets.push("Assets/Icons/cross-sm.svg");
-      // Redundant Navigation arrows: each is pixel-identical to an asset the
-      // library already publishes, so the category listed the same glyph twice.
-      // back.svg duplicates arrow-left.svg; arrow-right-1.svg and arrow-up-1.svg
-      // are stray exports of the backup set's thin-stroke arrows, drawn in a
-      // black 1.5px stroke instead of the filled #515164 the 24px set uses.
-      // The files stay on disk for anything still pointing at them by path.
-      const duplicateNavigationIcons = ["Assets/Icons/back.svg", "Assets/Icons/arrow-right-1.svg", "Assets/Icons/arrow-up-1.svg"];
-      duplicateNavigationIcons.forEach((duplicatePath) => {
-        const index = iconAssets.indexOf(duplicatePath);
-        if (index !== -1) iconAssets.splice(index, 1);
-      });
+      // The Icon Library lists catalog-runtime/icon-manifest.js, generated from
+      // the icon assets by maintenance/scripts/build-icon-manifest.mjs (pinned brand
+      // marks first, three duplicate glyphs excluded — reasons live in the
+      // script). validate-contracts.mjs fails when the manifest is stale, so a
+      // new icon cannot silently miss this page.
+      const iconAssets = window.ITalkiIconManifest.slice();
       // Bundled from the approved Flags library: 252 unique ISO 3166-1 alpha-2 countries and territories.
       const flagCodes = `ae ar at au bd be br ca ch cl cn co cz de dk eg es fi fr gb gr hk hu id ie il in ir is it jp ke kr ma mx my ng nl no nz pe ph pk pl pt ro ru sa se sg th tr tw ua us vn za`.split(/\s+/);
       const flagLabelOverrides = { gb: "UK", us: "USA", kr: "Korea", kp: "North Korea", cz: "Czechia" };
@@ -160,7 +141,6 @@
         return '<div class="info-cluster"><div><span>Lessons</span><strong>12</strong></div><div><span>Response time</span><strong>1 hour</strong></div><div><span>Rating</span><strong>4.9</strong></div></div>';
       }
       function iconGroupFor(asset) {
-        if (asset.includes("/backup/")) return "backup";
         if (asset.includes("/16px/")) return "16px";
         return "24px";
       }
@@ -237,7 +217,7 @@
         }
       }
       function iconLibraryDetail() {
-        const groups = ui.segmentedControl({ id: "icon-library-group", options: [{ value: "24px", label: "24px" }, { value: "16px", label: "16px" }, { value: "backup", label: "Backup" }, { value: "all", label: "All" }], selected: "24px", size: 32, shape: "pill", ariaLabel: "Icon asset group" });
+        const groups = ui.segmentedControl({ id: "icon-library-group", options: [{ value: "24px", label: "24px" }, { value: "16px", label: "16px" }, { value: "all", label: "All" }], selected: "24px", size: 32, shape: "pill", ariaLabel: "Icon asset group" });
         return `<section class="detail-section"><div class="detail-sample"><div class="icon-toolbar"><div class="icon-filter-sets"><div class="icon-filter-set">${groups}</div></div>${ui.search({ id: "icon-search", placeholder: "Search icon assets", size: 40, shape: "pill" })}</div><div class="icon-groups" id="icon-grid"></div></div></section>`;
       }
       function principlesDetail() {
