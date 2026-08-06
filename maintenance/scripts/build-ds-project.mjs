@@ -606,7 +606,7 @@ for (const c of COMPONENTS) {
 <link rel="stylesheet" href="../../../styles.css">
 <style>
   *{box-sizing:border-box}
-  body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page,#FFFFFF);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ui-color-text)}
+  body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page,#FFFFFF);font-family:var(--ui-font-family);color:var(--ui-color-text)}
   .ds-grid{display:flex;flex-wrap:wrap;gap:var(--ui-space-6,24px) var(--ui-space-8,32px);align-items:flex-start}
   .cell{min-width:0}
   /* Anchored overlays are open in a static card, so the reservation must be
@@ -900,7 +900,7 @@ is the machine-readable contract the assertions come from.
 <link rel="stylesheet" href="../../../styles.css">
 <style>
   *{box-sizing:border-box}
-  body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page,#FFFFFF);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ui-color-text)}
+  body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page,#FFFFFF);font-family:var(--ui-font-family);color:var(--ui-color-text)}
   .icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:var(--ui-space-3,12px)}
   .icon-tile{display:grid;justify-items:center;gap:var(--ui-space-2,8px);margin:0;padding:var(--ui-space-4,16px) var(--ui-space-2,8px);border-radius:var(--ui-radius-lg,12px);background:var(--ui-color-divider)}
   .icon-tile figcaption{color:var(--ui-color-secondary);font-size:12px;line-height:16px;text-align:center;overflow-wrap:anywhere}
