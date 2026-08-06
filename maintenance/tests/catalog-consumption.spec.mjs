@@ -440,7 +440,7 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   await expect(lessonCards.first()).toHaveCSS("width", "652px");
   await expect(lessonCards.first()).toHaveCSS("height", "120px");
   await expect(lessonCards.first().locator('[data-component="avatar"]')).toHaveCount(1);
-  await expect(lessonCards.first().locator(".ui-avatar__image")).toHaveAttribute("src", "Assets/Images/avatars/teacher-rachel.png");
+  await expect(lessonCards.first().locator(".ui-avatar__initials")).toHaveText("SY");
   await expect(lessonCards.first().locator(".ui-card__content")).toHaveCSS("padding", "0px");
   /* Outlined cards stroke with an inset shadow so hover states never shift
      layout. */
