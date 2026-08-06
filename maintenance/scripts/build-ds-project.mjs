@@ -425,7 +425,21 @@ ${cells.filter((x) => !x.error).map((x) => `- ${x.label}`).join('\n')}
 const wrappers = COMPONENTS.filter((c) => typeof UI[c.fn] === 'function').map((c) =>
   `    ${c.name}: wrap(${JSON.stringify(c.fn)}),`).join('\n');
 
-write('_ds_bundle.js', `/* @ds-bundle: ${JSON.stringify({ shape: 'custom-vanilla-react', globalName: 'ItalkiUI', components: report.ok.length, source: 'catalog-runtime/italki-ui.js' })} */
+// The first-line header is a contract with the app's self-check: it reads
+// `namespace` to resolve the global and `components[]` (name + sourcePath) to
+// register what the design agent may build with. Getting the shape wrong is
+// silent — the cards still render, but the agent sees an empty design system.
+const bundleHeader = {
+  namespace: 'ItalkiUI',
+  components: COMPONENTS.filter((c) => report.ok.includes(c.name)).map((c) => ({
+    name: c.name,
+    sourcePath: `components/${c.slug}/${c.name}/${c.name}.jsx`,
+  })),
+  builtBy: 'maintenance/scripts/build-ds-project.mjs',
+  source: 'catalog-runtime/italki-ui.js',
+};
+
+write('_ds_bundle.js', `/* @ds-bundle: ${JSON.stringify(bundleHeader)} */
 (function (global) {
   "use strict";
   // The vanilla catalog runtime, inlined verbatim.
