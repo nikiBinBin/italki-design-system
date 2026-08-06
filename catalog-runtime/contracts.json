@@ -5,7 +5,7 @@
     "Assets/Flags/"
   ],
   "migration": {
-    "migrated": ["button", "chip", "tag", "checkbox", "checkbox-group", "radio", "selection", "date-picker", "tooltip", "modal", "popup", "popconfirm", "divider", "avatar", "badge", "breadcrumb", "card", "alert", "tabs", "pagination", "rate", "sidebar", "statistic", "table", "timeline", "top-nav", "slider", "panel", "search", "select", "switch", "drawer", "form-field", "text-input", "textarea", "number-stepper", "combobox", "upload", "stepper", "progress", "toast", "notification", "result", "skeleton", "dropdown-menu", "disclosure", "segmented-control", "time-slot", "time-picker", "calendar", "popover", "footer"],
+    "migrated": ["button", "chip", "link", "tag", "checkbox", "checkbox-group", "radio", "selection", "date-picker", "tooltip", "modal", "popup", "popconfirm", "divider", "avatar", "badge", "breadcrumb", "card", "alert", "tabs", "pagination", "rate", "sidebar", "statistic", "table", "timeline", "top-nav", "slider", "panel", "search", "select", "switch", "drawer", "form-field", "text-input", "textarea", "number-stepper", "combobox", "upload", "stepper", "progress", "toast", "notification", "result", "skeleton", "dropdown-menu", "disclosure", "segmented-control", "time-slot", "time-picker", "calendar", "popover", "footer"],
     "pending": []
   },
   "tokens": {
@@ -337,6 +337,16 @@
         "state": ["default", "hover", "checked", "disabled"]
       },
       "requiredStates": ["default", "hover", "checked", "disabled"]
+    },
+    "link": {
+      "acceptedProps": ["label", "href", "size", "variant", "trailingIcon", "external", "disabled", "state", "ariaLabel", "demo"],
+      "props": {
+        "size": [14, 16],
+        "variant": ["default", "subtle", "inverse"],
+        "trailingIcon": ["none", "chevron", "external"],
+        "state": ["default", "hover", "disabled"]
+      },
+      "requiredStates": ["default", "hover", "subtle", "inverse", "chevron", "external", "disabled"]
     },
     "tag": {
       "acceptedProps": ["label", "value", "size", "tone", "removable", "removeDemo", "removeAriaLabel"],
@@ -1081,6 +1091,13 @@
       "preferredImport": "@italki/design-system-react",
       "productionComponent": "Chip design-system adapter",
       "notes": "Panda Chip does not cover the Catalog 24px geometry or semantic button behavior. Use the React design-system adapter; never use Chip as a checkbox or radio replacement."
+    },
+    "link": {
+      "status": "gap",
+      "pandaExport": "",
+      "preferredImport": "@italki/design-system-react",
+      "productionComponent": "Link design-system component",
+      "notes": "New to the kit, with no upstream equivalent to adapt. The Foundation already carried Color/Link and the Link/16 and Link/14 typography tiers, and the teacher card was hand-rolling both; this is the component those specs describe. Not a substitute for Button: a Link goes somewhere, a Button does something."
     },
     "tag": {
       "status": "adapter",

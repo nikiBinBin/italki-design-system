@@ -375,6 +375,18 @@ assert.match(ui.modal({ id: "modal-accessibility", title: "Dialog", body: "Conte
 assert.match(ui.popup({ id: "popup-accessibility", title: "Details", body: "Content", open: true }), /role="dialog"[^>]*aria-labelledby="popup-accessibility-title"/, "Popup must expose a named non-modal dialog surface");
 assert.match(ui.popconfirm({ id: "popconfirm-accessibility", title: "Confirm", open: true }), /role="alertdialog"[^>]*aria-labelledby="popconfirm-accessibility-title"/, "Popconfirm must expose a named confirmation surface");
 assert.match(ui.divider({ type: "vertical", ariaLabel: "Teacher metadata separator" }), /role="separator"[^>]*aria-orientation="vertical"[^>]*aria-label="Teacher metadata separator"/, "Divider must expose separator semantics and orientation");
+/* Link. The two decisions worth pinning: a disabled link must not be
+   followable, and an external one must say so before it is clicked. */
+assert.match(ui.link({ label: "See lessons" }), /<a class="ui-link ui-link--16 ui-link--default"[^>]*href="#"/, "Link must render an anchor with a destination");
+assert.doesNotMatch(ui.link({ label: "Unavailable", disabled: true }), /<a\b/, "A disabled Link must not render an anchor — it cannot be followed");
+assert.match(ui.link({ label: "Unavailable", disabled: true }), /aria-disabled="true"/, "A disabled Link must announce that it is disabled");
+assert.match(ui.link({ label: "Help Center", external: true }), /target="_blank" rel="noreferrer noopener"/, "An external Link must open safely in a new context");
+assert.match(ui.link({ label: "Help Center", external: true }), /arrow-up-right\.svg/, "An external Link must mark itself before it is clicked");
+assert.match(ui.link({ label: "See lessons", trailingIcon: "chevron" }), /chevron-right\.svg/, "Link must support the chevron affordance the teacher card uses");
+assert.throws(() => ui.link({ label: "x", variant: "ghost" }), /link\.variant does not accept ghost/, "Link variants are contract-bound");
+assert(componentCSS.includes(".ui-link:hover, .ui-link.is-hover") && componentCSS.includes("text-decoration: underline"), "Link must underline on hover, not at rest");
+assert(!/\.ui-link \{[^}]*text-decoration: underline/.test(componentCSS), "Link must not underline at rest");
+
 assert.match(ui.avatar({ name: "Maya Chen", initials: "MC", size: 48, variant: "empty" }), /role="img"[^>]*aria-label="Maya Chen"/, "Avatar must expose a person name");
 assert.match(ui.avatar({ name: "italki", size: 48, variant: "logo" }), /ui-avatar--logo[\s\S]*logo-italki-logomark-white\.svg/, "Logo avatar must use the registered italki logomark asset");
 assert.match(ui.flag({ countryCode: "us", countryLabel: "USA", size: 24 }), /alt="USA"/, "Flag must expose a readable country label when it is standalone");

@@ -186,6 +186,79 @@
         "notes": "Panda Chip does not cover the Catalog 24px geometry or semantic button behavior. Use the React design-system adapter; never use Chip as a checkbox or radio replacement."
       }
     },
+    "link": {
+      "renderer": "",
+      "props": [
+        "label",
+        "href",
+        "size",
+        "variant",
+        "trailingIcon",
+        "external",
+        "disabled",
+        "state",
+        "ariaLabel",
+        "demo"
+      ],
+      "defaults": {
+        "label": "required or context-provided",
+        "href": "required or context-provided",
+        "size": "required or context-provided",
+        "variant": "required or context-provided",
+        "trailingIcon": "required or context-provided",
+        "external": "required or context-provided",
+        "disabled": "required or context-provided",
+        "state": "required or context-provided",
+        "ariaLabel": "required or context-provided",
+        "demo": "required or context-provided"
+      },
+      "enums": {
+        "size": [
+          14,
+          16
+        ],
+        "variant": [
+          "default",
+          "subtle",
+          "inverse"
+        ],
+        "trailingIcon": [
+          "none",
+          "chevron",
+          "external"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ]
+      },
+      "states": [
+        "default",
+        "hover",
+        "subtle",
+        "inverse",
+        "chevron",
+        "external",
+        "disabled"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ],
+      "implementation": {
+        "status": "gap",
+        "pandaExport": "",
+        "preferredImport": "@italki/design-system-react",
+        "productionComponent": "Link design-system component",
+        "notes": "New to the kit, with no upstream equivalent to adapt. The Foundation already carried Color/Link and the Link/16 and Link/14 typography tiers, and the teacher card was hand-rolling both; this is the component those specs describe. Not a substitute for Button: a Link goes somewhere, a Button does something."
+      }
+    },
     "tag": {
       "renderer": "tag",
       "props": [
