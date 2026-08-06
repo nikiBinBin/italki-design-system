@@ -98,6 +98,7 @@ const SLUGS = {
 
 const COMPONENTS = [
   ['Button', 'button', 'button', 'actions'],
+  ['Link', 'link', 'link', 'actions'],
   ['Chip', 'chip', 'chip', 'actions'],
   ['DropdownMenu', 'dropdownMenu', 'dropdown-menu', 'actions'],
   ['SegmentedControl', 'segmentedControl', 'segmented-control', 'actions'],

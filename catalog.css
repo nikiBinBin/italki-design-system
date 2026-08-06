@@ -467,6 +467,8 @@
       .ds-overlay-detail .component-doc-block { overflow: visible; }
       .ds-overlay-detail .component-doc-content { min-height: 0; display: block; padding: var(--space-6); }
       .ds-anchored-overlay-example { width: 100%; min-height: 264px; display: grid; align-content: start; justify-items: center; padding-top: var(--space-4); }
+      /* Inverse only reads on a dark surface, so the demo supplies one. */
+      .link-inverse-stage { display: inline-flex; align-items: center; border-radius: var(--radius-md); padding: var(--space-2) var(--space-3); background: var(--title); }
       .tooltip-detail .component-doc-block, .tooltip-detail .component-doc-content { overflow: visible; }
       .tooltip-placement-stage { width: min(100%, 560px); min-height: 296px; display: grid; grid-template-areas: "top-left top top-right" "left . right" "bottom-left bottom bottom-right"; grid-template-columns: minmax(0, 1fr) max-content minmax(0, 1fr); grid-template-rows: repeat(3, max-content); align-content: center; justify-items: center; column-gap: var(--space-6); row-gap: var(--space-6); }
       .tooltip-placement-stage > :nth-child(1) { grid-area: top-left; justify-self: end; }

@@ -107,6 +107,37 @@
     return `<span class="ui-tag ui-tag--${size} ui-tag--${tone}" data-component="tag" data-value="${escapeHTML(value)}"><span>${escapeHTML(label)}</span>${remove}</span>`;
   }
 
+  function link(props = {}) {
+    assertProps("link", props);
+    const {
+      label = "", href = "#", size = 16, variant = "default",
+      trailingIcon = "none", external = false, disabled = false,
+      state = "default", ariaLabel = "", demo = "",
+    } = props;
+    enumValue("link", "size", size);
+    enumValue("link", "variant", variant);
+    enumValue("link", "trailingIcon", trailingIcon);
+    enumValue("link", "state", state);
+    /* An external link opens elsewhere, which the reader is entitled to know
+       before clicking — so the arrow is the default marker for one, not an
+       independent decoration. Passing an explicit trailingIcon still wins. */
+    const marker = trailingIcon !== "none" ? trailingIcon : external ? "external" : "none";
+    const glyph = marker === "chevron" ? "Assets/Icons/chevron-right.svg"
+      : marker === "external" ? "Assets/Icons/arrow-up-right.svg" : "";
+    const tail = glyph ? icon(glyph, "ui-link__icon") : "";
+    /* A disabled link is not a link: it cannot be followed, so it must not be
+       focusable or expose a destination. */
+    const tag = disabled ? "span" : "a";
+    const target = !disabled && external ? ' target="_blank" rel="noreferrer noopener"' : "";
+    return `<${tag} class="ui-link ui-link--${size} ui-link--${variant}${disabled ? " is-disabled" : ""}${state === "hover" ? " is-hover" : ""}"`
+      + ` data-component="link"`
+      + (disabled ? ' aria-disabled="true"' : ` href="${escapeHTML(href)}"`)
+      + target
+      + (ariaLabel ? ` aria-label="${escapeHTML(ariaLabel)}"` : "")
+      + (demo ? ` data-demo="${escapeHTML(demo)}"` : "")
+      + `><span class="ui-link__label">${escapeHTML(label)}</span>${tail}</${tag}>`;
+  }
+
   function checkbox(props = {}) {
     assertProps("checkbox", props);
     const { id = "", label = "Checkbox", checked = "off", state = "default", disabled = false, toggleMode = "binary", demo = "" } = props;
@@ -2947,6 +2978,7 @@
     button,
     chip,
     tag,
+    link,
     checkbox,
     checkboxGroup,
     radio,

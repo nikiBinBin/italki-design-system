@@ -39,7 +39,7 @@
       const groups = [
         { id: "principles", title: "Principles", description: "", data: parse("Design Principles|Product direction and decision principles.") },
         { id: "foundation", title: "Foundation", description: "", data: parse("Color|Color tokens and semantic roles.;Typography|;Icon library|Browse the italki icon assets by size and source set.;Spacing|Module padding and margin scale.;Grid|Responsive page and composition grid.;Radius|Corner radius scale and component mapping.;Shadow|Surface-depth tokens and elevation boundaries.") },
-        { id: "general", title: "General", description: "", data: parse("Button variants|Button hierarchy and visual variants.;Chip|Compact reversible local choice.;Segmented control|Compact switch between closely related views.") },
+        { id: "general", title: "General", description: "", data: parse("Button variants|Button hierarchy and visual variants.;Link|Navigation to another destination, inside a sentence or a row.;Chip|Compact reversible local choice.;Segmented control|Compact switch between closely related views.") },
         { id: "data-entry", title: "Data Entry", description: "", data: parse("Form field|Label, support, validation, and one supplied control.;Text input|Controlled single-line text entry.;Textarea|Controlled multi-line text entry.;Number stepper|Controlled bounded numeric quantity.;Upload|Controlled file selection and supplied upload status.;Search|Controlled query input with supplied search behavior.;Select|Controlled value selection, including searchable Combobox.;Checkbox|Controlled multi-select choice, mixed state, and related checkbox groups.;Radio|Controlled single-select choice with supplied group behavior.;Date picker|Controlled date or date-range selection.;Time picker|Controlled single time selection.;Time slot|Bookable or unavailable supplied time.;Rate|Controlled fractional rating input.;Selection|Controlled selectable item, button, or row.;Slider|Controlled bounded numeric range.;Switch|Controlled immediate binary action.") },
         { id: "data-display", title: "Data Display", description: "", data: parse("Card|Bounded discrete object or actionable content surface.;Avatar|Person image, initials, country marker, and supplied group composition.;Badge|Compact count, dot, or status marker.;Tag|Compact static attribute or removable selected value.;Tabs|Controlled local content-view switcher.;Statistic|Emphasized supplied numeric fact.;Table|Structured collection display.;Calendar|Weekly availability display composed from supplied Time slot and Time picker primitives.;Timeline|Chronological supplied events.;Disclosure|Optional local details revealed by the user.") },
         { id: "layout", title: "Layout", description: "", data: parse("Divider|Structural content separator.;Panel|Bounded content region with optional title.;Stepper|Ordered task stages and current position, including compact flow progress.") },
@@ -395,6 +395,33 @@
       function tagDetail() {
         const controls = `<div class="tag-global-controls">${catalogSegmentedControl({ id: "tag-size", options: [{ label: "24px", value: "24" }, { label: "32px", value: "32" }, { label: "40px", value: "40" }], selected: "24", ariaLabel: "Tag height", target: ".tag-detail", property: "tagSize", apply: "tag" })}</div>`;
         return `${controls}<div class="component-doc-grid ds-component-detail tag-detail tag-size-24">${dsBlock("Default", `<div class="ds-row">${tagComponent({ label: "Native speaker" })}${tagComponent({ label: "Beginner" })}${tagComponent({ label: "30 min" })}</div>`)}${dsBlock("Semantic variants", `<div class="ds-row">${tagComponent({ label: "Info", tone: "info" })}${tagComponent({ label: "Complete", tone: "success" })}${tagComponent({ label: "Pending", tone: "warning" })}${tagComponent({ label: "Unavailable", tone: "error" })}</div>`)}${dsBlock("Removable", `<div class="ds-row">${tagComponent({ label: "English", removable: true, removeDemo: "tag-remove-demo" })}${tagComponent({ label: "Conversation", removable: true, removeDemo: "tag-remove-demo" })}</div>`)}</div>`;
+      }
+      function linkDetail() {
+        const link = (props) => ui.link(props);
+        const row = (content) => `<div class="ds-row">${content}</div>`;
+        return `<div class="component-doc-grid ds-component-detail link-detail">${
+          dsBlock("Default", row(
+            link({ label: "See beginner lessons" })
+            + link({ label: "Compact link", size: 14 }),
+          ))
+        }${
+          dsBlock("Variants", row(
+            link({ label: "Default" })
+            + link({ label: "Subtle", variant: "subtle" })
+            + `<span class="link-inverse-stage">${link({ label: "Inverse", variant: "inverse" })}</span>`,
+          ))
+        }${
+          dsBlock("Trailing icon", row(
+            link({ label: "See beginner lessons", trailingIcon: "chevron" })
+            + link({ label: "italki Help Center", external: true }),
+          ))
+        }${
+          dsBlock("States", row(
+            link({ label: "Default" })
+            + link({ label: "Hover", state: "hover" })
+            + link({ label: "Unavailable", disabled: true }),
+          ))
+        }</div>`;
       }
       function datePickerDetail() {
         const july = ["", "", "", { label: 1, value: "2026-07-01" }, { label: 2, value: "2026-07-02" }, { label: 3, value: "2026-07-03" }, { label: 4, value: "2026-07-04" }, ...Array.from({ length: 27 }, (_, index) => ({ label: index + 5, value: `2026-07-${String(index + 5).padStart(2, "0")}` }))];
@@ -1119,6 +1146,7 @@
       function detailContent(entry) {
         if (entry.group.id === "patterns" && byName(entry) === "filter") return filterPatternDetail();
         if (entry.group.id === "patterns" && !["teacher card", "lesson card"].includes(byName(entry))) return patternDetail(entry);
+        if (byName(entry) === "link") return linkDetail();
         if (byName(entry) === "design principles") return principlesDetail();
         if (byName(entry) === "color") return colorDetail();
         if (byName(entry) === "spacing") return spacingDetail();

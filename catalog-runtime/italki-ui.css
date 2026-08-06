@@ -135,6 +135,26 @@
 .ui-chip:disabled, .ui-chip.is-disabled { color: var(--ui-color-card); background: var(--ui-color-border); cursor: not-allowed; }
 .ui-chip:focus-visible { outline: none; border-color: var(--ui-color-title); box-shadow: none; }
 
+/* Link. Typography follows the Link/16 and Link/14 tiers in COMPONENTS.md.
+   The underline is a hover affordance, not a resting decoration: a page of
+   underlined links reads as noise, and the link colour already carries the
+   signal at rest. */
+.ui-link { display: inline-flex; align-items: center; gap: var(--ui-space-1); color: var(--ui-color-link); font-weight: var(--ui-font-weight-medium); text-decoration: none; transition: color 120ms ease; }
+.ui-link--16 { font-size: var(--ui-font-size-16); line-height: var(--ui-line-height-24); }
+.ui-link--14 { font-size: var(--ui-font-size-14); line-height: var(--ui-line-height-22); }
+.ui-link:hover, .ui-link.is-hover { color: var(--ui-color-link-hover); text-decoration: underline; }
+.ui-link:focus-visible { outline: 2px solid var(--ui-color-link); outline-offset: 2px; border-radius: var(--ui-radius-xs); }
+/* Subtle reads as body text until touched — for links that sit inside a
+   sentence or a dense row, where link colour would fragment the line. */
+.ui-link--subtle { color: var(--ui-color-secondary); }
+.ui-link--subtle:hover, .ui-link--subtle.is-hover { color: var(--ui-color-text); }
+/* Inverse sits on a dark surface, where the link blue fails contrast. */
+.ui-link--inverse { color: var(--ui-color-on-primary); }
+.ui-link--inverse:hover, .ui-link--inverse.is-hover { color: var(--ui-color-on-primary); }
+.ui-link--inverse:focus-visible { outline-color: var(--ui-color-on-primary); }
+/* A disabled link renders as a span, so it has no hover or focus to suppress. */
+.ui-link.is-disabled { color: var(--ui-color-disabled); cursor: not-allowed; text-decoration: none; }
+.ui-link__icon { width: 16px; height: 16px; flex: 0 0 16px; display: block; }
 .ui-tag { min-height: 24px; display: inline-flex; align-items: center; gap: var(--ui-space-1); border-radius: var(--ui-radius-full); padding: 0 var(--ui-space-2); color: var(--ui-color-text); background: var(--ui-color-divider); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-medium); line-height: var(--ui-line-height-18); }
 .ui-tag--32 { min-height: 32px; padding-inline: var(--ui-space-3); font-size: var(--ui-font-size-14); line-height: var(--ui-line-height-20); }
 .ui-tag--40 { min-height: 40px; padding-inline: var(--ui-space-4); font-size: var(--ui-font-size-14); line-height: var(--ui-line-height-20); }

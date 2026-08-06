@@ -89,6 +89,41 @@ window.ITalkiUIContracts = {
         ]
       }
     },
+    "link": {
+      "acceptedProps": [
+        "label",
+        "href",
+        "size",
+        "variant",
+        "trailingIcon",
+        "external",
+        "disabled",
+        "state",
+        "ariaLabel",
+        "demo"
+      ],
+      "props": {
+        "size": [
+          14,
+          16
+        ],
+        "variant": [
+          "default",
+          "subtle",
+          "inverse"
+        ],
+        "trailingIcon": [
+          "none",
+          "chevron",
+          "external"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ]
+      }
+    },
     "tag": {
       "acceptedProps": [
         "label",

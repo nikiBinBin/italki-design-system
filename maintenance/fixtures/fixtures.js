@@ -191,6 +191,15 @@
         fixture("divider", "dashed", ui.divider({ label: "Lesson details", dashed: true })),
         fixture("divider", "plain", ui.divider({ label: "Lesson details", plain: true }))
       ],
+      link: [
+        fixture("link", "default", ui.link({ label: "See beginner lessons" })),
+        fixture("link", "hover", ui.link({ label: "See beginner lessons", state: "hover" })),
+        fixture("link", "subtle", ui.link({ label: "Skip for now", variant: "subtle" })),
+        fixture("link", "inverse", ui.link({ label: "Learn more", variant: "inverse" })),
+        fixture("link", "chevron", ui.link({ label: "See beginner lessons", size: 14, trailingIcon: "chevron" })),
+        fixture("link", "external", ui.link({ label: "italki Help Center", external: true })),
+        fixture("link", "disabled", ui.link({ label: "Unavailable", disabled: true })),
+      ],
       avatar: [
         fixture("avatar", "image", ui.avatar({ name: "Maya Chen", image: "Assets/Icons/user.svg", size: 48 })),
         fixture("avatar", "with-flag", ui.avatar({ name: "Maya Chen, USA", image: "Assets/Icons/user.svg", size: 56, flag: "us", flagLabel: "USA", variant: "with-flag" })),
