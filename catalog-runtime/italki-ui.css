@@ -1,3 +1,9 @@
+/* The kit's base layer: everything below inherits the Foundation's font.
+   Without this the bundle shipped no font-family at all, so a project that
+   installed the design system got its browser default and every consumer —
+   including this repo's own Design cards — had to restate the stack. */
+:root { font-family: var(--ui-font-family); }
+
 .ui-button,
 .ui-chip,
 .ui-checkbox,

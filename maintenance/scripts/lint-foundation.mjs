@@ -26,10 +26,9 @@ const root = path.resolve(here, "..", "..");
 const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), "utf8");
 
 /* ---------- Scales ----------
-   Spacing and radius are parsed from tokens.css so this lint cannot drift from
-   the Foundation. Typography sizes and line heights are declared, because
-   COMPONENTS.md states them in prose rather than as tokens; see the cited
-   sections when either changes. */
+   Every scale is parsed from tokens.css, so this lint cannot drift from the
+   Foundation. Typography used to be hardcoded here because COMPONENTS.md
+   stated it in prose and there were no type tokens; there are now. */
 
 const tokensCSS = read("catalog-runtime/tokens.css");
 const scaleFrom = (prefix) =>
@@ -40,15 +39,13 @@ const scaleFrom = (prefix) =>
 
 const SPACING = scaleFrom("space");
 const RADIUS = new Set([...scaleFrom("radius"), 9999]);
-/* COMPONENTS.md "Available size tokens", plus 10px: the size-token list starts
-   at 12px but the Typography tier table documents `{typography.micro}` at
-   10px/14px, and the runtime uses it for unread counts and online status. */
-const FONT_SIZES = new Set([10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 60]);
-// Line heights paired with those sizes across the Typography tier table.
-const LINE_HEIGHTS = new Set([14, 16, 18, 20, 22, 24, 28, 30, 32, 34, 40, 48, 60]);
+const FONT_SIZES = scaleFrom("font-size");
+const LINE_HEIGHTS = scaleFrom("line-height");
 
 assert(SPACING.size > 5, "Could not parse the spacing scale from tokens.css");
 assert(RADIUS.size > 3, "Could not parse the radius scale from tokens.css");
+assert(FONT_SIZES.size > 10, "Could not parse the font-size scale from tokens.css");
+assert(LINE_HEIGHTS.size > 8, "Could not parse the line-height scale from tokens.css");
 SPACING.add(0);
 RADIUS.add(0);
 
@@ -175,11 +172,12 @@ function lintStylesheet(relativePath) {
       if (height !== undefined && !LINE_HEIGHTS.has(height)) {
         push(line, "line-height", `${prop}: ${value}`);
       }
-    } else if (prop === "font-family" && !value.includes("inherit")
-        && !/^(html|body|:root|\*)/.test(selector)) {
-      /* The root declaration is the definition site — the Foundation has no
-         font token, so some stylesheet must state the stack. Only downstream
-         re-declarations are drift. */
+    } else if (prop === "font-family" && !value.includes("inherit")) {
+      /* No exemption any more: --ui-font-family exists, so every declaration
+         can reference it. The root rule used to be exempt because the
+         Foundation had no font token and some stylesheet had to state the
+         stack — that is no longer true, and a literal stack anywhere is drift.
+         (Values containing var() never reach here.) */
       push(line, "font-family", `${prop}: ${value.slice(0, 40)}`);
     } else if ((prop === "box-shadow" || prop === "text-shadow")
         && !["none", ""].includes(value.replace("!important", "").trim())) {
@@ -270,5 +268,6 @@ assert.equal(findings.length, 0, `Foundation lint failed with ${findings.length}
 console.log(
   `Foundation lint passed: spacing ${[...SPACING].sort((a, b) => a - b).join("/")}` +
     ` · radius ${[...RADIUS].sort((a, b) => a - b).join("/")}` +
+    ` · type ${[...FONT_SIZES].sort((a, b) => a - b).join("/")}` +
     ` · ${REGISTERED_EXCEPTIONS.length} registered exceptions`,
 );

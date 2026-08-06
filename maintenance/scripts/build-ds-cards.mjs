@@ -218,7 +218,7 @@ for (const target of TARGETS) {
 <link rel="stylesheet" href="${depth}styles.css">\n<link rel="stylesheet" href="${depth}_cards.css">
 <style>
   *{box-sizing:border-box}
-  body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page,#FFFFFF);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ui-color-text)}
+  body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page,#FFFFFF);font-family:var(--ui-font-family);color:var(--ui-color-text)}
   /* A demo is a page-level slice of the Catalog, so each takes a full row. */
   .ds-grid{display:flex;flex-direction:column;gap:var(--ui-space-8,32px)}
   .cell{min-width:0}

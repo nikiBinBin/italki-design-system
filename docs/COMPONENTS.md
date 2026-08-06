@@ -255,7 +255,12 @@ The named text styles in the DS3.0 Figma library, for exact matching when normal
 | `Link/16`                      | 500 · 16/24              | Default text link                                                  |
 | `Link/14`                      | 500 · 14/22              | Compact inline or secondary text link                              |
 
-Available size tokens: 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 60. Weight tokens: Regular 400, Medium 500, SemiBold 600, Bold 700, ExtraBold 800 (800 is reserved for the documented hero exception and rare brand marks; default body remains Medium 500).
+These tiers are built from Foundation tokens, not literals. `catalog-runtime/tokens.css`
+defines `--ui-font-family`, `--ui-font-size-{10…60}`, `--ui-line-height-{14…60}`, and
+`--ui-font-weight-{regular,medium,semibold,bold,extrabold}`; `lint:foundation` parses those
+same declarations, so a size or line height that is not a token fails the build.
+
+Available size tokens: 12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 60 (plus 10 for `Body/Micro`). Weight tokens: Regular 400, Medium 500, SemiBold 600, Bold 700, ExtraBold 800 (800 is reserved for the documented hero exception and rare brand marks; default body remains Medium 500).
 
 ### Principles
 
