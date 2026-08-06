@@ -2,7 +2,8 @@
   "schemaVersion": 4,
   "assetRoots": [
     "Assets/Icons/",
-    "Assets/Flags/"
+    "Assets/Flags/",
+    "Assets/Images/avatars/"
   ],
   "migration": {
     "migrated": ["button", "chip", "link", "tag", "checkbox", "checkbox-group", "radio", "selection", "date-picker", "tooltip", "modal", "popup", "popconfirm", "divider", "avatar", "badge", "breadcrumb", "card", "alert", "tabs", "pagination", "rate", "sidebar", "statistic", "table", "timeline", "top-nav", "slider", "panel", "search", "select", "switch", "drawer", "form-field", "text-input", "textarea", "number-stepper", "combobox", "upload", "stepper", "progress", "toast", "notification", "result", "skeleton", "dropdown-menu", "disclosure", "segmented-control", "time-slot", "time-picker", "calendar", "popover", "footer"],

@@ -144,8 +144,8 @@ assert(!/#[0-9A-Fa-f]{3,8}\b/.test(componentCSS), "Component CSS must not contai
 assert(!/\brgb\(/.test(componentCSS), "Component CSS must not contain raw rgb colors");
 assert(!/#[0-9A-Fa-f]{3,8}\b|\brgb\(/.test(read("catalog-runtime/italki-ui.js")), "Component implementation must not contain raw colors");
 assert(!/#[0-9A-Fa-f]{3,8}\b|\brgb\(/.test(fixtureSource), "Visual fixtures must not contain raw colors");
-assert(!/Assets\/(?!Icons\/|Flags\/)/.test(read("catalog-runtime/italki-ui.js")), "Catalog runtime may only use registered local asset roots");
-assert(!/Assets\/(?!Icons\/|Flags\/)/.test(catalog), "Catalog may only reference registered local asset roots");
+assert(!/Assets\/(?!Icons\/|Flags\/|Images\/avatars\/)/.test(read("catalog-runtime/italki-ui.js")), "Catalog runtime may only use registered local asset roots");
+assert(!/Assets\/(?!Icons\/|Flags\/|Images\/avatars\/)/.test(catalog), "Catalog may only reference registered local asset roots");
 assert(catalog.includes('const CATALOG_SECTION_ORDER = Object.freeze({ variants: 1, features: 2, states: 3 });'), "Catalog must define one shared component-section order");
 assert(catalog.includes('function sortCatalogSections(root)'), "Catalog must sort component sections through the shared taxonomy");
 assert(catalog.includes('data-catalog-section="${sectionKind}"'), "Catalog sections must expose their taxonomy for verification");
