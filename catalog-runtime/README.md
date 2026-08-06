@@ -8,7 +8,7 @@ This folder powers the shareable static Design Catalog. It is not a React packag
 - `contracts.js`: browser-readable contract generated from `contracts.json`.
 - `tokens.css`: semantic token values used by the static Catalog.
 - `italki-ui.js` and `italki-ui.css`: framework-neutral renderer and presentation used by `index.html`.
-- `component-api.json`, `foundation-api.json`, and `panda-api.json`: generated lookup indexes for Catalog, color, and Panda mappings.
+- `component-api.json` and `foundation-api.json`: generated lookup indexes for Catalog components and colors.
 
 ## Boundary
 

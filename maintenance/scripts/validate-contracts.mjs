@@ -16,10 +16,8 @@ const catalogStyle = read("catalog.css");
 const componentsDoc = read("docs/core/COMPONENTS.md");
 const componentApi = JSON.parse(read("catalog-runtime/component-api.json"));
 const foundationApi = JSON.parse(read("catalog-runtime/foundation-api.json"));
-const pandaApi = JSON.parse(read("catalog-runtime/panda-api.json"));
 const productionMappingStatuses = new Set(["aligned", "adapter", "composed", "gap", "legacy"]);
 const productionTokenMappingStatuses = new Set(["aligned", "override", "gap"]);
-const productionApiMappingStatuses = new Set(["direct", "adapter", "catalog-only", "gap"]);
 
 assert(catalog.includes('<link rel="stylesheet" href="catalog.css" />'), "Catalog shell styles must live outside the document");
 assert(!catalog.includes("<style>"), "Catalog must not embed its presentation CSS");
@@ -32,7 +30,6 @@ for (const name of catalogColorTokens) {
   const apiMapping = foundationApi.colors[name];
   assert(mapping, `Production color mapping is required for: ${name}`);
   assert(productionTokenMappingStatuses.has(mapping.status), `Production color mapping has an invalid status for: ${name}`);
-  assert(typeof mapping.pandaToken === "string" || mapping.pandaToken === null, `Production color mapping must declare a Panda token or null for: ${name}`);
   assert(typeof mapping.projectOverride === "string" && mapping.projectOverride.length > 0, `Production color mapping must record the project override location for: ${name}`);
   assert(typeof mapping.notes === "string" && mapping.notes.length > 0, `Production color mapping must explain the implementation boundary for: ${name}`);
   assert.equal(apiMapping.value, manifest.tokens[name], `Foundation API color value drifted for: ${name}`);
@@ -53,7 +50,6 @@ for (const [name, contract] of Object.entries(manifest.components)) {
   assert.deepEqual(apiContract.allowedTokens, componentApi.usagePolicy.allowedFamilies, `Component API token policy drifted for: ${name}`);
   assert(implementation, `Production mapping is required for: ${name}`);
   assert(productionMappingStatuses.has(implementation.status), `Production mapping has an invalid status for: ${name}`);
-  assert(typeof implementation.pandaExport === "string" || implementation.pandaExport === null, `Production mapping must declare a Panda export or null for: ${name}`);
   assert(typeof implementation.preferredImport === "string" && implementation.preferredImport.length > 0, `Production mapping must declare a preferred import for: ${name}`);
   assert(typeof implementation.productionComponent === "string" && implementation.productionComponent.length > 0, `Production mapping must declare a production component for: ${name}`);
   assert(typeof implementation.notes === "string" && implementation.notes.length > 0, `Production mapping must explain the implementation boundary for: ${name}`);
@@ -61,56 +57,6 @@ for (const [name, contract] of Object.entries(manifest.components)) {
 }
 
 assert.deepEqual(Object.keys(manifest.productionMappings || {}).sort(), Object.keys(manifest.components).sort(), "Every registered component must have exactly one production mapping");
-
-const apiMappings = manifest.productionApiMappings || {};
-const mappedApiComponents = apiMappings.coverage?.mapped || [];
-const pendingApiComponents = apiMappings.coverage?.pending || [];
-const coveredApiComponents = [...mappedApiComponents, ...pendingApiComponents];
-assert.equal(new Set(mappedApiComponents).size, mappedApiComponents.length, "Panda API coverage cannot contain duplicate mapped components");
-assert.equal(new Set(pendingApiComponents).size, pendingApiComponents.length, "Panda API coverage cannot contain duplicate pending components");
-assert.equal(new Set(coveredApiComponents).size, coveredApiComponents.length, "Panda API coverage cannot mark a component as both mapped and pending");
-assert.deepEqual([...coveredApiComponents].sort(), Object.keys(manifest.components).sort(), "Panda API coverage must account for every registered component");
-assert.deepEqual(pandaApi.statusDefinitions, apiMappings.statusDefinitions, "Generated Panda API status definitions drifted from the contract");
-assert.deepEqual(pandaApi.coverage, apiMappings.coverage, "Generated Panda API coverage drifted from the contract");
-assert.deepEqual(Object.keys(pandaApi.components).sort(), [...mappedApiComponents].sort(), "Generated Panda API must contain exactly the mapped components");
-assert.deepEqual(Object.keys(apiMappings.components || {}).sort(), [...mappedApiComponents].sort(), "Every mapped Panda API component must declare a prop-level mapping");
-for (const name of mappedApiComponents) {
-  const contract = manifest.components[name];
-  const mapping = apiMappings.components[name];
-  const generated = pandaApi.components[name];
-  assert(contract, `Panda API mapping references an unregistered component: ${name}`);
-  assert(mapping, `Panda API mapping is required for: ${name}`);
-  assert(typeof mapping.pandaComponent === "string" && mapping.pandaComponent.length > 0, `Panda API mapping must name its Panda target for: ${name}`);
-  assert(typeof mapping.preferredImport === "string" && mapping.preferredImport.length > 0, `Panda API mapping must declare its preferred import for: ${name}`);
-  assert(typeof mapping.source === "string" && mapping.source.length > 0, `Panda API mapping must record its checked source for: ${name}`);
-  assert(typeof mapping.notes === "string" && mapping.notes.length > 0, `Panda API mapping must explain its implementation boundary for: ${name}`);
-  assert.deepEqual(Object.keys(mapping.props || {}).sort(), [...contract.acceptedProps].sort(), `Panda API mapping must resolve every Catalog prop for: ${name}`);
-  for (const prop of contract.acceptedProps) {
-    const propMapping = mapping.props[prop];
-    assert(productionApiMappingStatuses.has(propMapping.status), `Panda API prop mapping has an invalid status for: ${name}.${prop}`);
-    assert(typeof propMapping.pandaProp === "string" || propMapping.pandaProp === null, `Panda API prop mapping must declare a Panda prop or null for: ${name}.${prop}`);
-    assert(typeof propMapping.notes === "string" && propMapping.notes.length > 0, `Panda API prop mapping must explain its boundary for: ${name}.${prop}`);
-    if (["direct", "adapter"].includes(propMapping.status)) {
-      assert(typeof propMapping.pandaProp === "string" && propMapping.pandaProp.length > 0, `Direct or adapter Panda API mapping must name its target for: ${name}.${prop}`);
-    }
-    if (["catalog-only", "gap"].includes(propMapping.status)) {
-      assert.equal(propMapping.pandaProp, null, `Catalog-only or gap Panda API mapping must not imply a Panda prop for: ${name}.${prop}`);
-    }
-  }
-  assert(generated, `Generated Panda API is missing: ${name}`);
-  assert.equal(generated.catalogComponent, name, `Generated Panda API component identity drifted for: ${name}`);
-  assert.equal(generated.coverageStatus, "mapped", `Generated Panda API coverage status drifted for: ${name}`);
-  assert.deepEqual(generated.catalogProps, contract.acceptedProps, `Generated Panda API Catalog props drifted for: ${name}`);
-  const { catalogComponent, catalogProps, coverageStatus, ...generatedMapping } = generated;
-  assert.deepEqual(generatedMapping, mapping, `Generated Panda API mapping drifted for: ${name}`);
-}
-assert.equal((componentsDoc.match(/<!-- PANDA_IMPLEMENTATION_SUMMARY:START -->/g) || []).length, 1, "COMPONENTS.md must have one Panda implementation summary start marker");
-assert.equal((componentsDoc.match(/<!-- PANDA_IMPLEMENTATION_SUMMARY:END -->/g) || []).length, 1, "COMPONENTS.md must have one Panda implementation summary end marker");
-assert(componentsDoc.includes("### Panda Implementation Summary"), "COMPONENTS.md must expose the Panda implementation summary");
-assert(componentsDoc.includes("`docs/reference/PANDA_API.md`"), "COMPONENTS.md must link the Panda implementation summary to the detailed API map");
-for (const name of mappedApiComponents) {
-  assert(componentsDoc.includes(`**\`${name}\`**`), `COMPONENTS.md Panda implementation summary is missing: ${name}`);
-}
 
 const migrated = new Set(manifest.migration?.migrated || []);
 const pending = new Set(manifest.migration?.pending || []);
@@ -121,7 +67,6 @@ assert.deepEqual([...migrated].sort(), Object.keys(manifest.components).sort(), 
 const resolvedButton = childProcess.spawnSync(process.execPath, [path.join(root, "maintenance", "scripts", "check-component.mjs"), "button"], { encoding: "utf8" });
 assert.equal(resolvedButton.status, 0, "Migrated component lookup must succeed");
 assert.equal(JSON.parse(resolvedButton.stdout).component, "button", "Component lookup must resolve the requested component");
-assert.equal(JSON.parse(resolvedButton.stdout).apiMapping.coverageStatus, "mapped", "Component lookup must expose the Panda API mapping when available");
 const resolvedSelect = childProcess.spawnSync(process.execPath, [path.join(root, "maintenance", "scripts", "check-component.mjs"), "select"], { encoding: "utf8" });
 assert.equal(resolvedSelect.status, 0, "Migrated Select lookup must succeed");
 assert.equal(JSON.parse(resolvedSelect.stdout).component, "select", "Component lookup must resolve Select");
