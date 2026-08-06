@@ -456,6 +456,123 @@ ${wrappers}
 })(window);
 `);
 
+// ── README — the design agent reads this ──────────────────────────────────
+// Generated, not hand-written: every component name, prop value and token below
+// comes from the same contracts.js the runtime asserts against, so it cannot
+// drift from the implementation.
+const byGroup = {};
+for (const c of COMPONENTS) if (report.ok.includes(c.name)) (byGroup[c.group] ??= []).push(c.name);
+// Per-component, never a union: `variant` means nine things on Button and four
+// on Avatar, so a merged row would be actively misleading. Each row names the
+// component it is read from, and how many others share the prop.
+const axisRow = (prop, key) => {
+  const contract = CONTRACTS[key] ?? {};
+  const values = (contract.props?.[prop] ?? []).map((v) => `\`${v}\``).join(' · ');
+  const shared = COMPONENTS.filter((c) => (CONTRACTS[c.key]?.acceptedProps ?? []).includes(prop)).length;
+  return { values, shared };
+};
+const axisTable = [
+  ['size', 'button', 'Button'],
+  ['shape', 'button', 'Button'],
+  ['variant', 'button', 'Button'],
+  ['tone', 'tag', 'Tag'],
+  ['status', 'text-input', 'TextInput'],
+  ['placement', 'tooltip', 'Tooltip'],
+].map(([prop, key, label]) => {
+  const { values, shared } = axisRow(prop, key);
+  return `| \`${prop}\` | ${label} | ${values} | ${shared} |`;
+}).join('\n');
+
+write('README.md', `# italki UI Kit
+
+The italki design system, published from the framework-neutral catalog runtime
+(\`catalog-runtime/italki-ui.js\`). ${report.ok.length} components.
+
+## Using a component
+
+Every component is on \`window.ItalkiUI\`. **No provider or wrapper is needed** —
+each one renders the catalog runtime's own markup and takes its styling from
+\`styles.css\`, which is already loaded.
+
+\`\`\`jsx
+const { Button, FormField, TextInput, Table } = window.ItalkiUI;
+
+<FormField label="Email address" helper="We only use this to send lesson updates.">
+  <TextInput placeholder="name@example.com" />
+</FormField>
+<Button label="Book trial" variant="red" shape="pill" />
+\`\`\`
+
+Note that content is passed as **props, not children** — \`label\`, \`title\`,
+\`body\`, \`items\`, \`options\`, \`columns\`/\`rows\`. Check the component's
+\`.d.ts\` before composing.
+
+## Props are validated at runtime — do not invent them
+
+Every renderer asserts its props against \`contracts.js\`. Passing a prop a
+component does not accept throws immediately:
+
+\`\`\`
+Error: checkbox does not accept prop value
+\`\`\`
+
+So the prop list in each \`<Name>.d.ts\` is **exhaustive**, not indicative. Read
+it before using a component; do not guess prop names from other design systems.
+
+## The repeated prop vocabulary
+
+The same prop names recur, but **their values are per-component** — \`variant\` is
+nine things on Button and four on Avatar. Read the values below as the shape of
+the vocabulary, and the component's own \`.d.ts\` as the truth.
+
+| Prop | Values shown for | Values | Components with this prop |
+|---|---|---|---|
+${axisTable}
+
+At most one \`variant="red"\` action per page or task step — it is the booking /
+conversion action.
+
+## Tokens for your own layout
+
+Style your own containers with the published custom properties rather than hex
+values. They are defined in \`tokens/tokens.css\`, which \`styles.css\` imports.
+
+\`\`\`css
+--ui-color-text        --ui-color-title       --ui-color-secondary
+--ui-color-card        --ui-color-border      --ui-color-divider
+--ui-color-link        --ui-color-disabled
+--ui-color-error       --ui-color-info        --ui-color-success   --ui-color-warning
+--ui-color-error-surface   (…and -surface for each status colour)
+
+--ui-space-half 2px · --ui-space-1 4px · -2 8px · -3 12px · -4 16px
+--ui-space-6 24px · -7 32px · -8 40px · -9 48px · -10 64px · -11 80px · -12 96px
+
+--ui-radius-xs 4px · -md 8px · -lg 12px · -xl 16px · -2xl 24px · -full 9999px
+--ui-shadow-card · -md · -lg · -xl
+\`\`\`
+
+## Assets
+
+Icons and flags are referenced **page-relative**, which resolves correctly for a
+design rendered at the project root:
+
+\`\`\`
+Assets/Icons/<name>.svg      Assets/Flags/<iso-2>.svg      Assets/Images/avatars/<name>.png
+\`\`\`
+
+## Components
+
+${Object.entries(byGroup).map(([g, names]) => `**${g}** — ${names.join(', ')}`).join('\n\n')}
+
+## Where the detail is
+
+\`components/<group>/<Name>/<Name>.d.ts\` is the exact prop contract;
+\`<Name>.prompt.md\` lists the variants shown on its card. \`window.ItalkiUI.raw\`
+exposes the runtime's full set of renderers (including subcomponents such as
+\`avatar.group\`, \`slider.range\`, \`radio.group\`) and \`window.ItalkiUI.contracts\`
+is the machine-readable contract the assertions come from.
+`);
+
 // ── styling ───────────────────────────────────────────────────────────────
 write('_ds_bundle.css', readFileSync(join(RUNTIME, 'italki-ui.css'), 'utf8'));
 write('tokens/tokens.css', readFileSync(join(RUNTIME, 'tokens.css'), 'utf8'));
