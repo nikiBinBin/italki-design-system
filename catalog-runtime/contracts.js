@@ -1,7 +1,8 @@
 window.ITalkiUIContracts = {
   "assetRoots": [
     "Assets/Icons/",
-    "Assets/Flags/"
+    "Assets/Flags/",
+    "Assets/Images/avatars/"
   ],
   "components": {
     "button": {

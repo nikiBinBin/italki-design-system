@@ -63,7 +63,13 @@ const ROUTE_ALIAS = { Button: 'button-variants', Icon: 'icon-library' };
    icon-library and came out byte-identical. These keep the sheet
    build-ds-project.mjs generates for them from the contracts and the icon
    manifest, which is the only place their content exists. */
-const KEEP_GENERATED = new Set(['Logo', 'CheckboxGroup', 'Combobox']);
+const KEEP_GENERATED = new Set([
+  'Logo', 'CheckboxGroup', 'Combobox',
+  /* The icon-library route is a browser, not a component demo: a size
+     switcher, a search field and seven category headings, none of which work
+     on a static card. The generated sheet is just the icons. */
+  'Icon',
+]);
 const kebab = (name) => name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 
 const componentTargets = () => {
@@ -168,7 +174,17 @@ for (const target of TARGETS) {
         const clone = detail.cloneNode(true);
         /* Page chrome, not the component: the kicker and intro repeat the
            prompt, and the size/shape controls belong to the Catalog shell. */
-        clone.querySelectorAll('.detail-kicker, .intro, .ds-page-controls, .component-controls').forEach((n) => n.remove());
+        /* Page furniture, not the component. A Catalog detail route wraps its
+           demos in controls that drive the page — size and shape switchers,
+           search fields, a "When To Use" button opening a modal. On a static
+           card none of them do anything, so shipping them just puts dead
+           chrome in front of the thing being documented. */
+        clone.querySelectorAll([
+          '.detail-kicker', '.intro',
+          '[data-segment-value]', '.ui-segmented-control',
+          '.icon-search-field', '[type="search"]',
+          '[data-demo$="-usage"]', '[data-demo^="open-"]',
+        ].join(', ')).forEach((n) => (n.closest('.ds-page-controls, .tag-global-controls') ?? n).remove());
         found.push({ label: 'Composition', html: clone.innerHTML.trim() });
       }
     }

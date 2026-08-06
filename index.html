@@ -446,7 +446,7 @@
         const state = (label, control) => `<div class="selection-state"><span>${label}</span>${control}</div>`;
         const selection = (props = {}) => ui.selection({ label: "Basic plan", value: "basic", description: "A clear choice with supporting context.", contentType: "icon-simple", selectionMode: "checkbox", leading: lessonIcon, ...props });
         const variants = `<div class="selection-variant-list">${selection({ label: "Single lesson", value: "single", description: "Book one lesson and pay as you go." })}${selection({ label: "Lesson package", value: "package", description: "Save when you commit to multiple lessons.", selected: true })}</div>`;
-        const richContent = `<div class="selection-rich-grid">${selection({ label: "Pro plan", value: "pro", contentType: "icon-card", selected: true, selectedMarker: true, price: "$10", period: "per month", badge: "Limited time only", description: "Includes up to 10 users, 20 GB individual data, and access to all features." })}${selection({ label: "Maya Chen", value: "maya", contentType: "avatar", leading: '<img src="Assets/Icons/user.svg" alt="" />', description: "Professional teacher · English" })}${selection({ label: "Visa ending in 4242", value: "visa", contentType: "payment-icon", leading: "VISA", description: "Default payment method" })}</div>`;
+        const richContent = `<div class="selection-rich-grid">${selection({ label: "Pro plan", value: "pro", contentType: "icon-card", selected: true, selectedMarker: true, price: "$10", period: "per month", badge: "Limited time only", description: "Includes up to 10 users, 20 GB individual data, and access to all features." })}${selection({ label: "Maya Chen", value: "maya", contentType: "avatar", leading: '<img src="Assets/Images/avatars/teacher-rachel.svg" alt="" />', description: "Professional teacher · English" })}${selection({ label: "Visa ending in 4242", value: "visa", contentType: "payment-icon", leading: "VISA", description: "Default payment method" })}</div>`;
         const states = `<div class="selection-state-list">${state("Default", selection())}${state("Selected", selection({ label: "Pro plan", value: "pro", selected: true, selectedMarker: true }))}${state("Hover", selection({ label: "Team plan", value: "team", state: "hover" }))}${state("Focused", selection({ label: "Business plan", value: "business", state: "focus" }))}${state("Disabled", selection({ label: "Unavailable plan", value: "unavailable", disabled: true }))}</div>`;
         const radioGroup = ui.selectionGroup({ label: "Choose one lesson option", contentType: "icon-card", selectionMode: "radio", selected: "package", selectedMarker: true, layout: "grid", options: [{ label: "Single lesson", value: "single", description: "Book one lesson and pay as you go.", leading: lessonIcon, price: "$18", period: "per lesson" }, { label: "Lesson package", value: "package", description: "Save when you commit to multiple lessons.", leading: lessonIcon, price: "$160", period: "10 lessons", badge: "Save 11%" }] });
         const checkboxGroup = ui.selectionGroup({ label: "Choose any lesson extras", contentType: "icon-card", selectionMode: "checkbox", selected: ["feedback"], selectedMarker: true, layout: "grid", options: [{ label: "Written feedback", value: "feedback", description: "Receive short notes after the lesson.", leading: lessonIcon, price: "$3", period: "per lesson" }, { label: "Lesson recording", value: "recording", description: "Keep a replay when it is available.", leading: lessonIcon, price: "$5", period: "per lesson" }] });
@@ -592,7 +592,7 @@
       }
       function avatarDetail() {
         flagQuery = "";
-        const photo = "Assets/Icons/user.svg";
+        const photo = "Assets/Images/avatars/teacher-maya.svg";
         const defaultSizes = [24, 32, 40, 48, 56, 64, 80, 120];
         const withoutFlagAvatars = defaultSizes.map((size) => `<div class="avatar-item">${ui.avatar({ name: "Teacher", image: photo, size })}<span>${size}px</span></div>`).join("");
         const emptyAvatars = [40, 48, 56, 64, 80].map((size) => `<div class="avatar-item">${ui.avatar({ name: "Maya Chen", initials: "MC", size, variant: "empty" })}<span>${size}px</span></div>`).join("");
@@ -603,9 +603,9 @@
         }).join("");
         const groupMembers = [
           { name: "Maya Chen", image: photo },
-          { name: "Elena Ruiz", image: "Assets/Icons/user.svg" },
-          { name: "James Park", image: "Assets/Icons/user.svg" },
-          { name: "Lucia Garcia", image: "Assets/Icons/user.svg" }
+          { name: "Elena Ruiz", image: "Assets/Images/avatars/teacher-rachel.svg" },
+          { name: "James Park", image: "Assets/Images/avatars/teacher-james.svg" },
+          { name: "Lucia Garcia", image: "Assets/Images/avatars/teacher-lucia.svg" }
         ];
         const avatarGroup = (size) => ui.avatarGroup({ members: groupMembers, overflow: 5, size, ariaLabel: "Teacher group" });
         const emptyGroupMembers = [
@@ -692,7 +692,7 @@
         return `<div class="sidebar-detail"><div class="sidebar-logo-showcase" data-sidebar-variant="normal">${logoVariants}${expanded}</div></div>`;
       }
       function teacherCardPatternDetail() {
-        const photo = "Assets/Icons/user.svg";
+        const photo = "Assets/Images/avatars/teacher-maya.svg";
         const teacherCard = (a1Mode) => {
           const profile = a1Mode
             ? { name: "Maya Chen", type: "Professional Teacher", typeIcon: "Assets/Icons/teacher-professional.svg", summary: "Professional English lessons with structured guidance for business communication, exam goals, and everyday confidence.", tags: [tagComponent({ label: "Business", tone: "info" }), tagComponent({ label: "Test Preparation", tone: "warning" })] }
@@ -976,7 +976,7 @@
       function uploadDetail() {
         const accepted = ".pdf,.doc,.docx,.png,.jpg";
         const avatarAccepted = ".jpg,.jpeg,.png";
-        const profilePhoto = "Assets/Icons/user.svg";
+        const profilePhoto = "Assets/Images/avatars/teacher-rachel.svg";
         const completedFile = { id: "lesson-plan", name: "lesson-plan.pdf", size: 1250000, status: "complete" };
         const uploadingFile = { id: "speaking-notes", name: "speaking-notes.docx", size: 820000, status: "uploading", progress: 62 };
         const failedFile = { id: "voice-recording", name: "voice-recording.mp3", size: 17800000, status: "error", error: "This file is larger than 10 MB." };
