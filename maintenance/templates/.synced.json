@@ -1,0 +1,57 @@
+{
+  "project": "f7eb9b7d-40fb-4766-bccc-0202f1c91fb8",
+  "syncedAt": "2026-08-07",
+  "note": "Mirror of the Design project templates. The project is the source of truth; these copies exist only so audit:templates exercises the real files. A stale mirror produces confident findings about a page nobody is running — re-sync before believing one.",
+  "files": {
+    "teacher-search/TeacherSearch.dc.html": {
+      "bytes": 54840,
+      "sha256": "ec884e13959a2a4b",
+      "origin": "byte-exact from the project"
+    },
+    "teacher-search/ds-safe.js": {
+      "bytes": 12809,
+      "sha256": "9a2dd90a75074a96",
+      "origin": "written to the project from here"
+    },
+    "teacher-search/filter-pattern.css": {
+      "bytes": 6623,
+      "sha256": "a5fff028eb829037",
+      "origin": "transcribed from the project"
+    },
+    "teacher-search/teacher-card-pattern.css": {
+      "bytes": 5052,
+      "sha256": "37af63cbcb9e1517",
+      "origin": "transcribed from the project"
+    },
+    "teacher-search/ds-base.js": {
+      "bytes": 1489,
+      "sha256": "f2927a73dcd5a410",
+      "origin": "not re-verified this sync"
+    },
+    "teacher-search/support.js": {
+      "bytes": 69150,
+      "sha256": "8fe7df74405f3c55",
+      "origin": "not re-verified this sync"
+    },
+    "teacher-profile/TeacherProfile.dc.html": {
+      "bytes": 42259,
+      "sha256": "a9fe79990ba04bb5",
+      "origin": "transcribed from the project"
+    },
+    "teacher-profile/ds-safe.js": {
+      "bytes": 12809,
+      "sha256": "9a2dd90a75074a96",
+      "origin": "written to the project from here"
+    },
+    "teacher-profile/ds-base.js": {
+      "bytes": 1489,
+      "sha256": "f2927a73dcd5a410",
+      "origin": "not re-verified this sync"
+    },
+    "teacher-profile/support.js": {
+      "bytes": 69150,
+      "sha256": "8fe7df74405f3c55",
+      "origin": "not re-verified this sync"
+    }
+  }
+}

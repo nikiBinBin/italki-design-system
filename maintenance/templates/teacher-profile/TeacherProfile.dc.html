@@ -24,11 +24,11 @@
 </helmet>
 <div style="min-height:100vh;min-width:1280px;display:flex;align-items:flex-start">
 
-<x-import component-from-global-scope="SafeUI.Sidebar" variant="plus" collapsed="{{ true }}" items="{{ navItems }}" sections="{{ navSections }}" more-items="{{ moreItems }}" footer="{{ sidebarFooter }}" hint-size="324px,100vh"></x-import>
+<x-import component-from-global-scope="SafeUI.Sidebar" variant="plus" collapsed="{{ true }}" items="{{ navItems }}" sections="{{ navSections }}" more-items="{{ moreItems }}" balance="$293.45 USD" avatar-initials="NI" sticky="{{ true }}" hint-size="260px,100vh"></x-import>
 
 <div style="flex:1;min-width:0">
 
-<x-import component-from-global-scope="SafeUI.TopNav" leading="{{ navLeading }}" center="{{ navCenter }}" trailing="{{ navTrailing }}" hint-size="100%,72px"></x-import>
+<x-import component-from-global-scope="SafeUI.TopNav" aria-label="Page" context-label="Spanish teachers" context-flag="Assets/Flags/es.svg" context-options="{{ navContextOptions }}" search-placeholder="Search topics" search-filter-label="Filter" action-label="Book lessons" action-icon="nav-plus" hint-size="100%,72px"></x-import>
 
 <div style="max-width:1216px;margin:0 auto;padding:24px 24px 64px">
 <div style="display:grid;grid-template-columns:minmax(0,1fr) 348px;gap:24px;align-items:start">
@@ -40,24 +40,21 @@
 <div style="position:relative;flex:0 0 auto">
 <span class="ui-avatar ui-avatar--120 ui-avatar--with-flag" data-component="avatar" role="img" aria-label="Lucía Fernández, Spain">
 <span class="ui-avatar__body"><img class="ui-avatar__image" src="https://randomuser.me/api/portraits/women/44.jpg" alt=""></span>
-<span class="ui-avatar__flag"><img class="ui-flag ui-flag--24" src="Assets/Flags/es.svg" alt="" aria-hidden="true"></span>
+<span class="ui-avatar__flag"><img class="ui-flag ui-flag--24" src="../../Assets/Flags/es.svg" alt="" aria-hidden="true"></span>
 </span>
-<sc-if value="{{ onlineNow }}" hint-placeholder-val="{{ true }}">
-<span style="position:absolute;top:6px;right:6px;width:14px;height:14px;border-radius:9999px;background:var(--ui-color-success);box-shadow:0 0 0 2px var(--ui-color-card)" title="Online now"></span>
-</sc-if>
 </div>
 <div style="min-width:0;flex:1;display:flex;flex-direction:column;gap:8px">
 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
 <h1 style="margin:0;color:var(--ui-color-title);font-size:28px;font-weight:700;line-height:36px">Lucía Fernández</h1>
-<img src="Assets/Icons/verified-badge.svg" alt="ID verified" style="width:20px;height:20px">
+<img src="../../Assets/Icons/verified-badge.svg" alt="ID verified" style="width:20px;height:20px">
 <sc-if value="{{ superTutor }}" hint-placeholder-val="{{ true }}">
-<img src="Assets/Icons/Plustag.svg" alt="italki Plus" style="height:20px">
+<img src="../../Assets/Icons/Plustag.svg" alt="italki Plus" style="height:20px">
 </sc-if>
 <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
 <button onClick="{{ toggleFavorite }}" class="ui-button ui-button--text ui-button--32 ui-button--pill is-icon-only" type="button" data-component="button" aria-label="{{ favAria }}"><img class="ui-button__icon" src="{{ favIcon }}" alt=""></button>
-<button class="ui-button ui-button--text ui-button--32 ui-button--pill is-icon-only" type="button" data-component="button" aria-label="Share profile"><img class="ui-button__icon" src="Assets/Icons/share.svg" alt=""></button>
+<button class="ui-button ui-button--text ui-button--32 ui-button--pill is-icon-only" type="button" data-component="button" aria-label="Share profile"><img class="ui-button__icon" src="../../Assets/Icons/share.svg" alt=""></button>
 <div data-more-menu style="position:relative">
-<button onClick="{{ toggleMore }}" class="ui-button ui-button--text ui-button--32 ui-button--pill is-icon-only" type="button" data-component="button" aria-label="More actions" aria-expanded="{{ moreOpen }}"><img class="ui-button__icon" src="Assets/Icons/more.svg" alt=""></button>
+<button onClick="{{ toggleMore }}" class="ui-button ui-button--text ui-button--32 ui-button--pill is-icon-only" type="button" data-component="button" aria-label="More actions" aria-expanded="{{ moreOpen }}"><img class="ui-button__icon" src="../../Assets/Icons/more.svg" alt=""></button>
 <sc-if value="{{ moreOpen }}" hint-placeholder-val="{{ false }}">
 <div style="position:absolute;right:0;top:calc(100% + 8px);z-index:60;min-width:208px;display:flex;flex-direction:column;background:var(--ui-color-card);border:1px solid var(--ui-color-border);border-radius:12px;box-shadow:var(--ui-shadow-lg);padding:8px">
 <sc-for list="{{ railMoreItems }}" as="mi" hint-placeholder-count="4">
@@ -71,9 +68,9 @@
 </div>
 </div>
 <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;color:var(--ui-color-text);font-size:14px;line-height:20px">
-<span style="display:inline-flex;align-items:center;gap:6px"><img src="Assets/Icons/teacher-professional.svg" alt="" style="width:20px;height:20px">Professional Teacher</span>
-<span style="display:inline-flex;align-items:center;gap:6px"><img src="Assets/Icons/location.svg" alt="" style="width:16px;height:16px">Madrid, Spain</span>
-<span style="display:inline-flex;align-items:center;gap:6px"><img src="Assets/Icons/earth.svg" alt="" style="width:16px;height:16px">On italki since 2018</span>
+<span style="display:inline-flex;align-items:center;gap:6px"><img src="../../Assets/Icons/teacher-professional.svg" alt="" style="width:20px;height:20px">Professional Teacher</span>
+<span style="display:inline-flex;align-items:center;gap:6px"><img src="../../Assets/Icons/location.svg" alt="" style="width:16px;height:16px">Madrid, Spain</span>
+<span style="display:inline-flex;align-items:center;gap:6px"><img src="../../Assets/Icons/earth.svg" alt="" style="width:16px;height:16px">On italki since 2018</span>
 </div>
 <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:4px">
 <span style="color:var(--ui-color-secondary);font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-right:2px">Speaks</span>
@@ -92,7 +89,7 @@
 <div style="display:flex;gap:48px;margin-top:20px;padding-top:16px;border-top:1px solid var(--ui-color-divider)">
 <sc-for list="{{ stats }}" as="st" hint-placeholder-count="4">
 <div style="display:grid;gap:2px">
-<strong style="display:inline-flex;align-items:center;gap:4px;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">{{ st.value }}<sc-if value="{{ st.star }}" hint-placeholder-val="{{ false }}"><img src="Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"></sc-if></strong>
+<strong style="display:inline-flex;align-items:center;gap:4px;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">{{ st.value }}<sc-if value="{{ st.star }}" hint-placeholder-val="{{ false }}"><img src="../../Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"></sc-if></strong>
 <span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ st.label }}</span>
 </div>
 </sc-for>
@@ -184,7 +181,7 @@
 <div style="flex:1;min-width:260px;display:grid;gap:6px">
 <sc-for list="{{ breakdown }}" as="b" hint-placeholder-count="5">
 <div style="display:flex;align-items:center;gap:12px">
-<span style="display:inline-flex;align-items:center;gap:4px;width:28px;color:var(--ui-color-text);font-size:12px;font-weight:600">{{ b.star }}<img src="Assets/Icons/star-solid.svg" alt="" style="width:12px;height:12px"></span>
+<span style="display:inline-flex;align-items:center;gap:4px;width:28px;color:var(--ui-color-text);font-size:12px;font-weight:600">{{ b.star }}<img src="../../Assets/Icons/star-solid.svg" alt="" style="width:12px;height:12px"></span>
 <div style="flex:1"><x-import component-from-global-scope="SafeUI.Progress" value="{{ b.pct }}" max="{{ 100 }}" ariaLabel="{{ b.aria }}" hint-size="100%,8px"></x-import></div>
 <span style="width:36px;color:var(--ui-color-secondary);font-size:12px;text-align:right">{{ b.count }}</span>
 </div>
@@ -222,11 +219,11 @@
 </div>
 <sc-if value="{{ showPagination }}" hint-placeholder-val="{{ true }}">
 <nav class="ui-pagination" data-component="pagination" aria-label="Review pages" style="justify-content:center">
-<button onClick="{{ prevPage }}" class="ui-pagination__arrow" type="button" aria-label="Previous page" disabled="{{ prevDisabled }}"><img class="ui-pagination__arrow-icon" src="Assets/Icons/arrow-left-sm.svg" alt=""></button>
+<button onClick="{{ prevPage }}" class="ui-pagination__arrow" type="button" aria-label="Previous page" disabled="{{ prevDisabled }}"><img class="ui-pagination__arrow-icon" src="../../Assets/Icons/arrow-left-sm.svg" alt=""></button>
 <sc-for list="{{ reviewPages }}" as="p" hint-placeholder-count="2">
 <button onClick="{{ p.onPick }}" class="{{ p.cls }}" type="button">{{ p.n }}</button>
 </sc-for>
-<button onClick="{{ nextPage }}" class="ui-pagination__arrow" type="button" aria-label="Next page" disabled="{{ nextDisabled }}"><img class="ui-pagination__arrow-icon" src="Assets/Icons/arrow-right-sm.svg" alt=""></button>
+<button onClick="{{ nextPage }}" class="ui-pagination__arrow" type="button" aria-label="Next page" disabled="{{ nextDisabled }}"><img class="ui-pagination__arrow-icon" src="../../Assets/Icons/arrow-right-sm.svg" alt=""></button>
 </nav>
 </sc-if>
 </section>
@@ -234,7 +231,7 @@
 <section id="section-similar" data-screen-label="Similar teachers" style="display:flex;flex-direction:column;gap:12px">
 <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px">
 <h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">Similar teachers</h2>
-<button class="ui-button ui-button--text ui-button--32 ui-button--pill" type="button" data-component="button"><span class="ui-button__label">See more Spanish teachers</span><img class="ui-button__icon" src="Assets/Icons/arrow-right-sm.svg" alt=""></button>
+<button class="ui-button ui-button--text ui-button--32 ui-button--pill" type="button" data-component="button"><span class="ui-button__label">See more Spanish teachers</span><img class="ui-button__icon" src="../../Assets/Icons/arrow-right-sm.svg" alt=""></button>
 </div>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">
 <sc-for list="{{ similar }}" as="t" hint-placeholder-count="3">
@@ -250,7 +247,7 @@
 </div>
 </div>
 <div style="display:flex;align-items:center;gap:6px;color:var(--ui-color-secondary);font-size:12px;line-height:18px">
-<strong style="display:inline-flex;align-items:center;gap:2px;color:var(--ui-color-title);font-weight:600">{{ t.rating }}<img src="Assets/Icons/star-solid.svg" alt="" style="width:12px;height:12px"></strong>
+<strong style="display:inline-flex;align-items:center;gap:2px;color:var(--ui-color-title);font-weight:600">{{ t.rating }}<img src="../../Assets/Icons/star-solid.svg" alt="" style="width:12px;height:12px"></strong>
 <span>{{ t.lessons }}</span>
 </div>
 <span style="color:var(--ui-color-text);font-size:12px;line-height:18px">{{ t.speaks }}</span>
@@ -281,15 +278,15 @@
 </div>
 <div style="display:flex;flex-direction:column;gap:8px">
 <button class="ui-button ui-button--red ui-button--40 ui-button--pill" type="button" data-component="button" style="width:100%"><span class="ui-button__label">Book trial · {{ trialPrice }}</span></button>
-<button class="ui-button ui-button--secondary ui-button--40 ui-button--pill" type="button" data-component="button" style="width:100%"><img class="ui-button__icon" src="Assets/Icons/message.svg" alt=""><span class="ui-button__label">Contact teacher</span></button>
+<button class="ui-button ui-button--secondary ui-button--40 ui-button--pill" type="button" data-component="button" style="width:100%"><img class="ui-button__icon" src="../../Assets/Icons/message.svg" alt=""><span class="ui-button__label">Contact teacher</span></button>
 </div>
 <div style="height:1px;background:var(--ui-color-divider)"></div>
 <div style="display:flex;flex-direction:column;gap:10px">
 <sc-if value="{{ onlineNow }}" hint-placeholder-val="{{ true }}">
 <span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-success);font-size:13px;font-weight:600;line-height:18px"><span style="width:8px;height:8px;border-radius:9999px;background:var(--ui-color-success)"></span>Online now</span>
 </sc-if>
-<span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-secondary);font-size:13px;line-height:18px"><img src="Assets/Icons/message.svg" alt="" style="width:18px;height:18px">Usually responds within 1 hour</span>
-<span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-secondary);font-size:13px;line-height:18px"><img src="Assets/Icons/calendar.svg" alt="" style="width:18px;height:18px">23 lessons booked in the last 48 hours</span>
+<span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-secondary);font-size:13px;line-height:18px"><img src="../../Assets/Icons/message.svg" alt="" style="width:18px;height:18px">Usually responds within 1 hour</span>
+<span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-secondary);font-size:13px;line-height:18px"><img src="../../Assets/Icons/calendar.svg" alt="" style="width:18px;height:18px">23 lessons booked in the last 48 hours</span>
 </div>
 </aside>
 
@@ -329,11 +326,6 @@ class Component extends DCLogic {
   static PAGE_SIZE = 4;
 
   state = {
-    // Wait for the API this template calls, not merely for the namespace. A kit
-    // older than the template installs window.ITalkiUI without the renderers
-    // used below, and the guards then pass into a TypeError that covers the
-    // whole page — the shell is the better failure.
-    ready: typeof Component.kit()?.avatar === "function",
     activeTab: "about",
     readMore: false,
     favorite: false,
@@ -369,18 +361,20 @@ class Component extends DCLogic {
   };
 
   componentDidMount() {
+    document.getElementById("ds-kit-missing")?.remove();
+    if (typeof Component.kit()?.avatar !== "function") {
+      this.timer = setInterval(() => {
+        if (typeof Component.kit()?.avatar !== "function") return;
+        clearInterval(this.timer);
+        this.forceUpdate();
+      }, 50);
+    }
     window.addEventListener("scroll", this.syncTabsBar, { passive: true });
     window.addEventListener("resize", this.syncTabsBar);
     this.onDocClick = (e) => {
       if (this.state.moreOpen && !e.target.closest?.("[data-more-menu]")) this.setState({ moreOpen: false });
     };
     document.addEventListener("click", this.onDocClick, true);
-    if (this.state.ready) return;
-    this.timer = setInterval(() => {
-      if (typeof Component.kit()?.avatar !== "function") return;
-      clearInterval(this.timer);
-      this.setState({ ready: true });
-    }, 50);
   }
 
   componentWillUnmount() {
@@ -389,11 +383,6 @@ class Component extends DCLogic {
     window.removeEventListener("resize", this.syncTabsBar);
     document.removeEventListener("click", this.onDocClick, true);
   }
-
-  /* The kit's behaviours are wired by ds-safe, once per page. This template
-     used to carry its own copy of that table, so every click was handled
-     twice — and a toggle handled twice never moves: More opened on the first
-     pass and closed on the second, in the same frame. One dispatcher. */
 
   static availability() {
     const C = this;
@@ -408,67 +397,50 @@ class Component extends DCLogic {
     }));
   }
 
-  /* The kit is reachable under two names and they are the same object:
-     window.ITalkiUI is the vanilla runtime, and the React bundle re-exports it
-     as window.ItalkiUI.raw. Reading only the first made the shell depend on
-     which one the host happened to install — when it was missing the sidebar
-     rendered empty, or fell through to a second, half-maintained code path. */
-  static kit() { return window.ITalkiUI || (window.ItalkiUI || {}).raw || null; }
-
-  /* If neither name shows up, say so instead of rendering an empty rail. */
-  static warnMissingKit() {
-    if (document.getElementById("ds-kit-missing")) return;
-    const el = document.createElement("div");
-    el.id = "ds-kit-missing";
-    el.textContent = "Design-system bundle not loaded: neither window.ITalkiUI nor window.ItalkiUI.raw is available.";
-    el.style.cssText = "position:fixed;z-index:9999;top:0;left:0;right:0;padding:8px 12px;background:var(--ui-color-error,#D3382F);color:#fff;font:12px/1.5 system-ui";
-    document.body.appendChild(el);
-  }
-
+  /* Plain data only. An earlier version built nav content by calling a vanilla
+     string API (UI.avatar(), UI.button(), UI.topNavContext()) off a window
+     namespace this page never loads: the lookup returned null, the guard fired,
+     and the rail and top nav rendered empty. The components take data and build
+     their own markup — icons as bare names, resolved against the bundle's own
+     Assets/ folder; flags stay page-relative and are rewritten by ds-safe.js. */
   navVals() {
-    const UI = Component.kit();
-    if (!UI) Component.warnMissingKit();
-    if (typeof UI?.avatar !== "function") return { navItems: [], navSections: [], moreItems: [], sidebarFooter: "", navLeading: "", navCenter: "", navTrailing: "" };
-    const portrait = (img, n) => UI.avatar({ image: img, size: 24, ariaLabel: n });
+    const contextOptions = [
+      { id: "spanish", label: "Spanish teachers", flag: "Assets/Flags/es.svg" },
+      { id: "english", label: "English teachers", flag: "Assets/Flags/gb.svg" },
+      { id: "japanese", label: "Japanese teachers", flag: "Assets/Flags/jp.svg" },
+      { id: "french", label: "French teachers", flag: "Assets/Flags/fr.svg" },
+    ];
     return {
       navItems: [
-        { id: "home", label: "Home", icon: "Assets/Icons/dashboard.svg", fixed: true },
-        { id: "search-teachers", label: "Search Teachers", icon: "Assets/Icons/search-list.svg", active: true, fixed: true },
-        { id: "my-lessons", label: "My Lessons", icon: "Assets/Icons/lesson.svg" },
-        { id: "my-calendar", label: "My Calendar", icon: "Assets/Icons/calendar.svg" },
-        { id: "learn", label: "Learn", icon: "Assets/Icons/tabbar-learn.svg" },
-        { id: "progress", label: "Progress", icon: "Assets/Icons/chart.svg" },
-        { id: "mira", label: "Mira", icon: "Assets/Icons/mira.svg" },
-        { id: "more", label: "More", icon: "Assets/Icons/more.svg", more: true },
+        { id: "home", label: "Home", icon: "dashboard", fixed: true },
+        { id: "search-teachers", label: "Search Teachers", icon: "search-list", active: true, fixed: true },
+        { id: "my-lessons", label: "My Lessons", icon: "lesson" },
+        { id: "my-calendar", label: "My Calendar", icon: "calendar" },
+        { id: "learn", label: "Learn", icon: "tabbar-learn" },
+        { id: "progress", label: "Progress", icon: "chart" },
+        { id: "mira", label: "Mira", icon: "mira" },
+        { id: "more", label: "More", icon: "more", more: true },
       ],
       moreItems: [
-        { id: "my-teachers", label: "My Teachers", icon: "Assets/Icons/teacher.svg" },
-        { id: "group-class", label: "Group Class", icon: "Assets/Icons/group.svg", dividerBefore: true },
+        { id: "my-teachers", label: "My Teachers", icon: "teacher" },
+        { id: "group-class", label: "Group Class", icon: "group", dividerBefore: true },
       ],
       navSections: [
         { id: "chats", label: "Chats", open: true, items: [
-          { id: "chat-lucia", label: "Lucía Fernández", secondary: "2m", leading: portrait("https://randomuser.me/api/portraits/women/44.jpg", "Lucía Fernández") },
-          { id: "chat-mateo", label: "Mateo Rojas", secondary: "1h", leading: portrait("https://randomuser.me/api/portraits/men/32.jpg", "Mateo Rojas") },
+          { id: "chat-lucia", label: "Lucía Fernández", secondary: "2m", avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
+          { id: "chat-mateo", label: "Mateo Rojas", secondary: "1h", avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
         ] },
         { id: "lessons", label: "Lessons", items: [
           { id: "lesson-today", prefix: "12", divider: true, label: "Spanish B1", secondary: "Today 18:00" },
           { id: "lesson-thu", prefix: "13", divider: true, label: "Spanish B1", secondary: "Thu 18:00" },
         ] },
       ],
-      sidebarFooter:
-        UI.button({ label: "$293.45 USD", variant: "secondary", size: 40, shape: "pill", leadingIcon: "Assets/Icons/wallet.svg" }) +
-        UI.avatar({ initials: "NI", size: 32, tone: "primary", interactive: true, ariaLabel: "Your profile" }),
-      navLeading: UI.topNavContext({
-        selected: { id: "spanish", label: "Spanish teachers", flag: "Assets/Flags/es.svg" },
-        options: [
-          { id: "spanish", label: "Spanish teachers", flag: "Assets/Flags/es.svg" },
-          { id: "english", label: "English teachers", flag: "Assets/Flags/gb.svg" },
-          { id: "japanese", label: "Japanese teachers", flag: "Assets/Flags/jp.svg" },
-          { id: "french", label: "French teachers", flag: "Assets/Flags/fr.svg" },
-        ],
-      }),
-      navCenter: UI.topNavSearch({ placeholder: "Search topics", filter: true, filterLabel: "Filter" }),
-      navTrailing: UI.button({ label: "Book lessons", variant: "emphasis", size: 40, shape: "pill", leadingIcon: "Assets/Icons/nav-plus.svg" }),
+      /* TopNav builds its own context picker, search and action button from these.
+         The earlier code passed prebuilt leading/center/trailing nodes made by
+         UI.topNavContext()/UI.topNavSearch(), which the vanilla runtime does not
+         expose — TopNav received undefined for all three and rendered as an
+         empty bar. */
+      navContextOptions: contextOptions,
     };
   }
 
@@ -561,12 +533,12 @@ class Component extends DCLogic {
       readMoreIcon: this.state.readMore ? "Assets/Icons/arrow-up-sm.svg" : "Assets/Icons/arrow-down-sm.svg",
       toggleReadMore: () => this.setState((s) => ({ readMore: !s.readMore })),
       insights: [
-        { icon: "Assets/Icons/message.svg", title: "Quick responder", caption: "Usually replies within 1 hour" },
-        { icon: "Assets/Icons/teacher-steady.svg", title: "Reliable schedule", caption: "99% attendance across 2,431 lessons" },
-        { icon: "Assets/Icons/teacher-like.svg", title: "Great with beginners", caption: "Mentioned in 214 student reviews" },
-        { icon: "Assets/Icons/teacher-lessons.svg", title: "Structured lessons", caption: "Mentioned in 187 student reviews" },
-        { icon: "Assets/Icons/teacher-trending.svg", title: "In demand", caption: "38 lessons booked this week" },
-        { icon: "Assets/Icons/teacher-students.svg", title: "Long-term students", caption: "68% book again after 5 lessons" },
+        { icon: "../../Assets/Icons/message.svg", title: "Quick responder", caption: "Usually replies within 1 hour" },
+        { icon: "../../Assets/Icons/teacher-steady.svg", title: "Reliable schedule", caption: "99% attendance across 2,431 lessons" },
+        { icon: "../../Assets/Icons/teacher-like.svg", title: "Great with beginners", caption: "Mentioned in 214 student reviews" },
+        { icon: "../../Assets/Icons/teacher-lessons.svg", title: "Structured lessons", caption: "Mentioned in 187 student reviews" },
+        { icon: "../../Assets/Icons/teacher-trending.svg", title: "In demand", caption: "38 lessons booked this week" },
+        { icon: "../../Assets/Icons/teacher-students.svg", title: "Long-term students", caption: "68% book again after 5 lessons" },
       ],
       lessons: [
         { name: "Trial Lesson", tag: "New students only", desc: "A 30-minute first meeting to set goals and check your level.", meta: "30 min · one per student", price: trialPrice, per: "30 min", divider: false },
@@ -600,10 +572,10 @@ class Component extends DCLogic {
       moreOpen: this.state.moreOpen,
       toggleMore: () => this.setState((s) => ({ moreOpen: !s.moreOpen })),
       railMoreItems: [
-        { icon: "Assets/Icons/share.svg", label: "Share profile" },
-        { icon: "Assets/Icons/favorite-outline.svg", label: "Save to favorites" },
-        { icon: "Assets/Icons/gift-card.svg", label: "Refer a friend" },
-        { icon: "Assets/Icons/report.svg", label: "Report" },
+        { icon: "share", label: "Share profile" },
+        { icon: "favorite-outline", label: "Save to favorites" },
+        { icon: "gift-card", label: "Refer a friend" },
+        { icon: "report", label: "Report" },
       ].map((mi) => ({ ...mi, onPick: () => this.setState({ moreOpen: false }) })),
       videoPlaying: this.state.videoPlaying,
       videoIdle: !this.state.videoPlaying,
