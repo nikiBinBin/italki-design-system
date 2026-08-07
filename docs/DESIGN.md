@@ -294,6 +294,29 @@ Before shipping a significant design change, answer:
 
 ## Practical Design Standards
 
+### Colour Roles
+
+Each colour has one job. The system carries a separate token for each, so
+reaching for the brand red to signal "this is clickable" is never necessary and
+is always wrong.
+
+- **`--ui-color-primary` fills; it does not letter.** It is the background of a
+  filled emphasis surface — a primary button, a selected state, a brand mark.
+  Never use it as a text colour. A red word reads as an error, and on a page
+  with several of them the brand stops meaning anything.
+- **Text actions use `--ui-color-link`.** Every clickable word — `See more`,
+  `See all`, a breadcrumb, an inline destination — is either the `Link`
+  component or `Button` with `variant: "link"`. Both already carry this token;
+  neither needs a colour passed to it.
+- **`Button variant: "text"` is the quietest action** and takes
+  `--ui-color-title`, not a link colour. Use it when the action sits in a row of
+  controls and must not compete; use `Link` when the target is a destination.
+- **`--ui-color-error` is reserved for failure**, which is the other reason a
+  red word must never be decorative. Danger actions use `Button variant:
+  "danger"`.
+- **Never write a hex.** If a colour seems to be missing a token, that is a
+  finding to raise, not a value to inline — see the Deviation Protocol above.
+
 ### Navigation And Hierarchy
 
 - Prioritize content and primary actions over decoration.

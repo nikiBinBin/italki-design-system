@@ -706,8 +706,16 @@
         ];
         const footer = `${ui.button({ label: "$3355.50 USD", variant: "secondary", size: 40, shape: "pill", leadingIcon: "Assets/Icons/wallet.svg" })}${ui.avatar({ name: "Open account", initials: "NK", size: 40, variant: "empty" })}`;
         const expanded = `<div class="sidebar-demo-stage">${ui.sidebar({ id: "workspace-sidebar", items, sections, moreItems, footer, ariaLabel: "Workspace sidebar", demo: "workspace-sidebar" })}</div>`;
+        /* The rail is a documented state of the component — `collapsed` is in
+           the contract and the stylesheet has a block for it — and this route
+           never rendered it, so neither the Catalog nor the generated card had
+           anywhere to show what a collapsed sidebar looks like. */
+        const collapsed = `<div class="sidebar-demo-stage">${ui.sidebar({ id: "workspace-sidebar-rail", collapsed: true, items, sections, moreItems, footer, ariaLabel: "Workspace sidebar, collapsed", demo: "workspace-sidebar-rail" })}</div>`;
         const logoVariants = catalogSegmentedControl({ id: "sidebar-logo-variant", options: [{ value: "normal", label: "Normal" }, { value: "plus", label: "Plus" }], selected: "normal", ariaLabel: "Sidebar logo variant", target: ".sidebar-logo-showcase", property: "sidebarVariant", apply: "sidebar" });
-        return `<div class="sidebar-detail"><div class="sidebar-logo-showcase" data-sidebar-variant="normal">${logoVariants}${expanded}</div></div>`;
+        /* Two named sections rather than one stage: the card generator makes a
+           cell per section and labels it from the h2, so the states arrive in
+           the Design project already told apart. */
+        return `<div class="sidebar-detail"><section class="component-doc-block full"><header class="component-doc-header"><h2>Expanded</h2></header><div class="component-doc-content"><div class="sidebar-logo-showcase" data-sidebar-variant="normal">${logoVariants}${expanded}</div></div></section><section class="component-doc-block full"><header class="component-doc-header"><h2>Collapsed</h2></header><div class="component-doc-content">${collapsed}</div></section></div>`;
       }
       function teacherCardPatternDetail() {
         const photo = "Assets/Images/avatars/teacher-bob.png";
@@ -715,7 +723,11 @@
           const profile = a1Mode
             ? { name: "Maya Chen", type: "Professional Teacher", typeIcon: "Assets/Icons/teacher-professional.svg", summary: "Professional English lessons with structured guidance for business communication, exam goals, and everyday confidence.", tags: [tagComponent({ label: "Business", tone: "info" }), tagComponent({ label: "Test Preparation", tone: "warning" })] }
             : { name: "Elliot", type: "Community Tutor", typeIcon: "Assets/Icons/teacher-community.svg", summary: "Friendly conversation lessons with practical speaking guidance for work, travel, and everyday confidence.", tags: [] };
-          const a1Link = a1Mode ? `<a class="teacher-pattern-beginner-link" href="#teacher-card">See beginner lessons <img src="Assets/Icons/arrow-right-sm.svg" alt="" /></a>` : "";
+          /* The Link route two screens up documents this exact affordance —
+             same label, chevron trailing icon — and the pattern hand-rolled an
+             anchor beside it. A pattern that reimplements a component teaches
+             the reimplementation. */
+          const a1Link = a1Mode ? ui.link({ label: "See beginner lessons", href: "#teacher-card", size: 14, trailingIcon: "chevron" }) : "";
           const moreActions = ui.dropdownMenu({ id: `teacher-card-more-${a1Mode ? "professional" : "community"}`, placement: "bottom-end", ariaLabel: `More actions for ${profile.name}`, trigger: buttonComponent({ variant: "text", size: 32, shape: "pill", leadingIcon: "Assets/Icons/more.svg", iconOnly: true, ariaLabel: `More actions for ${profile.name}`, demo: "ui-dropdown-toggle" }), items: [{ label: "View profile", icon: "Assets/Icons/user.svg" }, { label: "Message", icon: "Assets/Icons/message.svg" }] });
           const tags = profile.tags.length ? `<div class="teacher-pattern-tags">${profile.tags.join("")}</div>` : "";
           return `<article class="teacher-pattern-card${a1Mode ? " is-a1" : ""}"><aside class="teacher-pattern-side">${ui.avatar({ name: `${profile.name}, USA`, image: "Assets/Images/avatars/teacher-bob.png", size: 120, flag: "us", flagLabel: "USA", variant: "with-flag" })}<div class="teacher-pattern-evidence"><strong>5.0 <img src="Assets/Icons/star-solid.svg" alt="" /></strong><span>1,205 lessons</span></div></aside><div class="teacher-pattern-main"><header class="teacher-pattern-head"><div class="teacher-pattern-copy"><h3>${profile.name}</h3></div><span class="teacher-pattern-role"><img src="${profile.typeIcon}" alt="" />${profile.type}</span></header><div class="teacher-pattern-language"><strong>Speaks</strong><span>English</span>${tagComponent({ label: "Native", tone: "info" })}<span>Spanish · Advanced</span></div><p class="teacher-pattern-summary">${profile.summary}</p>${tags}${a1Link}<footer class="teacher-pattern-offer"><div class="teacher-pattern-price"><strong>CNY 494.57 <span>/ Hour</span></strong><span class="teacher-pattern-availability">Available 23:45 Today</span></div><div class="teacher-pattern-actions">${buttonComponent({ variant: "text", size: 32, shape: "pill", leadingIcon: "Assets/Icons/favorite-outline.svg", iconOnly: true, ariaLabel: `Save ${profile.name}` })}${buttonComponent({ label: "Book lesson", variant: "secondary", size: 32, shape: "pill", demo: "button" })}${moreActions}</div></footer></div></article>`;

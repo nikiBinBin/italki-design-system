@@ -917,8 +917,11 @@
       .teacher-pattern-language > strong, .teacher-recommendation-language > strong { color: var(--secondary); font-size: var(--ui-font-size-10); font-weight: var(--ui-font-weight-semibold); letter-spacing: .4px; text-transform: uppercase; }
       .teacher-pattern-tags, .teacher-pattern-metrics { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1); }
       .teacher-pattern-metrics { color: var(--secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
-      .teacher-pattern-beginner-link { display: inline-flex; align-items: center; gap: var(--space-1); width: max-content; color: var(--text-link); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-semibold); line-height: var(--ui-line-height-18); text-decoration: none; }
-      .teacher-pattern-beginner-link img { width: 16px; height: 16px; }
+      /* The beginner link is the Link component now, so its appearance comes
+         from the kit. What stays here is layout the kit cannot know: .ui-link
+         is inline-flex, and this column stretches its children, which would
+         run the hover underline across the whole row. */
+      .teacher-pattern-main .ui-link { align-self: start; }
       .teacher-pattern-offer { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); margin-top: auto; padding-top: var(--space-2); }
       .teacher-pattern-price { display: grid; gap: var(--space-1); }
       .teacher-pattern-price strong { color: var(--title); font-size: var(--ui-font-size-16); line-height: var(--ui-line-height-24); }
