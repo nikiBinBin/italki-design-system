@@ -19,6 +19,17 @@
      below simply never succeeds and every control on the card is inert. */
   const selfSrc = (document.currentScript && document.currentScript.src) || "";
 
+  /* "not loaded" covers two very different faults — the request failed, or the
+     script ran and threw — and telling them apart from the outside took a
+     round trip through a person each time. Capture whatever the bundle throws,
+     and on failure ask the server what it actually served. */
+  let scriptError = "";
+  window.addEventListener("error", (event) => {
+    if (!scriptError && event && /_ds_bundle\.js/.test(String(event.filename || ""))) {
+      scriptError = (event.message || "error") + " @" + (event.lineno || "?");
+    }
+  }, true);
+
   const start = () => {
     const ui = window.ITalkiUI;
     if (!ui) return false;
@@ -145,7 +156,18 @@
         clearInterval(timer);
         console.error("ds-cards: window.ITalkiUI never appeared — the card is inert");
         const note = document.createElement("div");
-        note.textContent = "Design-system bundle not loaded — this card cannot respond to input.";
+        note.textContent = "Design-system bundle not usable — this card cannot respond to input.";
+        const url = selfSrc ? new URL("_ds_bundle.js", selfSrc).href : "_ds_bundle.js";
+        const say = (detail) => { note.textContent += " " + detail; console.error("ds-cards: " + detail); };
+        if (scriptError) say("It loaded and threw: " + scriptError);
+        else if (window.fetch) {
+          fetch(url).then((response) => {
+            if (!response.ok) return say("GET " + url + " → " + response.status);
+            return response.text().then((body) => say(
+              "GET " + url + " → 200, " + body.length + " bytes, but window.ITalkiUI was never set"
+            ));
+          }).catch((error) => say("GET " + url + " failed: " + error.message));
+        }
         note.style.cssText = "position:fixed;z-index:9999;top:0;left:0;right:0;padding:6px 10px;"
           + "background:var(--ui-color-error,#D3382F);color:#fff;font:12px/1.5 system-ui";
         document.body.appendChild(note);
