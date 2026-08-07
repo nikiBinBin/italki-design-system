@@ -108,8 +108,12 @@
 </sc-for>
 
 </div>
+</div>
 
-<nav class="ui-pagination" data-component="pagination" aria-label="Search results pages" style="justify-content:center;margin-top:32px">
+<!-- Pagination sits in its own row, not inside the results column: row 2 then
+     measures the card list alone, so the sticky preview stops with its bottom
+     flush against the last card instead of drifting on past it. -->
+<nav class="ui-pagination" data-component="pagination" aria-label="Search results pages" style="grid-column:1;grid-row:3;justify-content:center;margin-top:32px">
 <button class="ui-pagination__arrow" type="button" aria-label="Previous page" disabled><img class="ui-pagination__arrow-icon" src="../../Assets/Icons/arrow-left-sm.svg" alt=""></button>
 <button class="ui-pagination__page is-current" type="button" aria-current="page">1</button>
 <button class="ui-pagination__page" type="button">2</button>
@@ -118,8 +122,6 @@
 <button class="ui-pagination__page" type="button">64</button>
 <button class="ui-pagination__arrow" type="button" aria-label="Next page"><img class="ui-pagination__arrow-icon" src="../../Assets/Icons/arrow-right-sm.svg" alt=""></button>
 </nav>
-
-</div>
 
 <aside ref="{{ previewRef }}" style="grid-column:2;grid-row:2;margin-top:0;transition:margin-top .18s ease;position:sticky;top:96px;display:flex;flex-direction:column;gap:16px;border-radius:12px;background:#FFFFFF;box-shadow:0 1px 2px rgb(49 49 64 / 6%);padding:16px" aria-label="Teacher preview">
 
@@ -238,9 +240,19 @@ class Component extends DCLogic {
       if (!card) return;
       const name = card.dataset.teacher;
       if (!name || name === this.state.preview) return;
-      // The panel tracks the hovered card: offset it by that card's position in the list.
+      /* The panel tracks the hovered card, but only as far as the list goes:
+         top-aligning with one of the last cards would hang the panel below the
+         list, so the offset is capped at the point where the panel's bottom sits
+         flush with the last card's bottom. Near the end of the list the panel
+         therefore bottom-aligns instead of top-aligns. */
       const list = card.parentElement;
-      const offset = list ? Math.max(0, Math.round(card.getBoundingClientRect().top - list.getBoundingClientRect().top)) : 0;
+      let offset = 0;
+      if (list) {
+        const wanted = card.getBoundingClientRect().top - list.getBoundingClientRect().top;
+        const panel = this.previewRef.current;
+        const room = list.offsetHeight - (panel ? panel.offsetHeight : 0);
+        offset = Math.max(0, Math.round(Math.min(wanted, room)));
+      }
       this.setState({ preview: name, previewOffset: offset });
     };
     document.addEventListener("mouseover", this.onOver, true);
