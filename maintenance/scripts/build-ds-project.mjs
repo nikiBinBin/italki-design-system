@@ -281,7 +281,7 @@ const BASE = {
   avatar: {},
   // count/dot badges decorate an anchor; without one the renderer throws.
   badge: { anchor: ICON_TILE, label: 'Confirmed', count: 3 },
-  video: { poster: 'Assets/Images/covers/teacher-intro.svg', posterAlt: '', duration: '1:24' },
+  video: { poster: 'Assets/Images/covers/teacher-intro.jpg', posterAlt: '', duration: '1:24' },
   card: { title: 'Mandarin for beginners', body: 'Practise everyday conversation with a certified teacher.', eyebrow: 'Trial lesson', meta: '30 min · from $8' },
   disclosure: { title: 'Cancellation policy', content: 'Cancel free of charge up to 24 hours before the lesson starts.', open: true },
   divider: {},

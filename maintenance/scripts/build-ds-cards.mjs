@@ -96,7 +96,7 @@ const componentTargets = () => {
   return out;
 };
 
-const TYPES = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png', '.json': 'application/json' };
+const TYPES = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.json': 'application/json' };
 const server = http.createServer((req, res) => {
   const file = join(REPO, decodeURIComponent(req.url.split('?')[0]));
   /* Read before writing the header: a miss after writeHead cannot be turned
