@@ -105,6 +105,7 @@ const COMPONENTS = [
   ['Avatar', 'avatar', 'avatar', 'data-display'],
   ['Badge', 'badge', 'badge', 'data-display'],
   ['Card', 'card', 'card', 'data-display'],
+  ['Video', 'video', 'video', 'data-display'],
   ['Disclosure', 'disclosure', 'disclosure', 'data-display'],
   ['Divider', 'divider', 'divider', 'data-display'],
   ['Panel', 'panel', 'panel', 'data-display'],
@@ -280,6 +281,7 @@ const BASE = {
   avatar: {},
   // count/dot badges decorate an anchor; without one the renderer throws.
   badge: { anchor: ICON_TILE, label: 'Confirmed', count: 3 },
+  video: { poster: 'Assets/Images/covers/teacher-intro.png', posterAlt: '', duration: '1:24' },
   card: { title: 'Mandarin for beginners', body: 'Practise everyday conversation with a certified teacher.', eyebrow: 'Trial lesson', meta: '30 min · from $8' },
   disclosure: { title: 'Cancellation policy', content: 'Cancel free of charge up to 24 hours before the lesson starts.', open: true },
   divider: {},

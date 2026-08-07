@@ -2,7 +2,7 @@ window.ITalkiUIContracts = {
   "assetRoots": [
     "Assets/Icons/",
     "Assets/Flags/",
-    "Assets/Images/avatars/"
+    "Assets/Images/"
   ],
   "components": {
     "button": {
@@ -118,6 +118,25 @@ window.ITalkiUIContracts = {
           "chevron",
           "external"
         ],
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ]
+      }
+    },
+    "video": {
+      "acceptedProps": [
+        "id",
+        "poster",
+        "posterAlt",
+        "title",
+        "duration",
+        "playLabel",
+        "state",
+        "demo"
+      ],
+      "props": {
         "state": [
           "default",
           "hover",

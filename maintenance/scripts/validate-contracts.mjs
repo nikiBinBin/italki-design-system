@@ -144,8 +144,8 @@ assert(!/#[0-9A-Fa-f]{3,8}\b/.test(componentCSS), "Component CSS must not contai
 assert(!/\brgb\(/.test(componentCSS), "Component CSS must not contain raw rgb colors");
 assert(!/#[0-9A-Fa-f]{3,8}\b|\brgb\(/.test(read("catalog-runtime/italki-ui.js")), "Component implementation must not contain raw colors");
 assert(!/#[0-9A-Fa-f]{3,8}\b|\brgb\(/.test(fixtureSource), "Visual fixtures must not contain raw colors");
-assert(!/Assets\/(?!Icons\/|Flags\/|Images\/avatars\/)/.test(read("catalog-runtime/italki-ui.js")), "Catalog runtime may only use registered local asset roots");
-assert(!/Assets\/(?!Icons\/|Flags\/|Images\/avatars\/)/.test(catalog), "Catalog may only reference registered local asset roots");
+assert(!/Assets\/(?!Icons\/|Flags\/|Images\/)/.test(read("catalog-runtime/italki-ui.js")), "Catalog runtime may only use registered local asset roots");
+assert(!/Assets\/(?!Icons\/|Flags\/|Images\/)/.test(catalog), "Catalog may only reference registered local asset roots");
 assert(catalog.includes('const CATALOG_SECTION_ORDER = Object.freeze({ variants: 1, features: 2, states: 3 });'), "Catalog must define one shared component-section order");
 assert(catalog.includes('function sortCatalogSections(root)'), "Catalog must sort component sections through the shared taxonomy");
 assert(catalog.includes('data-catalog-section="${sectionKind}"'), "Catalog sections must expose their taxonomy for verification");
@@ -296,11 +296,11 @@ for (const asset of read("catalog-runtime/italki-ui.js").matchAll(/Assets\/(?:Ic
 }
 
 const catalogRenderedAssets = Array.from(
-  catalog.matchAll(/(?:src=|(?:icon|leadingIcon|trailingIcon):\s*)["'](Assets\/(?:Icons|Flags|Images\/avatars)\/[A-Za-z0-9_./-]+)/g),
+  catalog.matchAll(/(?:src=|(?:icon|leadingIcon|trailingIcon):\s*)["'](Assets\/(?:Icons|Flags|Images)\/[A-Za-z0-9_./-]+)/g),
   (match) => match[1]
 );
 const fixtureAssets = Array.from(
-  fixtureSource.matchAll(/Assets\/(?:Icons|Flags|Images\/avatars)\/[A-Za-z0-9_./-]+/g),
+  fixtureSource.matchAll(/Assets\/(?:Icons|Flags|Images)\/[A-Za-z0-9_./-]+/g),
   (match) => match[0]
 );
 for (const [sourcePath, assets] of [["index.html", catalogRenderedAssets], ["maintenance/fixtures/fixtures.js", fixtureAssets]]) {
@@ -356,6 +356,18 @@ assert.match(ui.modal({ id: "modal-accessibility", title: "Dialog", body: "Conte
 assert.match(ui.popup({ id: "popup-accessibility", title: "Details", body: "Content", open: true }), /role="dialog"[^>]*aria-labelledby="popup-accessibility-title"/, "Popup must expose a named non-modal dialog surface");
 assert.match(ui.popconfirm({ id: "popconfirm-accessibility", title: "Confirm", open: true }), /role="alertdialog"[^>]*aria-labelledby="popconfirm-accessibility-title"/, "Popconfirm must expose a named confirmation surface");
 assert.match(ui.divider({ type: "vertical", ariaLabel: "Teacher metadata separator" }), /role="separator"[^>]*aria-orientation="vertical"[^>]*aria-label="Teacher metadata separator"/, "Divider must expose separator semantics and orientation");
+/* Video. It is a cover and a way in, never a player: keeping it a pure string
+   builder is what lets it render in a static Design card and offline test. */
+assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.png" }), /<div class="ui-video"[^>]*data-component="video"/, "Video must render its own frame");
+assert.doesNotMatch(ui.video({ poster: "Assets/Images/covers/teacher-intro.png" }), /<video|<iframe/, "Video must not embed a player — the page decides what play does");
+assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.png", demo: "ui-video-play" }), /data-demo="ui-video-play"/, "Video must expose the play affordance through the shared demo hook");
+assert.throws(() => ui.video({}), /video requires a poster/, "A play button over an empty frame says nothing about what it starts");
+assert.throws(() => ui.video({ poster: "https://example.com/x.jpg" }), /approved asset/, "Video posters are bound by the same asset roots as every other image");
+assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.png", duration: "1:24" }), /ui-video__duration">1:24</, "Video must be able to state its duration before it is started");
+assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.png", title: "Meet Maya" }), /aria-label="Play Meet Maya"/, "A titled Video must name what the play button starts");
+assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.png", state: "disabled" }), /<button[^>]*disabled/, "A disabled Video must not be startable");
+assert(componentCSS.includes(".ui-video__play-disc") && !/ui-video__play-icon/.test(componentCSS), "Video's play affordance is a drawn disc — classroom-play.svg is itself a filled circle, so an icon inside a ring nests two circles");
+
 /* Link. The two decisions worth pinning: a disabled link must not be
    followable, and an external one must say so before it is clicked. */
 assert.match(ui.link({ label: "See lessons" }), /<a class="ui-link ui-link--16 ui-link--default"[^>]*href="#"/, "Link must render an anchor with a destination");

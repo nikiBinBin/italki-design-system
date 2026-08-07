@@ -138,6 +138,29 @@
       + `><span class="ui-link__label">${escapeHTML(label)}</span>${tail}</${tag}>`;
   }
 
+  function video(props = {}) {
+    assertProps("video", props);
+    const {
+      id = "", poster = "", posterAlt = "", title = "",
+      duration = "", playLabel = "", state = "default", demo = "",
+    } = props;
+    enumValue("video", "state", state);
+    if (!poster) throw new Error("video requires a poster: a play affordance over an empty frame tells the reader nothing about what they would be starting");
+    approvedAsset(poster) || (() => { throw new Error(`video.poster must be an approved asset: ${poster}`); })();
+    const disabled = state === "disabled";
+    /* The component is the cover and the way in. What the click does — open a
+       dialog, navigate, swap in a player — belongs to the page, so it arrives
+       through the same data-demo hook every other interactive renderer uses. */
+    const label = playLabel || (title ? `Play ${title}` : "Play video");
+    return `<div class="ui-video${state === "hover" ? " is-hover" : ""}${disabled ? " is-disabled" : ""}" data-component="video"${id ? ` id="${escapeHTML(id)}"` : ""}>`
+      + `<img class="ui-video__poster" src="${escapeHTML(poster)}" alt="${escapeHTML(posterAlt)}" />`
+      + `<button class="ui-video__play" type="button" aria-label="${escapeHTML(label)}"${disabled ? " disabled" : ""}${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}>`
+      + `<span class="ui-video__play-disc" aria-hidden="true"></span></button>`
+      + (duration ? `<span class="ui-video__duration">${escapeHTML(duration)}</span>` : "")
+      + (title ? `<p class="ui-video__title">${escapeHTML(title)}</p>` : "")
+      + `</div>`;
+  }
+
   function checkbox(props = {}) {
     assertProps("checkbox", props);
     const { id = "", label = "Checkbox", checked = "off", state = "default", disabled = false, toggleMode = "binary", demo = "" } = props;
@@ -2979,6 +3002,7 @@
     chip,
     tag,
     link,
+    video,
     checkbox,
     checkboxGroup,
     radio,
