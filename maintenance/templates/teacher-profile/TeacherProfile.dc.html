@@ -13,7 +13,7 @@
 <script src="./ds-safe.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>body{margin:0;background:var(--ui-color-divider);color:var(--ui-color-text);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;font-weight:500;-webkit-font-smoothing:antialiased}*{box-sizing:border-box}a{color:var(--ui-color-link);text-decoration:none}a:hover{color:var(--ui-color-link-hover);text-decoration:underline}@keyframes video-progress{from{width:0}to{width:100%}}#profile-tabs .ui-tabs__panel{display:none}#profile-tabs .ui-tabs__list{border-bottom:0}#profile-tabs .ui-tabs__header{margin:0}#profile-tabs .ui-tabs__extra{display:none}#section-availability .ui-time-slot.ui-time-slot--option{padding:6px 14px;height:auto}
+<style>body{margin:0;background:var(--ui-color-divider);color:var(--ui-color-text);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;font-weight:500;-webkit-font-smoothing:antialiased}*{box-sizing:border-box}a{color:var(--ui-color-link);text-decoration:none}a:hover{color:var(--ui-color-link-hover);text-decoration:underline}@keyframes video-progress{from{width:0}to{width:100%}}#profile-tabs .ui-tabs__panel{display:none}#profile-tabs .ui-tabs__list{border-bottom:0}#profile-tabs .ui-tabs__header{margin:0}#profile-tabs .ui-tabs__extra{display:none}#section-availability .ui-time-slot.ui-time-slot--option{padding:4px 12px;height:auto}
 /* Duplicates the kit default on purpose. These used to live only here, then
    only in the kit; either way the template depended on the other side being
    in step, and a bundle one version behind left the shell unpositioned.
@@ -68,17 +68,17 @@
 </div>
 </div>
 <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;color:var(--ui-color-text);font-size:14px;line-height:20px">
-<span style="display:inline-flex;align-items:center;gap:6px"><img src="../../Assets/Icons/teacher-professional.svg" alt="" style="width:20px;height:20px">Professional Teacher</span>
-<span style="display:inline-flex;align-items:center;gap:6px"><img src="../../Assets/Icons/location.svg" alt="" style="width:16px;height:16px">Madrid, Spain</span>
-<span style="display:inline-flex;align-items:center;gap:6px"><img src="../../Assets/Icons/earth.svg" alt="" style="width:16px;height:16px">On italki since 2018</span>
+<span style="display:inline-flex;align-items:center;gap:4px"><img src="../../Assets/Icons/teacher-professional.svg" alt="" style="width:20px;height:20px">Professional Teacher</span>
+<span style="display:inline-flex;align-items:center;gap:4px"><img src="../../Assets/Icons/location.svg" alt="" style="width:16px;height:16px">Madrid, Spain</span>
+<span style="display:inline-flex;align-items:center;gap:4px"><img src="../../Assets/Icons/earth.svg" alt="" style="width:16px;height:16px">On italki since 2018</span>
 </div>
-<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:4px">
+<div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:4px">
 <span style="color:var(--ui-color-secondary);font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-right:2px">Speaks</span>
 <sc-for list="{{ speaksTags }}" as="s" hint-placeholder-count="3">
 <x-import component-from-global-scope="SafeUI.Tag" label="{{ s.text }}" size="{{ 24 }}" tone="{{ s.tone }}" hint-size="120px,24px"></x-import>
 </sc-for>
 </div>
-<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+<div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
 <span style="color:var(--ui-color-secondary);font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-right:2px">Interests</span>
 <sc-for list="{{ interests }}" as="tag" hint-placeholder-count="5">
 <x-import component-from-global-scope="SafeUI.Tag" label="{{ tag }}" size="{{ 24 }}" hint-size="72px,24px"></x-import>
@@ -178,7 +178,7 @@
 <x-import component-from-global-scope="SafeUI.Rate" value="{{ 5 }}" disabled="{{ true }}" hint-size="120px,28px"></x-import>
 <span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">612 reviews</span>
 </div>
-<div style="flex:1;min-width:260px;display:grid;gap:6px">
+<div style="flex:1;min-width:260px;display:grid;gap:4px">
 <sc-for list="{{ breakdown }}" as="b" hint-placeholder-count="5">
 <div style="display:flex;align-items:center;gap:12px">
 <span style="display:inline-flex;align-items:center;gap:4px;width:28px;color:var(--ui-color-text);font-size:12px;font-weight:600">{{ b.star }}<img src="../../Assets/Icons/star-solid.svg" alt="" style="width:12px;height:12px"></span>
@@ -246,7 +246,7 @@
 <span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ t.role }}</span>
 </div>
 </div>
-<div style="display:flex;align-items:center;gap:6px;color:var(--ui-color-secondary);font-size:12px;line-height:18px">
+<div style="display:flex;align-items:center;gap:4px;color:var(--ui-color-secondary);font-size:12px;line-height:18px">
 <strong style="display:inline-flex;align-items:center;gap:2px;color:var(--ui-color-title);font-weight:600">{{ t.rating }}<img src="../../Assets/Icons/star-solid.svg" alt="" style="width:12px;height:12px"></strong>
 <span>{{ t.lessons }}</span>
 </div>
@@ -270,7 +270,7 @@
 </sc-if>
 </div>
 <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
-<div style="display:flex;align-items:baseline;gap:6px">
+<div style="display:flex;align-items:baseline;gap:4px">
 <strong style="color:var(--ui-color-title);font-size:24px;font-weight:700;line-height:32px">US$12.00+</strong>
 <span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">per lesson</span>
 </div>
