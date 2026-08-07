@@ -4,6 +4,16 @@
    including this repo's own Design cards — had to restate the stack. */
 :root { font-family: var(--ui-font-family); }
 
+/* border-box, for the same reason as the font above: the kit assumed the
+   consumer shipped the reset. Every environment that works today has its own
+   — catalog.css, each generated card, both templates — while styles.css, the
+   file a consuming project actually loads, has none. So a component's width
+   depended on the host: .ui-sidebar__more-menu declares width:292px and
+   measures 326 in a host without the reset, which is 17px of menu hanging
+   outside the rail. Twenty-three rules below already set box-sizing element by
+   element, which is this same bug being paid for one component at a time. */
+[class^="ui-"], [class*=" ui-"] { box-sizing: border-box; }
+
 .ui-button,
 .ui-chip,
 .ui-checkbox,
