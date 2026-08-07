@@ -678,16 +678,9 @@
         return `<div class="component-doc-grid top-nav-detail">${block("Global default", topNav({ id: "global", variant: "global-default" }))}${block("Teacher search", topNav({ id: "teacher", variant: "teacher-search" }))}</div>`;
       }
       function sidebarDetail() {
-        const items = [
-          { id: "home", label: "Home", icon: "Assets/Icons/dashboard.svg", active: true, fixed: true },
-          { id: "search-teachers", label: "Search Teachers", icon: "Assets/Icons/search-list.svg", fixed: true },
-          { id: "my-lessons", label: "My Lessons", icon: "Assets/Icons/lesson.svg" },
-          { id: "my-calendar", label: "My Calendar", icon: "Assets/Icons/calendar.svg" },
-          { id: "learn", label: "Learn", icon: "Assets/Icons/tabbar-learn.svg" },
-          { id: "progress", label: "Progress", icon: "Assets/Icons/chart.svg" },
-          { id: "mira", label: "italki Mira", icon: "Assets/Icons/mira.svg" },
-          { id: "more", label: "More", icon: "Assets/Icons/more.svg", more: true }
-        ];
+        /* italki's shell roster comes from the kit, so this card and the
+           templates cannot disagree about it — they used to. */
+        const { items, moreItems } = ui.appShellNav({ active: "home" });
         const chatRows = [
           ["SL", "Sarah: lesson follow-up"], ["NK", "How can I improve my pronunciation?"],
           ["MS", "Can you explain this part again, please?"], ["LO", "I really enjoyed this class. See you soon!"],
@@ -701,23 +694,6 @@
         const sections = [
           { id: "chats", label: "Chats", open: false, items: chatRows.map(([initials, label], index) => ({ id: `chat-${index}`, label, leading: ui.avatar({ name: label, initials, size: 24, variant: "empty" }) })) },
           { id: "lessons", label: "Lessons", open: false, items: lessonRows.map(([prefix, label, secondary], index) => ({ id: `lesson-${index}`, prefix, divider: true, label, secondary })) }
-        ];
-        /* The whole roster in its canonical order, not just what is hidden right
-           now. A destination missing from this list has nowhere to return to
-           when it is unpinned, so the five that ship pinned out belong here too
-           — the dividers are the grouping, and they hold whichever members of
-           their group are currently in the menu. */
-        const moreItems = [
-          { id: "my-lessons", label: "My Lessons", icon: "Assets/Icons/lesson.svg" },
-          { id: "my-calendar", label: "My Calendar", icon: "Assets/Icons/calendar.svg" },
-          { id: "my-teachers", label: "My Teachers", icon: "Assets/Icons/teacher.svg" },
-          { id: "learn", label: "Learn", icon: "Assets/Icons/tabbar-learn.svg", dividerBefore: true },
-          { id: "progress", label: "Progress", icon: "Assets/Icons/chart.svg" },
-          { id: "flowy", label: "Flowy", icon: "Assets/Icons/flowy.svg" },
-          { id: "mira", label: "italki Mira", icon: "Assets/Icons/mira.svg", dividerBefore: true },
-          { id: "group-class", label: "Group Class", icon: "Assets/Icons/group.svg", dividerBefore: true },
-          { id: "community", label: "Community", icon: "Assets/Icons/community.svg" },
-          { id: "business", label: "italki Business", icon: "Assets/Icons/briefcase.svg", dividerBefore: true }
         ];
         const footer = `${ui.button({ label: "$3355.50 USD", variant: "secondary", size: 40, shape: "pill", leadingIcon: "Assets/Icons/wallet.svg" })}${ui.avatar({ name: "Open account", initials: "NK", size: 40, variant: "empty" })}`;
         /* Three stages side by side, each rendered rather than switched into

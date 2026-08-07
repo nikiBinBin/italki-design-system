@@ -358,18 +358,15 @@ class Component extends DCLogic {
     const UI = Component.kit();
     if (!UI) return {};
 
-    const navItems = [
-      // Home and Search Teachers are fixed: the kit gives a fixed row no pin
-      // control at all, and catalog-consumption asserts exactly that.
-      { id: "home", label: "Home", icon: "Assets/Icons/dashboard.svg", fixed: true },
-      { id: "search-teachers", label: "Search Teachers", icon: "Assets/Icons/search_teacher_2.svg", active: true, fixed: true },
-      { id: "my-lessons", label: "My Lessons", icon: "Assets/Icons/lesson.svg" },
-      { id: "my-calendar", label: "My Calendar", icon: "Assets/Icons/calendar.svg" },
-      { id: "learn", label: "Learn", icon: "Assets/Icons/tabbar-learn.svg" },
-      { id: "progress", label: "Progress", icon: "Assets/Icons/chart.svg" },
-      { id: "mira", label: "italki Mira", icon: "Assets/Icons/mira.svg" },
-      { id: "more", label: "More", icon: "Assets/Icons/more.svg", more: true },
-    ];
+    /* italki's shell roster comes from the kit, not from here. Three pages
+       used to write it out by hand and the three had drifted apart: this one
+       carried a Practice and a Vocabulary that were never in the spec, and the
+       profile page's More menu held two entries where this one held five. Same
+       component throughout — the list was just data nobody was keeping in step.
+       Bare icon names on purpose: the renderer resolves them, which is what
+       makes one list correct here and two folders down. */
+    const { items: navItems, moreItems } =
+      UI.appShellNav?.({ active: "search-teachers" }) ?? { items: [], moreItems: [] };
 
     // Row shapes mirror the Catalog's #sidebar: chat rows lead with a 24px
     // avatar; lesson rows carry a count prefix, divider and secondary line.
@@ -392,23 +389,6 @@ class Component extends DCLogic {
       ] },
     ];
 
-    /* The More row is a disclosure, not a destination: it needs the overflow
-       list, or it renders as a trigger with nothing behind it. The list is the
-       whole roster in its canonical order — including the five that ship pinned
-       out, which is what gives them somewhere to return to — and the dividers
-       are the grouping, each holding whichever of its members is in the menu. */
-    const moreItems = [
-      { id: "my-lessons", label: "My Lessons", icon: "Assets/Icons/lesson.svg" },
-      { id: "my-calendar", label: "My Calendar", icon: "Assets/Icons/calendar.svg" },
-      { id: "my-teachers", label: "My Teachers", icon: "Assets/Icons/teacher.svg" },
-      { id: "learn", label: "Learn", icon: "Assets/Icons/tabbar-learn.svg", dividerBefore: true },
-      { id: "progress", label: "Progress", icon: "Assets/Icons/chart.svg" },
-      { id: "flowy", label: "Flowy", icon: "Assets/Icons/flowy.svg" },
-      { id: "mira", label: "italki Mira", icon: "Assets/Icons/mira.svg", dividerBefore: true },
-      { id: "group-class", label: "Group Class", icon: "Assets/Icons/group.svg", dividerBefore: true },
-      { id: "community", label: "Community", icon: "Assets/Icons/community.svg" },
-      { id: "business", label: "italki Business", icon: "Assets/Icons/briefcase.svg", dividerBefore: true },
-    ];
 
     const sidebarFooter =
       '<button class="ui-sidebar__item" type="button" style="width:auto">' +
