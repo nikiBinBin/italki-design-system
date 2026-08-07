@@ -294,6 +294,17 @@ Before shipping a significant design change, answer:
 
 ## Practical Design Standards
 
+### The Brand Name
+
+The brand is **italki** — lowercase i, always, including at the start of a
+sentence and in a heading. Never `Italki`, never `ITalki`, never `iTalki`.
+
+The runtime installs itself as `window.ITalkiUI` and the React bundle as
+`window.ItalkiUI`. Those are JavaScript identifiers, not spellings of the
+brand: they exist because a global has to start somewhere and they cannot be
+renamed without breaking every consumer at once. Do not read a capital letter
+out of an identifier and into a sentence.
+
 ### Colour Roles
 
 Each colour has one job. The system carries a separate token for each, so
