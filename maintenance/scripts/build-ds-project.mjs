@@ -866,6 +866,13 @@ conversion action.
 Style your own containers with the published custom properties rather than hex
 values. They are defined in \`tokens/tokens.css\`, which \`styles.css\` imports.
 
+Each colour has one job. \`--ui-color-primary\` is the brand red: it **fills**
+surfaces — a primary button, a selected state — and is never a text colour. A
+clickable word is the \`Link\` component, or \`Button\` with \`variant: "link"\`;
+both already carry \`--ui-color-link\`, so no colour is passed to them. Red
+lettering reads as an error, and \`--ui-color-error\` is what actually means one.
+\`guidelines/DESIGN.md\` has the full set of roles.
+
 \`\`\`css
 --ui-color-text        --ui-color-title       --ui-color-secondary
 --ui-color-card        --ui-color-border      --ui-color-divider
