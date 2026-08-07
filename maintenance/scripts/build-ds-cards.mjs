@@ -83,6 +83,12 @@ const componentTargets = () => {
       if (!entry.name.endsWith('.html')) continue;
       const name = entry.name.replace(/\.html$/, '');
       if (KEEP_GENERATED.has(name)) continue;
+      /* This walk reads the directory the script itself writes, so a card
+         emitted by the foundation pass comes back as a component target on the
+         next run and overwrites itself through the wrong branch. Radius lost
+         its "Radius scale" section that way: the component branch splits on
+         .component-doc-block, and that section is not one. */
+      if (FOUNDATIONS.some(([, foundationName]) => foundationName === name)) continue;
       out.push({ name, route: ROUTE_ALIAS[name] ?? kebab(name), file: full, kind: 'component' });
     }
   };
@@ -147,7 +153,7 @@ for (const target of TARGETS) {
   }
   await page.waitForTimeout(500);
 
-  const { blocks, intro } = await page.evaluate((wholeArticle) => {
+  const { blocks, intro } = await page.evaluate(({ wholeArticle, splitSections }) => {
     /* Tooltips are hidden by CSS until their wrapper is hovered, and the card
        is a live page, so they must ship — removing them left the Tooltip card
        with twelve triggers and nothing to show. Only a tooltip the Catalog has
@@ -185,11 +191,68 @@ for (const target of TARGETS) {
           '.icon-search-field', '[type="search"]',
           '[data-demo$="-usage"]', '[data-demo^="open-"]',
         ].join(', ')).forEach((n) => (n.closest('.ds-page-controls, .tag-global-controls') ?? n).remove());
-        found.push({ label: 'Composition', html: clone.innerHTML.trim() });
+        /* The dialog that "When To Use" button opened. The button is gone, so
+           nothing can reveal it and it renders as nothing either way. */
+        clone.querySelectorAll('[hidden]').forEach((n) => n.remove());
+
+        /* One cell per section, labelled with the section's own h2.
+           Color, Typography and Button are pages of three to six h2 sections;
+           as a single cell they all read "Composition" — the one word on the
+           card carrying no information — while every name worth reading sat a
+           level down as an h2. The card's label row is the heading, so the
+           names move into it and the h2 goes away. Nothing is demoted and no
+           new type style is needed.
+
+           Only the Catalog's own scaffolding counts. Footer renders its column
+           titles as h2 inside .ui-footer: that is the component, not the page,
+           so a heading anywhere inside kit markup is left exactly as it is. */
+        const insideKitMarkup = (el) => {
+          for (let n = el; n && n !== clone; n = n.parentElement) {
+            for (const c of n.classList) if (c.startsWith('ui-')) return true;
+          }
+          return false;
+        };
+        /* A section's own heading, wherever the route chose to put it: Color
+           writes `section > h2`, the doc blocks wrap it in a header, and Button
+           captions each demo from below in a .button-doc-footer. Matching on
+           position missed that last one. What actually defines the heading is
+           ownership — the nearest enclosing section is this one. */
+        const ownHeading = (s) => [...s.querySelectorAll('h2')]
+          .find((h) => h.closest('section') === s && !insideKitMarkup(h)) ?? null;
+        const headed = [...clone.querySelectorAll('section')]
+          .map((s) => ({ s, h: ownHeading(s) }))
+          .filter(({ h }) => h);
+        const tops = headed.filter(({ s }) => !headed.some((o) => o.s !== s && o.s.contains(s)));
+
+        if (splitSections && tops.length > 1) {
+          tops.forEach(({ s }, i) => s.setAttribute('data-ds-section', String(i)));
+          for (let i = 0; i < tops.length; i += 1) {
+            /* Prune siblings out of a full copy rather than lifting the section
+               out: layout lives on the wrapper (.color-detail, .typography-detail,
+               .component-doc-grid), so a section removed from its ancestor chain
+               loses the rules that position it. */
+            const one = clone.cloneNode(true);
+            one.querySelectorAll('[data-ds-section]')
+              .forEach((n) => { if (n.dataset.dsSection !== String(i)) n.remove(); });
+            const kept = one.querySelector(`[data-ds-section="${i}"]`);
+            const heading = ownHeading(kept);
+            const label = heading.textContent.trim();
+            const holder = heading.parentElement;
+            heading.remove();
+            /* The wrapper the heading sat in — a header, or Button's caption
+               footer — is empty once it goes, and an empty flex child still
+               takes its gap. */
+            if (holder !== kept && !holder.children.length && !holder.textContent.trim()) holder.remove();
+            kept.removeAttribute('data-ds-section');
+            found.push({ label, html: one.innerHTML.trim() });
+          }
+        } else {
+          found.push({ label: 'Composition', html: clone.innerHTML.trim() });
+        }
       }
     }
     return { blocks: found, intro: document.querySelector('main .intro')?.textContent?.trim() ?? '' };
-  }, wholePage);
+  }, { wholeArticle: wholePage, splitSections: !isPattern });
   await page.close();
 
   if (!blocks.length) {
