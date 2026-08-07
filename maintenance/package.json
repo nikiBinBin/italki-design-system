@@ -20,7 +20,8 @@
     "audit:shell": "node scripts/audit-shell.mjs",
     "audit:hooks": "node scripts/audit-hooks.mjs",
     "audit:templates": "node scripts/audit-templates.mjs",
-    "serve:templates": "node scripts/serve-templates.mjs"
+    "serve:templates": "node scripts/serve-templates.mjs",
+    "audit:adherence": "node scripts/audit-adherence.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",
