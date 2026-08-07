@@ -705,17 +705,21 @@
           { id: "business", label: "italki Business", icon: "Assets/Icons/briefcase.svg", dividerBefore: true }
         ];
         const footer = `${ui.button({ label: "$3355.50 USD", variant: "secondary", size: 40, shape: "pill", leadingIcon: "Assets/Icons/wallet.svg" })}${ui.avatar({ name: "Open account", initials: "NK", size: 40, variant: "empty" })}`;
-        const expanded = `<div class="sidebar-demo-stage">${ui.sidebar({ id: "workspace-sidebar", items, sections, moreItems, footer, ariaLabel: "Workspace sidebar", demo: "workspace-sidebar" })}</div>`;
-        /* The rail is a documented state of the component — `collapsed` is in
-           the contract and the stylesheet has a block for it — and this route
-           never rendered it, so neither the Catalog nor the generated card had
-           anywhere to show what a collapsed sidebar looks like. */
-        const collapsed = `<div class="sidebar-demo-stage">${ui.sidebar({ id: "workspace-sidebar-rail", collapsed: true, items, sections, moreItems, footer, ariaLabel: "Workspace sidebar, collapsed", demo: "workspace-sidebar-rail" })}</div>`;
-        const logoVariants = catalogSegmentedControl({ id: "sidebar-logo-variant", options: [{ value: "normal", label: "Normal" }, { value: "plus", label: "Plus" }], selected: "normal", ariaLabel: "Sidebar logo variant", target: ".sidebar-logo-showcase", property: "sidebarVariant", apply: "sidebar" });
-        /* Two named sections rather than one stage: the card generator makes a
-           cell per section and labels it from the h2, so the states arrive in
-           the Design project already told apart. */
-        return `<div class="sidebar-detail"><section class="component-doc-block full"><header class="component-doc-header"><h2>Expanded</h2></header><div class="component-doc-content"><div class="sidebar-logo-showcase" data-sidebar-variant="normal">${logoVariants}${expanded}</div></div></section><section class="component-doc-block full"><header class="component-doc-header"><h2>Collapsed</h2></header><div class="component-doc-content">${collapsed}</div></section></div>`;
+        /* Three stages side by side, each rendered rather than switched into
+           view. The Normal/Plus segmented control was page furniture, and the
+           card generator strips page furniture — so the published card only
+           ever showed Normal and the Plus brand treatment was invisible in the
+           design system. The collapsed rail sits beside the expanded one for
+           the same reason a spec sheet puts them side by side: the difference
+           is the point. */
+        const stage = (caption, props) =>
+          `<figure class="sidebar-demo-figure"><div class="sidebar-demo-stage">${ui.sidebar(props)}</div><figcaption>${caption}</figcaption></figure>`;
+        const base = { items, sections, moreItems, footer };
+        const stages =
+          stage("Normal", { ...base, id: "workspace-sidebar", variant: "normal", ariaLabel: "Workspace sidebar", demo: "workspace-sidebar" })
+          + stage("Plus", { ...base, id: "workspace-sidebar-plus", variant: "plus", ariaLabel: "Workspace sidebar, Plus", demo: "workspace-sidebar-plus" })
+          + stage("Collapsed", { ...base, id: "workspace-sidebar-rail", collapsed: true, ariaLabel: "Workspace sidebar, collapsed", demo: "workspace-sidebar-rail" });
+        return `<div class="sidebar-detail"><section class="component-doc-block full"><header class="component-doc-header"><h2>Variants and states</h2></header><div class="component-doc-content"><div class="sidebar-demo-row">${stages}</div></div></section></div>`;
       }
       function teacherCardPatternDetail() {
         const photo = "Assets/Images/avatars/teacher-bob.png";

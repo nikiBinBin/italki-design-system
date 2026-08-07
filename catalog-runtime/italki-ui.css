@@ -573,8 +573,13 @@
    100dvh, not a fixed 600px: the rail is as tall as the screen and stays put
    while the page moves. Overflow is handled inside by .ui-sidebar__scroll, so
    a long nav scrolls within the rail and the footer stays on the floor. dvh
-   rather than vh so mobile browser chrome does not crop the footer. */
-.ui-sidebar { width: 324px; height: 100dvh; position: sticky; top: 0; z-index: 31; align-self: flex-start; display: flex; flex: 0 0 324px; flex-direction: column; overflow: visible; color: var(--ui-color-text); background: var(--ui-color-card); border-right: 1px solid var(--ui-color-border); transition: width 180ms ease, flex-basis 180ms ease; }
+   rather than vh so mobile browser chrome does not crop the footer.
+
+   max-height:100% is the escape hatch, and it is why the default is safe: a
+   parent with a definite height bounds the rail, a page shell does not. Baking
+   100dvh in without it blew the Catalog's own 600px demo stage open — height
+   is the page's decision, and the component has to let the page make it. */
+.ui-sidebar { width: 324px; height: 100dvh; max-height: 100%; position: sticky; top: 0; z-index: 31; align-self: flex-start; display: flex; flex: 0 0 324px; flex-direction: column; overflow: visible; color: var(--ui-color-text); background: var(--ui-color-card); border-right: 1px solid var(--ui-color-border); transition: width 180ms ease, flex-basis 180ms ease; }
 .ui-sidebar__header { height: 72px; flex: 0 0 72px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--ui-color-divider); padding: 0 var(--ui-space-6); }
 .ui-sidebar__header > .ui-tooltip-wrap { flex: 0 0 auto; }
 .ui-sidebar__header > .ui-tooltip-wrap:has(.ui-sidebar__brand) { width: 48px; height: 40px; }
@@ -658,8 +663,13 @@
 .ui-sidebar.is-flow { position: relative; top: auto; z-index: auto; align-self: auto; }
 .ui-top-nav.is-flow { position: relative; top: auto; z-index: auto; }
 .ui-sidebar.is-collapsed .ui-sidebar__item span, .ui-sidebar.is-collapsed .ui-sidebar__section { display: none; }
-.ui-sidebar.is-collapsed .ui-sidebar__footer { width: 100%; justify-content: center; padding: 0; }
-.ui-sidebar.is-collapsed .ui-sidebar__footer .ui-button { display: none; }
+/* The rail stacks its footer, wallet above avatar, rather than dropping the
+   wallet. It used to be display:none — which lost the balance entirely, and
+   the balance is the number the footer exists to show. Icon-only, because the
+   rail is 72px and the amount does not fit; the label returns when it opens. */
+.ui-sidebar.is-collapsed .ui-sidebar__footer { width: 100%; height: auto; flex: 0 0 auto; flex-direction: column; gap: var(--ui-space-2); justify-content: center; padding: var(--ui-space-2) 0; }
+.ui-sidebar.is-collapsed .ui-sidebar__footer .ui-button { width: 40px; min-width: 0; padding: 0; }
+.ui-sidebar.is-collapsed .ui-sidebar__footer .ui-button__label { display: none; }
 
 .ui-statistic { min-width: 0; display: grid; align-content: start; gap: var(--ui-space-1); color: var(--ui-color-text); }
 .ui-statistic__title, .ui-statistic__description { color: var(--ui-color-secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
