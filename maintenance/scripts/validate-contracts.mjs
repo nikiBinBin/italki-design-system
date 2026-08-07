@@ -359,14 +359,14 @@ assert.match(ui.popconfirm({ id: "popconfirm-accessibility", title: "Confirm", o
 assert.match(ui.divider({ type: "vertical", ariaLabel: "Teacher metadata separator" }), /role="separator"[^>]*aria-orientation="vertical"[^>]*aria-label="Teacher metadata separator"/, "Divider must expose separator semantics and orientation");
 /* Video. It is a cover and a way in, never a player: keeping it a pure string
    builder is what lets it render in a static Design card and offline test. */
-assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.svg" }), /<div class="ui-video"[^>]*data-component="video"/, "Video must render its own frame");
-assert.doesNotMatch(ui.video({ poster: "Assets/Images/covers/teacher-intro.svg" }), /<video|<iframe/, "Video must not embed a player — the page decides what play does");
-assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.svg", demo: "ui-video-play" }), /data-demo="ui-video-play"/, "Video must expose the play affordance through the shared demo hook");
+assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.jpg" }), /<div class="ui-video"[^>]*data-component="video"/, "Video must render its own frame");
+assert.doesNotMatch(ui.video({ poster: "Assets/Images/covers/teacher-intro.jpg" }), /<video|<iframe/, "Video must not embed a player — the page decides what play does");
+assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.jpg", demo: "ui-video-play" }), /data-demo="ui-video-play"/, "Video must expose the play affordance through the shared demo hook");
 assert.throws(() => ui.video({}), /video requires a poster/, "A play button over an empty frame says nothing about what it starts");
 assert.throws(() => ui.video({ poster: "https://example.com/x.jpg" }), /approved asset/, "Video posters are bound by the same asset roots as every other image");
-assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.svg", duration: "1:24" }), /ui-video__duration">1:24</, "Video must be able to state its duration before it is started");
-assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.svg", title: "Meet Maya" }), /aria-label="Play Meet Maya"/, "A titled Video must name what the play button starts");
-assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.svg", state: "disabled" }), /<button[^>]*disabled/, "A disabled Video must not be startable");
+assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.jpg", duration: "1:24" }), /ui-video__duration">1:24</, "Video must be able to state its duration before it is started");
+assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.jpg", title: "Meet Maya" }), /aria-label="Play Meet Maya"/, "A titled Video must name what the play button starts");
+assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.jpg", state: "disabled" }), /<button[^>]*disabled/, "A disabled Video must not be startable");
 assert(componentCSS.includes(".ui-video__play-disc") && !/ui-video__play-icon/.test(componentCSS), "Video's play affordance is a drawn disc — classroom-play.svg is itself a filled circle, so an icon inside a ring nests two circles");
 
 /* Link. The two decisions worth pinning: a disabled link must not be

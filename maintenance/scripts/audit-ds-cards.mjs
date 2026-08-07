@@ -19,7 +19,7 @@ import path from 'node:path';
 
 const REPO = process.argv[2];
 const STAGE = process.argv[3];
-const TYPES = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png', '.json': 'application/json' };
+const TYPES = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.json': 'application/json' };
 
 const serve = (root, port) => new Promise((done) => {
   const server = http.createServer((req, res) => {
