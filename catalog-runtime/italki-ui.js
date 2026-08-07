@@ -1576,12 +1576,19 @@
 
   function modal(props = {}) {
     assertProps("modal", props);
-    const { id = "", title = "Dialog", body = "", footer = "", trigger = "", triggerLabel = "Open modal", open = false, size = "default", titleAlign = "start", stage = "demo", closable = true, maskClosable = true, keyboardClosable = true, demo = "" } = props;
+    const { id = "", title = "Dialog", body = "", footer = "", trigger, triggerLabel = "Open modal", open = false, size = "default", titleAlign = "start", stage = "demo", closable = true, maskClosable = true, keyboardClosable = true, demo = "" } = props;
     enumValue("modal", "size", size);
     enumValue("modal", "titleAlign", titleAlign);
     enumValue("modal", "stage", stage);
     const modalId = id || `modal-${String(title).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "dialog"}`;
-    const triggerMarkup = trigger || button({ label: triggerLabel, variant: "secondary", demo: demo || "ui-modal-open", ariaExpanded: open, ariaControls: `${modalId}-dialog` });
+    /* Not passing a trigger asks for the default button; passing an empty one
+       says the dialog is opened from somewhere else on the page. A filter that
+       opens from the top nav has no trigger of its own, and the template had to
+       hand-roll the entire modal to get rid of the button this used to insert
+       unconditionally. Undefined and "" are different answers to the question. */
+    const triggerMarkup = trigger === undefined
+      ? button({ label: triggerLabel, variant: "secondary", demo: demo || "ui-modal-open", ariaExpanded: open, ariaControls: `${modalId}-dialog` })
+      : trigger;
     const close = closable ? `<button class="ui-modal__close" type="button" data-demo="ui-modal-close" aria-label="Close dialog">${icon("Assets/Icons/cross.svg", "ui-modal__close-icon")}</button>` : "";
     const footerMarkup = footer ? `<footer class="ui-modal__footer">${footer}</footer>` : "";
     return `<div class="ui-modal-stage ui-modal-stage--${stage}${open ? " is-open" : ""}" id="${escapeHTML(modalId)}" data-component="modal" data-ui-modal data-mask-closable="${maskClosable}" data-keyboard-closable="${keyboardClosable}">${triggerMarkup}<div class="ui-modal__layer"${open ? "" : " aria-hidden=\"true\""}><button class="ui-modal__mask" type="button" data-demo="ui-modal-mask" aria-label="Close dialog"></button><section class="ui-modal ui-modal--${size}" id="${escapeHTML(modalId)}-dialog" role="dialog" aria-modal="true" aria-labelledby="${escapeHTML(modalId)}-title" tabindex="-1"><header class="ui-modal__header${titleAlign === "center" ? " is-title-centered" : ""}"><h3 id="${escapeHTML(modalId)}-title">${escapeHTML(title)}</h3>${close}</header><div class="ui-modal__body">${body}</div>${footerMarkup}</section></div></div>`;
