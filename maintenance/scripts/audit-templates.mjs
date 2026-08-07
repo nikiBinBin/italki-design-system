@@ -16,45 +16,19 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import { templateHost, templatePages, repoRoot, syncNote } from './template-host.mjs';
 
 const require = createRequire(import.meta.url);
-const REPO = path.resolve(process.argv[2] ?? '..');
-const PROJECT = path.join(REPO, 'maintenance/ds-project');
-const TEMPLATES = path.join(REPO, 'maintenance/templates');
+const { server, TEMPLATES } = templateHost(path.resolve(process.argv[2] ?? repoRoot()));
 const REACT = path.dirname(require.resolve('react/package.json'));
 const REACT_DOM = path.dirname(require.resolve('react-dom/package.json'));
 
-const TYPES = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.json': 'application/json' };
-/* The project tree first, then the repository — Assets live in the repository
-   and are copied into the project only at upload time. */
-const server = http.createServer((req, res) => {
-  const rel = decodeURIComponent(req.url.split('?')[0]);
-  const candidates = rel.startsWith('/templates/')
-    ? [path.join(TEMPLATES, rel.slice('/templates/'.length))]
-    : [path.join(PROJECT, rel), path.join(REPO, rel)];
-  for (const file of candidates) {
-    try {
-      const body = fs.readFileSync(file);
-      res.writeHead(200, { 'content-type': TYPES[path.extname(file)] ?? 'application/octet-stream' });
-      res.end(body);
-      return;
-    } catch { /* try the next root */ }
-  }
-  res.writeHead(404);
-  res.end();
-});
 await new Promise((r) => server.listen(4600, r));
+console.log(syncNote(TEMPLATES));
 
 const browser = await chromium.launch();
 const findings = [];
-const templates = fs.readdirSync(TEMPLATES, { withFileTypes: true })
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => {
-    const dir = path.join(TEMPLATES, entry.name);
-    const page = fs.readdirSync(dir).find((f) => f.endsWith('.dc.html'));
-    return page ? { name: entry.name, url: `/templates/${entry.name}/${page}` } : null;
-  })
-  .filter(Boolean);
+const templates = templatePages(TEMPLATES);
 
 for (const template of templates) {
   const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
@@ -105,6 +79,25 @@ for (const template of templates) {
   if (state.contractErrors.length) say(`contract errors on screen: ${state.contractErrors.join(' | ')}`);
   if (state.kitMissing) say('the kit-missing banner is showing');
   if (errors.length) say(`page errors: ${errors[0]}`);
+
+  /* The helmet is not run once — the runtime re-executes it on a re-render, and
+     the flag that stops the dispatcher binding twice lives on the window, so it
+     outlives any single execution. Defining SafeUI therefore has to be
+     unconditional: it is a namespace the next render needs to exist, not a
+     side effect to perform once. Guarding the whole file with that one flag
+     meant a second pass returned before defining it, and every x-import
+     resolved to nothing — no sidebar, no top nav, no calendar, which is exactly
+     the set of things that come through that namespace.
+     Asserted the way it actually breaks: flag set, namespace gone. */
+  const rerun = await page.evaluate(async (url) => {
+    const src = await fetch(url).then((r) => r.text());
+    window.__dsSafeBound = true;
+    delete window.SafeUI;
+    new Function(src)();
+    return { safeUI: typeof window.SafeUI, sidebar: typeof window.SafeUI?.Sidebar };
+  }, `http://127.0.0.1:4600${template.url.replace(/[^/]+$/, 'ds-safe.js')}`);
+  if (rerun.safeUI !== 'object') say('re-running ds-safe.js does not restore SafeUI');
+  else if (rerun.sidebar !== 'function') say('re-running ds-safe.js does not restore SafeUI.Sidebar');
 
   await page.evaluate(() => window.scrollTo(0, 900));
   await page.waitForTimeout(250);

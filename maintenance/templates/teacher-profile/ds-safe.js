@@ -6,13 +6,19 @@
 //    name. Prop filtering is the bundle's job now: its wrapper drops React's own
 //    keys before the contract sees them, so this layer only has to forward.
 (() => {
-  /* Registered once per page, not once per execution. This file sits in the
-     helmet, which the runtime may run again on a re-render, and a dispatcher
-     bound twice handles every click twice — a toggle handled twice never
-     moves. That is what "clicking collapse does nothing" was: the handlers
-     were fighting each other, and the brand only appeared to work because its
-     second pass hits a guard and returns. */
-  if (window.__dsSafeBound) return;
+  /* Two different jobs with two different rules, and conflating them took both
+     templates' shells out.
+     — Listening is once per page. This file sits in the helmet, which the
+       runtime may run again on a re-render, and a dispatcher bound twice
+       handles every click twice; a toggle handled twice never moves. That was
+       "clicking collapse does nothing".
+     — Defining SafeUI is every time, unconditionally. It is a namespace, not a
+       side effect: whoever is about to render needs it to exist right now.
+     Guarding the whole file with one flag meant the second execution returned
+     before SafeUI was defined, so every x-import resolved to nothing and the
+     sidebar and top nav rendered empty — on both templates at once, because
+     the flag lives on the shared window. Only the listeners get the guard. */
+  const alreadyListening = window.__dsSafeBound;
   window.__dsSafeBound = true;
 
   const BASE = "../../";
@@ -38,14 +44,16 @@
     }
   };
   rewrite(document.body);
-  new MutationObserver((records) => {
-    for (const record of records) {
-      for (const node of record.addedNodes) rewrite(node);
-      if (record.type === "attributes") rewrite(record.target);
-    }
-  }).observe(document.documentElement, {
-    childList: true, subtree: true, attributes: true, attributeFilter: ["src"],
-  });
+  if (!alreadyListening) {
+    new MutationObserver((records) => {
+      for (const record of records) {
+        for (const node of record.addedNodes) rewrite(node);
+        if (record.type === "attributes") rewrite(record.target);
+      }
+    }).observe(document.documentElement, {
+      childList: true, subtree: true, attributes: true, attributeFilter: ["src"],
+    });
+  }
 
   /* Resolved on demand rather than from a list of names. A hand-kept list falls
      behind the kit silently: this template imports SafeUI.Tabs, SafeUI.Progress
@@ -155,33 +163,35 @@
     "ui-top-nav-filter": (c) => run("toggleTopNavFilter", c),
     "ui-modal-mask": (c) => run("closeModal", c),
   };
-  document.addEventListener("click", (event) => {
-    if (!event.target.closest?.("[data-ui-sidebar-more]")) run("closeSidebarMore");
-    const hook = event.target.closest?.("[data-demo]");
-    const handler = hook && CLICK[hook.dataset.demo];
-    if (handler) handler(hook);
-  }, true);
-  document.addEventListener("dragstart", (e) => run("startSidebarDrag", e));
-  document.addEventListener("dragover", (e) => run("moveSidebarDrag", e));
-  document.addEventListener("dragend", (e) => run("endSidebarDrag", e));
-  document.addEventListener("mouseover", (e) => {
-    const more = e.target.closest?.("[data-ui-sidebar-more]");
-    if (more && !more.contains(e.relatedTarget)) run("cancelSidebarMoreClose", more);
-  }, true);
-  document.addEventListener("mouseout", (e) => {
-    const more = e.target.closest?.("[data-ui-sidebar-more]");
-    if (more && !more.contains(e.relatedTarget)) run("scheduleSidebarMoreClose", more);
-  }, true);
-  document.addEventListener("input", (e) => {
-    const input = e.target.closest?.('[data-demo="ui-top-nav-search-input"]');
-    if (input) run("syncTopNavSearch", input);
-  }, true);
-  const searchFocus = (state) => (e) => {
-    const input = e.target.closest?.('[data-demo="ui-top-nav-search-input"]');
-    if (input) run("setTopNavSearchFocus", input, state);
-  };
-  document.addEventListener("focusin", searchFocus(true), true);
-  document.addEventListener("focusout", searchFocus(false), true);
+  if (!alreadyListening) {
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest?.("[data-ui-sidebar-more]")) run("closeSidebarMore");
+      const hook = event.target.closest?.("[data-demo]");
+      const handler = hook && CLICK[hook.dataset.demo];
+      if (handler) handler(hook);
+    }, true);
+    document.addEventListener("dragstart", (e) => run("startSidebarDrag", e));
+    document.addEventListener("dragover", (e) => run("moveSidebarDrag", e));
+    document.addEventListener("dragend", (e) => run("endSidebarDrag", e));
+    document.addEventListener("mouseover", (e) => {
+      const more = e.target.closest?.("[data-ui-sidebar-more]");
+      if (more && !more.contains(e.relatedTarget)) run("cancelSidebarMoreClose", more);
+    }, true);
+    document.addEventListener("mouseout", (e) => {
+      const more = e.target.closest?.("[data-ui-sidebar-more]");
+      if (more && !more.contains(e.relatedTarget)) run("scheduleSidebarMoreClose", more);
+    }, true);
+    document.addEventListener("input", (e) => {
+      const input = e.target.closest?.('[data-demo="ui-top-nav-search-input"]');
+      if (input) run("syncTopNavSearch", input);
+    }, true);
+    const searchFocus = (state) => (e) => {
+      const input = e.target.closest?.('[data-demo="ui-top-nav-search-input"]');
+      if (input) run("setTopNavSearchFocus", input, state);
+    };
+    document.addEventListener("focusin", searchFocus(true), true);
+    document.addEventListener("focusout", searchFocus(false), true);
+  }
 
   const contractFor = (name) => {
     const contract = (window.ITalkiUIContracts || {}).components || {};

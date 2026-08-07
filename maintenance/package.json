@@ -19,7 +19,8 @@
     "build:covers": "node scripts/build-cover-assets.mjs",
     "audit:shell": "node scripts/audit-shell.mjs",
     "audit:hooks": "node scripts/audit-hooks.mjs",
-    "audit:templates": "node scripts/audit-templates.mjs"
+    "audit:templates": "node scripts/audit-templates.mjs",
+    "serve:templates": "node scripts/serve-templates.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",
