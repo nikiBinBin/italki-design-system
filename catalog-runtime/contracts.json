@@ -302,7 +302,7 @@
       "requiredStates": ["basic", "labels", "clearable", "disabled"]
     },
     "sidebar": {
-      "acceptedProps": ["id", "variant", "collapsed", "items", "sections", "moreItems", "moreOpen", "footer", "ariaLabel", "sticky", "demo"],
+      "acceptedProps": ["id", "variant", "collapsed", "items", "sections", "moreItems", "moreOpen", "footer", "balance", "avatarInitials", "ariaLabel", "sticky", "demo"],
       "props": {
         "variant": ["normal", "plus"],
         "collapsed": [true, false],
@@ -336,7 +336,7 @@
       "requiredStates": ["default", "with-label", "alternate", "pending", "reverse", "single-tone"]
     },
     "top-nav": {
-      "acceptedProps": ["id", "variant", "leading", "center", "trailing", "contextLabel", "contextOptions", "searchPlaceholder", "actionLabel", "ariaLabel", "sticky", "demo"],
+      "acceptedProps": ["id", "variant", "leading", "center", "trailing", "contextLabel", "contextFlag", "contextOptions", "searchPlaceholder", "searchFilterLabel", "actionLabel", "actionIcon", "ariaLabel", "sticky", "demo"],
       "subcomponents": {
         "context": {
           "acceptedProps": ["id", "mode", "selected", "options", "open", "ariaLabel", "demo"],
