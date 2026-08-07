@@ -34,9 +34,9 @@
       "origin": "not re-verified this sync"
     },
     "teacher-profile/TeacherProfile.dc.html": {
-      "bytes": 43319,
-      "sha256": "21d19029e1521e59",
-      "origin": "written to the project from here"
+      "bytes": 43305,
+      "sha256": "742caccc7496e474",
+      "origin": "byte-exact from the project (your comment edits)"
     },
     "teacher-profile/ds-safe.js": {
       "bytes": 12809,
