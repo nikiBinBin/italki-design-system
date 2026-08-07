@@ -302,11 +302,12 @@
       "requiredStates": ["basic", "labels", "clearable", "disabled"]
     },
     "sidebar": {
-      "acceptedProps": ["id", "variant", "collapsed", "items", "sections", "moreItems", "moreOpen", "footer", "ariaLabel", "demo"],
+      "acceptedProps": ["id", "variant", "collapsed", "items", "sections", "moreItems", "moreOpen", "footer", "ariaLabel", "sticky", "demo"],
       "props": {
         "variant": ["normal", "plus"],
         "collapsed": [true, false],
-        "moreOpen": [true, false]
+        "moreOpen": [true, false],
+        "sticky": [true, false]
       },
       "requiredStates": ["normal", "plus", "collapsed", "expanded-section", "more-open"]
     },
@@ -335,7 +336,7 @@
       "requiredStates": ["default", "with-label", "alternate", "pending", "reverse", "single-tone"]
     },
     "top-nav": {
-      "acceptedProps": ["id", "leading", "center", "trailing", "ariaLabel", "demo"],
+      "acceptedProps": ["id", "leading", "center", "trailing", "ariaLabel", "sticky", "demo"],
       "subcomponents": {
         "context": {
           "acceptedProps": ["id", "mode", "selected", "options", "open", "ariaLabel", "demo"],
@@ -355,7 +356,7 @@
           }
         }
       },
-      "props": {},
+      "props": {"sticky": [true, false]},
       "requiredStates": ["global-default", "teacher-search", "context-open", "search-query", "filtered"]
     },
     "slider": {

@@ -812,10 +812,12 @@
       moreOpen = false,
       footer = "",
       ariaLabel = "Sidebar",
+      sticky = true,
       demo = ""
     } = props;
     enumValue("sidebar", "variant", variant);
     enumValue("sidebar", "collapsed", collapsed);
+    enumValue("sidebar", "sticky", sticky);
     enumValue("sidebar", "moreOpen", moreOpen);
     if (!Array.isArray(items) || !Array.isArray(sections) || !Array.isArray(moreItems)) throw new Error("sidebar.items, sidebar.sections, and sidebar.moreItems must be arrays");
     const sidebarId = id || `sidebar-${String(ariaLabel).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "navigation"}`;
@@ -849,7 +851,7 @@
     const brandTooltip = tooltip({ id: `${sidebarId}-expand-tooltip`, content: "Show sidebar", placement: "bottom", trigger: brand });
     const collapseTrigger = `<button class="ui-sidebar__utility" type="button" data-demo="ui-sidebar-collapse" aria-label="Hide sidebar" aria-expanded="${!collapsed}" aria-controls="${escapeHTML(sidebarId)}"${eventAttribute}>${renderIcon("Assets/Icons/layout-left.svg", "ui-sidebar__utility-icon")}</button>`;
     const collapseTooltip = tooltip({ id: `${sidebarId}-collapse-tooltip`, content: "Hide sidebar", placement: "bottom", trigger: collapseTrigger });
-    const classes = ["ui-sidebar", `ui-sidebar--${variant}`, collapsed ? "is-collapsed" : ""].filter(Boolean).join(" ");
+    const classes = ["ui-sidebar", `ui-sidebar--${variant}`, collapsed ? "is-collapsed" : "", sticky ? "" : "is-flow"].filter(Boolean).join(" ");
     return `<aside class="${classes}" id="${escapeHTML(sidebarId)}" data-component="sidebar" data-ui-sidebar data-sidebar-collapsed="${collapsed}"${demo ? ` data-sidebar-demo="${escapeHTML(demo)}"` : ""} aria-label="${escapeHTML(ariaLabel)}"><header class="ui-sidebar__header">${brandTooltip}${collapseTooltip}</header><div class="ui-sidebar__scroll"><nav class="ui-sidebar__nav" aria-label="${escapeHTML(ariaLabel)} destinations">${items.map(renderItem).join("")}</nav>${sections.map(renderSection).join("")}</div>${footer ? `<footer class="ui-sidebar__footer">${footer}</footer>` : ""}</aside>`;
   }
 
@@ -1179,9 +1181,10 @@
 
   function topNav(props = {}) {
     assertProps("top-nav", props);
-    const { id = "", leading = "", center = "", trailing = "", ariaLabel = "Top navigation", demo = "" } = props;
+    const { id = "", leading = "", center = "", trailing = "", ariaLabel = "Top navigation", sticky = true, demo = "" } = props;
+    enumValue("top-nav", "sticky", sticky);
     const navId = id || `top-nav-${String(ariaLabel).toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
-    return `<header class="ui-top-nav" id="${escapeHTML(navId)}" data-component="top-nav" data-ui-top-nav aria-label="${escapeHTML(ariaLabel)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}><div class="ui-top-nav__leading">${leading}</div><div class="ui-top-nav__center">${center}</div><div class="ui-top-nav__trailing">${trailing}</div></header>`;
+    return `<header class="ui-top-nav${sticky ? "" : " is-flow"}" id="${escapeHTML(navId)}" data-component="top-nav" data-ui-top-nav aria-label="${escapeHTML(ariaLabel)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}><div class="ui-top-nav__leading">${leading}</div><div class="ui-top-nav__center">${center}</div><div class="ui-top-nav__trailing">${trailing}</div></header>`;
   }
 
   function topNavContext(props = {}) {

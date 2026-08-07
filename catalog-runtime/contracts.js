@@ -791,6 +791,7 @@ window.ITalkiUIContracts = {
         "moreOpen",
         "footer",
         "ariaLabel",
+        "sticky",
         "demo"
       ],
       "props": {
@@ -803,6 +804,10 @@ window.ITalkiUIContracts = {
           false
         ],
         "moreOpen": [
+          true,
+          false
+        ],
+        "sticky": [
           true,
           false
         ]
@@ -885,9 +890,15 @@ window.ITalkiUIContracts = {
         "center",
         "trailing",
         "ariaLabel",
+        "sticky",
         "demo"
       ],
-      "props": {},
+      "props": {
+        "sticky": [
+          true,
+          false
+        ]
+      },
       "subcomponents": {
         "context": {
           "acceptedProps": [
