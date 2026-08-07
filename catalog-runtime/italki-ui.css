@@ -143,20 +143,27 @@
 .ui-video__poster { width: 100%; height: 100%; display: block; object-fit: cover; }
 /* A scrim from the foot of the frame: it keeps the disc and the metadata
    legible over a bright cover without dimming the whole image. */
-.ui-video__play { position: absolute; inset: 0; display: grid; place-items: center; border: 0; padding: 0; background: linear-gradient(transparent 45%, var(--ui-color-hover-overlay)); cursor: pointer; transition: background 160ms ease; }
+/* The whole cover is the target, but the disc is not centred on it. A teacher
+   intro is a face filling the middle of the frame, and a centred disc lands
+   on it — the one part of the cover a learner is there to look at. The
+   affordance sits lower-left instead, on the scrim that is already there and
+   opposite the duration badge. */
+.ui-video__play { position: absolute; inset: 0; display: grid; place-items: end start; border: 0; padding: var(--ui-space-3); background: linear-gradient(transparent 45%, var(--ui-color-hover-overlay)); cursor: pointer; transition: background 160ms ease; }
 /* Brand disc with the triangle cut into it, rather than an icon inside a white
    ring — classroom-play.svg is itself a filled circle, so the old treatment
    was a circle inside a circle. */
 /* The disc is ink, not brand: a brand-red disc vanishes on a brand-red cover,
    which is exactly what the italki cover does. Ink reads on any cover the
    palette can produce, and the triangle stays white. */
-.ui-video__play-disc { width: 56px; height: 56px; display: grid; place-items: center; border-radius: var(--ui-radius-full); background: var(--ui-color-title); box-shadow: var(--ui-shadow-lg); transition: transform 160ms ease, background 160ms ease; }
-.ui-video__play-disc::before { width: 0; height: 0; margin-left: 4px; border-top: 10px solid transparent; border-bottom: 10px solid transparent; border-left: 16px solid var(--ui-color-on-primary); content: ""; }
+.ui-video__play-disc { width: 48px; height: 48px; display: grid; place-items: center; border-radius: var(--ui-radius-full); background: var(--ui-color-title); box-shadow: var(--ui-shadow-lg); transition: transform 160ms ease, background 160ms ease; }
+.ui-video__play-disc::before { width: 0; height: 0; margin-left: var(--ui-space-1); border-top: 9px solid transparent; border-bottom: 9px solid transparent; border-left: 14px solid var(--ui-color-on-primary); content: ""; }
 .ui-video:hover .ui-video__play-disc, .ui-video.is-hover .ui-video__play-disc { background: var(--ui-color-primary); transform: scale(1.06); }
 .ui-video__play:focus-visible { outline: 2px solid var(--ui-color-on-primary); outline-offset: -4px; }
 .ui-video__duration { position: absolute; right: var(--ui-space-2); bottom: var(--ui-space-2); border-radius: var(--ui-radius-xs); padding: 0 var(--ui-space-1); color: var(--ui-color-on-primary); background: var(--ui-color-upload-overlay); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-medium); line-height: var(--ui-line-height-18); }
 /* A title sits on the cover, so it needs its own scrim to stay legible. */
-.ui-video__title { position: absolute; right: 0; bottom: 0; left: 0; margin: 0; padding: var(--ui-space-6) var(--ui-space-3) var(--ui-space-2); color: var(--ui-color-on-primary); background: linear-gradient(transparent, var(--ui-color-upload-overlay)); font-size: var(--ui-font-size-14); font-weight: var(--ui-font-weight-semibold); line-height: var(--ui-line-height-20); }
+/* The title shares the bottom band with the disc, so it starts clear of it
+   and centres on it: the two read as one row, play then name. */
+.ui-video__title { position: absolute; right: 0; bottom: 0; left: 0; margin: 0; padding: var(--ui-space-6) var(--ui-space-3) var(--ui-space-4) calc(var(--ui-space-3) + 48px + var(--ui-space-3)); color: var(--ui-color-on-primary); background: linear-gradient(transparent, var(--ui-color-upload-overlay)); font-size: var(--ui-font-size-14); font-weight: var(--ui-font-weight-semibold); line-height: var(--ui-line-height-20); }
 .ui-video.is-disabled .ui-video__poster { filter: grayscale(1); opacity: .6; }
 .ui-video.is-disabled .ui-video__play { cursor: not-allowed; }
 
