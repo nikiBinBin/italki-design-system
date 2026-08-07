@@ -1306,7 +1306,13 @@
 
        `custom` keeps the slots-only behaviour, and a slot still wins wherever
        one is given, so arbitrary content stays arbitrary. */
-    const composed = variant !== "custom";
+    /* `custom` means "I am filling the slots myself". A page that passes the
+       context options, the placeholder and the action label has plainly not
+       done that — it has handed over the data and expects the bar. Refusing to
+       compose because the variant was left unwritten is the component playing
+       dumb, and what it produced was an empty bar with no error to explain it. */
+    const hasBarData = Boolean(contextLabel || contextOptions.length || searchPlaceholder !== "Search" || actionLabel !== "Book lessons");
+    const composed = variant !== "custom" || (hasBarData && !leading && !center && !trailing);
     const searchBar = variant === "teacher-search";
     const contextSelected = contextOptions.find((option) => option && option.label === contextLabel)
       || contextOptions[0]
