@@ -889,6 +889,10 @@ window.ITalkiUIContracts = {
         "leading",
         "center",
         "trailing",
+        "contextLabel",
+        "contextOptions",
+        "searchPlaceholder",
+        "actionLabel",
         "ariaLabel",
         "sticky",
         "demo"
