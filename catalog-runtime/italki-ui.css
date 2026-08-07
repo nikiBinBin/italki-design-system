@@ -575,7 +575,10 @@
 .ui-sidebar__item.is-active { color: var(--ui-color-title); background: var(--ui-color-divider); font-weight: var(--ui-font-weight-bold); }
 .ui-sidebar__item.is-active:hover { background: var(--ui-color-hover); }
 .ui-sidebar__nav-row.is-active .ui-sidebar__item, .ui-sidebar__nav-row.is-active .ui-sidebar__item:hover { background: transparent; }
-.ui-sidebar__nav-row.is-active .ui-sidebar__pin-toggle { opacity: 1; }
+/* The pin reveals on hover and focus only — see .is-pinnable:hover below. An
+   `.is-active` exemption used to pin it open; the Catalog's active row is fixed
+   and so has no pin at all, which is why the rule was only ever reachable from
+   a consumer whose active row was pinnable, and there it read as a stuck icon. */
 .ui-sidebar__item:disabled, .ui-sidebar__section-toggle:disabled, .ui-sidebar__subitem:disabled { color: var(--ui-color-disabled); background: transparent; cursor: not-allowed; }
 .ui-sidebar__item-icon, .ui-sidebar__more-icon { width: 24px; height: 24px; flex: 0 0 24px; object-fit: contain; }
 .ui-sidebar__item span, .ui-sidebar__subitem-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

@@ -743,13 +743,36 @@ ${runtimeSrc.replace(/\}\)\(window\);\s*$/, '})(global);')}
   // Each component renders the runtime's HTML string. The renderers are pure
   // string builders, so this is a faithful mount — interactive behaviour comes
   // from the runtime's own delegated document listeners.
+  /* React always supplies props the contract has never heard of — a "children"
+     whenever a consumer writes <Sidebar>…</Sidebar> or passes a third argument
+     to createElement, and the editor's own tracking attributes on every mount.
+     The renderers assert their props strictly and throw on anything unknown,
+     so the boundary between React and the contract is exactly here: forward
+     only what the component accepts. Without this the teacher-search template
+     rendered "sidebar does not accept prop children" in place of its shell. */
+  var REACT_ONLY = /^(children|key|ref|className|style|dangerouslySetInnerHTML)$|^(data-|aria-|on[A-Z])/;
+  function contractProps(props) {
+    var clean = {};
+    for (var name in props) {
+      if (REACT_ONLY.test(name)) continue;
+      if (props[name] === undefined) continue;
+      clean[name] = props[name];
+    }
+    return clean;
+  }
   function wrap(fn) {
     function Component(props) {
       var html = '';
-      try { html = UI[fn](props || {}); }
+      try { html = UI[fn](contractProps(props)); }
       catch (e) { html = '<div style="color:var(--ui-color-error,#D3382F);font:12px system-ui">' + (e && e.message || e) + '</div>'; }
+      // display:contents so the wrapper generates no box. dangerouslySetInnerHTML
+      // needs a host element, but a real box becomes the containing block for
+      // everything inside it, and position:sticky can only travel within its
+      // containing block — so a consumer that stuck a sidebar or a top nav to
+      // the viewport got an element that scrolled away with its own wrapper.
       return React.createElement('div', {
         className: 'italki-ui-embed',
+        style: { display: 'contents' },
         dangerouslySetInnerHTML: { __html: html },
       });
     }
@@ -896,9 +919,18 @@ is the machine-readable contract the assertions come from.
      a 16px glyph in a 24px box is exactly the "don't scale one to the other"
      the prompt warns against. */
   const nativeSize = (asset) => (asset.includes('/16px/') ? 16 : 24);
-  const tile = (asset, fallback) => {
-    const size = fallback ?? nativeSize(asset);
-    return `    <figure class="icon-tile"><img src="../../../${asset}" alt="" width="${size}" height="${size}" loading="lazy"><figcaption>${escape(label(asset))}</figcaption></figure>`;
+  /* Brand marks are not square — the Plus lockup is roughly 4:1 and the
+     features label 6:1 — so a fixed width/height squashes them. Read each
+     asset's own viewBox and scale to a common height instead. */
+  const ratio = (asset) => {
+    const svg = readFileSync(join(REPO, asset), 'utf8').slice(0, 400);
+    const box = svg.match(/viewBox="0 0 ([0-9.]+) ([0-9.]+)"/);
+    return box ? Number(box[1]) / Number(box[2]) : 1;
+  };
+  const tile = (asset, fixed) => {
+    const h = fixed ?? nativeSize(asset);
+    const w = fixed ? Math.round(h * ratio(asset)) : h;
+    return `    <figure class="icon-tile"><img src="../../../${asset}" alt="" width="${w}" height="${h}" loading="lazy"><figcaption>${escape(label(asset))}</figcaption></figure>`;
   };
   const sheet = (name, title, group, entries, size, note) => {
     const dir = `components/foundations/${name}`;
