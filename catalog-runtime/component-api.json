@@ -1700,6 +1700,7 @@
       "renderer": "topNav",
       "props": [
         "id",
+        "variant",
         "leading",
         "center",
         "trailing",
@@ -1713,13 +1714,14 @@
       ],
       "defaults": {
         "id": "\"\"",
+        "variant": "\"custom\"",
         "leading": "\"\"",
         "center": "\"\"",
         "trailing": "\"\"",
         "contextLabel": "\"\"",
         "contextOptions": "[]",
-        "searchPlaceholder": "\"\"",
-        "actionLabel": "\"\"",
+        "searchPlaceholder": "\"Search\"",
+        "actionLabel": "\"Book lessons\"",
         "ariaLabel": "\"Top navigation\"",
         "sticky": "true",
         "demo": "\"\""
@@ -1728,6 +1730,11 @@
         "sticky": [
           true,
           false
+        ],
+        "variant": [
+          "custom",
+          "global-default",
+          "teacher-search"
         ]
       },
       "states": [

@@ -526,8 +526,6 @@ for (const reference of [
   'ui.table(',
   'ui.timeline(',
   'ui.topNav(',
-  'ui.topNavContext(',
-  'ui.topNavSearch(',
   'ui.sliderRange(',
   'ui.panel(',
   'ui.select(',
@@ -611,7 +609,12 @@ for (const reference of [
   'ui.selectSegmentedControl(control)',
   'ui.toggleTimePicker(control)',
   'ui.selectTimePickerSlot(control)',
-  'ui.dismissToast(control)'
+  'ui.dismissToast(control)',
+  /* The context picker and search field are no longer built by the route:
+     global-default and teacher-search are variants, so the bar composes its
+     own subcomponents. Assert the route asks for them by name instead. */
+  'variant: "global-default"',
+  'variant: "teacher-search"'
 ]) {
   assert(catalog.includes(reference), `Catalog is not consuming shared UI implementation: ${reference}`);
 }

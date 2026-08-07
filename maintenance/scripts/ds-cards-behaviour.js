@@ -12,6 +12,13 @@
 // controls (size and shape switchers, the icon search) are not part of a
 // component and are stripped from cards before they get here.
 (() => {
+  /* Captured while this script executes, so the bundle can be found relative to
+     this file rather than to the page. The card asks for it at ../../../, which
+     is right for the project layout and wrong the moment the host serves the
+     card from anywhere else — and when it is wrong nothing says so: the poll
+     below simply never succeeds and every control on the card is inert. */
+  const selfSrc = (document.currentScript && document.currentScript.src) || "";
+
   const start = () => {
     const ui = window.ITalkiUI;
     if (!ui) return false;
@@ -122,8 +129,27 @@
   /* The bundle is loaded with defer, so it may not be installed yet. */
   if (!start()) {
     let tries = 0;
+    let retried = false;
     const timer = setInterval(() => {
-      if (start() || ++tries > 100) clearInterval(timer);
+      if (start()) { clearInterval(timer); return; }
+      tries += 1;
+      /* ~600ms in, the deferred tag has had its chance. Load it again from
+         beside this file, which is the one location we can be sure of. */
+      if (tries === 20 && selfSrc && !retried) {
+        retried = true;
+        const again = document.createElement("script");
+        again.src = new URL("_ds_bundle.js", selfSrc).href;
+        document.head.appendChild(again);
+      }
+      if (tries > 100) {
+        clearInterval(timer);
+        console.error("ds-cards: window.ITalkiUI never appeared — the card is inert");
+        const note = document.createElement("div");
+        note.textContent = "Design-system bundle not loaded — this card cannot respond to input.";
+        note.style.cssText = "position:fixed;z-index:9999;top:0;left:0;right:0;padding:6px 10px;"
+          + "background:var(--ui-color-error,#D3382F);color:#fff;font:12px/1.5 system-ui";
+        document.body.appendChild(note);
+      }
     }, 30);
   }
 })();
