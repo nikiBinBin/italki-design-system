@@ -16,72 +16,87 @@
     const ui = window.ITalkiUI;
     if (!ui) return false;
 
+    /* Never let one missing helper take the page down with it. A card can be
+       served with a bundle older than this script — the app caches them
+       separately — and a single `ui.closeSidebarMore is not a function` thrown
+       from the capture-phase listener stops every other card on the page from
+       responding to any click at all. Missing is skipped and named once. */
+    const missing = new Set();
+    const call = (fn, name, ...args) => {
+      if (typeof fn !== 'function') {
+        if (!missing.has(name)) { missing.add(name); console.warn('ds-cards: ' + name + ' is not in this bundle'); }
+        return undefined;
+      }
+      try { return fn(...args); } catch (error) { console.warn('ds-cards: ' + name + ' threw', error); }
+      return undefined;
+    };
+
     /* Same mapping as index.html's dispatcher. A hook with no entry is left
        alone rather than guessed at. */
     const CLICK = {
-      'ui-drawer-open': (c) => ui.openDrawer(c),
-      'ui-drawer-close': (c) => ui.closeDrawer(c),
-      'ui-drawer-mask': (c) => ui.closeDrawer(c),
-      'ui-modal-open': (c) => ui.openModal(c),
-      'ui-modal-close': (c) => ui.closeModal(c),
-      'ui-popup-toggle': (c) => ui.togglePopup(c),
-      'ui-popup-close': (c) => ui.closePopup(c, true),
-      'ui-popconfirm-toggle': (c) => ui.togglePopconfirm(c),
-      'ui-popconfirm-close': (c) => ui.closePopconfirm(c, true),
-      'ui-dropdown-toggle': (c) => ui.toggleDropdownMenu(c),
-      'ui-dropdown-item': () => ui.closeDropdownMenus(),
-      'ui-disclosure-toggle': (c) => ui.toggleDisclosure(c),
-      'ui-tabs-trigger': (c) => ui.selectTab(c),
-      'ui-select-trigger': (c) => ui.toggleSelect(c),
-      'ui-select-option': (c) => ui.selectOption(c),
-      'ui-select-clear': (c) => ui.clearSelect(c),
-      'ui-select-remove': (c) => ui.removeSelectValue(c),
-      'ui-breadcrumb-overflow': (c) => ui.toggleBreadcrumb(c),
-      'ui-breadcrumb-overflow-item': () => ui.closeBreadcrumbs(),
-      'ui-date-toggle': (c) => ui.toggleDatePicker(c),
-      'ui-date-day': (c) => ui.selectDatePickerDay(c),
-      'ui-date-previous': (c) => ui.navigateDatePicker(c, -1),
-      'ui-date-next': (c) => ui.navigateDatePicker(c, 1),
-      'ui-time-picker-toggle': (c) => ui.toggleTimePicker(c),
-      'ui-number-stepper-decrement': (c) => ui.adjustNumberStepper(c, -1),
-      'ui-number-stepper-increment': (c) => ui.adjustNumberStepper(c, 1),
-      'ui-upload-remove': (c) => ui.removeUploadFile(c),
-      'ui-selection-card': (c) => ui.toggleSelectionCard(c),
-      'ui-calendar-slot': (c) => ui.selectCalendarSlot(c),
-      'ui-teacher-date': (c) => ui.selectTeacherAvailabilityDate(c),
-      'ui-toast-close': (c) => ui.dismissToast(c),
-      'ui-notification-close': (c) => ui.dismissNotification(c),
-      'ui-alert-close': (c) => ui.dismissAlert(c),
-      'ui-sidebar-collapse': (c) => ui.toggleSidebar(c),
-      'ui-sidebar-brand': (c) => ui.toggleSidebar(c),
-      'ui-sidebar-section': (c) => ui.toggleSidebarSection(c),
-      'ui-sidebar-item': (c) => ui.selectSidebarItem(c),
-      'ui-sidebar-more': (c) => ui.toggleSidebarMore(c),
-      'ui-sidebar-more-item': (c) => { ui.selectSidebarItem(c); ui.closeSidebarMore(c); },
-      'ui-sidebar-pin': (c) => ui.pinSidebarItem(c),
-      'ui-sidebar-unpin': (c) => ui.unpinSidebarItem(c),
-      'ui-segmented-control': (c) => ui.selectSegmentedControl(c),
-      'ui-rate': (c, event) => ui.selectRate(c, event),
+      'ui-drawer-open': (c) => call(ui.openDrawer, 'openDrawer', c),
+      'ui-drawer-close': (c) => call(ui.closeDrawer, 'closeDrawer', c),
+      'ui-drawer-mask': (c) => call(ui.closeDrawer, 'closeDrawer', c),
+      'ui-modal-open': (c) => call(ui.openModal, 'openModal', c),
+      'ui-modal-close': (c) => call(ui.closeModal, 'closeModal', c),
+      'ui-popup-toggle': (c) => call(ui.togglePopup, 'togglePopup', c),
+      'ui-popup-close': (c) => call(ui.closePopup, 'closePopup', c, true),
+      'ui-popconfirm-toggle': (c) => call(ui.togglePopconfirm, 'togglePopconfirm', c),
+      'ui-popconfirm-close': (c) => call(ui.closePopconfirm, 'closePopconfirm', c, true),
+      'ui-dropdown-toggle': (c) => call(ui.toggleDropdownMenu, 'toggleDropdownMenu', c),
+      'ui-dropdown-item': () => call(ui.closeDropdownMenus, 'closeDropdownMenus'),
+      'ui-disclosure-toggle': (c) => call(ui.toggleDisclosure, 'toggleDisclosure', c),
+      'ui-tabs-trigger': (c) => call(ui.selectTab, 'selectTab', c),
+      'ui-select-trigger': (c) => call(ui.toggleSelect, 'toggleSelect', c),
+      'ui-select-option': (c) => call(ui.selectOption, 'selectOption', c),
+      'ui-select-clear': (c) => call(ui.clearSelect, 'clearSelect', c),
+      'ui-select-remove': (c) => call(ui.removeSelectValue, 'removeSelectValue', c),
+      'ui-breadcrumb-overflow': (c) => call(ui.toggleBreadcrumb, 'toggleBreadcrumb', c),
+      'ui-breadcrumb-overflow-item': () => call(ui.closeBreadcrumbs, 'closeBreadcrumbs'),
+      'ui-date-toggle': (c) => call(ui.toggleDatePicker, 'toggleDatePicker', c),
+      'ui-date-day': (c) => call(ui.selectDatePickerDay, 'selectDatePickerDay', c),
+      'ui-date-previous': (c) => call(ui.navigateDatePicker, 'navigateDatePicker', c, -1),
+      'ui-date-next': (c) => call(ui.navigateDatePicker, 'navigateDatePicker', c, 1),
+      'ui-time-picker-toggle': (c) => call(ui.toggleTimePicker, 'toggleTimePicker', c),
+      'ui-number-stepper-decrement': (c) => call(ui.adjustNumberStepper, 'adjustNumberStepper', c, -1),
+      'ui-number-stepper-increment': (c) => call(ui.adjustNumberStepper, 'adjustNumberStepper', c, 1),
+      'ui-upload-remove': (c) => call(ui.removeUploadFile, 'removeUploadFile', c),
+      'ui-selection-card': (c) => call(ui.toggleSelectionCard, 'toggleSelectionCard', c),
+      'ui-calendar-slot': (c) => call(ui.selectCalendarSlot, 'selectCalendarSlot', c),
+      'ui-teacher-date': (c) => call(ui.selectTeacherAvailabilityDate, 'selectTeacherAvailabilityDate', c),
+      'ui-toast-close': (c) => call(ui.dismissToast, 'dismissToast', c),
+      'ui-notification-close': (c) => call(ui.dismissNotification, 'dismissNotification', c),
+      'ui-alert-close': (c) => call(ui.dismissAlert, 'dismissAlert', c),
+      'ui-sidebar-collapse': (c) => call(ui.toggleSidebar, 'toggleSidebar', c),
+      'ui-sidebar-brand': (c) => call(ui.toggleSidebar, 'toggleSidebar', c),
+      'ui-sidebar-section': (c) => call(ui.toggleSidebarSection, 'toggleSidebarSection', c),
+      'ui-sidebar-item': (c) => call(ui.selectSidebarItem, 'selectSidebarItem', c),
+      'ui-sidebar-more': (c) => call(ui.toggleSidebarMore, 'toggleSidebarMore', c),
+      'ui-sidebar-more-item': (c) => { call(ui.selectSidebarItem, 'selectSidebarItem', c); call(ui.closeSidebarMore, 'closeSidebarMore', c); },
+      'ui-sidebar-pin': (c) => call(ui.pinSidebarItem, 'pinSidebarItem', c),
+      'ui-sidebar-unpin': (c) => call(ui.unpinSidebarItem, 'unpinSidebarItem', c),
+      'ui-segmented-control': (c) => call(ui.selectSegmentedControl, 'selectSegmentedControl', c),
+      'ui-rate': (c, event) => call(ui.selectRate, 'selectRate', c, event),
     };
 
     document.addEventListener('click', (event) => {
-      if (!event.target.closest('[data-ui-sidebar-more]')) ui.closeSidebarMore();
+      if (!event.target.closest('[data-ui-sidebar-more]')) call(ui.closeSidebarMore, 'closeSidebarMore');
       const hook = event.target.closest('[data-demo]');
       const run = hook && CLICK[hook.dataset.demo];
       if (run) run(hook, event);
     }, true);
 
     /* Reordering, and the More menu's delayed close, are not clicks. */
-    document.addEventListener('dragstart', (e) => ui.startSidebarDrag(e));
-    document.addEventListener('dragover', (e) => ui.moveSidebarDrag(e));
-    document.addEventListener('dragend', (e) => ui.endSidebarDrag(e));
+    document.addEventListener('dragstart', (e) => call(ui.startSidebarDrag, 'startSidebarDrag', e));
+    document.addEventListener('dragover', (e) => call(ui.moveSidebarDrag, 'moveSidebarDrag', e));
+    document.addEventListener('dragend', (e) => call(ui.endSidebarDrag, 'endSidebarDrag', e));
     document.addEventListener('mouseover', (e) => {
       const more = e.target.closest('[data-ui-sidebar-more]');
-      if (more && !more.contains(e.relatedTarget)) ui.cancelSidebarMoreClose(more);
+      if (more && !more.contains(e.relatedTarget)) call(ui.cancelSidebarMoreClose, 'cancelSidebarMoreClose', more);
     }, true);
     document.addEventListener('mouseout', (e) => {
       const more = e.target.closest('[data-ui-sidebar-more]');
-      if (more && !more.contains(e.relatedTarget)) ui.scheduleSidebarMoreClose(more);
+      if (more && !more.contains(e.relatedTarget)) call(ui.scheduleSidebarMoreClose, 'scheduleSidebarMoreClose', more);
     }, true);
 
     /* Say so when the card renders a hook nobody bound. This list has fallen
@@ -98,7 +113,7 @@
        synced rather than dispatched. */
     document.addEventListener('change', (event) => {
       const box = event.target.closest('[data-component="checkbox"] input, [data-component="checkbox-group"] input');
-      if (box && ui.syncCheckboxGroup) ui.syncCheckboxGroup(box);
+      if (box) call(ui.syncCheckboxGroup, 'syncCheckboxGroup', box);
     }, true);
 
     return true;
