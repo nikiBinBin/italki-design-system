@@ -1259,10 +1259,32 @@
 
   function topNav(props = {}) {
     assertProps("top-nav", props);
-    const { id = "", leading = "", center = "", trailing = "", ariaLabel = "Top navigation", sticky = true, demo = "" } = props;
+    const {
+      id = "", leading = "", center = "", trailing = "",
+      contextLabel = "", contextOptions = [], searchPlaceholder = "", actionLabel = "",
+      ariaLabel = "Top navigation", sticky = true, demo = "",
+    } = props;
     enumValue("top-nav", "sticky", sticky);
+    /* The three slots take arbitrary content, which is right for the general
+       case and wrong for the only case anyone builds: language context, search,
+       primary action. Filling them meant calling three separate builders and
+       threading the strings back in — so consumers reached for contextLabel /
+       searchPlaceholder / actionLabel, found nothing, and shipped an empty bar.
+       The standard composition is declarative now; a slot still wins when it is
+       given, so arbitrary content is still arbitrary. */
+    const contextSelected = contextOptions.find((option) => option && option.label === contextLabel)
+      || (contextLabel ? { id: "context", label: contextLabel } : null);
+    const leadingContent = leading || (contextSelected
+      ? topNavContext({ selected: contextSelected, options: contextOptions.length ? contextOptions : [contextSelected] })
+      : "");
+    const centerContent = center || (searchPlaceholder
+      ? topNavSearch({ placeholder: searchPlaceholder, filter: true, filterLabel: "Filter" })
+      : "");
+    const trailingContent = trailing || (actionLabel
+      ? button({ label: actionLabel, variant: "emphasis", size: 40, shape: "pill", leadingIcon: "nav-plus" })
+      : "");
     const navId = id || `top-nav-${String(ariaLabel).toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
-    return `<header class="ui-top-nav${sticky ? "" : " is-flow"}" id="${escapeHTML(navId)}" data-component="top-nav" data-ui-top-nav aria-label="${escapeHTML(ariaLabel)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}><div class="ui-top-nav__leading">${leading}</div><div class="ui-top-nav__center">${center}</div><div class="ui-top-nav__trailing">${trailing}</div></header>`;
+    return `<header class="ui-top-nav${sticky ? "" : " is-flow"}" id="${escapeHTML(navId)}" data-component="top-nav" data-ui-top-nav aria-label="${escapeHTML(ariaLabel)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}><div class="ui-top-nav__leading">${leadingContent}</div><div class="ui-top-nav__center">${centerContent}</div><div class="ui-top-nav__trailing">${trailingContent}</div></header>`;
   }
 
   function topNavContext(props = {}) {

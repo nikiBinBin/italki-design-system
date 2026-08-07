@@ -336,7 +336,7 @@
       "requiredStates": ["default", "with-label", "alternate", "pending", "reverse", "single-tone"]
     },
     "top-nav": {
-      "acceptedProps": ["id", "leading", "center", "trailing", "ariaLabel", "sticky", "demo"],
+      "acceptedProps": ["id", "leading", "center", "trailing", "contextLabel", "contextOptions", "searchPlaceholder", "actionLabel", "ariaLabel", "sticky", "demo"],
       "subcomponents": {
         "context": {
           "acceptedProps": ["id", "mode", "selected", "options", "open", "ariaLabel", "demo"],

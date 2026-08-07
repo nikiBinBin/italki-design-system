@@ -1703,6 +1703,10 @@
         "leading",
         "center",
         "trailing",
+        "contextLabel",
+        "contextOptions",
+        "searchPlaceholder",
+        "actionLabel",
         "ariaLabel",
         "sticky",
         "demo"
@@ -1712,6 +1716,10 @@
         "leading": "\"\"",
         "center": "\"\"",
         "trailing": "\"\"",
+        "contextLabel": "\"\"",
+        "contextOptions": "[]",
+        "searchPlaceholder": "\"\"",
+        "actionLabel": "\"\"",
         "ariaLabel": "\"Top navigation\"",
         "sticky": "true",
         "demo": "\"\""
