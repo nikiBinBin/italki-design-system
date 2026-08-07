@@ -75,13 +75,13 @@
 <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:4px">
 <span style="color:var(--ui-color-secondary);font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-right:2px">Speaks</span>
 <sc-for list="{{ speaksTags }}" as="s" hint-placeholder-count="3">
-<span class="ui-tag ui-tag--24 {{ s.tone }}" data-component="tag"><span>{{ s.text }}</span></span>
+<x-import component-from-global-scope="SafeUI.Tag" label="{{ s.text }}" size="{{ 24 }}" tone="{{ s.tone }}" hint-size="120px,24px"></x-import>
 </sc-for>
 </div>
 <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
 <span style="color:var(--ui-color-secondary);font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-right:2px">Interests</span>
 <sc-for list="{{ interests }}" as="tag" hint-placeholder-count="5">
-<span class="ui-tag ui-tag--24" data-component="tag"><span>{{ tag }}</span></span>
+<x-import component-from-global-scope="SafeUI.Tag" label="{{ tag }}" size="{{ 24 }}" hint-size="72px,24px"></x-import>
 </sc-for>
 </div>
 </div>
@@ -136,7 +136,7 @@
 <div style="min-width:0;display:grid;gap:4px">
 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
 <h3 style="margin:0;color:var(--ui-color-title);font-size:16px;font-weight:600;line-height:24px">{{ l.name }}</h3>
-<sc-if value="{{ l.tag }}" hint-placeholder-val="{{ false }}"><span class="ui-tag ui-tag--24 ui-tag--info" data-component="tag"><span>{{ l.tag }}</span></span></sc-if>
+<sc-if value="{{ l.tag }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="SafeUI.Tag" label="{{ l.tag }}" size="{{ 24 }}" tone="info" hint-size="130px,24px"></x-import></sc-if>
 </div>
 <p style="margin:0;color:var(--ui-color-text);font-size:14px;line-height:20px">{{ l.desc }}</p>
 <span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ l.meta }}</span>
@@ -207,7 +207,7 @@
 <strong style="color:var(--ui-color-title);font-size:14px;font-weight:600;line-height:20px">{{ r.name }}</strong>
 <span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ r.meta }}</span>
 </div>
-<span class="ui-tag ui-tag--24" data-component="tag"><span>{{ r.lessonType }}</span></span>
+<x-import component-from-global-scope="SafeUI.Tag" label="{{ r.lessonType }}" size="{{ 24 }}" hint-size="140px,24px"></x-import>
 </header>
 <div style="display:flex;gap:2px">
 <sc-for list="{{ r.stars }}" as="s" hint-placeholder-count="5"><img src="{{ s }}" alt="" style="width:14px;height:14px"></sc-for>
@@ -283,10 +283,10 @@
 <div style="height:1px;background:var(--ui-color-divider)"></div>
 <div style="display:flex;flex-direction:column;gap:10px">
 <sc-if value="{{ onlineNow }}" hint-placeholder-val="{{ true }}">
-<span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-success);font-size:13px;font-weight:600;line-height:18px"><span style="width:8px;height:8px;border-radius:9999px;background:var(--ui-color-success)"></span>Online now</span>
+<span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-success);font-size:14px;font-weight:600;line-height:18px"><span style="width:8px;height:8px;border-radius:9999px;background:var(--ui-color-success)"></span>Online now</span>
 </sc-if>
-<span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-secondary);font-size:13px;line-height:18px"><img src="../../Assets/Icons/message.svg" alt="" style="width:18px;height:18px">Usually responds within 1 hour</span>
-<span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-secondary);font-size:13px;line-height:18px"><img src="../../Assets/Icons/calendar.svg" alt="" style="width:18px;height:18px">23 lessons booked in the last 48 hours</span>
+<span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-secondary);font-size:14px;line-height:18px"><img src="../../Assets/Icons/message.svg" alt="" style="width:18px;height:18px">Usually responds within 1 hour</span>
+<span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-secondary);font-size:14px;line-height:18px"><img src="../../Assets/Icons/calendar.svg" alt="" style="width:18px;height:18px">23 lessons booked in the last 48 hours</span>
 </div>
 </aside>
 
@@ -497,9 +497,9 @@ class Component extends DCLogic {
       onlineNow: this.props.onlineNow ?? true,
       trialPrice,
       speaksTags: [
-        { text: "Spanish · Native", tone: "ui-tag--info" },
-        { text: "English · C2", tone: "" },
-        { text: "Portuguese · B1", tone: "" },
+        { text: "Spanish · Native", tone: "info" },
+        { text: "English · C2", tone: "neutral" },
+        { text: "Portuguese · B1", tone: "neutral" },
       ],
       interests: ["Cooking", "Cinema", "Hiking", "Football", "History", "Travel"],
       stats: [
