@@ -351,10 +351,11 @@ class Component extends DCLogic {
       // control at all, and catalog-consumption asserts exactly that.
       { id: "home", label: "Home", icon: "Assets/Icons/dashboard.svg", fixed: true },
       { id: "search-teachers", label: "Search Teachers", icon: "Assets/Icons/search_teacher_2.svg", active: true, fixed: true },
-      { id: "my-teachers", label: "My Teachers", icon: "Assets/Icons/teacher.svg" },
-      { id: "my-calendar", label: "My Calendar", icon: "Assets/Icons/calendar.svg" },
-      { id: "community", label: "Community", icon: "Assets/Icons/community.svg" },
       { id: "my-lessons", label: "My Lessons", icon: "Assets/Icons/lesson.svg" },
+      { id: "my-calendar", label: "My Calendar", icon: "Assets/Icons/calendar.svg" },
+      { id: "learn", label: "Learn", icon: "Assets/Icons/tabbar-learn.svg" },
+      { id: "progress", label: "Progress", icon: "Assets/Icons/chart.svg" },
+      { id: "mira", label: "Mira", icon: "Assets/Icons/mira.svg" },
       { id: "more", label: "More", icon: "Assets/Icons/more.svg", more: true },
     ];
 
@@ -379,13 +380,21 @@ class Component extends DCLogic {
       ] },
     ];
 
-    // The More row is a disclosure, not a destination: it needs the overflow
-    // list, or it renders as a trigger with nothing behind it.
+    /* The More row is a disclosure, not a destination: it needs the overflow
+       list, or it renders as a trigger with nothing behind it. The list is the
+       whole roster in its canonical order — including the five that ship pinned
+       out, which is what gives them somewhere to return to — and the dividers
+       are the grouping, each holding whichever of its members is in the menu. */
     const moreItems = [
+      { id: "my-lessons", label: "My Lessons", icon: "Assets/Icons/lesson.svg" },
+      { id: "my-calendar", label: "My Calendar", icon: "Assets/Icons/calendar.svg" },
+      { id: "my-teachers", label: "My Teachers", icon: "Assets/Icons/teacher.svg" },
+      { id: "learn", label: "Learn", icon: "Assets/Icons/tabbar-learn.svg", dividerBefore: true },
+      { id: "progress", label: "Progress", icon: "Assets/Icons/chart.svg" },
       { id: "flowy", label: "Flowy", icon: "Assets/Icons/flowy.svg" },
+      { id: "mira", label: "italki Mira", icon: "Assets/Icons/mira.svg", dividerBefore: true },
       { id: "group-class", label: "Group Class", icon: "Assets/Icons/group.svg", dividerBefore: true },
-      { id: "practice", label: "Practice", icon: "Assets/Icons/practice.svg" },
-      { id: "vocabulary", label: "Vocabulary", icon: "Assets/Icons/vocabulary.svg" },
+      { id: "community", label: "Community", icon: "Assets/Icons/community.svg" },
       { id: "business", label: "italki Business", icon: "Assets/Icons/briefcase.svg", dividerBefore: true },
     ];
 

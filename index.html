@@ -702,9 +702,19 @@
           { id: "chats", label: "Chats", open: false, items: chatRows.map(([initials, label], index) => ({ id: `chat-${index}`, label, leading: ui.avatar({ name: label, initials, size: 24, variant: "empty" }) })) },
           { id: "lessons", label: "Lessons", open: false, items: lessonRows.map(([prefix, label, secondary], index) => ({ id: `lesson-${index}`, prefix, divider: true, label, secondary })) }
         ];
+        /* The whole roster in its canonical order, not just what is hidden right
+           now. A destination missing from this list has nowhere to return to
+           when it is unpinned, so the five that ship pinned out belong here too
+           — the dividers are the grouping, and they hold whichever members of
+           their group are currently in the menu. */
         const moreItems = [
+          { id: "my-lessons", label: "My Lessons", icon: "Assets/Icons/lesson.svg" },
+          { id: "my-calendar", label: "My Calendar", icon: "Assets/Icons/calendar.svg" },
           { id: "my-teachers", label: "My Teachers", icon: "Assets/Icons/teacher.svg" },
-          { id: "flowy", label: "Flowy", icon: "Assets/Icons/flowy.svg", dividerBefore: true },
+          { id: "learn", label: "Learn", icon: "Assets/Icons/tabbar-learn.svg", dividerBefore: true },
+          { id: "progress", label: "Progress", icon: "Assets/Icons/chart.svg" },
+          { id: "flowy", label: "Flowy", icon: "Assets/Icons/flowy.svg" },
+          { id: "mira", label: "italki Mira", icon: "Assets/Icons/mira.svg", dividerBefore: true },
           { id: "group-class", label: "Group Class", icon: "Assets/Icons/group.svg", dividerBefore: true },
           { id: "community", label: "Community", icon: "Assets/Icons/community.svg" },
           { id: "business", label: "italki Business", icon: "Assets/Icons/briefcase.svg", dividerBefore: true }
