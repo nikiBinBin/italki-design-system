@@ -31,8 +31,31 @@
 
   const approvedAsset = (path) => !path || assetRoots.some((root) => path.startsWith(root));
 
-  const icon = (path, className = "ui-icon") => {
-    if (!path) return "";
+  /* An icon may be named rather than pathed. Every consumer that wrote one by
+     hand reached for `icon: "dashboard"` — the name in the library — and got
+     "Unapproved asset: dashboard", because the prop had always meant a path.
+     A name is the safer form of the two: it cannot point outside the library,
+     so it is resolved against the manifest and rejected when the manifest does
+     not have it. A value containing a slash is still taken as a path. */
+  const iconLibrary = () => {
+    const manifest = global.ITalkiIconManifest;
+    return Array.isArray(manifest) ? manifest : (manifest && manifest.icons) || null;
+  };
+  const resolveIcon = (value) => {
+    if (!value || value.includes("/")) return value;
+    const library = iconLibrary();
+    /* With the manifest present the name is verified, and 16px/ icons resolve
+       to their real folder. Without it — a host that loaded the runtime alone —
+       fall back to the library root rather than refusing to render. */
+    if (!library) return `Assets/Icons/${value}.svg`;
+    const hit = library.find((entry) => String(entry).endsWith("/" + value + ".svg"));
+    if (!hit) throw new Error(`Unknown icon: "${value}" is not in the icon library`);
+    return hit;
+  };
+
+  const icon = (rawPath, className = "ui-icon") => {
+    if (!rawPath) return "";
+    const path = resolveIcon(rawPath);
     if (!approvedAsset(path)) throw new Error(`Unapproved asset: ${path}`);
     return `<img class="${className}" src="${escapeHTML(path)}" alt="" />`;
   };
@@ -838,12 +861,19 @@
       const { id: sectionId = "", label = "", items: sectionItems = [], open = false } = section || {};
       if (!sectionId || !label || !Array.isArray(sectionItems)) throw new Error("sidebar sections require id, label, and items");
       const rows = sectionItems.map((item) => {
-        const { id: itemId = "", label: itemLabel = "", leading = "", prefix = "", divider = false, secondary = "", disabled = false } = item || {};
+        const { id: itemId = "", label: itemLabel = "", leading = "", avatar: avatarImage = "", prefix = "", divider = false, secondary = "", disabled = false } = item || {};
         if (!itemId || !itemLabel) throw new Error("sidebar section items require id and label");
+        /* A chat row leads with the person's face, and `leading` takes rendered
+           markup — so every consumer that had only a URL either pre-rendered an
+           avatar or, more often, passed the URL as `avatar` and watched it be
+           dropped without a word. The row builds it now. */
+        const leadingMarkup = leading || (avatarImage
+          ? avatar({ image: avatarImage, size: 24, ariaLabel: itemLabel })
+          : "");
         const prefixMarkup = prefix ? `<span class="ui-sidebar__subitem-prefix">${escapeHTML(prefix)}</span>` : "";
         const dividerMarkup = divider ? '<i class="ui-sidebar__subitem-divider" aria-hidden="true"></i>' : "";
         const secondaryMarkup = secondary ? `<span class="ui-sidebar__subitem-secondary">${escapeHTML(secondary)}</span>` : "";
-        return `<li><button class="ui-sidebar__subitem" type="button" data-demo="ui-sidebar-item" data-sidebar-item="${escapeHTML(itemId)}"${disabled ? " disabled" : ""}${eventAttribute}>${leading}<span class="ui-sidebar__subitem-content">${prefixMarkup}${dividerMarkup}<span class="ui-sidebar__subitem-label">${escapeHTML(itemLabel)}</span>${secondaryMarkup}</span></button></li>`;
+        return `<li><button class="ui-sidebar__subitem" type="button" data-demo="ui-sidebar-item" data-sidebar-item="${escapeHTML(itemId)}"${disabled ? " disabled" : ""}${eventAttribute}>${leadingMarkup}<span class="ui-sidebar__subitem-content">${prefixMarkup}${dividerMarkup}<span class="ui-sidebar__subitem-label">${escapeHTML(itemLabel)}</span>${secondaryMarkup}</span></button></li>`;
       }).join("");
       return `<section class="ui-sidebar__section${open ? " is-open" : ""}" data-ui-sidebar-section><button class="ui-sidebar__section-toggle" id="${escapeHTML(sidebarId)}-${escapeHTML(sectionId)}" type="button" data-demo="ui-sidebar-section" aria-expanded="${open}" aria-controls="${escapeHTML(sidebarId)}-${escapeHTML(sectionId)}-items"${eventAttribute}><span>${escapeHTML(label)}</span>${renderIcon("Assets/Icons/chevron-right.svg", "ui-sidebar__section-arrow")}</button><ul class="ui-sidebar__section-list" id="${escapeHTML(sidebarId)}-${escapeHTML(sectionId)}-items"${open ? "" : ' aria-hidden="true" inert'}>${rows}</ul></section>`;
     };

@@ -35,6 +35,10 @@ const RUNTIME = join(REPO, 'catalog-runtime');
 // The renderers only build strings; the interactive handlers touch
 // global.document, which stays undefined and is never called here.
 const contractsSrc = readFileSync(join(RUNTIME, 'contracts.js'), 'utf8');
+/* The runtime verifies a named icon against this, so the bundle has to carry
+   it: without the manifest a name still resolves, but to the library root,
+   which is wrong for the 16px set and unchecked for everything else. */
+const iconManifestSrc = readFileSync(join(RUNTIME, 'icon-manifest.js'), 'utf8');
 const runtimeSrc = readFileSync(join(RUNTIME, 'italki-ui.js'), 'utf8');
 const sandbox = {};
 sandbox.window = sandbox;
@@ -736,10 +740,16 @@ write('_ds_bundle.js', `/* @ds-bundle: ${JSON.stringify(bundleHeader)} */
   "use strict";
   // The vanilla catalog runtime, inlined verbatim.
 ${contractsSrc.replace(/^window\./m, 'global.')}
+${iconManifestSrc.replace(/^window\./m, 'global.')}
 ${runtimeSrc.replace(/\}\)\(window\);\s*$/, '})(global);')}
   var UI = global.ITalkiUI;
-  var React = global.React;
-  if (!React) throw new Error('window.React must be loaded before _ds_bundle.js');
+  // React is read when a component renders, not when this file is evaluated.
+  // It used to be captured here and the bundle threw without it, which made
+  // load order decide whether the kit existed: a host that installs React after
+  // this script got window.ITalkiUI and no window.ItalkiUI, so every component
+  // mounted through the React namespace — Sidebar, TopNav, Video — silently
+  // rendered nothing while the stylesheet made the rest of the page look fine.
+  // Nothing here needs React until createElement is called.
   // Each component renders the runtime's HTML string. The renderers are pure
   // string builders, so this is a faithful mount — interactive behaviour comes
   // from the runtime's own delegated document listeners.
@@ -762,6 +772,8 @@ ${runtimeSrc.replace(/\}\)\(window\);\s*$/, '})(global);')}
   }
   function wrap(fn) {
     function Component(props) {
+      var React = global.React;
+      if (!React) return null;
       var html = '';
       try { html = UI[fn](contractProps(props)); }
       catch (e) { html = '<div style="color:var(--ui-color-error,#D3382F);font:12px system-ui">' + (e && e.message || e) + '</div>'; }
