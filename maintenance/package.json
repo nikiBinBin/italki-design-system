@@ -15,7 +15,8 @@
     "build:icons": "node scripts/build-icon-manifest.mjs",
     "build:ds": "node scripts/build-ds-project.mjs && node scripts/build-ds-cards.mjs",
     "audit:ds": "node scripts/audit-ds-cards.mjs .. ds-project",
-    "lint:type": "node scripts/migrate-type-tokens.mjs --check"
+    "lint:type": "node scripts/migrate-type-tokens.mjs --check",
+    "build:covers": "node scripts/build-cover-assets.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0"

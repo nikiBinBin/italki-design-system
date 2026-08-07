@@ -128,7 +128,7 @@ for (const [token, value] of Object.entries(manifest.tokens)) {
 for (const token of ["--ui-shadow-md", "--ui-shadow-lg", "--ui-shadow-xl"]) {
   assert(manifest.tokens[token], `Shadow foundation token is missing: ${token}`);
 }
-for (const token of ["--ui-shadow-card", "--ui-shadow-stroke-card", "--ui-shadow-card-hover"]) {
+for (const token of ["--ui-shadow-card", "--ui-shadow-card-hover"]) {
   assert(manifest.tokens[token], `Card shadow token is missing: ${token}`);
 }
 for (const token of ["--ui-shadow-button", "--ui-shadow-panel", "--ui-shadow-control", "--ui-shadow-control-hover", "--ui-shadow-surface", "--ui-shadow-floating", "--ui-shadow-dialog"]) {
@@ -137,7 +137,8 @@ for (const token of ["--ui-shadow-button", "--ui-shadow-panel", "--ui-shadow-con
 assert(componentCSS.includes(".ui-modal { --ui-modal-width: 520px") && componentCSS.includes("box-shadow: var(--ui-shadow-xl)"), "Modal must consume Shadow/XL");
 assert(componentCSS.includes(".ui-select__menu") && componentCSS.includes("box-shadow: var(--ui-shadow-lg)"), "Floating menus must consume Shadow/LG");
 assert(componentCSS.includes(".ui-card {") && componentCSS.includes("box-shadow: var(--ui-shadow-card);"), "Card must consume Shadow/Card at rest");
-assert(componentCSS.includes(".ui-card.is-outlined { border: 0; box-shadow: var(--ui-shadow-stroke-card); }") , "Outlined Card must consume Shadow/Stroke card");
+assert(componentCSS.includes(".ui-card.is-outlined { border: 0; box-shadow: 0 0 0 1px var(--ui-color-border); }"), "An outlined Card draws its outline with Color/Border, like every other 1px ring in the kit");
+assert(!/--ui-shadow-stroke-card/.test(tokensCSS + componentCSS), "Shadow/Stroke-card is retired: one 1px ring, one source of colour");
 assert(componentCSS.includes(".ui-card.is-interactive:hover, .ui-card.is-interactive:focus-visible { box-shadow: var(--ui-shadow-card-hover); }"), "Interactive Card must consume Shadow/Card-Hover");
 
 assert(!/#[0-9A-Fa-f]{3,8}\b/.test(componentCSS), "Component CSS must not contain raw hexadecimal colors");
@@ -358,14 +359,14 @@ assert.match(ui.popconfirm({ id: "popconfirm-accessibility", title: "Confirm", o
 assert.match(ui.divider({ type: "vertical", ariaLabel: "Teacher metadata separator" }), /role="separator"[^>]*aria-orientation="vertical"[^>]*aria-label="Teacher metadata separator"/, "Divider must expose separator semantics and orientation");
 /* Video. It is a cover and a way in, never a player: keeping it a pure string
    builder is what lets it render in a static Design card and offline test. */
-assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.png" }), /<div class="ui-video"[^>]*data-component="video"/, "Video must render its own frame");
-assert.doesNotMatch(ui.video({ poster: "Assets/Images/covers/teacher-intro.png" }), /<video|<iframe/, "Video must not embed a player — the page decides what play does");
-assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.png", demo: "ui-video-play" }), /data-demo="ui-video-play"/, "Video must expose the play affordance through the shared demo hook");
+assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.svg" }), /<div class="ui-video"[^>]*data-component="video"/, "Video must render its own frame");
+assert.doesNotMatch(ui.video({ poster: "Assets/Images/covers/teacher-intro.svg" }), /<video|<iframe/, "Video must not embed a player — the page decides what play does");
+assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.svg", demo: "ui-video-play" }), /data-demo="ui-video-play"/, "Video must expose the play affordance through the shared demo hook");
 assert.throws(() => ui.video({}), /video requires a poster/, "A play button over an empty frame says nothing about what it starts");
 assert.throws(() => ui.video({ poster: "https://example.com/x.jpg" }), /approved asset/, "Video posters are bound by the same asset roots as every other image");
-assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.png", duration: "1:24" }), /ui-video__duration">1:24</, "Video must be able to state its duration before it is started");
-assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.png", title: "Meet Maya" }), /aria-label="Play Meet Maya"/, "A titled Video must name what the play button starts");
-assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.png", state: "disabled" }), /<button[^>]*disabled/, "A disabled Video must not be startable");
+assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.svg", duration: "1:24" }), /ui-video__duration">1:24</, "Video must be able to state its duration before it is started");
+assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.svg", title: "Meet Maya" }), /aria-label="Play Meet Maya"/, "A titled Video must name what the play button starts");
+assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.svg", state: "disabled" }), /<button[^>]*disabled/, "A disabled Video must not be startable");
 assert(componentCSS.includes(".ui-video__play-disc") && !/ui-video__play-icon/.test(componentCSS), "Video's play affordance is a drawn disc — classroom-play.svg is itself a filled circle, so an icon inside a ring nests two circles");
 
 /* Link. The two decisions worth pinning: a disabled link must not be

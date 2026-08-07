@@ -947,9 +947,9 @@
       .lesson-card-pattern-detail .component-doc-content { padding: var(--space-6); }
       .lesson-card-pattern-list { width: min(100%, 652px); display: grid; gap: var(--space-4); }
       .lesson-card-pattern, .lesson-card-overview { width: 100%; }
-      .lesson-card-pattern .ui-card, .lesson-card-overview .ui-card { width: 100%; height: 120px; min-height: 120px; box-sizing: border-box; border-radius: var(--ui-radius-lg); box-shadow: var(--ui-shadow-stroke-card); }
+      .lesson-card-pattern .ui-card, .lesson-card-overview .ui-card { width: 100%; height: 120px; min-height: 120px; box-sizing: border-box; border-radius: var(--ui-radius-lg); box-shadow: 0 0 0 1px var(--ui-color-border); }
       .lesson-card-pattern--tall .ui-card { height: 128px; min-height: 128px; }
-      .lesson-card-pattern--group-class .ui-card { box-shadow: var(--ui-shadow-stroke-card); }
+      .lesson-card-pattern--group-class .ui-card { box-shadow: 0 0 0 1px var(--ui-color-border); }
       .lesson-card-pattern .ui-card__content, .lesson-card-overview .ui-card__content { height: 100%; display: block; padding: 0; }
       .lesson-card-pattern .ui-card__body { height: 100%; color: inherit; font-size: inherit; line-height: inherit; }
       .lesson-card-overview .ui-card__body { color: inherit; font-size: inherit; line-height: inherit; }

@@ -54,7 +54,6 @@
     "--ui-color-hover-overlay": "rgb(49 49 64 / 8%)",
     "--ui-shadow-card-hover": "0 1px 2px 0 #0F172A00, 0 4px 12px 0 #0F172A0A",
     "--ui-shadow-card": "0 0 0 0 #0F172A00",
-    "--ui-shadow-stroke-card": "0 0 0 1px #E9EBF3",
     "--ui-shadow-md": "0 2px 4px 0 #001A5608, 0 4px 8px 0 #00174E0A",
     "--ui-shadow-lg": "0 4px 8px 0 #00174F08, 0 12px 24px 0 #0019530E",
     "--ui-shadow-xl": "0 8px 16px 0 #00195309, 0 24px 48px 0 #00195312",
