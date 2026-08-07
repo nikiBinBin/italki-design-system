@@ -190,6 +190,10 @@ for (const target of TARGETS) {
           '[data-segment-value]', '.ui-segmented-control',
           '.icon-search-field', '[type="search"]',
           '[data-demo$="-usage"]', '[data-demo^="open-"]',
+          /* The Timeline route wraps its demo in a reverse-order button and a
+             tone switcher. Both drive the page, not the component, and both
+             shipped on the card as controls that did nothing when clicked. */
+          '[data-demo="ui-timeline-reverse"]', '.timeline-tone-switch',
         ].join(', ')).forEach((n) => (n.closest('.ds-page-controls, .tag-global-controls') ?? n).remove());
         /* The dialog that "When To Use" button opened. The button is gone, so
            nothing can reveal it and it renders as nothing either way. */
@@ -299,7 +303,10 @@ for (const target of TARGETS) {
      renderers for the app. A card only needs the first half — the vanilla
      runtime and its behaviour helpers — so a stub satisfies the guard without
      pulling in React itself. -->
-<script>window.React={createElement:function(){return null}}</script>
+<script>window.React={createElement:function(){return null}};/* Markup the runtime renders later — a row rebuilt by the pin controls, a
+   menu row restored from the roster — cannot be rebased by this generator,
+   because it does not exist yet. Tell the kit how deep the card sits and it
+   addresses assets from here itself. */window.ITalkiUIAssetBase="${depth}"</script>
 <script src="${depth}_ds_bundle.js" defer></script>
 <script src="${depth}_cards.js" defer></script>
 <style>
