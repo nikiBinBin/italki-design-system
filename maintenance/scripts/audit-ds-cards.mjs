@@ -44,6 +44,9 @@ const ROUTE = {
    contracts and the icon manifest, so there is no route to compare against.
    Integrity and duplicate checks still apply; coverage does not. */
 const NO_ROUTE = new Set(['Logo', 'CheckboxGroup', 'Combobox']);
+/* Routes whose page controls the card strips on purpose. */
+const FURNITURE_ROUTES = new Set(['color', 'icon-library', 'sidebar', 'chip', 'tag', 'button-variants',
+  'select', 'date-picker', 'form-field', 'number-stepper', 'search', 'text-input', 'textarea']);
 const routeFor = (name) => ROUTE[name] ?? name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 
 const measure = (root) => {
@@ -128,11 +131,18 @@ for (const rel of cards.sort()) {
       await cardPage.mouse.move(0, 0);
       await cardPage.waitForTimeout(60);
       await wrap.hover({ timeout: 1500 });
-      await cardPage.waitForTimeout(220);
-      const shown = await bubble.evaluate((n) => {
-        const cs = getComputedStyle(n);
-        return cs.opacity !== '0' && cs.visibility !== 'hidden';
-      });
+      /* Calendar slots delay their tooltip by 350ms so scrubbing across a week
+         does not strobe, and the fade runs after that. Poll instead of
+         guessing a single wait, or the check reports a working tooltip as
+         broken because it looked mid-transition. */
+      let shown = false;
+      for (let i = 0; i < 12 && !shown; i++) {
+        await cardPage.waitForTimeout(80);
+        shown = await bubble.evaluate((n) => {
+          const cs = getComputedStyle(n);
+          return Number(cs.opacity) > 0.5 && cs.visibility !== 'hidden';
+        });
+      }
       if (shown) hoverShown++;
     } catch { /* not hoverable at this viewport; counted as not shown */ }
   }
@@ -160,7 +170,13 @@ for (const rel of cards.sort()) {
   if (hoverTried && hoverShown < hoverTried) issues.push(`tooltip does not reveal on hover (${hoverShown}/${hoverTried})`);
   if (route && !catalog) issues.push(`no Catalog route "${route}"`);
   else if (catalog && card) {
-    const missing = catalog.kinds.filter((k) => !card.kinds.includes(k));
+    /* Cards deliberately drop the Catalog's page furniture — the size and
+       shape switchers, the icon search field, the "When To Use" button and
+       its modal. Reporting those every run would bury a real omission. */
+    const FURNITURE = new Set(['segmented-control', 'search', 'modal', 'button']);
+    const missing = catalog.kinds
+      .filter((k) => !card.kinds.includes(k))
+      .filter((k) => !(FURNITURE.has(k) && FURNITURE_ROUTES.has(route)));
     if (missing.length) issues.push(`missing component kinds: ${missing.join(', ')}`);
     /* Text is a blunt proxy, but a card at a third of its route's content is
        not showing what the route shows. */

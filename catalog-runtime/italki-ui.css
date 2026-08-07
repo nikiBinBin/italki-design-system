@@ -135,6 +135,28 @@
 .ui-chip:disabled, .ui-chip.is-disabled { color: var(--ui-color-card); background: var(--ui-color-border); cursor: not-allowed; }
 .ui-chip:focus-visible { outline: none; border-color: var(--ui-color-title); box-shadow: none; }
 
+/* Video. The component is the cover and the way in — it never plays anything
+   itself, so it stays a pure string builder like every other renderer and the
+   page decides what the play button does. 16:9 because that is what the
+   teacher-detail spec's introduction media is shot at. */
+.ui-video { width: min(100%, 560px); aspect-ratio: 16 / 9; position: relative; display: block; overflow: hidden; border-radius: var(--ui-radius-md); background: var(--ui-color-title); }
+.ui-video__poster { width: 100%; height: 100%; display: block; object-fit: cover; }
+/* A scrim from the foot of the frame: it keeps the disc and the metadata
+   legible over a bright cover without dimming the whole image. */
+.ui-video__play { position: absolute; inset: 0; display: grid; place-items: center; border: 0; padding: 0; background: linear-gradient(transparent 45%, var(--ui-color-hover-overlay)); cursor: pointer; transition: background 160ms ease; }
+/* Brand disc with the triangle cut into it, rather than an icon inside a white
+   ring — classroom-play.svg is itself a filled circle, so the old treatment
+   was a circle inside a circle. */
+.ui-video__play-disc { width: 56px; height: 56px; display: grid; place-items: center; border-radius: var(--ui-radius-full); background: var(--ui-color-primary); box-shadow: var(--ui-shadow-lg); transition: transform 160ms ease, background 160ms ease; }
+.ui-video__play-disc::before { width: 0; height: 0; margin-left: 4px; border-top: 10px solid transparent; border-bottom: 10px solid transparent; border-left: 16px solid var(--ui-color-on-primary); content: ""; }
+.ui-video:hover .ui-video__play-disc, .ui-video.is-hover .ui-video__play-disc { background: var(--ui-color-primary-hover); transform: scale(1.06); }
+.ui-video__play:focus-visible { outline: 2px solid var(--ui-color-on-primary); outline-offset: -4px; }
+.ui-video__duration { position: absolute; right: var(--ui-space-2); bottom: var(--ui-space-2); border-radius: var(--ui-radius-xs); padding: 0 var(--ui-space-1); color: var(--ui-color-on-primary); background: var(--ui-color-upload-overlay); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-medium); line-height: var(--ui-line-height-18); }
+/* A title sits on the cover, so it needs its own scrim to stay legible. */
+.ui-video__title { position: absolute; right: 0; bottom: 0; left: 0; margin: 0; padding: var(--ui-space-6) var(--ui-space-3) var(--ui-space-2); color: var(--ui-color-on-primary); background: linear-gradient(transparent, var(--ui-color-upload-overlay)); font-size: var(--ui-font-size-14); font-weight: var(--ui-font-weight-semibold); line-height: var(--ui-line-height-20); }
+.ui-video.is-disabled .ui-video__poster { filter: grayscale(1); opacity: .6; }
+.ui-video.is-disabled .ui-video__play { cursor: not-allowed; }
+
 /* Link. Typography follows the Link/16 and Link/14 tiers in COMPONENTS.md.
    The underline is a hover affordance, not a resting decoration: a page of
    underlined links reads as noise, and the link colour already carries the
@@ -249,7 +271,13 @@
 .ui-selection__subtext, .ui-selection__description { color: var(--ui-color-text); font-size: var(--ui-font-size-14); font-weight: var(--ui-font-weight-medium); line-height: var(--ui-line-height-22); }
 .ui-selection__description { display: block; }
 .ui-selection--icon-card { padding: 0; overflow: hidden; }
-.ui-selection__card-header { min-width: 0; display: flex; align-items: center; gap: var(--ui-space-4); border-bottom: 1px solid var(--ui-color-border); padding: var(--ui-space-4); }
+/* The rule is inset rather than a full-width border: the card is 1px stroked
+   with a 12px radius, so a divider running edge to edge lands on the stroke
+   and collides with the corner arc. An inset pseudo-element stops short of
+   both, which is what separates the header from the body without touching
+   the frame that contains them. */
+.ui-selection__card-header { min-width: 0; position: relative; display: flex; align-items: center; gap: var(--ui-space-4); padding: var(--ui-space-4); }
+.ui-selection__card-header::after { height: 1px; position: absolute; right: var(--ui-space-4); bottom: 0; left: var(--ui-space-4); background: var(--ui-color-border); content: ""; }
 .ui-selection__card-title { min-width: 0; flex: 1; color: var(--ui-color-title); font-size: var(--ui-font-size-16); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-24); }
 .ui-selection__card-header .ui-selection__indicator { margin-left: auto; }
 .ui-selection__card-body { min-width: 0; display: grid; gap: var(--ui-space-3); align-items: start; padding: var(--ui-space-4); }

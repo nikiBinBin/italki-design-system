@@ -3,10 +3,10 @@
   "assetRoots": [
     "Assets/Icons/",
     "Assets/Flags/",
-    "Assets/Images/avatars/"
+    "Assets/Images/"
   ],
   "migration": {
-    "migrated": ["button", "chip", "link", "tag", "checkbox", "checkbox-group", "radio", "selection", "date-picker", "tooltip", "modal", "popup", "popconfirm", "divider", "avatar", "badge", "breadcrumb", "card", "alert", "tabs", "pagination", "rate", "sidebar", "statistic", "table", "timeline", "top-nav", "slider", "panel", "search", "select", "switch", "drawer", "form-field", "text-input", "textarea", "number-stepper", "combobox", "upload", "stepper", "progress", "toast", "notification", "result", "skeleton", "dropdown-menu", "disclosure", "segmented-control", "time-slot", "time-picker", "calendar", "popover", "footer"],
+    "migrated": ["button", "chip", "link", "video", "tag", "checkbox", "checkbox-group", "radio", "selection", "date-picker", "tooltip", "modal", "popup", "popconfirm", "divider", "avatar", "badge", "breadcrumb", "card", "alert", "tabs", "pagination", "rate", "sidebar", "statistic", "table", "timeline", "top-nav", "slider", "panel", "search", "select", "switch", "drawer", "form-field", "text-input", "textarea", "number-stepper", "combobox", "upload", "stepper", "progress", "toast", "notification", "result", "skeleton", "dropdown-menu", "disclosure", "segmented-control", "time-slot", "time-picker", "calendar", "popover", "footer"],
     "pending": []
   },
   "tokens": {
@@ -110,6 +110,13 @@
         "state": ["default", "hover", "disabled"]
       },
       "requiredStates": ["default", "hover", "subtle", "inverse", "chevron", "external", "disabled"]
+    },
+    "video": {
+      "acceptedProps": ["id", "poster", "posterAlt", "title", "duration", "playLabel", "state", "demo"],
+      "props": {
+        "state": ["default", "hover", "disabled"]
+      },
+      "requiredStates": ["default", "duration", "titled", "hover", "disabled"]
     },
     "tag": {
       "acceptedProps": ["label", "value", "size", "tone", "removable", "removeDemo", "removeAriaLabel"],

@@ -191,6 +191,13 @@
         fixture("divider", "dashed", ui.divider({ label: "Lesson details", dashed: true })),
         fixture("divider", "plain", ui.divider({ label: "Lesson details", plain: true }))
       ],
+      video: [
+        fixture("video", "default", ui.video({ poster: "Assets/Images/covers/teacher-intro.png", posterAlt: "" })),
+        fixture("video", "duration", ui.video({ poster: "Assets/Images/covers/teacher-intro.png", duration: "1:24" })),
+        fixture("video", "titled", ui.video({ poster: "Assets/Images/covers/teacher-intro.png", title: "Meet Maya Chen", duration: "1:24" })),
+        fixture("video", "hover", ui.video({ poster: "Assets/Images/covers/teacher-intro.png", duration: "1:24", state: "hover" })),
+        fixture("video", "disabled", ui.video({ poster: "Assets/Images/covers/teacher-intro.png", state: "disabled" })),
+      ],
       link: [
         fixture("link", "default", ui.link({ label: "See beginner lessons" })),
         fixture("link", "hover", ui.link({ label: "See beginner lessons", state: "hover" })),

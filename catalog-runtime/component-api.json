@@ -18,7 +18,7 @@
     "approvedAssetRoots": [
       "Assets/Icons/",
       "Assets/Flags/",
-      "Assets/Images/avatars/"
+      "Assets/Images/"
     ],
     "exceptions": "Only component-specific geometry explicitly registered in COMPONENTS.md and the executable contract may differ from the Foundation scale."
   },
@@ -227,6 +227,52 @@
         "inverse",
         "chevron",
         "external",
+        "disabled"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "video": {
+      "renderer": "",
+      "props": [
+        "id",
+        "poster",
+        "posterAlt",
+        "title",
+        "duration",
+        "playLabel",
+        "state",
+        "demo"
+      ],
+      "defaults": {
+        "id": "required or context-provided",
+        "poster": "required or context-provided",
+        "posterAlt": "required or context-provided",
+        "title": "required or context-provided",
+        "duration": "required or context-provided",
+        "playLabel": "required or context-provided",
+        "state": "required or context-provided",
+        "demo": "required or context-provided"
+      },
+      "enums": {
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ]
+      },
+      "states": [
+        "default",
+        "duration",
+        "titled",
+        "hover",
         "disabled"
       ],
       "subcomponents": {},
