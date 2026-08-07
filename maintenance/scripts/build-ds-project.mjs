@@ -638,8 +638,21 @@ ${cells.filter((x) => !x.error).map((x) => {
 </body></html>
 `);
 
-  // Re-export stub — the app resolves the component off the global.
-  write(`${dir}/${c.name}.jsx`, `// Re-export of the italki UI Kit ${c.name}. Implementation is in the root _ds_bundle.js (window.ItalkiUI).\nObject.assign(window, { ${c.name}: window.ItalkiUI.${c.name} });\n`);
+  /* A real wrapper, not a re-export. Everything is resolved when the component
+     renders, so this file does not care whether Kit.jsx was concatenated before
+     or after it. */
+  write(`${dir}/${c.name}.jsx`, `// ${c.name} — italki UI Kit. Markup comes from the runtime in components/_kit/Kit.jsx.
+function ${c.name}(props) {
+  var React = window.React;
+  if (!React || typeof window.ITalkiUIRender !== 'function') return null;
+  return React.createElement('div', {
+    className: 'italki-ui-embed',
+    style: { display: 'contents' },
+    dangerouslySetInnerHTML: { __html: window.ITalkiUIRender('${c.fn}', props) },
+  });
+}
+Object.assign(window, { ${c.name}: ${c.name} });
+`);
 
   // Contract — straight from contracts.js, which the runtime itself asserts.
   const propLines = accepted.map((p) => {
@@ -726,13 +739,47 @@ const wrappers = COMPONENTS.filter((c) => typeof UI[c.fn] === 'function').map((c
 // silent — the cards still render, but the agent sees an empty design system.
 const bundleHeader = {
   namespace: 'ItalkiUI',
-  components: COMPONENTS.filter((c) => report.ok.includes(c.name)).map((c) => ({
-    name: c.name,
-    sourcePath: `components/${c.slug}/${c.name}/${c.name}.jsx`,
-  })),
+  components: [
+    /* Listed first so a manifest-driven rebuild cannot leave the runtime out:
+       every other entry renders through it. */
+    { name: 'Kit', sourcePath: 'components/_kit/Kit.jsx' },
+    ...COMPONENTS.filter((c) => report.ok.includes(c.name)).map((c) => ({
+      name: c.name,
+      sourcePath: `components/${c.slug}/${c.name}/${c.name}.jsx`,
+    })),
+  ],
   builtBy: 'maintenance/scripts/build-ds-project.mjs',
   source: 'catalog-runtime/italki-ui.js',
 };
+
+/* The app rebuilds _ds_bundle.js from components/**\/*.jsx whenever anything
+   under components/ is written. Those files used to be one-line re-exports of
+   window.ItalkiUI — they read the bundle rather than implement it — so the
+   rebuild produced a bundle that installs no runtime at all, and every
+   data-demo binding on every card and template went dead until someone
+   uploaded the bundle on its own again. The fix is not a second runtime file
+   loaded around the app; it is for the sources the app compiles to actually
+   contain the thing. This one carries the runtime; the per-component files
+   below resolve it at render time, so the order they are concatenated in does
+   not matter. */
+write('components/_kit/Kit.jsx', `// The italki UI Kit runtime. Installs window.ITalkiUI and the render bridge
+// the per-component files call. Compiled into _ds_bundle.js with them.
+${contractsSrc}
+${iconManifestSrc}
+${runtimeSrc}
+window.ITalkiUIRender = function (fn, props) {
+  var kit = window.ITalkiUI;
+  if (!kit || typeof kit[fn] !== 'function') return '';
+  var clean = {};
+  for (var name in props) {
+    if (REACT_ONLY.test(name) || props[name] === undefined) continue;
+    clean[name] = props[name];
+  }
+  try { return kit[fn](clean); }
+  catch (e) { return '<div style="color:var(--ui-color-error,#D3382F);font:12px system-ui">' + (e && e.message || e) + '</div>'; }
+};
+var REACT_ONLY = /^(children|key|ref|className|style|dangerouslySetInnerHTML)$|^(data-|aria-|on[A-Z])/;
+`);
 
 write('_ds_bundle.js', `/* @ds-bundle: ${JSON.stringify(bundleHeader)} */
 (function (global) {
