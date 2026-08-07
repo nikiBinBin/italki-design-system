@@ -23,11 +23,18 @@ const TYPES = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascrip
 
 const serve = (root, port) => new Promise((done) => {
   const server = http.createServer((req, res) => {
-    const file = path.join(root, decodeURIComponent(req.url.split('?')[0]));
+    const rel = decodeURIComponent(req.url.split('?')[0]);
+    const file = path.join(root, rel);
     fs.readFile(file, (err, body) => {
-      if (err) { res.writeHead(404); res.end(); return; }
-      res.writeHead(200, { 'content-type': TYPES[path.extname(file)] ?? 'application/octet-stream' });
-      res.end(body);
+      /* Assets live in the repository, not in the staged project — the upload
+         copies them in. Serving the stage alone reported a 404 for every icon
+         on 43 of 71 cards, which reads as a real regression and is not one. */
+      const send = (e2, b2) => {
+        if (e2) { res.writeHead(404); res.end(); return; }
+        res.writeHead(200, { 'content-type': TYPES[path.extname(file)] ?? 'application/octet-stream' });
+        res.end(b2);
+      };
+      if (err) fs.readFile(path.join(REPO, rel), send); else send(null, body);
     });
   });
   server.listen(port, () => done(server));
