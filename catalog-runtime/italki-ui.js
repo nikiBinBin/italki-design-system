@@ -872,6 +872,8 @@
       moreItems = [],
       moreOpen = false,
       footer = "",
+      balance = "",
+      avatarInitials = "",
       ariaLabel = "Sidebar",
       sticky = true,
       demo = ""
@@ -919,8 +921,18 @@
     const brandTooltip = tooltip({ id: `${sidebarId}-expand-tooltip`, content: "Show sidebar", placement: "bottom", trigger: brand });
     const collapseTrigger = `<button class="ui-sidebar__utility" type="button" data-demo="ui-sidebar-collapse" aria-label="Hide sidebar" aria-expanded="${!collapsed}" aria-controls="${escapeHTML(sidebarId)}"${eventAttribute}>${renderIcon("Assets/Icons/layout-left.svg", "ui-sidebar__utility-icon")}</button>`;
     const collapseTooltip = tooltip({ id: `${sidebarId}-collapse-tooltip`, content: "Hide sidebar", placement: "bottom", trigger: collapseTrigger });
+    /* The footer is a slot, and the only thing anyone puts in it is the wallet
+       balance and the account avatar. Filling it meant calling button() and
+       avatar() and concatenating their markup, so consumers reached for
+       `balance` and `avatarInitials` instead, got "does not accept prop", and
+       shipped a rail with no footer. The standard footer is declarative now;
+       the slot still wins when it is given. */
+    const footerContent = footer || ((balance || avatarInitials)
+      ? (balance ? button({ label: balance, variant: "secondary", size: 40, shape: "pill", leadingIcon: "wallet" }) : "")
+        + (avatarInitials ? avatar({ initials: avatarInitials, size: 32, tone: "primary", interactive: true, ariaLabel: "Your profile" }) : "")
+      : "");
     const classes = ["ui-sidebar", `ui-sidebar--${variant}`, collapsed ? "is-collapsed" : "", sticky ? "" : "is-flow"].filter(Boolean).join(" ");
-    return `<aside class="${classes}" id="${escapeHTML(sidebarId)}" data-component="sidebar" data-ui-sidebar data-sidebar-collapsed="${collapsed}"${demo ? ` data-sidebar-demo="${escapeHTML(demo)}"` : ""} aria-label="${escapeHTML(ariaLabel)}"><header class="ui-sidebar__header">${brandTooltip}${collapseTooltip}</header><div class="ui-sidebar__scroll"><nav class="ui-sidebar__nav" aria-label="${escapeHTML(ariaLabel)} destinations">${items.map(renderItem).join("")}</nav>${sections.map(renderSection).join("")}</div>${footer ? `<footer class="ui-sidebar__footer">${footer}</footer>` : ""}</aside>`;
+    return `<aside class="${classes}" id="${escapeHTML(sidebarId)}" data-component="sidebar" data-ui-sidebar data-sidebar-collapsed="${collapsed}"${demo ? ` data-sidebar-demo="${escapeHTML(demo)}"` : ""} aria-label="${escapeHTML(ariaLabel)}"><header class="ui-sidebar__header">${brandTooltip}${collapseTooltip}</header><div class="ui-sidebar__scroll"><nav class="ui-sidebar__nav" aria-label="${escapeHTML(ariaLabel)} destinations">${items.map(renderItem).join("")}</nav>${sections.map(renderSection).join("")}</div>${footerContent ? `<footer class="ui-sidebar__footer">${footerContent}</footer>` : ""}</aside>`;
   }
 
   function sidebarRoot(control) {
@@ -1273,7 +1285,9 @@
     assertProps("top-nav", props);
     const {
       id = "", variant = "custom", leading = "", center = "", trailing = "",
-      contextLabel = "", contextOptions = [], searchPlaceholder = "Search", actionLabel = "Book lessons",
+      contextLabel = "", contextFlag = "", contextOptions = [],
+      searchPlaceholder = "Search", searchFilterLabel = "Filter",
+      actionLabel = "Book lessons", actionIcon = "nav-plus",
       ariaLabel = "Top navigation", sticky = true, demo = "",
     } = props;
     enumValue("top-nav", "sticky", sticky);
@@ -1296,7 +1310,7 @@
     const searchBar = variant === "teacher-search";
     const contextSelected = contextOptions.find((option) => option && option.label === contextLabel)
       || contextOptions[0]
-      || (contextLabel ? { id: "context", label: contextLabel } : null);
+      || (contextLabel ? { id: "context", label: contextLabel, flag: contextFlag } : null);
     const leadingContent = leading || (composed && contextSelected
       ? topNavContext({
           mode: searchBar ? "labelled" : "compact",
@@ -1305,10 +1319,10 @@
         })
       : "");
     const centerContent = center || (composed
-      ? topNavSearch({ placeholder: searchPlaceholder, filter: searchBar, filterLabel: "Filter" })
+      ? topNavSearch({ placeholder: searchPlaceholder, filter: searchBar, filterLabel: searchFilterLabel })
       : "");
     const trailingContent = trailing || (composed
-      ? button({ label: actionLabel, variant: "emphasis", size: 40, shape: "pill", leadingIcon: "nav-plus" })
+      ? button({ label: actionLabel, variant: "emphasis", size: 40, shape: "pill", leadingIcon: actionIcon })
       : "");
     const navId = id || `top-nav-${String(ariaLabel).toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
     return `<header class="ui-top-nav${sticky ? "" : " is-flow"}" id="${escapeHTML(navId)}" data-component="top-nav" data-ui-top-nav aria-label="${escapeHTML(ariaLabel)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}><div class="ui-top-nav__leading">${leadingContent}</div><div class="ui-top-nav__center">${centerContent}</div><div class="ui-top-nav__trailing">${trailingContent}</div></header>`;

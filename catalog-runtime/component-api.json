@@ -1494,6 +1494,8 @@
         "moreItems",
         "moreOpen",
         "footer",
+        "balance",
+        "avatarInitials",
         "ariaLabel",
         "sticky",
         "demo"
@@ -1507,6 +1509,8 @@
         "moreItems": "[]",
         "moreOpen": "false",
         "footer": "\"\"",
+        "balance": "\"\"",
+        "avatarInitials": "\"\"",
         "ariaLabel": "\"Sidebar\"",
         "sticky": "true",
         "demo": "\"\""
@@ -1705,9 +1709,12 @@
         "center",
         "trailing",
         "contextLabel",
+        "contextFlag",
         "contextOptions",
         "searchPlaceholder",
+        "searchFilterLabel",
         "actionLabel",
+        "actionIcon",
         "ariaLabel",
         "sticky",
         "demo"
@@ -1719,9 +1726,12 @@
         "center": "\"\"",
         "trailing": "\"\"",
         "contextLabel": "\"\"",
+        "contextFlag": "\"\"",
         "contextOptions": "[]",
         "searchPlaceholder": "\"Search\"",
+        "searchFilterLabel": "\"Filter\"",
         "actionLabel": "\"Book lessons\"",
+        "actionIcon": "\"nav-plus\"",
         "ariaLabel": "\"Top navigation\"",
         "sticky": "true",
         "demo": "\"\""

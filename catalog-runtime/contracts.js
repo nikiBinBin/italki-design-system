@@ -790,6 +790,8 @@ window.ITalkiUIContracts = {
         "moreItems",
         "moreOpen",
         "footer",
+        "balance",
+        "avatarInitials",
         "ariaLabel",
         "sticky",
         "demo"
@@ -891,9 +893,12 @@ window.ITalkiUIContracts = {
         "center",
         "trailing",
         "contextLabel",
+        "contextFlag",
         "contextOptions",
         "searchPlaceholder",
+        "searchFilterLabel",
         "actionLabel",
+        "actionIcon",
         "ariaLabel",
         "sticky",
         "demo"
