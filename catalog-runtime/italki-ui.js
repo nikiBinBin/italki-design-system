@@ -21,11 +21,37 @@
     }
   };
 
+  /* "does not accept prop defaultCollapsed" is true and unhelpful: the prop is
+     called `collapsed`, and the reader has no list to check against. Name the
+     nearest accepted prop when there is an obvious one. */
+  const nearestProp = (name, allowed) => {
+    const lower = String(name).toLowerCase();
+    const near = (a, b) => {
+      if (Math.abs(a.length - b.length) > 2) return 99;
+      const row = Array.from({ length: b.length + 1 }, (_, i) => i);
+      for (let i = 1; i <= a.length; i += 1) {
+        let prev = row[0];
+        row[0] = i;
+        for (let j = 1; j <= b.length; j += 1) {
+          const swap = row[j];
+          row[j] = Math.min(row[j] + 1, row[j - 1] + 1, prev + (a[i - 1] === b[j - 1] ? 0 : 1));
+          prev = swap;
+        }
+      }
+      return row[b.length];
+    };
+    const hit = allowed.find((candidate) => {
+      const other = candidate.toLowerCase();
+      return other !== lower && (other.includes(lower) || lower.includes(other));
+    }) || allowed.find((candidate) => near(lower, candidate.toLowerCase()) <= 2);
+    return hit ? ` — did you mean ${hit}?` : "";
+  };
+
   const assertProps = (component, props, subcomponent = "") => {
     const contract = componentContracts[component];
     const allowed = subcomponent ? (contract?.subcomponents?.[subcomponent]?.acceptedProps || []) : (contract?.acceptedProps || []);
     for (const name of Object.keys(props || {})) {
-      if (!allowed.includes(name)) throw new Error(`${component} does not accept prop ${name}`);
+      if (!allowed.includes(name)) throw new Error(`${component} does not accept prop ${name}${nearestProp(name, allowed)}`);
     }
   };
 
@@ -1097,7 +1123,29 @@
     closeSidebarMore(root);
     wrapper.classList.toggle("is-open", next);
     control.setAttribute("aria-expanded", String(next));
+    if (next) positionSidebarMore(root, wrapper, control);
     return next;
+  }
+
+  /* The menu opens under the More row, but it cannot be positioned against it:
+     the row lives inside .ui-sidebar__scroll, and a menu whose containing block
+     is inside a scroll container gets clipped by it. So the containing block
+     stays the rail — which is why this used to sit at a fixed `bottom: 80px`,
+     pinned above the footer no matter where More was — and the offset is
+     measured instead. Flips above the row when there is not room below. */
+  function positionSidebarMore(root, wrapper, control) {
+    const menu = wrapper.querySelector(".ui-sidebar__more-menu");
+    if (!menu || !root.getBoundingClientRect) return;
+    const rail = root.getBoundingClientRect();
+    const row = control.getBoundingClientRect();
+    const gap = 4;
+    const below = row.bottom - rail.top + gap;
+    const height = menu.offsetHeight || 0;
+    const footer = root.querySelector(".ui-sidebar__footer");
+    const floor = (footer ? footer.getBoundingClientRect().top : rail.bottom) - rail.top - gap;
+    const above = row.top - rail.top - gap - height;
+    menu.style.bottom = "auto";
+    menu.style.top = (below + height > floor && above > 0 ? above : below) + "px";
   }
 
   function cancelSidebarMoreClose(control) {
