@@ -551,7 +551,20 @@
 .ui-rate__output, .ui-rate__text { min-width: 36px; margin-left: var(--ui-space-2); color: var(--ui-color-secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
 .ui-rate__text { min-width: 0; color: var(--ui-color-text); font-weight: var(--ui-font-weight-semibold); }
 
-.ui-sidebar { width: 324px; height: 600px; position: relative; display: flex; flex: 0 0 324px; flex-direction: column; overflow: visible; color: var(--ui-color-text); background: var(--ui-color-card); border-right: 1px solid var(--ui-color-border); transition: width 180ms ease, flex-basis 180ms ease; }
+/* Sticky by default. A shell that scrolls away is the exception, not the
+   norm, and every consumer that wanted the norm had to rediscover it: two
+   templates wrote their own rule, one of them onto an element that could
+   never hold it. Opt out with sticky={false}.
+
+   align-self so a stretching parent cannot make it full-height, which
+   would leave nothing for sticky to travel through. Below 40 on purpose —
+   that is the modal layer, and a shell above the mask is a trap.
+
+   100dvh, not a fixed 600px: the rail is as tall as the screen and stays put
+   while the page moves. Overflow is handled inside by .ui-sidebar__scroll, so
+   a long nav scrolls within the rail and the footer stays on the floor. dvh
+   rather than vh so mobile browser chrome does not crop the footer. */
+.ui-sidebar { width: 324px; height: 100dvh; position: sticky; top: 0; z-index: 31; align-self: flex-start; display: flex; flex: 0 0 324px; flex-direction: column; overflow: visible; color: var(--ui-color-text); background: var(--ui-color-card); border-right: 1px solid var(--ui-color-border); transition: width 180ms ease, flex-basis 180ms ease; }
 .ui-sidebar__header { height: 72px; flex: 0 0 72px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--ui-color-divider); padding: 0 var(--ui-space-6); }
 .ui-sidebar__header > .ui-tooltip-wrap { flex: 0 0 auto; }
 .ui-sidebar__header > .ui-tooltip-wrap:has(.ui-sidebar__brand) { width: 48px; height: 40px; }
@@ -631,6 +644,9 @@
 .ui-sidebar.is-collapsed .ui-sidebar__nav-row { width: 40px; justify-content: center; }
 .ui-sidebar.is-collapsed .ui-sidebar__item { width: 40px; height: 40px; min-height: 40px; justify-content: center; gap: 0; padding: var(--ui-space-2); }
 .ui-sidebar.is-collapsed .ui-sidebar__pin-toggle { display: none; }
+/* sticky={false}: the shell scrolls with the page. */
+.ui-sidebar.is-flow { position: relative; top: auto; z-index: auto; align-self: auto; }
+.ui-top-nav.is-flow { position: relative; top: auto; z-index: auto; }
 .ui-sidebar.is-collapsed .ui-sidebar__item span, .ui-sidebar.is-collapsed .ui-sidebar__section { display: none; }
 .ui-sidebar.is-collapsed .ui-sidebar__footer { width: 100%; justify-content: center; padding: 0; }
 .ui-sidebar.is-collapsed .ui-sidebar__footer .ui-button { display: none; }
@@ -701,7 +717,9 @@
 .ui-top-nav-search__clear,
 .ui-top-nav-search__filter,
 .ui-top-nav-search__input { font: inherit; }
-.ui-top-nav { min-height: 72px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 400px) minmax(0, 1fr); align-items: center; gap: var(--ui-space-4); position: relative; border-bottom: 1px solid var(--ui-color-border); padding: 0 var(--ui-space-6); color: var(--ui-color-text); background: var(--ui-color-card); }
+/* Sticky by default; see .ui-sidebar above. Sits under the sidebar so a
+   sidebar flyout crossing into the content column paints over the nav. */
+.ui-top-nav { min-height: 72px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 400px) minmax(0, 1fr); align-items: center; gap: var(--ui-space-4); position: sticky; top: 0; z-index: 30; border-bottom: 1px solid var(--ui-color-border); padding: 0 var(--ui-space-6); color: var(--ui-color-text); background: var(--ui-color-card); }
 .ui-top-nav__leading, .ui-top-nav__trailing { min-width: 0; display: flex; align-items: center; }
 .ui-top-nav__center { min-width: 0; display: flex; align-items: center; justify-content: center; position: relative; }
 .ui-top-nav__trailing { justify-content: flex-end; }

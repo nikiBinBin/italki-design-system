@@ -1495,6 +1495,7 @@
         "moreOpen",
         "footer",
         "ariaLabel",
+        "sticky",
         "demo"
       ],
       "defaults": {
@@ -1507,6 +1508,7 @@
         "moreOpen": "false",
         "footer": "\"\"",
         "ariaLabel": "\"Sidebar\"",
+        "sticky": "true",
         "demo": "\"\""
       },
       "enums": {
@@ -1519,6 +1521,10 @@
           false
         ],
         "moreOpen": [
+          true,
+          false
+        ],
+        "sticky": [
           true,
           false
         ]
@@ -1698,6 +1704,7 @@
         "center",
         "trailing",
         "ariaLabel",
+        "sticky",
         "demo"
       ],
       "defaults": {
@@ -1706,9 +1713,15 @@
         "center": "\"\"",
         "trailing": "\"\"",
         "ariaLabel": "\"Top navigation\"",
+        "sticky": "true",
         "demo": "\"\""
       },
-      "enums": {},
+      "enums": {
+        "sticky": [
+          true,
+          false
+        ]
+      },
       "states": [
         "global-default",
         "teacher-search",
