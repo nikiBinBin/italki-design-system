@@ -147,9 +147,12 @@
 /* Brand disc with the triangle cut into it, rather than an icon inside a white
    ring — classroom-play.svg is itself a filled circle, so the old treatment
    was a circle inside a circle. */
-.ui-video__play-disc { width: 56px; height: 56px; display: grid; place-items: center; border-radius: var(--ui-radius-full); background: var(--ui-color-primary); box-shadow: var(--ui-shadow-lg); transition: transform 160ms ease, background 160ms ease; }
+/* The disc is ink, not brand: a brand-red disc vanishes on a brand-red cover,
+   which is exactly what the italki cover does. Ink reads on any cover the
+   palette can produce, and the triangle stays white. */
+.ui-video__play-disc { width: 56px; height: 56px; display: grid; place-items: center; border-radius: var(--ui-radius-full); background: var(--ui-color-title); box-shadow: var(--ui-shadow-lg); transition: transform 160ms ease, background 160ms ease; }
 .ui-video__play-disc::before { width: 0; height: 0; margin-left: 4px; border-top: 10px solid transparent; border-bottom: 10px solid transparent; border-left: 16px solid var(--ui-color-on-primary); content: ""; }
-.ui-video:hover .ui-video__play-disc, .ui-video.is-hover .ui-video__play-disc { background: var(--ui-color-primary-hover); transform: scale(1.06); }
+.ui-video:hover .ui-video__play-disc, .ui-video.is-hover .ui-video__play-disc { background: var(--ui-color-primary); transform: scale(1.06); }
 .ui-video__play:focus-visible { outline: 2px solid var(--ui-color-on-primary); outline-offset: -4px; }
 .ui-video__duration { position: absolute; right: var(--ui-space-2); bottom: var(--ui-space-2); border-radius: var(--ui-radius-xs); padding: 0 var(--ui-space-1); color: var(--ui-color-on-primary); background: var(--ui-color-upload-overlay); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-medium); line-height: var(--ui-line-height-18); }
 /* A title sits on the cover, so it needs its own scrim to stay legible. */
@@ -453,7 +456,7 @@
 }
 
 .ui-card { width: min(100%, 360px); min-width: 0; display: flex; flex-direction: column; overflow: hidden; border: 0; border-radius: var(--ui-radius-lg); padding: 0; color: var(--ui-color-text); background: var(--ui-color-card); box-shadow: var(--ui-shadow-card); font: inherit; text-align: left; }
-.ui-card.is-outlined { border: 0; box-shadow: var(--ui-shadow-stroke-card); }
+.ui-card.is-outlined { border: 0; box-shadow: 0 0 0 1px var(--ui-color-border); }
 .ui-card.is-interactive { cursor: pointer; transition: box-shadow 160ms ease; }
 .ui-card.is-interactive:hover, .ui-card.is-interactive:focus-visible { box-shadow: var(--ui-shadow-card-hover); }
 .ui-card.is-interactive:focus-visible { outline: 2px solid var(--ui-color-title); outline-offset: 2px; }
