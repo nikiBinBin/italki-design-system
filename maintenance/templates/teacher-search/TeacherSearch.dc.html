@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Teacher Search" description="Teacher search results page — filter bar, result count, teacher result rows, pagination." -->
+<helmet>
+<script src="./ds-base.js"></script>
+<script src="./ds-safe.js"></script>
+<link rel="stylesheet" href="./filter-pattern.css">
+<link rel="stylesheet" href="./teacher-card-pattern.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>body{margin:0;color:var(--ui-color-text);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;font-weight:500}#teacher-filter-modal{position:fixed;inset:0;z-index:60;min-height:0;display:block;background:transparent;pointer-events:none}#teacher-filter-modal.is-open{pointer-events:auto}#teacher-filter-modal .ui-modal{width:min(920px,100%);max-height:calc(100vh - 32px)}body{margin:0;background:#F5F6F9;font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}*{box-sizing:border-box}a{color:var(--ui-color-link);text-decoration:none}a:hover{color:var(--ui-color-link-hover);text-decoration:underline}/* Duplicates the kit default on purpose. These used to live only here, then
+   only in the kit; either way the template depended on the other side being
+   in step, and a bundle one version behind left the shell unpositioned.
+   Same values as .ui-sidebar / .ui-top-nav, so whichever wins, wins the same. */
+.ui-sidebar.ui-sidebar{height:100dvh;position:sticky;top:0;z-index:31;align-self:flex-start}
+.ui-top-nav.ui-top-nav{position:sticky;top:0;z-index:30}
+</style>
+</helmet>
+<div style="min-height:100vh;min-width:1280px;display:flex;align-items:flex-start">
+
+<x-import component-from-global-scope="SafeUI.Sidebar" variant="plus" items="{{ navItems }}" sections="{{ navSections }}" more-items="{{ moreItems }}" footer="{{ sidebarFooter }}" hint-size="324px,100vh"></x-import>
+
+<div style="flex:1;min-width:0">
+
+<x-import component-from-global-scope="SafeUI.TopNav" variant="teacher-search" context-options="{{ languageOptions }}" search-placeholder="Search topics" action-label="Book lessons" hint-size="100%,72px"></x-import>
+
+<div style="padding:0 0 64px">
+<div style="background:#FFFFFF;border-bottom:1px solid #E5E8ED">
+<div style="max-width:1216px;margin:0 auto;padding:32px 24px 20px">
+
+<div style="display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:20px">
+<h1 style="margin:0;color:#313140;font-size:28px;font-weight:700;line-height:36px">Choose from 1,284 teachers!</h1>
+<label style="display:inline-flex;flex:0 0 auto;align-items:center;gap:8px;white-space:nowrap">
+<button class="ui-switch {{ beginnerClass }}" type="button" role="switch" data-component="switch" aria-checked="{{ beginnerMode }}" aria-label="Show A1 teachers" onClick="{{ toggleBeginner }}"></button>
+<span style="color:#515164;font-size:14px;font-weight:500;line-height:20px">A1 teachers</span>
+</label>
+</div>
+
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
+<x-import component-from-global-scope="SafeUI.Tag" label="Instant lessons" size="{{ 32 }}" removable="{{ true }}" hint-size="140px,32px"></x-import>
+<x-import component-from-global-scope="SafeUI.Tag" label="Beginner friendly" size="{{ 32 }}" removable="{{ true }}" hint-size="150px,32px"></x-import>
+<x-import component-from-global-scope="SafeUI.Tag" label="Trial available" size="{{ 32 }}" removable="{{ true }}" hint-size="135px,32px"></x-import>
+</div>
+
+</div>
+</div>
+
+<div style="max-width:1216px;margin:0 auto;padding:0 24px 24px">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 348px;gap:24px;align-items:start">
+
+<div style="grid-column:1;grid-row:2;min-width:0">
+<div style="display:flex;flex-direction:column;gap:16px">
+
+<sc-for list="{{ teachers }}" as="t" hint-placeholder-count="10">
+<article class="teacher-pattern-card" data-teacher="{{ t.name }}" data-screen-label="{{ t.label }}">
+<aside class="teacher-pattern-side">
+<span class="ui-avatar ui-avatar--120 ui-avatar--with-flag" data-component="avatar" role="img" aria-label="{{ t.avatarLabel }}">
+<span class="ui-avatar__body"><img class="ui-avatar__image" src="{{ t.photo }}" alt=""></span>
+<span class="ui-avatar__flag"><img class="ui-flag ui-flag--24" data-component="avatar" data-ui-avatar-part="flag" src="{{ t.flag }}" alt="" aria-hidden="true"></span>
+</span>
+<div class="teacher-pattern-evidence">
+<strong>{{ t.rating }}<img src="../../Assets/Icons/star-solid.svg" alt=""></strong>
+<span>{{ t.lessons }}</span>
+</div>
+</aside>
+<div class="teacher-pattern-main">
+<header class="teacher-pattern-head">
+<div class="teacher-pattern-copy"><h3>{{ t.name }}</h3></div>
+<span class="teacher-pattern-role"><img src="{{ t.roleIcon }}" alt="">{{ t.role }}</span>
+</header>
+<div class="teacher-pattern-language">
+<strong>Speaks</strong>
+<span>{{ t.speaks }}</span>
+<span class="ui-tag ui-tag--24 ui-tag--info" data-component="tag"><span>Native</span></span>
+<span>{{ t.alsoSpeaks }}</span>
+</div>
+<div class="teacher-pattern-summary-wrap"><p class="teacher-pattern-summary">{{ t.summary }}</p></div>
+<sc-if value="{{ beginnerMode }}" hint-placeholder-val="{{ true }}">
+<div class="teacher-pattern-tags">
+<sc-for list="{{ t.tags }}" as="tag" hint-placeholder-count="2">
+<span class="ui-tag ui-tag--24 {{ tag.tone }}" data-component="tag"><span>{{ tag.label }}</span></span>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ beginnerMode }}" hint-placeholder-val="{{ true }}">
+<a class="ui-link ui-link--14 ui-link--default" data-component="link" href="#teacher-card"><span class="ui-link__label">See beginner lessons</span><img class="ui-link__icon" src="../../Assets/Icons/chevron-right.svg" alt=""></a>
+</sc-if>
+<footer class="teacher-pattern-offer">
+<div class="teacher-pattern-price">
+<strong>{{ t.price }}<span>/ Hour</span></strong>
+<span class="teacher-pattern-availability">{{ t.availability }}</span>
+</div>
+<div class="teacher-pattern-actions">
+<button class="ui-button ui-button--text ui-button--32 ui-button--pill is-icon-only" type="button" data-component="button" aria-label="Save teacher"><img class="ui-button__icon" src="../../Assets/Icons/favorite-outline.svg" alt=""></button>
+<button class="ui-button ui-button--secondary ui-button--32 ui-button--pill" type="button" data-component="button"><span class="ui-button__label">Book lesson</span></button>
+<button class="ui-button ui-button--text ui-button--32 ui-button--pill is-icon-only" type="button" data-component="button" aria-label="More actions"><img class="ui-button__icon" src="../../Assets/Icons/more.svg" alt=""></button>
+</div>
+</footer>
+</div>
+</article>
+</sc-for>
+
+</div>
+
+<nav class="ui-pagination" data-component="pagination" aria-label="Search results pages" style="justify-content:center;margin-top:32px">
+<button class="ui-pagination__arrow" type="button" aria-label="Previous page" disabled><img class="ui-pagination__arrow-icon" src="../../Assets/Icons/arrow-left-sm.svg" alt=""></button>
+<button class="ui-pagination__page is-current" type="button" aria-current="page">1</button>
+<button class="ui-pagination__page" type="button">2</button>
+<button class="ui-pagination__page" type="button">3</button>
+<span class="ui-pagination__ellipsis">…</span>
+<button class="ui-pagination__page" type="button">64</button>
+<button class="ui-pagination__arrow" type="button" aria-label="Next page"><img class="ui-pagination__arrow-icon" src="../../Assets/Icons/arrow-right-sm.svg" alt=""></button>
+</nav>
+
+</div>
+
+<aside ref="{{ previewRef }}" style="grid-column:2;grid-row:2;margin-top:0;transition:margin-top .18s ease;position:sticky;top:96px;display:flex;flex-direction:column;gap:16px;border-radius:12px;background:#FFFFFF;box-shadow:0 1px 2px rgb(49 49 64 / 6%);padding:16px" aria-label="Teacher preview">
+
+<div style="display:flex;align-items:center;gap:8px">
+<span class="ui-avatar ui-avatar--32" data-component="avatar" role="img"><span class="ui-avatar__body"><img class="ui-avatar__image" src="{{ previewPhoto }}" alt=""></span></span>
+<span style="min-width:0;overflow:hidden;color:#313140;font-size:14px;font-weight:700;line-height:20px;text-overflow:ellipsis;white-space:nowrap">{{ previewName }}</span>
+</div>
+
+<div class="ui-video" data-component="video" style="width:100%"><img class="ui-video__poster" src="../../Assets/Images/covers/teacher-intro.jpg" alt=""><button class="ui-video__play" type="button" aria-label="Play {{ previewName }}'s introduction video"><span class="ui-video__play-disc" aria-hidden="true"></span></button><span class="ui-video__duration">{{ previewDuration }}</span></div>
+
+<div>
+<x-import component-from-global-scope="SafeUI.Calendar" variant="compact-availability" dates="{{ previewDates }}" rows="{{ previewRows }}" timezone="Asia/Shanghai" ariaLabel="Teacher availability" hint-size="100%,150px"></x-import>
+</div>
+
+<button class="ui-button ui-button--red ui-button--40 ui-button--pill" type="button" data-component="button" style="width:100%"><span class="ui-button__label">Book trial · {{ previewPrice }}</span></button>
+
+</aside>
+
+</div>
+</div>
+</div>
+
+<div class="ui-modal-stage {{ filterStageClass }}" id="teacher-filter-modal" data-component="modal" data-ui-modal="" data-mask-closable="true" data-keyboard-closable="true"><div class="ui-modal__layer"><button class="ui-modal__mask" type="button" onClick="{{ closeFilter }}" aria-label="Close dialog"></button><section class="ui-modal ui-modal--wide" id="teacher-filter-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="teacher-filter-modal-title" tabindex="-1"><header class="ui-modal__header"><h3 id="teacher-filter-modal-title">Filter</h3><button class="ui-modal__close" type="button" onClick="{{ closeFilter }}" aria-label="Close dialog"><img class="ui-modal__close-icon" src="../../Assets/Icons/cross.svg" alt=""></button></header><div class="ui-modal__body"><div class="filter-pattern__body"><section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Teacher from</h3><button class="ui-button ui-button--text ui-button--32 ui-button--pill is-icon-only" data-component="button" aria-label="Search teacher origin" type="button"><img class="ui-button__icon" src="../../Assets/Icons/search.svg" alt=""></button></header><div class="filter-pattern__chip-row"><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Native speaker</button></div><div class="filter-pattern__cluster"><p class="filter-pattern__caption">Popular countries/regions</p><div class="filter-pattern__chip-row"><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">United States</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">United Kingdom</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Canada</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Australia</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">South Africa</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Ireland</button></div></div><div class="filter-pattern__cluster"><p class="filter-pattern__caption">Other countries/regions</p><div class="filter-pattern__chip-row"><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Hong Kong</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">United Arab Emirates</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Portugal</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Russia</button></div></div></section><section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Also speak</h3><button class="ui-button ui-button--text ui-button--32 ui-button--pill is-icon-only" data-component="button" aria-label="Search additional language" type="button"><img class="ui-button__icon" src="../../Assets/Icons/search.svg" alt=""></button></header><div class="filter-pattern__cluster"><p class="filter-pattern__caption">My speaking language</p><div class="filter-pattern__chip-row"><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Chinese (Mandarin)</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Japanese</button></div></div><div class="filter-pattern__cluster"><p class="filter-pattern__caption">Popular languages</p><div class="filter-pattern__chip-row"><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">English</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Spanish</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">French</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Korean</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">German</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Italian</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Portuguese</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Russian</button></div></div></section><section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Price range</h3></header><div class="filter-pattern__price-chart" aria-hidden="true"><i class="" style="--filter-bar-height:26px"></i><i class="" style="--filter-bar-height:44px"></i><i class="is-selected" style="--filter-bar-height:72px"></i><i class="is-selected" style="--filter-bar-height:60px"></i><i class="is-selected" style="--filter-bar-height:36px"></i><i class="" style="--filter-bar-height:28px"></i><i class="" style="--filter-bar-height:48px"></i><i class="" style="--filter-bar-height:32px"></i><i class="" style="--filter-bar-height:20px"></i><i class="" style="--filter-bar-height:36px"></i><i class="" style="--filter-bar-height:52px"></i><i class="" style="--filter-bar-height:42px"></i><i class="" style="--filter-bar-height:26px"></i><i class="" style="--filter-bar-height:20px"></i><i class="" style="--filter-bar-height:16px"></i><i class="" style="--filter-bar-height:12px"></i><i class="" style="--filter-bar-height:8px"></i><i class="" style="--filter-bar-height:6px"></i></div><div class="filter-pattern__price-range"><div class="ui-slider" data-component="slider"><div class="ui-slider__row"><span class="ui-slider__range" data-slider-range="" style="--ui-slider-range-start:20%;--ui-slider-range-end:70%"><input type="range" min="0" max="100" value="20" data-demo="ui-slider-range" data-range-handle="lower" aria-label="Minimum Lesson price"><input type="range" min="0" max="100" value="70" data-demo="ui-slider-range" data-range-handle="upper" aria-label="Maximum Lesson price"></span><output class="ui-slider__value ui-slider__value--range" data-range-value="">20–70</output></div></div><div class="filter-pattern__range-values"><span>Minimum<output>$12</output></span><span>Maximum<output>$227</output></span></div></div></section><section class="filter-pattern__card filter-pattern__availability"><header class="filter-pattern__card-head"><h3>Availability</h3></header><section class="ui-tabs ui-tabs--horizontal" data-component="tabs" data-ui-tabs="" data-activation="automatic" aria-label="Availability preference"><div class="ui-tabs__header"><div class="ui-tabs__list" role="tablist" aria-orientation="horizontal" aria-label="Availability preference"><button class="ui-tabs__trigger is-active" type="button" role="tab" id="general-tab" data-demo="ui-tabs-trigger" data-tab="general" aria-selected="true" aria-controls="general-panel" tabindex="0"><span>General</span></button><button class="ui-tabs__trigger" type="button" role="tab" id="specific-tab" data-demo="ui-tabs-trigger" data-tab="specific" aria-selected="false" aria-controls="specific-panel" tabindex="-1"><span>Specific time</span></button></div></div><section class="ui-tabs__panel" id="general-panel" role="tabpanel" aria-labelledby="general-tab"><div class="filter-pattern__cluster"><div class="filter-pattern__chip-row"><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Instant lesson</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Within 72 hours</button></div></div><div class="filter-pattern__cluster"><p class="filter-pattern__caption">Days of the week</p><div class="filter-pattern__day-row"><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Sun</button><button class="ui-chip ui-chip--32 ui-chip--default is-selected" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="true">Mon</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Tue</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Wed</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Thu</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Fri</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="ds-chip" aria-pressed="false">Sat</button></div></div><div class="filter-pattern__cluster"><p class="filter-pattern__caption">Time range</p><div class="filter-pattern__time-grid"><div><button class="ui-selection ui-selection--icon-simple ui-selection--checkbox" type="button" data-component="selection" data-demo="ui-selection-card" data-selection-mode="checkbox" data-selection-value="00:00 - 04:00" role="checkbox" aria-checked="false" aria-label="00:00 - 04:00" tabindex="0"><span class="ui-selection__body"><span class="ui-selection__feature ui-selection__feature--icon-simple"><img src="../../Assets/Icons/morning.svg" alt=""></span><span class="ui-selection__copy"><span class="ui-selection__title-row"><span class="ui-selection__title">00:00 - 04:00</span></span></span><span class="ui-checkbox__box ui-selection__indicator ui-selection__indicator--checkbox" aria-hidden="true"><img class="ui-checkbox__check" src="../../Assets/Icons/confirm-sm.svg" alt=""></span></span></button></div><div><button class="ui-selection ui-selection--icon-simple ui-selection--checkbox" type="button" data-component="selection" data-demo="ui-selection-card" data-selection-mode="checkbox" data-selection-value="04:00 - 08:00" role="checkbox" aria-checked="false" aria-label="04:00 - 08:00" tabindex="0"><span class="ui-selection__body"><span class="ui-selection__feature ui-selection__feature--icon-simple"><img src="../../Assets/Icons/morning.svg" alt=""></span><span class="ui-selection__copy"><span class="ui-selection__title-row"><span class="ui-selection__title">04:00 - 08:00</span></span></span><span class="ui-checkbox__box ui-selection__indicator ui-selection__indicator--checkbox" aria-hidden="true"><img class="ui-checkbox__check" src="../../Assets/Icons/confirm-sm.svg" alt=""></span></span></button></div><div><button class="ui-selection ui-selection--icon-simple ui-selection--checkbox" type="button" data-component="selection" data-demo="ui-selection-card" data-selection-mode="checkbox" data-selection-value="08:00 - 12:00" role="checkbox" aria-checked="false" aria-label="08:00 - 12:00" tabindex="0"><span class="ui-selection__body"><span class="ui-selection__feature ui-selection__feature--icon-simple"><img src="../../Assets/Icons/afternoon.svg" alt=""></span><span class="ui-selection__copy"><span class="ui-selection__title-row"><span class="ui-selection__title">08:00 - 12:00</span></span></span><span class="ui-checkbox__box ui-selection__indicator ui-selection__indicator--checkbox" aria-hidden="true"><img class="ui-checkbox__check" src="../../Assets/Icons/confirm-sm.svg" alt=""></span></span></button></div><div><button class="ui-selection ui-selection--icon-simple ui-selection--checkbox is-selected" type="button" data-component="selection" data-demo="ui-selection-card" data-selection-mode="checkbox" data-selection-value="12:00 - 16:00" role="checkbox" aria-checked="true" aria-label="12:00 - 16:00" tabindex="0"><span class="ui-selection__body"><span class="ui-selection__feature ui-selection__feature--icon-simple"><img src="../../Assets/Icons/afternoon.svg" alt=""></span><span class="ui-selection__copy"><span class="ui-selection__title-row"><span class="ui-selection__title">12:00 - 16:00</span></span></span><span class="ui-checkbox__box ui-selection__indicator ui-selection__indicator--checkbox" aria-hidden="true"><img class="ui-checkbox__check" src="../../Assets/Icons/confirm-sm.svg" alt=""></span></span></button></div><div><button class="ui-selection ui-selection--icon-simple ui-selection--checkbox is-selected" type="button" data-component="selection" data-demo="ui-selection-card" data-selection-mode="checkbox" data-selection-value="16:00 - 20:00" role="checkbox" aria-checked="true" aria-label="16:00 - 20:00" tabindex="0"><span class="ui-selection__body"><span class="ui-selection__feature ui-selection__feature--icon-simple"><img src="../../Assets/Icons/evening.svg" alt=""></span><span class="ui-selection__copy"><span class="ui-selection__title-row"><span class="ui-selection__title">16:00 - 20:00</span></span></span><span class="ui-checkbox__box ui-selection__indicator ui-selection__indicator--checkbox" aria-hidden="true"><img class="ui-checkbox__check" src="../../Assets/Icons/confirm-sm.svg" alt=""></span></span></button></div><div><button class="ui-selection ui-selection--icon-simple ui-selection--checkbox" type="button" data-component="selection" data-demo="ui-selection-card" data-selection-mode="checkbox" data-selection-value="20:00 - 24:00" role="checkbox" aria-checked="false" aria-label="20:00 - 24:00" tabindex="0"><span class="ui-selection__body"><span class="ui-selection__feature ui-selection__feature--icon-simple"><img src="../../Assets/Icons/night.svg" alt=""></span><span class="ui-selection__copy"><span class="ui-selection__title-row"><span class="ui-selection__title">20:00 - 24:00</span></span></span><span class="ui-checkbox__box ui-selection__indicator ui-selection__indicator--checkbox" aria-hidden="true"><img class="ui-checkbox__check" src="../../Assets/Icons/confirm-sm.svg" alt=""></span></span></button></div></div></div></section><section class="ui-tabs__panel" id="specific-panel" role="tabpanel" aria-labelledby="specific-tab" hidden=""><p class="filter-pattern__caption">Choose an exact date and time with the documented Date picker and Time slot components.</p></section></section></section><section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Lesson category</h3></header><div class="filter-pattern__check-list"><div class="filter-pattern__category" data-filter-category="" data-expanded="true"><button class="ui-checkbox value-on" type="button" role="checkbox" aria-checked="true" data-component="checkbox" data-value="on" data-checkbox-toggle="binary" data-checkbox-id="filter-category-language-essentials" data-demo="filter-category-parent"><span class="ui-checkbox__box" aria-hidden="true"><img class="ui-checkbox__check" src="../../Assets/Icons/confirm-sm.svg" alt=""><i class="ui-checkbox__mixed"></i></span><span>Language Essentials</span></button><div class="filter-pattern__category-children" data-filter-category-children=""><div class="filter-pattern__chip-row"><button class="ui-chip ui-chip--32 ui-chip--default is-selected" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="language-essentials" data-filter-category-all="" aria-pressed="true">All</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="language-essentials" aria-pressed="false">Pronunciation</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="language-essentials" aria-pressed="false">Grammar</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="language-essentials" aria-pressed="false">Spelling</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="language-essentials" aria-pressed="false">Reading</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="language-essentials" aria-pressed="false">Listening</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="language-essentials" aria-pressed="false">Writing</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="language-essentials" aria-pressed="false">Speaking</button></div></div></div><div class="filter-pattern__category" data-filter-category="" data-expanded="false"><button class="ui-checkbox value-off" type="button" role="checkbox" aria-checked="false" data-component="checkbox" data-value="off" data-checkbox-toggle="binary" data-checkbox-id="filter-category-conversation" data-demo="filter-category-parent"><span class="ui-checkbox__box" aria-hidden="true"><img class="ui-checkbox__check" src="../../Assets/Icons/confirm-sm.svg" alt=""><i class="ui-checkbox__mixed"></i></span><span>Conversation</span></button><div class="filter-pattern__category-children" data-filter-category-children="" hidden=""><div class="filter-pattern__chip-row"><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="conversation" data-filter-category-all="" aria-pressed="false">All</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="conversation" aria-pressed="false">Everyday conversation</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="conversation" aria-pressed="false">Speaking confidence</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="conversation" aria-pressed="false">Small talk</button></div></div></div><div class="filter-pattern__category" data-filter-category="" data-expanded="false"><button class="ui-checkbox value-off" type="button" role="checkbox" aria-checked="false" data-component="checkbox" data-value="off" data-checkbox-toggle="binary" data-checkbox-id="filter-category-business" data-demo="filter-category-parent"><span class="ui-checkbox__box" aria-hidden="true"><img class="ui-checkbox__check" src="../../Assets/Icons/confirm-sm.svg" alt=""><i class="ui-checkbox__mixed"></i></span><span>Business</span></button><div class="filter-pattern__category-children" data-filter-category-children="" hidden=""><div class="filter-pattern__chip-row"><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="business" data-filter-category-all="" aria-pressed="false">All</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="business" aria-pressed="false">Meetings</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="business" aria-pressed="false">Presentations</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="business" aria-pressed="false">Interviews</button></div></div></div><div class="filter-pattern__category" data-filter-category="" data-expanded="false"><button class="ui-checkbox value-off" type="button" role="checkbox" aria-checked="false" data-component="checkbox" data-value="off" data-checkbox-toggle="binary" data-checkbox-id="filter-category-test-preparation" data-demo="filter-category-parent"><span class="ui-checkbox__box" aria-hidden="true"><img class="ui-checkbox__check" src="../../Assets/Icons/confirm-sm.svg" alt=""><i class="ui-checkbox__mixed"></i></span><span>Test Preparation</span></button><div class="filter-pattern__category-children" data-filter-category-children="" hidden=""><div class="filter-pattern__chip-row"><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="test-preparation" data-filter-category-all="" aria-pressed="false">All</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="test-preparation" aria-pressed="false">IELTS</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="test-preparation" aria-pressed="false">TOEFL</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="test-preparation" aria-pressed="false">TOEIC</button></div></div></div><div class="filter-pattern__category" data-filter-category="" data-expanded="false"><button class="ui-checkbox value-off" type="button" role="checkbox" aria-checked="false" data-component="checkbox" data-value="off" data-checkbox-toggle="binary" data-checkbox-id="filter-category-medical" data-demo="filter-category-parent"><span class="ui-checkbox__box" aria-hidden="true"><img class="ui-checkbox__check" src="../../Assets/Icons/confirm-sm.svg" alt=""><i class="ui-checkbox__mixed"></i></span><span>Medical</span></button><div class="filter-pattern__category-children" data-filter-category-children="" hidden=""><div class="filter-pattern__chip-row"><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="medical" data-filter-category-all="" aria-pressed="false">All</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="medical" aria-pressed="false">Healthcare</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="medical" aria-pressed="false">Nursing</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="medical" aria-pressed="false">Medical interviews</button></div></div></div><div class="filter-pattern__category" data-filter-category="" data-expanded="false"><button class="ui-checkbox value-off" type="button" role="checkbox" aria-checked="false" data-component="checkbox" data-value="off" data-checkbox-toggle="binary" data-checkbox-id="filter-category-technology" data-demo="filter-category-parent"><span class="ui-checkbox__box" aria-hidden="true"><img class="ui-checkbox__check" src="../../Assets/Icons/confirm-sm.svg" alt=""><i class="ui-checkbox__mixed"></i></span><span>Technology</span></button><div class="filter-pattern__category-children" data-filter-category-children="" hidden=""><div class="filter-pattern__chip-row"><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="technology" data-filter-category-all="" aria-pressed="false">All</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="technology" aria-pressed="false">Software engineering</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="technology" aria-pressed="false">Product</button><button class="ui-chip ui-chip--32 ui-chip--default" type="button" data-component="chip" data-demo="filter-category-child" data-filter-category-child="" data-filter-category-id="technology" aria-pressed="false">Data science</button></div></div></div></div></section><section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Teacher type</h3></header><div class="filter-pattern__teacher-type"><button class="ui-checkbox value-on" type="button" role="checkbox" aria-checked="true" data-component="checkbox" data-value="on" data-checkbox-toggle="binary" data-checkbox-id="filter-plus" data-demo="checkbox"><span class="ui-checkbox__box" aria-hidden="true"><img class="ui-checkbox__check" src="../../Assets/Icons/confirm-sm.svg" alt=""><i class="ui-checkbox__mixed"></i></span><span><img src="../../Assets/Icons/Plustag.svg" alt=""><span>Plus features available</span></span></button><div class="filter-pattern__teacher-option"><button class="ui-selection ui-selection--icon-simple ui-selection--checkbox is-selected uses-selected-marker has-selected-marker" type="button" data-component="selection" data-demo="ui-selection-card" data-selection-mode="checkbox" data-selection-value="Professional teacher" role="checkbox" aria-checked="true" aria-label="Professional teacher" tabindex="0"><span class="ui-selection__body"><span class="ui-selection__feature ui-selection__feature--icon-simple"><img src="../../Assets/Icons/teacher-professional.svg" alt=""></span><span class="ui-selection__copy"><span class="ui-selection__title-row"><span class="ui-selection__title">Professional teacher</span></span><span class="ui-selection__description">Certified teachers with a wealth of experience</span></span><span class="ui-checkbox__box ui-selection__indicator ui-selection__indicator--checkbox" aria-hidden="true"><img class="ui-checkbox__check" src="../../Assets/Icons/confirm-sm.svg" alt=""></span></span></button></div><div class="filter-pattern__teacher-option"><button class="ui-selection ui-selection--icon-simple ui-selection--checkbox is-selected uses-selected-marker has-selected-marker" type="button" data-component="selection" data-demo="ui-selection-card" data-selection-mode="checkbox" data-selection-value="Community tutor" role="checkbox" aria-checked="true" aria-label="Community tutor" tabindex="0"><span class="ui-selection__body"><span class="ui-selection__feature ui-selection__feature--icon-simple"><img src="../../Assets/Icons/teacher-community.svg" alt=""></span><span class="ui-selection__copy"><span class="ui-selection__title-row"><span class="ui-selection__title">Community tutor</span></span><span class="ui-selection__description">Guide language learners with real-world practice</span></span><span class="ui-checkbox__box ui-selection__indicator ui-selection__indicator--checkbox" aria-hidden="true"><img class="ui-checkbox__check" src="../../Assets/Icons/confirm-sm.svg" alt=""></span></span></button></div></div></section></div></div><footer class="ui-modal__footer"><button class="ui-button ui-button--text ui-button--32 ui-button--pill" data-component="button" type="button"><span class="ui-button__label">Reset</span></button><button class="ui-button ui-button--red ui-button--32 ui-button--pill" data-component="button" type="button" onClick="{{ closeFilter }}"><span class="ui-button__label">Show 1,284 teachers</span></button></footer></section></div></div>
+
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  static TEACHERS = {
+    "Lucía Fernández": { photo: "https://randomuser.me/api/portraits/women/44.jpg", initials: "LF", tone: "info", price: "US$14.00", duration: "1:24" },
+    "Mateo Rojas": { photo: "https://randomuser.me/api/portraits/men/32.jpg", initials: "MR", tone: "primary", price: "US$12.00", duration: "0:58" },
+    "Valentina Cruz": { photo: "https://randomuser.me/api/portraits/women/68.jpg", initials: "VC", tone: "success", price: "US$25.00", duration: "2:10" },
+    "Sofía Herrera": { photo: "https://randomuser.me/api/portraits/women/21.jpg", initials: "SH", tone: "warning", price: "US$18.00", duration: "1:47" },
+    "Diego Morales": { photo: "https://randomuser.me/api/portraits/men/75.jpg", initials: "DM", tone: "info", price: "US$9.50", duration: "1:05" },
+    "Carmen Ortiz": { photo: "https://randomuser.me/api/portraits/women/57.jpg", initials: "CO", tone: "success", price: "US$22.00", duration: "2:32" },
+    "Andrés Vidal": { photo: "https://randomuser.me/api/portraits/men/18.jpg", initials: "AV", tone: "primary", price: "US$11.00", duration: "1:16" },
+    "Elena Ruiz": { photo: "https://randomuser.me/api/portraits/women/12.jpg", initials: "ER", tone: "info", price: "US$20.00", duration: "1:53" },
+    "Javier Cano": { photo: "https://randomuser.me/api/portraits/men/54.jpg", initials: "JC", tone: "warning", price: "US$8.00", duration: "0:44" },
+    "Marta Delgado": { photo: "https://randomuser.me/api/portraits/women/33.jpg", initials: "MD", tone: "success", price: "US$16.00", duration: "1:38" },
+  };
+  static ROSTER = [
+    { name: "Lucía Fernández", country: "Spain", flag: "es", pro: true, rating: "4.98", lessons: "2,431 lessons",
+      speaks: "Spanish", alsoSpeaks: "English C2 · Portuguese B1", price: "US$14.00", availability: "Available now",
+      summary: "DELE examiner with 8 years of classroom experience. Every lesson is built around what you need to say next week.",
+      tags: [["ui-tag--success", "Beginner experienced"], ["ui-tag--success", "Structured lessons"]] },
+    { name: "Mateo Rojas", country: "Mexico", flag: "mx", pro: false, rating: "4.92", lessons: "1,876 lessons",
+      speaks: "Spanish", alsoSpeaks: "English B2", price: "US$12.00", availability: "Available now",
+      summary: "Relaxed, everyday Mexican Spanish. We talk about your week and fix the mistakes that actually get in the way.",
+      tags: [["ui-tag--success", "Patient"], ["ui-tag--info", "Latin American Spanish"]] },
+    { name: "Valentina Cruz", country: "Peru", flag: "pe", pro: true, rating: "5.00", lessons: "3,102 lessons",
+      speaks: "Spanish", alsoSpeaks: "English C1 · French B1", price: "US$25.00", availability: "Available tomorrow",
+      summary: "University lecturer turned full-time tutor. Strong on grammar foundations and exam technique.",
+      tags: [["ui-tag--warning", "DELE certificate"], ["ui-tag--success", "Structured lessons"]] },
+    { name: "Sofía Herrera", country: "Spain", flag: "es", pro: true, rating: "4.95", lessons: "1,207 lessons",
+      speaks: "Spanish", alsoSpeaks: "English C1 · Italian B2", price: "US$18.00", availability: "Available now",
+      summary: "Conversation coach for busy professionals. We spend the hour talking; corrections go in the chat.",
+      tags: [["ui-tag--success", "Conversation focused"], ["ui-tag--info", "Business Spanish"]] },
+    { name: "Diego Morales", country: "Mexico", flag: "mx", pro: false, rating: "4.89", lessons: "3,842 lessons",
+      speaks: "Spanish", alsoSpeaks: "English B2", price: "US$9.50", availability: "Available tomorrow",
+      summary: "Great if you have studied before and just need someone patient to talk with. Notes after every lesson.",
+      tags: [["ui-tag--success", "Patient"], ["ui-tag--info", "Latin American Spanish"]] },
+    { name: "Carmen Ortiz", country: "Spain", flag: "es", pro: true, rating: "5.00", lessons: "612 lessons",
+      speaks: "Spanish", alsoSpeaks: "French B1", price: "US$22.00", availability: "Available now",
+      summary: "Exam preparation, DELE A1 through C1. Structured curriculum with homework and mock exams.",
+      tags: [["ui-tag--warning", "DELE certificate"], ["ui-tag--success", "Homework included"]] },
+    { name: "Andrés Vidal", country: "Argentina", flag: "ar", pro: false, rating: "4.91", lessons: "1,988 lessons",
+      speaks: "Spanish", alsoSpeaks: "English C1 · German A2", price: "US$11.00", availability: "Available this week",
+      summary: "Conversations with a purpose — films, football, food. I fix grammar quietly as we go.",
+      tags: [["ui-tag--success", "Conversation focused"], ["ui-tag--info", "Argentinian Spanish"]] },
+    { name: "Elena Ruiz", country: "Spain", flag: "es", pro: true, rating: "4.97", lessons: "2,106 lessons",
+      speaks: "Spanish", alsoSpeaks: "English C2 · Catalan native", price: "US$20.00", availability: "Available now",
+      summary: "Ten years teaching absolute beginners. We build from sounds to sentences and you speak from lesson one.",
+      tags: [["ui-tag--success", "Beginner experienced"], ["ui-tag--success", "Patient"]] },
+    { name: "Javier Cano", country: "Colombia", flag: "co", pro: false, rating: "4.86", lessons: "944 lessons",
+      speaks: "Spanish", alsoSpeaks: "English B2 · Portuguese B1", price: "US$8.00", availability: "Available tomorrow",
+      summary: "Short daily lessons beat one long one. Book a few in a row and you will hear the difference in a month.",
+      tags: [["ui-tag--info", "Colombian Spanish"], ["ui-tag--success", "Flexible schedule"]] },
+    { name: "Marta Delgado", country: "Spain", flag: "es", pro: true, rating: "4.94", lessons: "1,530 lessons",
+      speaks: "Spanish", alsoSpeaks: "English C1", price: "US$16.00", availability: "Available this week",
+      summary: "Spanish for work: emails, meetings, calls. Bring a real agenda and we rehearse it together.",
+      tags: [["ui-tag--info", "Business Spanish"], ["ui-tag--success", "Structured lessons"]] },
+  ];
+  static ROW_LABELS = ["00 – 04", "04 – 08", "08 – 12", "12 – 16", "16 – 20", "20 – 24"];
+  static DAYS = [
+    { id: "mon", label: "Mo", date: "22" }, { id: "tue", label: "Tu", date: "23" },
+    { id: "wed", label: "We", date: "24" }, { id: "thu", label: "Th", date: "25" },
+    { id: "fri", label: "Fr", date: "26" }, { id: "sat", label: "Sa", date: "27" },
+    { id: "sun", label: "Su", date: "28" },
+  ];
+  // Hours available inside a four-hour band, as shown in the cell tooltip.
+  static BAND_HOURS = [1, 1.5, 2, 2.5, 3, 3.5, 4];
+
+  state = {
+    ready: !!Component.kit(),
+    filterOpen: false,
+    preview: "Lucía Fernández",
+    previewOffset: 0,
+    beginnerMode: false,
+  };
+
+  previewRef = React.createRef();
+
+  // The offset is a live measurement, so it is written to the node rather than
+  // rendered as a style hole (holes cannot paint until the logic class lands).
+  componentDidUpdate() {
+    const el = this.previewRef.current;
+    if (el) el.style.marginTop = this.state.previewOffset + "px";
+  }
+
+  componentDidMount() {
+    // Hover-to-preview is template behaviour and must not wait on either kit build.
+    this.onOver = (e) => {
+      const card = e.target.closest?.("article[data-teacher]");
+      if (!card) return;
+      const name = card.dataset.teacher;
+      if (!name || name === this.state.preview) return;
+      // The panel tracks the hovered card: offset it by that card's position in the list.
+      const list = card.parentElement;
+      const offset = list ? Math.max(0, Math.round(card.getBoundingClientRect().top - list.getBoundingClientRect().top)) : 0;
+      this.setState({ preview: name, previewOffset: offset });
+    };
+    document.addEventListener("mouseover", this.onOver, true);
+
+    const loaded = () => Component.kit();
+    const start = () => {};
+    if (this.state.ready) { start(); return; }
+    // ds-base.js loads the kit asynchronously; re-render once it is available.
+    this.timer = setInterval(() => {
+      if (!loaded()) return;
+      clearInterval(this.timer);
+      start();
+      this.setState({ ready: true });
+    }, 50);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+    document.removeEventListener("mouseover", this.onOver, true);
+  }
+
+  // The row shape the results list binds. Both render paths read it from here:
+  // renderVals() and reactVals() each used to build their own view of the
+  // roster, and only one of them was ever kept in step.
+  rosterRows() {
+    const C = this.constructor;
+    return C.ROSTER.map((t, i) => ({
+      ...t,
+      label: "Result " + String(i + 1).padStart(2, "0"),
+      avatarLabel: t.name + ", " + t.country,
+      photo: (C.TEACHERS[t.name] || {}).photo || "",
+      flag: "../../Assets/Flags/" + t.flag + ".svg",
+      role: t.pro ? "Professional Teacher" : "Community Tutor",
+      roleIcon: "../../Assets/Icons/certified-solid-" + (t.pro ? "red" : "teal") + ".svg",
+      tags: t.tags.map(([tone, label]) => ({ tone, label })),
+    }));
+  }
+
+  /* The kit is reachable under two names and they are the same object:
+     window.ITalkiUI is the vanilla runtime, and the React bundle re-exports it
+     as window.ItalkiUI.raw. Reading only the first made the shell depend on
+     which one the host happened to install — when it was missing the sidebar
+     rendered empty, or fell through to a second, half-maintained code path. */
+  static kit() { return window.ITalkiUI || (window.ItalkiUI || {}).raw || null; }
+
+  /* If neither name shows up, say so instead of rendering an empty rail. */
+  static warnMissingKit() {
+    if (document.getElementById("ds-kit-missing")) return;
+    const el = document.createElement("div");
+    el.id = "ds-kit-missing";
+    el.textContent = "Design-system bundle not loaded: neither window.ITalkiUI nor window.ItalkiUI.raw is available.";
+    el.style.cssText = "position:fixed;z-index:9999;top:0;left:0;right:0;padding:8px 12px;background:var(--ui-color-error,#D3382F);color:#fff;font:12px/1.5 system-ui";
+    document.body.appendChild(el);
+  }
+
+  previewVals() {
+    const C = this.constructor;
+    const name = this.state.preview;
+    const t = C.TEACHERS[name] || C.TEACHERS["Lucía Fernández"];
+    return {
+      previewRef: this.previewRef,
+      previewName: name,
+      previewInitials: t.initials,
+      previewPhoto: t.photo,
+      previewTone: "ui-avatar--tone-" + t.tone,
+      previewPrice: t.price,
+      previewDuration: t.duration,
+      previewDates: C.DAYS,
+      previewRows: C.availabilityFor(name),
+    };
+  }
+
+  // Six four-hour bands × seven days, as in the Calendar catalog card. Derived from the
+  // teacher's name so each roster entry has a stable, distinct week.
+  static availabilityFor(name) {
+    const C = this;
+    let seed = 0;
+    for (let i = 0; i < name.length; i++) seed = (seed * 31 + name.charCodeAt(i)) % 100003;
+    const rand = (n) => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed % n; };
+    return C.ROW_LABELS.map((label, i) => ({
+      id: "band-" + i,
+      label,
+      slots: C.DAYS.map(() => {
+        // Daytime bands are likelier to be open than the small hours.
+        const open = rand(10) < (i === 0 || i === 5 ? 3 : 7);
+        return open
+          ? { state: "available", hours: C.BAND_HOURS[rand(C.BAND_HOURS.length)] }
+          : { state: "unavailable" };
+      }),
+    }));
+  }
+
+  /* No dispatcher here. The kit's behaviours are wired once in ds-safe.js —
+     one table, shared by both templates. Two of them binding the same hooks
+     means every click is handled twice, and a toggle handled twice is a toggle
+     that never moves. */
+  renderVals() {
+    // One render path. There used to be a second — reactVals — that ran only
+    // when the vanilla namespace was missing, and it had never been kept in
+    // step: its icons were bare names the asset contract rejects. A path that
+    // runs only when something else has already gone wrong is a path nobody
+    // tests.
+    const UI = Component.kit();
+    if (!UI) return {};
+
+    const navItems = [
+      // Home and Search Teachers are fixed: the kit gives a fixed row no pin
+      // control at all, and catalog-consumption asserts exactly that.
+      { id: "home", label: "Home", icon: "Assets/Icons/dashboard.svg", fixed: true },
+      { id: "search-teachers", label: "Search Teachers", icon: "Assets/Icons/search_teacher_2.svg", active: true, fixed: true },
+      { id: "my-teachers", label: "My Teachers", icon: "Assets/Icons/teacher.svg" },
+      { id: "my-calendar", label: "My Calendar", icon: "Assets/Icons/calendar.svg" },
+      { id: "community", label: "Community", icon: "Assets/Icons/community.svg" },
+      { id: "my-lessons", label: "My Lessons", icon: "Assets/Icons/lesson.svg" },
+      { id: "more", label: "More", icon: "Assets/Icons/more.svg", more: true },
+    ];
+
+    // Row shapes mirror the Catalog's #sidebar: chat rows lead with a 24px
+    // avatar; lesson rows carry a count prefix, divider and secondary line.
+    // A sidebar row's leading slot takes rendered markup, not a URL: the item
+    // has no `avatar` key, so passing the photo directly dropped it silently.
+    const portrait = (n) => UI.avatar({
+      image: (this.constructor.TEACHERS[n] || {}).photo || "",
+      size: 24,
+      ariaLabel: n,
+    });
+    const navSections = [
+      { id: "chats", label: "Chats", open: true, items: [
+        { id: "chat-lucia", label: "Lucía Fernández", secondary: "2m", leading: portrait("Lucía Fernández") },
+        { id: "chat-mateo", label: "Mateo Rojas", secondary: "1h", leading: portrait("Mateo Rojas") },
+        { id: "chat-valentina", label: "Valentina Cruz", secondary: "Yesterday", leading: portrait("Valentina Cruz") },
+      ] },
+      { id: "lessons", label: "Lessons", items: [
+        { id: "lesson-today", prefix: "12", divider: true, label: "Spanish B1", secondary: "Today 18:00" },
+        { id: "lesson-thu", prefix: "13", divider: true, label: "Spanish B1", secondary: "Thu 18:00" },
+      ] },
+    ];
+
+    // The More row is a disclosure, not a destination: it needs the overflow
+    // list, or it renders as a trigger with nothing behind it.
+    const moreItems = [
+      { id: "flowy", label: "Flowy", icon: "Assets/Icons/flowy.svg" },
+      { id: "group-class", label: "Group Class", icon: "Assets/Icons/group.svg", dividerBefore: true },
+      { id: "practice", label: "Practice", icon: "Assets/Icons/practice.svg" },
+      { id: "vocabulary", label: "Vocabulary", icon: "Assets/Icons/vocabulary.svg" },
+      { id: "business", label: "italki Business", icon: "Assets/Icons/briefcase.svg", dividerBefore: true },
+    ];
+
+    const sidebarFooter =
+      '<button class="ui-sidebar__item" type="button" style="width:auto">' +
+      '<img class="ui-sidebar__item-icon" src="../../Assets/Icons/wallet.svg" alt="" />' +
+      "<span>$293.45 USD</span></button>" +
+      UI.avatar({ initials: "NI", size: 32, tone: "primary", interactive: true, ariaLabel: "Your profile" });
+
+    /* The bar is a named variant now, so the template supplies the data and
+       the component composes the context picker, the search field and the
+       action. It used to build all three by hand and pass them in as markup. */
+    const languageOptions = [
+      { id: "spanish", label: "Spanish teachers", flag: "Assets/Flags/es.svg" },
+      { id: "english", label: "English teachers", flag: "Assets/Flags/gb.svg" },
+      { id: "japanese", label: "Japanese teachers", flag: "Assets/Flags/jp.svg" },
+      { id: "french", label: "French teachers", flag: "Assets/Flags/fr.svg" },
+    ];
+
+    return {
+      navItems,
+      navSections,
+      moreItems,
+      sidebarFooter,
+      // The markup binds twenty-one names; this path returned six. The results
+      // list, the preview card, its calendar and the filter drawer all read
+      // from the missing fifteen, so they resolved to undefined and rendered
+      // as nothing — the calendar loudly, the rest silently.
+      ...this.previewVals(),
+      teachers: this.rosterRows(),
+      beginnerMode: this.state.beginnerMode,
+      beginnerClass: this.state.beginnerMode ? "is-checked" : "",
+      toggleBeginner: () => this.setState((s) => ({ beginnerMode: !s.beginnerMode })),
+      filterStageClass: this.state.filterOpen ? "is-open" : "",
+      closeFilter: () => this.setState({ filterOpen: false }),
+      languageOptions,
+    };
+  }
+}
+</script>
+</body>
+</html>
