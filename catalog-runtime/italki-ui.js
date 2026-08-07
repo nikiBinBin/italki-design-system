@@ -55,7 +55,19 @@
     }
   };
 
-  const approvedAsset = (path) => !path || assetRoots.some((root) => path.startsWith(root));
+  /* A page two or three folders down addresses the same approved asset with a
+     leading pair of dot-dot steps, and that was rejected: the check required
+     the path to start with the root. It bit where nothing was watching — the pin
+     controls re-render a row from its stored icon path, so on a card the row
+     silently refused to move. Leading ./ and ../ steps are part of addressing,
+     not of identity, so they come off before the root is checked. Everything
+     else — absolute URLs, other origins, paths outside the roots — is rejected
+     exactly as before. */
+  const approvedAsset = (path) => {
+    if (!path) return true;
+    const withinSite = String(path).replace(/^(?:\.{1,2}\/)+/, "");
+    return assetRoots.some((root) => withinSite.startsWith(root));
+  };
 
   /* An icon may be named rather than pathed. Every consumer that wrote one by
      hand reached for `icon: "dashboard"` — the name in the library — and got
