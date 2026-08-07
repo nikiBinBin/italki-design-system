@@ -336,7 +336,7 @@
       "requiredStates": ["default", "with-label", "alternate", "pending", "reverse", "single-tone"]
     },
     "top-nav": {
-      "acceptedProps": ["id", "leading", "center", "trailing", "contextLabel", "contextOptions", "searchPlaceholder", "actionLabel", "ariaLabel", "sticky", "demo"],
+      "acceptedProps": ["id", "variant", "leading", "center", "trailing", "contextLabel", "contextOptions", "searchPlaceholder", "actionLabel", "ariaLabel", "sticky", "demo"],
       "subcomponents": {
         "context": {
           "acceptedProps": ["id", "mode", "selected", "options", "open", "ariaLabel", "demo"],
@@ -356,7 +356,7 @@
           }
         }
       },
-      "props": {"sticky": [true, false]},
+      "props": {"sticky": [true, false], "variant": ["custom", "global-default", "teacher-search"]},
       "requiredStates": ["global-default", "teacher-search", "context-open", "search-query", "filtered"]
     },
     "slider": {

@@ -886,6 +886,7 @@ window.ITalkiUIContracts = {
     "top-nav": {
       "acceptedProps": [
         "id",
+        "variant",
         "leading",
         "center",
         "trailing",
@@ -901,6 +902,11 @@ window.ITalkiUIContracts = {
         "sticky": [
           true,
           false
+        ],
+        "variant": [
+          "custom",
+          "global-default",
+          "teacher-search"
         ]
       },
       "subcomponents": {

@@ -1260,27 +1260,42 @@
   function topNav(props = {}) {
     assertProps("top-nav", props);
     const {
-      id = "", leading = "", center = "", trailing = "",
-      contextLabel = "", contextOptions = [], searchPlaceholder = "", actionLabel = "",
+      id = "", variant = "custom", leading = "", center = "", trailing = "",
+      contextLabel = "", contextOptions = [], searchPlaceholder = "Search", actionLabel = "Book lessons",
       ariaLabel = "Top navigation", sticky = true, demo = "",
     } = props;
     enumValue("top-nav", "sticky", sticky);
-    /* The three slots take arbitrary content, which is right for the general
-       case and wrong for the only case anyone builds: language context, search,
-       primary action. Filling them meant calling three separate builders and
-       threading the strings back in — so consumers reached for contextLabel /
-       searchPlaceholder / actionLabel, found nothing, and shipped an empty bar.
-       The standard composition is declarative now; a slot still wins when it is
-       given, so arbitrary content is still arbitrary. */
+    enumValue("top-nav", "variant", variant);
+    /* The two bars italki actually ships have names — the Catalog lists
+       global-default and teacher-search among this component's required states
+       — but they existed only as a recipe the Catalog route followed by hand:
+       call topNavContext, call topNavSearch, call button, thread three HTML
+       strings back through the slots. Every consumer had to rediscover the
+       recipe, and the ones that got it wrong shipped an empty bar. The two are
+       variants now; the difference between them is the whole of it, so it is
+       written once here rather than in each page.
+
+         global-default   compact context, search without a filter
+         teacher-search   labelled context, search with a filter
+
+       `custom` keeps the slots-only behaviour, and a slot still wins wherever
+       one is given, so arbitrary content stays arbitrary. */
+    const composed = variant !== "custom";
+    const searchBar = variant === "teacher-search";
     const contextSelected = contextOptions.find((option) => option && option.label === contextLabel)
+      || contextOptions[0]
       || (contextLabel ? { id: "context", label: contextLabel } : null);
-    const leadingContent = leading || (contextSelected
-      ? topNavContext({ selected: contextSelected, options: contextOptions.length ? contextOptions : [contextSelected] })
+    const leadingContent = leading || (composed && contextSelected
+      ? topNavContext({
+          mode: searchBar ? "labelled" : "compact",
+          selected: contextSelected,
+          options: contextOptions.length ? contextOptions : [contextSelected],
+        })
       : "");
-    const centerContent = center || (searchPlaceholder
-      ? topNavSearch({ placeholder: searchPlaceholder, filter: true, filterLabel: "Filter" })
+    const centerContent = center || (composed
+      ? topNavSearch({ placeholder: searchPlaceholder, filter: searchBar, filterLabel: "Filter" })
       : "");
-    const trailingContent = trailing || (actionLabel
+    const trailingContent = trailing || (composed
       ? button({ label: actionLabel, variant: "emphasis", size: 40, shape: "pill", leadingIcon: "nav-plus" })
       : "");
     const navId = id || `top-nav-${String(ariaLabel).toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;

@@ -663,14 +663,19 @@
           { id: "french", label: "French Teachers", flag: flagAssetPath("fr") },
           { id: "spanish", label: "Spanish Teachers", flag: flagAssetPath("es") }
         ];
-        const topNav = ({ id, compact = false, filter = true }) => {
-          const context = ui.topNavContext({ id: `top-nav-context-${id}`, mode: compact ? "compact" : "labelled", selected: contextOptions[0], options: contextOptions, ariaLabel: "Teacher language" });
-          const search = ui.topNavSearch({ id: `top-nav-search-${id}`, placeholder: "Search goals", ariaLabel: "Search teachers", filter, filterCount: 4 });
-          const bookAction = ui.button({ label: "Book lessons", variant: "emphasis", size: 40, shape: "pill", leadingIcon: "Assets/Icons/plus.svg" });
-          return ui.topNav({ id: `top-nav-${id}`, leading: context, center: search, trailing: bookAction, ariaLabel: "Top navigation" });
-        };
+        /* The two bars are variants of the component now, so this route asks
+           for them by name instead of restating the recipe the component
+           already knows. */
+        const topNav = ({ id, variant }) => ui.topNav({
+          id: `top-nav-${id}`,
+          variant,
+          contextOptions,
+          searchPlaceholder: "Search goals",
+          actionLabel: "Book lessons",
+          ariaLabel: "Top navigation",
+        });
         const block = (title, content) => dsBlock(title, `<div class="top-nav-frame">${content}</div>`, true, "variants");
-        return `<div class="component-doc-grid top-nav-detail">${block("Global default", topNav({ id: "global", compact: true, filter: false }))}${block("Teacher search", topNav({ id: "teacher" }))}</div>`;
+        return `<div class="component-doc-grid top-nav-detail">${block("Global default", topNav({ id: "global", variant: "global-default" }))}${block("Teacher search", topNav({ id: "teacher", variant: "teacher-search" }))}</div>`;
       }
       function sidebarDetail() {
         const items = [
