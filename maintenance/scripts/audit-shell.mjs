@@ -1,6 +1,10 @@
 import { chromium } from 'playwright';
-import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path';
-const REPO=path.resolve('.');
+import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
+/* Anchored to this file, not to the shell's working directory. `path.resolve('.')`
+   made `npm run audit:hooks` — which npm runs from maintenance/ — audit an empty
+   tree and report that every hook passed. A harness that quietly finds nothing
+   is worse than one that fails. */
+const REPO = path.resolve(fileURLToPath(import.meta.url), '../../..');
 const T={'.html':'text/html','.css':'text/css','.js':'text/javascript','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg'};
 const srv=http.createServer((q,r)=>{ const rel=decodeURIComponent(q.url.split('?')[0]);
   const f = rel.startsWith('/t/') ? path.join('/tmp/shell', rel.slice(3)) : path.join(REPO, rel);

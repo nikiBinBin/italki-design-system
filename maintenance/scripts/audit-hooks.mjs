@@ -1,11 +1,16 @@
 import { chromium } from 'playwright';
-import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path';
+import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 /* Clicks every distinct data-demo hook on every card and checks the page
    actually changed. A binding that resolves to nothing is invisible to every
    static check we have — the whole kit was in that state for a day because one
    namespace was missing — so this asks the only question that catches it: did
    anything happen? */
-const REPO=path.resolve('.'), STAGE=path.resolve('maintenance/ds-project');
+/* Anchored to this file, not to the shell's working directory. `path.resolve('.')`
+   made `npm run audit:hooks` — which npm runs from maintenance/ — audit an empty
+   tree and report that every hook passed. A harness that quietly finds nothing
+   is worse than one that fails. */
+const REPO = path.resolve(fileURLToPath(import.meta.url), '../../..');
+const STAGE = path.join(REPO, 'maintenance/ds-project');
 const T={'.html':'text/html','.css':'text/css','.js':'text/javascript','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.json':'application/json'};
 const srv=http.createServer((q,r)=>{ const rel=decodeURIComponent(q.url.split('?')[0]);
   const send=f=>fs.readFile(f,(e,b)=>{ if(e){r.writeHead(404);r.end();return;} r.writeHead(200,{'content-type':T[path.extname(f)]??'text/plain'}); r.end(b); });
@@ -56,6 +61,14 @@ for (const rel of cards.sort()) {
   await p.close();
 }
 console.log(`${cards.length} 张卡，点了 ${tested} 个钩子`);
+/* An audit that examines nothing must not read as an audit that found nothing
+   wrong — pointed at the wrong root, this printed "每个钩子都有反应" over zero
+   cards. */
+if (!cards.length || !tested) {
+  console.log(`\n没有卡片可审：${STAGE} 下没找到卡片，先跑 npm run build:ds`);
+  await b.close(); srv.close();
+  process.exit(1);
+}
 console.log(dead.length ? `\n点了没反应的 ${dead.length} 个:` : '\n每个钩子都有反应');
 dead.forEach(x=>console.log('  '+x));
 if (errored.length) { console.log(`\n报错/缺函数 ${errored.length}:`); [...new Set(errored)].slice(0,10).forEach(x=>console.log('  '+x)); }

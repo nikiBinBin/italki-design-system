@@ -20,11 +20,17 @@ import { chromium } from 'playwright';
 import http from 'node:http';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, extname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const argv = process.argv.slice(2);
 const flag = (n, d) => { const i = argv.indexOf(`--${n}`); return i < 0 ? d : argv[i + 1]; };
-const REPO = resolve(flag('repo', '.'));
-const OUT = resolve(flag('out', 'maintenance/ds-project'));
+/* The repo root is found from this file, not from the shell's working directory:
+   npm runs these from maintenance/, where '.' is the wrong root — the build died
+   on a missing catalog-runtime/contracts.js and only worked when invoked by hand
+   from the top. --repo still overrides. */
+const HERE = resolve(fileURLToPath(import.meta.url), '../../..');
+const REPO = resolve(flag('repo', HERE));
+const OUT = resolve(flag('out', join(HERE, 'maintenance/ds-project')));
 const PORT = Number(flag('port', '4319'));
 
 // Route slug → card name. The group is the Design pane's section label; the

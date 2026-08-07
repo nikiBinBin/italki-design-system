@@ -23,11 +23,17 @@
 
 import { mkdirSync, readFileSync, writeFileSync, rmSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const argv = process.argv.slice(2);
 const flag = (n, d) => { const i = argv.indexOf(`--${n}`); return i < 0 ? d : argv[i + 1]; };
-const REPO = resolve(flag('repo', '.'));
-const OUT = resolve(flag('out', 'maintenance/ds-project'));
+/* The repo root is found from this file, not from the shell's working directory:
+   npm runs these from maintenance/, where '.' is the wrong root — the build died
+   on a missing catalog-runtime/contracts.js and only worked when invoked by hand
+   from the top. --repo still overrides. */
+const HERE = resolve(fileURLToPath(import.meta.url), '../../..');
+const REPO = resolve(flag('repo', HERE));
+const OUT = resolve(flag('out', join(HERE, 'maintenance/ds-project')));
 const RUNTIME = join(REPO, 'catalog-runtime');
 
 // ── load the vanilla runtime under a stub window ──────────────────────────
