@@ -17,7 +17,8 @@
     "audit:ds": "node scripts/audit-ds-cards.mjs .. ds-project",
     "lint:type": "node scripts/migrate-type-tokens.mjs --check",
     "build:covers": "node scripts/build-cover-assets.mjs",
-    "audit:shell": "node scripts/audit-shell.mjs"
+    "audit:shell": "node scripts/audit-shell.mjs",
+    "audit:hooks": "node scripts/audit-hooks.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0"

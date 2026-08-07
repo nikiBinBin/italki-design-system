@@ -63,6 +63,15 @@
      not of identity, so they come off before the root is checked. Everything
      else — absolute URLs, other origins, paths outside the roots — is rejected
      exactly as before. */
+  /* Where the page sits relative to the asset folder. Markup rendered at build
+     time can be rebased by whoever writes the file, but markup the runtime
+     creates later — a row rebuilt by the pin controls, a menu row restored from
+     the roster — cannot: it is produced long after, by code that has no idea
+     the page is three folders down. Both broke as soon as they were touched.
+     The host states the depth once and every path the runtime emits follows it. */
+  const assetBase = () => String(global.ITalkiUIAssetBase || "");
+  const withBase = (path) => (/^([a-z]+:|\/|\.)/i.test(path) ? path : assetBase() + path);
+
   const approvedAsset = (path) => {
     if (!path) return true;
     const withinSite = String(path).replace(/^(?:\.{1,2}\/)+/, "");
@@ -95,7 +104,7 @@
     if (!rawPath) return "";
     const path = resolveIcon(rawPath);
     if (!approvedAsset(path)) throw new Error(`Unapproved asset: ${path}`);
-    return `<img class="${className}" src="${escapeHTML(path)}" alt="" />`;
+    return `<img class="${className}" src="${escapeHTML(withBase(path))}" alt="" />`;
   };
 
   const resolveControlShape = (size, shape) => shape === "default" ? (size === 32 ? "pill" : "rounded") : shape;

@@ -95,6 +95,26 @@
       'ui-sidebar-unpin': (c) => call(ui.unpinSidebarItem, 'unpinSidebarItem', c),
       'ui-segmented-control': (c) => call(ui.selectSegmentedControl, 'selectSegmentedControl', c),
       'ui-rate': (c, event) => call(ui.selectRate, 'selectRate', c, event),
+      /* Hooks the Catalog binds and this table did not. Found by diffing the
+         two: sixteen of them, so every one of those controls rendered
+         correctly on its card and ignored the click. A dispatcher that is a
+         hand-written subset of another dispatcher will always drift; the diff
+         is now part of the audit. */
+      'ui-radio': (c) => call(ui.selectRadio, 'selectRadio', c),
+      'ui-switch': (c) => call(ui.toggleSwitch, 'toggleSwitch', c),
+      'ui-checkbox-group-all': (c) => call(ui.toggleCheckboxGroup, 'toggleCheckboxGroup', c),
+      'ui-checkbox-group-item': (c) => call(ui.toggleCheckboxGroup, 'toggleCheckboxGroup', c),
+      'ui-pagination': (c) => call(ui.selectPaginationPage, 'selectPaginationPage', c),
+      'ui-search-clear': (c) => call(ui.clearSearch, 'clearSearch', c),
+      'ui-calendar-action': (c) => call(ui.notifyCalendarAction, 'notifyCalendarAction', c),
+      'ui-time-picker-slot': (c) => call(ui.selectTimePickerSlot, 'selectTimePickerSlot', c),
+      'ui-upload-trigger': (c) => call(ui.openUploadPicker, 'openUploadPicker', c),
+      'ui-top-nav-context': (c) => call(ui.setTopNavContextOpen, 'setTopNavContextOpen', c),
+      'ui-top-nav-context-option': (c) => call(ui.selectTopNavContext, 'selectTopNavContext', c),
+      'ui-top-nav-filter': (c) => call(ui.toggleTopNavFilter, 'toggleTopNavFilter', c),
+      'ui-top-nav-search-clear': (c) => call(ui.clearTopNavSearch, 'clearTopNavSearch', c),
+      /* The mask closes only when the dialog says it may. */
+      'ui-modal-mask': (c) => { if (c.closest('[data-ui-modal]')?.dataset.maskClosable !== 'false') call(ui.closeModal, 'closeModal', c); },
     };
 
     document.addEventListener('click', (event) => {
