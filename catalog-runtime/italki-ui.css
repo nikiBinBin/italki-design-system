@@ -629,7 +629,9 @@
 .ui-sidebar__subitem-divider { width: 1px; height: 16px; flex: 0 0 1px; background: var(--ui-color-divider); }
 .ui-sidebar__subitem-secondary { min-width: 0; overflow: hidden; color: var(--ui-color-secondary); text-overflow: ellipsis; white-space: nowrap; }
 .ui-sidebar__more { position: static; }
-.ui-sidebar__more-menu { width: 292px; display: none; position: absolute; z-index: 20; bottom: 80px; left: var(--ui-space-4); overflow: hidden; border: 1px solid var(--ui-color-border); border-radius: var(--ui-radius-lg); padding: var(--ui-space-4); background: var(--ui-color-card); box-shadow: var(--ui-shadow-lg); }
+/* top is measured on open, see positionSidebarMore. The fallback keeps a
+   statically rendered moreOpen card from stacking the menu on the header. */
+.ui-sidebar__more-menu { width: 292px; display: none; position: absolute; z-index: 20; top: 50%; left: var(--ui-space-4); overflow: hidden; border: 1px solid var(--ui-color-border); border-radius: var(--ui-radius-lg); padding: var(--ui-space-4); background: var(--ui-color-card); box-shadow: var(--ui-shadow-lg); }
 .ui-sidebar__more.is-open .ui-sidebar__more-menu { display: grid; }
 .ui-sidebar__more-row { min-width: 0; display: flex; align-items: center; gap: var(--ui-space-1); border-radius: var(--ui-radius-lg); cursor: grab; }
 .ui-sidebar__more-menu-item { width: auto; min-width: 0; flex: 1 1 auto; min-height: 40px; display: flex; align-items: center; gap: var(--ui-space-2); border: 0; border-radius: var(--ui-radius-lg); padding: var(--ui-space-2); color: var(--ui-color-text); background: transparent; font: inherit; font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-medium); line-height: var(--ui-line-height-18); text-align: left; cursor: pointer; }
