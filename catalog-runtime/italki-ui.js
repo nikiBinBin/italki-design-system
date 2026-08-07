@@ -872,6 +872,60 @@
     return `${dividerBefore ? '<i class="ui-sidebar__more-divider" aria-hidden="true"></i>' : ""}<div class="ui-sidebar__more-row" role="none" data-ui-sidebar-more-row data-sidebar-item="${escapeHTML(itemId)}" data-sidebar-label="${escapeHTML(label)}" data-sidebar-icon="${escapeHTML(iconPath)}" draggable="true"><button class="ui-sidebar__more-menu-item" type="button" role="menuitem" data-demo="ui-sidebar-more-item" data-sidebar-item="${escapeHTML(itemId)}"${disabled ? " disabled" : ""}>${iconPath ? icon(iconPath, "ui-sidebar__more-icon") : ""}<span>${escapeHTML(label)}</span></button><button class="ui-sidebar__pin-toggle" type="button" data-demo="ui-sidebar-pin" aria-label="Pin ${escapeHTML(label)}">${icon("Assets/Icons/pin-outline.svg", "ui-sidebar__pin-toggle-icon")}</button></div>`;
   }
 
+  /* italki's own shell navigation, defined once.
+     The Sidebar component takes its rows as data, which is right — it has no
+     business knowing what italki's destinations are. But then every page that
+     mounts it wrote out the list again, and three hand-written copies drifted
+     into three different More menus: the Catalog's card had five entries, one
+     template had five including a Practice and a Vocabulary that were never
+     part of the spec, and the other had two. Nothing was keeping them in step
+     because nothing could.
+
+     So the roster lives here, beside the component, as data rather than
+     behaviour: this is what italki's shell contains, and a page says which row
+     is current. Icons stay bare names — the renderer resolves them against the
+     manifest, which is also what makes the same list correct two folders down,
+     where literal paths would not be.
+
+     moreItems is the full roster in canonical order, not just what is hidden
+     right now. A destination missing from it has nowhere to return to when it
+     is unpinned, and the dividers are the grouping: each holds whichever of its
+     members is currently in the menu. */
+  const APP_SHELL_ITEMS = [
+    { id: "home", label: "Home", icon: "dashboard", fixed: true },
+    { id: "search-teachers", label: "Search Teachers", icon: "search-list", fixed: true },
+    { id: "my-lessons", label: "My Lessons", icon: "lesson" },
+    { id: "my-calendar", label: "My Calendar", icon: "calendar" },
+    { id: "learn", label: "Learn", icon: "tabbar-learn" },
+    { id: "progress", label: "Progress", icon: "chart" },
+    { id: "mira", label: "italki Mira", icon: "mira" },
+    { id: "more", label: "More", icon: "more", more: true },
+  ];
+  const APP_SHELL_MORE = [
+    { id: "my-lessons", label: "My Lessons", icon: "lesson" },
+    { id: "my-calendar", label: "My Calendar", icon: "calendar" },
+    { id: "my-teachers", label: "My Teachers", icon: "teacher" },
+    { id: "learn", label: "Learn", icon: "tabbar-learn", dividerBefore: true },
+    { id: "progress", label: "Progress", icon: "chart" },
+    { id: "flowy", label: "Flowy", icon: "flowy" },
+    { id: "mira", label: "italki Mira", icon: "mira", dividerBefore: true },
+    { id: "group-class", label: "Group Class", icon: "group", dividerBefore: true },
+    { id: "community", label: "Community", icon: "community" },
+    { id: "business", label: "italki Business", icon: "briefcase", dividerBefore: true },
+  ];
+
+  function appShellNav(options = {}) {
+    const { active = "" } = options;
+    /* Copied out, not handed over: the caller spreads extra keys onto these
+       rows, and a shared array that one page mutates is the same drift in a
+       new shape. */
+    const clone = (row) => ({ ...row });
+    return {
+      items: APP_SHELL_ITEMS.map((row) => (active && row.id === active ? { ...row, active: true } : clone(row))),
+      moreItems: APP_SHELL_MORE.map(clone),
+    };
+  }
+
   function sidebar(props = {}) {
     assertProps("sidebar", props);
     const {
@@ -3232,6 +3286,7 @@
   global.ITalkiUI = Object.freeze({
     contracts,
     approvedAsset,
+    appShellNav,
     button,
     chip,
     tag,

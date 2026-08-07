@@ -404,6 +404,10 @@ class Component extends DCLogic {
      their own markup — icons as bare names, resolved against the bundle's own
      Assets/ folder; flags stay page-relative and are rewritten by ds-safe.js. */
   navVals() {
+    /* First render can beat the bundle: componentDidMount polls for the kit and
+       forces an update once it lands, so an empty rail for one frame is the
+       correct answer — throwing here would take the whole page down instead. */
+    const shell = Component.kit()?.appShellNav?.() ?? { items: [], moreItems: [] };
     const contextOptions = [
       { id: "spanish", label: "Spanish teachers", flag: "Assets/Flags/es.svg" },
       { id: "english", label: "English teachers", flag: "Assets/Flags/gb.svg" },
@@ -411,34 +415,13 @@ class Component extends DCLogic {
       { id: "french", label: "French teachers", flag: "Assets/Flags/fr.svg" },
     ];
     return {
-      navItems: [
-        { id: "home", label: "Home", icon: "dashboard", fixed: true },
-        { id: "search-teachers", label: "Search Teachers", icon: "search-list", fixed: true },
-        { id: "my-lessons", label: "My Lessons", icon: "lesson" },
-        { id: "my-calendar", label: "My Calendar", icon: "calendar" },
-        { id: "learn", label: "Learn", icon: "tabbar-learn" },
-        { id: "progress", label: "Progress", icon: "chart" },
-        { id: "mira", label: "italki Mira", icon: "mira" },
-        { id: "more", label: "More", icon: "more", more: true },
-      ],
-      /* The whole roster in its canonical order — the same list teacher-search
-         passes and the same one the component's own card shows. It is data the
-         page hands in, not something the component owns, so three hand-written
-         copies drifted into three different More menus; this is the one they
-         all agree on. The five that ship pinned out are here too: without an
-         entry there is nowhere for them to return to when unpinned. */
-      moreItems: [
-        { id: "my-lessons", label: "My Lessons", icon: "lesson" },
-        { id: "my-calendar", label: "My Calendar", icon: "calendar" },
-        { id: "my-teachers", label: "My Teachers", icon: "teacher" },
-        { id: "learn", label: "Learn", icon: "tabbar-learn", dividerBefore: true },
-        { id: "progress", label: "Progress", icon: "chart" },
-        { id: "flowy", label: "Flowy", icon: "flowy" },
-        { id: "mira", label: "italki Mira", icon: "mira", dividerBefore: true },
-        { id: "group-class", label: "Group Class", icon: "group", dividerBefore: true },
-        { id: "community", label: "Community", icon: "community" },
-        { id: "business", label: "italki Business", icon: "briefcase", dividerBefore: true },
-      ],
+      /* italki's shell roster comes from the kit, so this page and
+         teacher-search cannot disagree about it — they used to, and the two
+         More menus held different destinations from the same component.
+         Nothing is marked current: on a teacher's profile you are not on the
+         search page. */
+      navItems: shell.items,
+      moreItems: shell.moreItems,
       navSections: [
         { id: "chats", label: "Chats", open: true, items: [
           { id: "chat-lucia", label: "Lucía Fernández", secondary: "2m", avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
