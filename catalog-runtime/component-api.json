@@ -753,7 +753,7 @@
         "title": "\"Dialog\"",
         "body": "\"\"",
         "footer": "\"\"",
-        "trigger": "\"\"",
+        "trigger": "required or context-provided",
         "triggerLabel": "\"Open modal\"",
         "open": "false",
         "size": "\"default\"",
