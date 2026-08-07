@@ -646,9 +646,18 @@ ${cells.filter((x) => !x.error).map((x) => {
 
   /* A real wrapper, not a re-export. Everything is resolved when the component
      renders, so this file does not care whether Kit.jsx was concatenated before
-     or after it. */
+     or after it.
+
+     `export` is what makes it a component. The app compiles these sources and
+     finds components by their exports; a file that only assigns to window
+     contributes nothing, and the bundle came back listing two components out of
+     fifty-seven — Icon and Logo, the only two that had ever been written with an
+     export. Every other name was simply absent from the namespace, so each
+     x-import resolved to null and the templates rendered with no sidebar, no top
+     nav and no calendar. The window assignment stays for anything reaching the
+     bare global; the export is what the compiler reads. */
   write(`${dir}/${c.name}.jsx`, `// ${c.name} — italki UI Kit. Markup comes from the runtime in components/_kit/Kit.jsx.
-function ${c.name}(props) {
+export function ${c.name}(props) {
   var React = window.React;
   if (!React || typeof window.ITalkiUIRender !== 'function') return null;
   return React.createElement('div', {
@@ -785,6 +794,11 @@ window.ITalkiUIRender = function (fn, props) {
   catch (e) { return '<div style="color:var(--ui-color-error,#D3382F);font:12px system-ui">' + (e && e.message || e) + '</div>'; }
 };
 var REACT_ONLY = /^(children|key|ref|className|style|dangerouslySetInnerHTML)$|^(data-|aria-|on[A-Z])/;
+/* Exported for the same reason the components are: the compiler includes a
+   source because of what it exports, and this file's whole job is the side
+   effects above. Without an export it is dropped, and every wrapper then finds
+   no ITalkiUIRender and renders null. */
+export function Kit() { return null; }
 `);
 
 write('_ds_bundle.js', `/* @ds-bundle: ${JSON.stringify(bundleHeader)} */
