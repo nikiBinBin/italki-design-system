@@ -20,7 +20,6 @@
 //   styles.css         @imports the closure a rendered design receives
 //   tokens/tokens.css  the token layer
 //   components/<slug>/<Name>/<Name>.{html,jsx,d.ts,prompt.md}
-//   _ds_needs_recompile
 
 import { mkdirSync, readFileSync, writeFileSync, rmSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -1000,7 +999,14 @@ Generated from \`catalog-runtime/icon-manifest.js\`; run
 write('_ds_bundle.css', readFileSync(join(RUNTIME, 'italki-ui.css'), 'utf8'));
 write('tokens/tokens.css', readFileSync(join(RUNTIME, 'tokens.css'), 'utf8'));
 write('styles.css', '@import "./tokens/tokens.css";\n@import "./_ds_bundle.css";\n');
-write('_ds_needs_recompile', '{"by":"build-ds-project"}\n');
+/* No _ds_needs_recompile. That sentinel asks the app to rebuild _ds_bundle.js
+   from components/**\/*.jsx — and those are one-line re-exports of
+   window.ItalkiUI.X, which read the bundle rather than implement it. The
+   rebuild therefore produced a bundle that installs no vanilla runtime:
+   window.ITalkiUI was never set, every data-demo binding on every card and
+   template silently did nothing, and the components looked broken for a day.
+   This script builds the bundle; asking for it to be rebuilt from its own
+   re-exports can only undo that. */
 
 console.log(`✓ ${OUT}`);
 console.log(`  components: ${report.ok.length}/${COMPONENTS.length}`);
