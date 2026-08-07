@@ -421,9 +421,23 @@ class Component extends DCLogic {
         { id: "mira", label: "Mira", icon: "mira" },
         { id: "more", label: "More", icon: "more", more: true },
       ],
+      /* The whole roster in its canonical order — the same list teacher-search
+         passes and the same one the component's own card shows. It is data the
+         page hands in, not something the component owns, so three hand-written
+         copies drifted into three different More menus; this is the one they
+         all agree on. The five that ship pinned out are here too: without an
+         entry there is nowhere for them to return to when unpinned. */
       moreItems: [
+        { id: "my-lessons", label: "My Lessons", icon: "lesson" },
+        { id: "my-calendar", label: "My Calendar", icon: "calendar" },
         { id: "my-teachers", label: "My Teachers", icon: "teacher" },
+        { id: "learn", label: "Learn", icon: "tabbar-learn", dividerBefore: true },
+        { id: "progress", label: "Progress", icon: "chart" },
+        { id: "flowy", label: "Flowy", icon: "flowy" },
+        { id: "mira", label: "italki Mira", icon: "mira", dividerBefore: true },
         { id: "group-class", label: "Group Class", icon: "group", dividerBefore: true },
+        { id: "community", label: "Community", icon: "community" },
+        { id: "business", label: "italki Business", icon: "briefcase", dividerBefore: true },
       ],
       navSections: [
         { id: "chats", label: "Chats", open: true, items: [
