@@ -858,6 +858,8 @@
   function sidebarMoreRow(item = {}) {
     const { id: itemId = "", label = "", icon: iconPath = "", dividerBefore = false, disabled = false } = item;
     if (!itemId || !label) throw new Error("sidebar moreItems require id and label");
+    /* The flag rides on the row rather than only being rendered once: a row
+       that leaves and comes back has to know whether it still starts a group. */
     return `${dividerBefore ? '<i class="ui-sidebar__more-divider" aria-hidden="true"></i>' : ""}<div class="ui-sidebar__more-row" role="none" data-ui-sidebar-more-row data-sidebar-item="${escapeHTML(itemId)}" data-sidebar-label="${escapeHTML(label)}" data-sidebar-icon="${escapeHTML(iconPath)}" draggable="true"><button class="ui-sidebar__more-menu-item" type="button" role="menuitem" data-demo="ui-sidebar-more-item" data-sidebar-item="${escapeHTML(itemId)}"${disabled ? " disabled" : ""}>${iconPath ? icon(iconPath, "ui-sidebar__more-icon") : ""}<span>${escapeHTML(label)}</span></button><button class="ui-sidebar__pin-toggle" type="button" data-demo="ui-sidebar-pin" aria-label="Pin ${escapeHTML(label)}">${icon("Assets/Icons/pin-outline.svg", "ui-sidebar__pin-toggle-icon")}</button></div>`;
   }
 
@@ -892,7 +894,28 @@
       const itemClass = ["ui-sidebar__item", active ? "is-active" : ""].filter(Boolean).join(" ");
       const content = `${renderIcon(iconPath, "ui-sidebar__item-icon")}<span>${escapeHTML(label)}</span>`;
       if (more) {
-        const moreMenu = `<div class="ui-sidebar__more-menu" role="menu" aria-label="More destinations">${moreItems.map(sidebarMoreRow).join("")}<p class="ui-sidebar__more-empty" data-ui-sidebar-more-empty${moreItems.length ? " hidden" : ""}>No more destinations.</p></div>`;
+        /* moreItems is the overflow roster in its canonical order, not just
+           what happens to be in the menu right now. A destination pinned out to
+           the primary list is simply not rendered here — which is what lets it
+           come back to its own place instead of the bottom of the list. */
+        const pinnedOut = new Set(items.map((entry) => (entry || {}).id));
+        const inMenu = moreItems.filter((entry) => entry && !pinnedOut.has(entry.id));
+        /* Same rule as refreshSidebarMoreMenu: the line belongs to the first
+           member of the group that is actually showing. */
+        let groupIndex = 0;
+        const groupOf = new Map();
+        for (const entry of moreItems) {
+          if (entry && entry.dividerBefore) groupIndex += 1;
+          if (entry) groupOf.set(entry.id, groupIndex);
+        }
+        let previousGroup = null;
+        const menuRows = inMenu.map((entry) => {
+          const current = groupOf.get(entry.id);
+          const starts = previousGroup !== null && current !== previousGroup;
+          previousGroup = current;
+          return sidebarMoreRow({ ...entry, dividerBefore: starts });
+        });
+        const moreMenu = `<div class="ui-sidebar__more-menu" role="menu" aria-label="More destinations" data-sidebar-more-roster="${escapeHTML(JSON.stringify(moreItems))}">${menuRows.join("")}<p class="ui-sidebar__more-empty" data-ui-sidebar-more-empty${inMenu.length ? " hidden" : ""}>No more destinations.</p></div>`;
         return `<div class="ui-sidebar__more${moreOpen ? " is-open" : ""}" data-ui-sidebar-more><button class="${itemClass}" type="button" data-demo="ui-sidebar-more" aria-expanded="${moreOpen}" aria-haspopup="menu"${disabled ? " disabled" : ""}${eventAttribute}>${content}</button>${moreMenu}</div>`;
       }
       return sidebarPrimaryRow(item, demo);
@@ -997,6 +1020,44 @@
     if (empty) empty.hidden = Boolean(menu.querySelector("[data-ui-sidebar-more-row]"));
   }
 
+  /* The overflow roster travels with the menu so a row that comes back can be
+     rebuilt from the roster rather than from the primary row it was sitting in
+     — the two legitimately differ, and a destination called "Mira" beside the
+     nav is "italki Mira" inside the menu. */
+  function sidebarMoreRoster(menu) {
+    try { return JSON.parse(menu?.dataset?.sidebarMoreRoster || "[]"); }
+    catch { return []; }
+  }
+
+  /* Dividers separate groups, so they are a property of the arrangement rather
+     than of a row: the first visible row must not carry one, and a group whose
+     every member is pinned out must not leave a line behind. Recomputed from
+     what is actually in the menu, after every move. */
+  function refreshSidebarMoreMenu(menu) {
+    if (!menu) return;
+    menu.querySelectorAll(".ui-sidebar__more-divider").forEach((line) => line.remove());
+    /* A line goes before the first *visible* member of each group, not before
+       the one the roster happens to name first: pin that one out to the nav and
+       the rest of its group would silently merge into the group above. */
+    const group = new Map();
+    let index = 0;
+    for (const entry of sidebarMoreRoster(menu)) {
+      if (entry.dividerBefore) index += 1;
+      group.set(entry.id, index);
+    }
+    const rows = [...menu.querySelectorAll("[data-ui-sidebar-more-row]")];
+    let previous = null;
+    for (const row of rows) {
+      const current = group.get(row.dataset.sidebarItem);
+      if (previous !== null && current !== previous) {
+        row.insertAdjacentHTML("beforebegin", '<i class="ui-sidebar__more-divider" aria-hidden="true"></i>');
+      }
+      previous = current;
+    }
+    const empty = menu.querySelector("[data-ui-sidebar-more-empty]");
+    if (empty) empty.toggleAttribute("hidden", rows.length > 0);
+  }
+
   function unpinSidebarItem(control) {
     const root = sidebarRoot(control);
     const row = control?.closest?.("[data-ui-sidebar-primary-row]");
@@ -1004,10 +1065,20 @@
     if (!root || !row || !menu || row.dataset.sidebarFixed === "true") return false;
     const item = sidebarItemData(row);
     if (!item) return false;
-    const empty = menu.querySelector("[data-ui-sidebar-more-empty]");
+    /* Back to its own place, not to the end. The menu carries the canonical
+       order, so the row goes in front of the first destination that ranks after
+       it — which is also what keeps its group intact. */
+    const roster = sidebarMoreRoster(menu);
+    const order = roster.map((entry) => entry.id);
+    const rank = order.indexOf(item.id);
     row.remove();
-    if (empty) empty.insertAdjacentHTML("beforebegin", sidebarMoreRow(item));
-    else menu.insertAdjacentHTML("beforeend", sidebarMoreRow(item));
+    const markup = sidebarMoreRow({ ...item, ...(roster[rank] || {}), dividerBefore: false });
+    const after = rank < 0 ? null : [...menu.querySelectorAll("[data-ui-sidebar-more-row]")]
+      .find((sibling) => order.indexOf(sibling.dataset.sidebarItem) > rank);
+    if (after) after.insertAdjacentHTML("beforebegin", markup);
+    else (menu.querySelector("[data-ui-sidebar-more-empty]") || menu)
+      .insertAdjacentHTML(menu.querySelector("[data-ui-sidebar-more-empty]") ? "beforebegin" : "beforeend", markup);
+    refreshSidebarMoreMenu(menu);
     updateSidebarMoreEmpty(root);
     return true;
   }
@@ -1020,9 +1091,13 @@
     if (!root || !row || !nav || !more) return false;
     const item = sidebarItemData(row);
     if (!item) return false;
-    row.previousElementSibling?.classList?.contains("ui-sidebar__more-divider") && row.previousElementSibling.remove();
+    const menu = row.closest(".ui-sidebar__more-menu");
     row.remove();
     more.insertAdjacentHTML("beforebegin", sidebarPrimaryRow(item, root.dataset.sidebarDemo || ""));
+    /* Removing a row can orphan the line that separated its group, or promote
+       the next row to first, where a line must not be. Recompute rather than
+       patch the neighbour. */
+    refreshSidebarMoreMenu(menu);
     updateSidebarMoreEmpty(root);
     closeSidebarMore(root);
     return true;
