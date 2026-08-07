@@ -56,15 +56,43 @@
       'ui-sidebar-brand': (c) => ui.toggleSidebar(c),
       'ui-sidebar-section': (c) => ui.toggleSidebarSection(c),
       'ui-sidebar-item': (c) => ui.selectSidebarItem(c),
+      'ui-sidebar-more': (c) => ui.toggleSidebarMore(c),
+      'ui-sidebar-more-item': (c) => { ui.selectSidebarItem(c); ui.closeSidebarMore(c); },
+      'ui-sidebar-pin': (c) => ui.pinSidebarItem(c),
+      'ui-sidebar-unpin': (c) => ui.unpinSidebarItem(c),
       'ui-segmented-control': (c) => ui.selectSegmentedControl(c),
       'ui-rate': (c, event) => ui.selectRate(c, event),
     };
 
     document.addEventListener('click', (event) => {
+      if (!event.target.closest('[data-ui-sidebar-more]')) ui.closeSidebarMore();
       const hook = event.target.closest('[data-demo]');
       const run = hook && CLICK[hook.dataset.demo];
       if (run) run(hook, event);
     }, true);
+
+    /* Reordering, and the More menu's delayed close, are not clicks. */
+    document.addEventListener('dragstart', (e) => ui.startSidebarDrag(e));
+    document.addEventListener('dragover', (e) => ui.moveSidebarDrag(e));
+    document.addEventListener('dragend', (e) => ui.endSidebarDrag(e));
+    document.addEventListener('mouseover', (e) => {
+      const more = e.target.closest('[data-ui-sidebar-more]');
+      if (more && !more.contains(e.relatedTarget)) ui.cancelSidebarMoreClose(more);
+    }, true);
+    document.addEventListener('mouseout', (e) => {
+      const more = e.target.closest('[data-ui-sidebar-more]');
+      if (more && !more.contains(e.relatedTarget)) ui.scheduleSidebarMoreClose(more);
+    }, true);
+
+    /* Say so when the card renders a hook nobody bound. This list has fallen
+       behind the runtime three times — More, the two pin controls, drag — and
+       each time the card looked correct and did nothing when clicked, which no
+       static check can see. */
+    const unbound = new Set();
+    for (const node of document.querySelectorAll('[data-demo]')) {
+      if (!CLICK[node.dataset.demo]) unbound.add(node.dataset.demo);
+    }
+    if (unbound.size) console.warn('ds-cards: no handler bound for ' + [...unbound].join(', '));
 
     /* Checkbox, radio and switch carry their state on the input, so they are
        synced rather than dispatched. */
