@@ -38,7 +38,7 @@
 <div style="display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:20px">
 <h1 style="margin:0;color:var(--ui-color-title);font-size:28px;font-weight:700;line-height:36px">Choose from 1,284 teachers!</h1>
 <label style="display:inline-flex;flex:0 0 auto;align-items:center;gap:8px;white-space:nowrap">
-<button class="ui-switch {{ beginnerClass }}" type="button" role="switch" data-component="switch" aria-checked="{{ beginnerMode }}" aria-label="Show A1 teachers" onClick="{{ toggleBeginner }}"></button>
+<span onClick="{{ toggleBeginner }}" style="display:inline-flex;cursor:pointer"><x-import component-from-global-scope="SafeUI.Switch" checked="{{ beginnerMode }}" label="Show A1 teachers" hint-size="44px,24px"></x-import></span>
 <span style="color:var(--ui-color-text);font-size:14px;font-weight:500;line-height:20px">A1 teachers</span>
 </label>
 </div>
@@ -61,10 +61,7 @@
 <sc-for list="{{ teachers }}" as="t" hint-placeholder-count="10">
 <article class="teacher-pattern-card" data-teacher="{{ t.name }}" data-screen-label="{{ t.label }}">
 <aside class="teacher-pattern-side">
-<span class="ui-avatar ui-avatar--120 ui-avatar--with-flag" data-component="avatar" role="img" aria-label="{{ t.avatarLabel }}">
-<span class="ui-avatar__body"><img class="ui-avatar__image" src="{{ t.photo }}" alt=""></span>
-<span class="ui-avatar__flag"><img class="ui-flag ui-flag--24" data-component="avatar" data-ui-avatar-part="flag" src="{{ t.flag }}" alt="" aria-hidden="true"></span>
-</span>
+<x-import component-from-global-scope="SafeUI.Avatar" image="{{ t.photo }}" flag="{{ t.flag }}" size="{{ 120 }}" ariaLabel="{{ t.avatarLabel }}" hint-size="120px,120px"></x-import>
 <div class="teacher-pattern-evidence">
 <strong>{{ t.rating }}<img src="../../Assets/Icons/star-solid.svg" alt=""></strong>
 <span>{{ t.lessons }}</span>
@@ -90,7 +87,7 @@
 </div>
 </sc-if>
 <sc-if value="{{ beginnerMode }}" hint-placeholder-val="{{ true }}">
-<a class="ui-link ui-link--14 ui-link--default" data-component="link" href="#teacher-card"><span class="ui-link__label">See beginner lessons</span><img class="ui-link__icon" src="../../Assets/Icons/chevron-right.svg" alt=""></a>
+<x-import component-from-global-scope="SafeUI.Link" label="See beginner lessons" href="#teacher-card" size="{{ 14 }}" trailingIcon="chevron" hint-size="170px,20px"></x-import>
 </sc-if>
 <footer class="teacher-pattern-offer">
 <div class="teacher-pattern-price">
@@ -98,9 +95,9 @@
 <span class="teacher-pattern-availability">{{ t.availability }}</span>
 </div>
 <div class="teacher-pattern-actions">
-<button class="ui-button ui-button--text ui-button--32 ui-button--pill is-icon-only" type="button" data-component="button" aria-label="Save teacher"><img class="ui-button__icon" src="../../Assets/Icons/favorite-outline.svg" alt=""></button>
-<button class="ui-button ui-button--secondary ui-button--32 ui-button--pill" type="button" data-component="button"><span class="ui-button__label">Book lesson</span></button>
-<button class="ui-button ui-button--text ui-button--32 ui-button--pill is-icon-only" type="button" data-component="button" aria-label="More actions"><img class="ui-button__icon" src="../../Assets/Icons/more.svg" alt=""></button>
+<x-import component-from-global-scope="SafeUI.Button" variant="text" size="{{ 32 }}" shape="pill" iconOnly="{{ true }}" leadingIcon="favorite-outline" ariaLabel="Save teacher" hint-size="32px,32px"></x-import>
+<x-import component-from-global-scope="SafeUI.Button" label="Book lesson" variant="secondary" size="{{ 32 }}" shape="pill" hint-size="110px,32px"></x-import>
+<x-import component-from-global-scope="SafeUI.Button" variant="text" size="{{ 32 }}" shape="pill" iconOnly="{{ true }}" leadingIcon="more" ariaLabel="More actions" hint-size="32px,32px"></x-import>
 </div>
 </footer>
 </div>
@@ -113,30 +110,22 @@
 <!-- Pagination sits in its own row, not inside the results column: row 2 then
      measures the card list alone, so the sticky preview stops with its bottom
      flush against the last card instead of drifting on past it. -->
-<nav class="ui-pagination" data-component="pagination" aria-label="Search results pages" style="grid-column:1;grid-row:3;justify-content:center;margin-top:32px">
-<button class="ui-pagination__arrow" type="button" aria-label="Previous page" disabled><img class="ui-pagination__arrow-icon" src="../../Assets/Icons/arrow-left-sm.svg" alt=""></button>
-<button class="ui-pagination__page is-current" type="button" aria-current="page">1</button>
-<button class="ui-pagination__page" type="button">2</button>
-<button class="ui-pagination__page" type="button">3</button>
-<span class="ui-pagination__ellipsis">…</span>
-<button class="ui-pagination__page" type="button">64</button>
-<button class="ui-pagination__arrow" type="button" aria-label="Next page"><img class="ui-pagination__arrow-icon" src="../../Assets/Icons/arrow-right-sm.svg" alt=""></button>
-</nav>
+<div style="grid-column:1;grid-row:3;display:flex;justify-content:center;margin-top:32px"><x-import component-from-global-scope="SafeUI.Pagination" pages="{{ resultPages }}" current="{{ 1 }}" ariaLabel="Search results pages" hint-size="320px,32px"></x-import></div>
 
 <aside ref="{{ previewRef }}" style="grid-column:2;grid-row:2;margin-top:0;transition:margin-top .18s ease;position:sticky;top:96px;display:flex;flex-direction:column;gap:16px;border-radius:12px;background:var(--ui-color-card);box-shadow:0 1px 2px rgb(49 49 64 / 6%);padding:16px" aria-label="Teacher preview">
 
 <div style="display:flex;align-items:center;gap:8px">
-<span class="ui-avatar ui-avatar--32" data-component="avatar" role="img"><span class="ui-avatar__body"><img class="ui-avatar__image" src="{{ previewPhoto }}" alt=""></span></span>
+<x-import component-from-global-scope="SafeUI.Avatar" image="{{ previewPhoto }}" size="{{ 32 }}" ariaLabel="{{ previewName }}" hint-size="32px,32px"></x-import>
 <span style="min-width:0;overflow:hidden;color:var(--ui-color-title);font-size:14px;font-weight:700;line-height:20px;text-overflow:ellipsis;white-space:nowrap">{{ previewName }}</span>
 </div>
 
-<div class="ui-video" data-component="video" style="width:100%"><img class="ui-video__poster" src="../../Assets/Images/covers/teacher-intro.jpg" alt=""><button class="ui-video__play" type="button" aria-label="Play {{ previewName }}'s introduction video"><span class="ui-video__play-disc" aria-hidden="true"></span></button><span class="ui-video__duration">{{ previewDuration }}</span></div>
+<x-import component-from-global-scope="SafeUI.Video" poster="Assets/Images/covers/teacher-intro.jpg" poster-alt="" duration="{{ previewDuration }}" play-label="{{ previewPlayLabel }}" hint-size="100%,180px"></x-import>
 
 <div>
 <x-import component-from-global-scope="SafeUI.Calendar" variant="compact-availability" dates="{{ previewDates }}" rows="{{ previewRows }}" timezone="Asia/Shanghai" ariaLabel="Teacher availability" hint-size="100%,150px"></x-import>
 </div>
 
-<button class="ui-button ui-button--red ui-button--40 ui-button--pill" type="button" data-component="button" style="width:100%"><span class="ui-button__label">Book trial · {{ previewPrice }}</span></button>
+<div style="display:grid"><x-import component-from-global-scope="SafeUI.Button" label="{{ previewBookLabel }}" variant="red" size="{{ 40 }}" shape="pill" hint-size="100%,40px"></x-import></div>
 
 </aside>
 
@@ -312,7 +301,6 @@ class Component extends DCLogic {
       label: "Result " + String(i + 1).padStart(2, "0"),
       avatarLabel: t.name + ", " + t.country,
       photo: (C.TEACHERS[t.name] || {}).photo || "",
-      flag: "../../Assets/Flags/" + t.flag + ".svg",
       role: t.pro ? "Professional Teacher" : "Community Tutor",
       roleIcon: "../../Assets/Icons/certified-solid-" + (t.pro ? "red" : "teal") + ".svg",
       tags: t.tags.map(([tone, label]) => ({ tone, label })),
@@ -526,6 +514,9 @@ class Component extends DCLogic {
       beginnerMode: this.state.beginnerMode,
       beginnerClass: this.state.beginnerMode ? "is-checked" : "",
       toggleBeginner: () => this.setState((s) => ({ beginnerMode: !s.beginnerMode })),
+      resultPages: [1, 2, 3, "ellipsis", 64],
+      previewPlayLabel: `Play ${this.state.preview}'s introduction video`,
+      previewBookLabel: `Book trial · ${this.previewVals().previewPrice}`,
       filterOpen: this.state.filterOpen,
       filterBody: this.filterBody(UI),
       /* Two buttons the kit renders. Neither can carry an onClick — this is a
