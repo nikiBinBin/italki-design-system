@@ -1,11 +1,11 @@
 {
   "project": "f7eb9b7d-40fb-4766-bccc-0202f1c91fb8",
-  "syncedAt": "2026-08-07",
+  "syncedAt": "2026-08-08",
   "note": "Mirror of the Design project templates. The project is the source of truth; these copies exist only so audit:templates exercises the real files. A stale mirror produces confident findings about a page nobody is running — re-sync before believing one.",
   "files": {
     "teacher-search/TeacherSearch.dc.html": {
-      "bytes": 35998,
-      "sha256": "bd3d88aa7e06592a",
+      "bytes": 35026,
+      "sha256": "2182109fd7966ccd",
       "origin": "written to the project from here"
     },
     "teacher-search/ds-safe.js": {
@@ -34,8 +34,8 @@
       "origin": "not re-verified this sync"
     },
     "teacher-profile/TeacherProfile.dc.html": {
-      "bytes": 42354,
-      "sha256": "05fbe9e69a0b3f67",
+      "bytes": 41478,
+      "sha256": "80fcd9c49ab0cf66",
       "origin": "written to the project from here"
     },
     "teacher-profile/ds-safe.js": {
