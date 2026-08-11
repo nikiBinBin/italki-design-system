@@ -45,6 +45,10 @@ const FOUNDATIONS = [
   ['grid', 'Grid', 'Grid'],
   ['radius', 'Radius', 'Radius'],
   ['shadow', 'Shadow', 'Shadow'],
+  /* A Foundation page with no entry here produces no card, and the omission is
+     silent: the Catalog gains a route, the pane gains nothing, and only reading
+     both side by side shows it. */
+  ['image', 'Image', 'Image'],
 ];
 
 const PATTERNS = [
