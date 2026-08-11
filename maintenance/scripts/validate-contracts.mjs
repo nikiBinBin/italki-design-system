@@ -178,6 +178,17 @@ assert(componentCSS.includes(".ui-card.is-outlined { border: 0; box-shadow: 0 0 
 assert(!/--ui-shadow-stroke-card/.test(tokensCSS), "Shadow/Stroke-card is retired: one 1px ring, one source of colour");
 assert(componentCSS.includes(".ui-card.is-interactive:hover, .ui-card.is-interactive:focus-visible { box-shadow: var(--ui-shadow-card-hover); }"), "Interactive Card must consume Shadow/Card-Hover");
 
+/* A segmented control's hover fill was the same token as its selected fill, so
+   the segment under the cursor already looked chosen and clicking it changed
+   nothing anyone could see — the switch had worked the entire time. Chip solved
+   this by making hover one step darker than the resting selected state. */
+{
+  const fill = (pattern) => componentCSS.match(pattern)?.[1]?.match(/background:\s*([^;]+);/)?.[1]?.trim();
+  const hover = fill(/\.ui-segmented-control button:hover[^{]*\{([^}]*)\}/);
+  const pressed = fill(/\.ui-segmented-control button\[aria-pressed="true"\] \{([^}]*)\}/);
+  assert(hover && pressed && hover !== pressed, `A segmented control's hover fill must differ from its selected fill, or clicking reads as nothing happening (both are ${hover})`);
+}
+
 assert(!/#[0-9A-Fa-f]{3,8}\b/.test(componentCSS), "Component CSS must not contain raw hexadecimal colors");
 assert(!/\brgb\(/.test(componentCSS), "Component CSS must not contain raw rgb colors");
 assert(!/#[0-9A-Fa-f]{3,8}\b|\brgb\(/.test(read("catalog-runtime/italki-ui.js")), "Component implementation must not contain raw colors");
@@ -386,6 +397,8 @@ assert.match(ui.button({ label: "View profile", trailingIcon: "Assets/Icons/arro
 assert.match(ui.segmentedControl({ id: "segmented-pill", options: ["Week", "Month"] }), /ui-segmented-control--pill/, "Segmented control must default to Pill");
 assert.match(ui.segmentedControl({ id: "segmented-rounded", options: ["Week", "Month"], shape: "rounded" }), /ui-segmented-control--rounded/, "Segmented control must support the Rounded variant");
 assert.match(ui.segmentedControl({ id: "segmented-icon", contentType: "icon", options: [{ label: "Morning lessons", value: "morning", icon: "Assets/Icons/16px/time-morning-sm.svg" }, { label: "Afternoon lessons", value: "afternoon", icon: "Assets/Icons/16px/time-afternoon-sm.svg" }, { label: "Evening lessons", value: "evening", icon: "Assets/Icons/16px/time-evening-sm.svg" }] }), /ui-segmented-control--icon[\s\S]*aria-label="Morning lessons"[\s\S]*ui-segmented-control__icon[\s\S]*time-evening-sm\.svg/, "Icon segmented control must retain accessible names and render three 16px icon options");
+assert(componentCSS.includes('.ui-segmented-control--icon button[aria-pressed="true"] .ui-segmented-control__icon { filter: brightness(.32); }'), "Selected icon segments must strengthen their icon color");
+assert.match(ui.segmentedControl({ id: "segmented-role", contentType: "role", options: [{ label: "Student role", value: "student", icon: "Assets/Icons/student.svg" }, { label: "Teacher role", value: "teacher", icon: "Assets/Icons/teacher.svg" }] }), /ui-segmented-control--role[\s\S]*Student role[\s\S]*ui-segmented-control__role-switch/, "Role segmented control must render two icon-labelled roles and a central role-switch affordance");
 assert.match(ui.checkbox({ checked: "mixed" }), /role="checkbox"[^>]*aria-checked="mixed"/, "Checkbox must expose mixed state through ARIA");
 assert.match(ui.checkboxGroup({ id: "accessibility-group", label: "Topics", options: ["Conversation"] }), /<fieldset[^>]*data-component="checkbox-group"/, "Checkbox group must expose a semantic fieldset");
 assert.match(ui.radio({ label: "Online lesson", value: "online", checked: true }), /role="radio"[^>]*aria-checked="true"/, "Radio must expose a checked radio state through ARIA");
@@ -461,8 +474,32 @@ assert.match(ui.timePicker({ id: "time-picker-selected", slots: ["09:00"], selec
 assert(componentCSS.includes(".ui-time-picker__icon.is-placeholder { opacity: .45; }") && componentCSS.includes(".ui-time-picker.is-disabled .ui-time-picker__icon { opacity: .25; }"), "Time picker icon intensity must match placeholder and disabled text states without replacing the approved SVG");
 assert(runtimeSource.includes('root.querySelector(".ui-time-picker__icon")?.classList.toggle("is-placeholder", selectedLabels.length === 0);'), "Time picker interaction must restore the selected icon intensity after choosing a time");
 assert(componentCSS.includes(".ui-time-slot--option { min-width: 0; min-height: 32px; border-radius: var(--ui-radius-md);") && componentCSS.includes(".ui-time-slot--option.is-selected { color: var(--ui-color-card); border-color: var(--ui-color-text); background: var(--ui-color-text); }"), "Time picker options must use the 8px radius token and Foreground/Primary-text when selected");
-assert.match(ui.selection({ contentType: "package-card", selectionMode: "radio", discount: "7% off" }), /class="ui-selection__package-offer-icon" src="Assets\/Icons\/16px\/category-sm\.svg"/, "Lesson package discounts must render the approved category icon with their offer text");
-assert(componentCSS.includes(".ui-selection__package-offer-icon { width: 16px; height: 16px; flex: 0 0 16px; display: block; object-fit: contain; filter:") && componentCSS.includes(".ui-selection__package-offer.is-neutral .ui-selection__package-offer-icon { filter: none; }"), "Lesson package discount icons must remain visible and use matching offer tones");
+assert.match(ui.selection({ contentType: "package-card", selectionMode: "radio", discount: "7% off" }), /<span class="ui-selection__package-offer-icon" aria-hidden="true"><\/span>/, "Lesson package discounts must render the category icon element with their offer text");
+/* The offer icon is painted, not shipped coloured: it used to be an <img> tinted
+   by a hand-tuned filter chain, which meant the colour could not follow the
+   token it was imitating. currentColor makes it follow the offer's own text
+   colour — info for a discount, secondary when neutral — so the neutral variant
+   needs no icon rule of its own. */
+{
+  const offerIcon = componentCSS.match(/\.ui-selection__package-offer-icon \{[^}]*\}/)?.[0] ?? "";
+  assert(/background: currentColor;/.test(offerIcon) && /mask: url\("\.\.\/Assets\/Icons\/16px\/category-sm\.svg"\) center \/ contain no-repeat;/.test(offerIcon),
+    "Lesson package discount icons must take their colour from the offer text, not from a filter");
+  assert(!/\.ui-selection__package-offer\.is-neutral \.ui-selection__package-offer-icon/.test(componentCSS),
+    "A neutral offer needs no icon rule of its own — currentColor already follows the label");
+}
+assert(!/filter:\s*invert\(/.test(componentCSS), "Icons must be tinted through a mask and a token, never by a hand-tuned filter chain");
+/* A mask url in a custom property is resolved against whichever stylesheet reads
+   the property, so a caller-supplied path cannot be right for every consumer —
+   which is why Divider's icon is an ordinary kit <img> again, and why the two
+   icons that are masks name their file in the stylesheet rather than inline. */
+assert.match(ui.divider({ label: "or", icon: "Assets/Icons/16px/time-sm.svg" }), /<img class="ui-divider__icon" src="Assets\/Icons\/16px\/time-sm\.svg" alt="" \/>/, "Divider icons must render through the shared icon helper, so their path is rebased like every other icon");
+/* Every url() the kit ships is stylesheet-relative from catalog-runtime/. The
+   bundle sits beside Assets/ instead, and build-ds-project rewrites for that —
+   a url() written any other way would silently paint nothing there. */
+for (const [, cssUrl] of componentCSS.matchAll(/url\("([^"]+)"\)/g)) {
+  assert(cssUrl.startsWith("../Assets/"), `Component CSS url() must be stylesheet-relative from catalog-runtime: ${cssUrl}`);
+  assert(fs.existsSync(path.join(root, "catalog-runtime", cssUrl)), `Component CSS references a missing asset: ${cssUrl}`);
+}
 assert(componentCSS.includes(".ui-notification { --ui-dismiss-surface: var(--ui-color-card); width: min(100%, 400px); display: none; align-items: flex-start; gap: var(--ui-space-3); position: relative; overflow: visible; border: 1px solid var(--ui-color-divider);"), "Notification outer card border must use the subtle divider token");
 assert(catalog.includes('const action = buttonComponent({ label: "View lesson", variant: "secondary", size: 32, shape: "pill", demo: "button" });'), "Notification With action must use a 32px Secondary Pill button");
 assert(catalog.includes('statusTag("Decline", "neutral", "Assets/Icons/16px/lesson-canceled-sm.svg")'), "Lesson status tags must include Decline with the same neutral canceled icon treatment");

@@ -317,7 +317,7 @@
     const feature = leading ? `<span class="ui-selection__feature ui-selection__feature--${contentType}">${leading}</span>` : "";
     const title = `<span class="ui-selection__title">${escapeHTML(label)}</span>${subtext ? `<span class="ui-selection__subtext">${escapeHTML(subtext)}</span>` : ""}`;
     const copy = `<span class="ui-selection__copy"><span class="ui-selection__title-row">${title}</span>${description ? `<span class="ui-selection__description">${escapeHTML(description)}</span>` : ""}</span>`;
-    const packageOffer = discount ? `<span class="ui-selection__package-offer${discount === "No discount" ? " is-neutral" : ""}">${icon("Assets/Icons/16px/category-sm.svg", "ui-selection__package-offer-icon")}<span>${escapeHTML(discount)}</span></span>` : "";
+    const packageOffer = discount ? `<span class="ui-selection__package-offer${discount === "No discount" ? " is-neutral" : ""}"><span class="ui-selection__package-offer-icon" aria-hidden="true"></span><span>${escapeHTML(discount)}</span></span>` : "";
     const packageQuantity = quantity ? `<span class="ui-selection__package-quantity"><strong>${escapeHTML(quantity)}</strong><span>${escapeHTML(quantityLabel)}</span></span>` : "";
     const packageTotal = originalPrice || totalPrice ? `<span class="ui-selection__package-total">${originalPrice ? `<s>${escapeHTML(originalPrice)}</s>` : ""}${totalPrice ? `<strong>${escapeHTML(totalPrice)}</strong>` : ""}</span>` : "";
     const packageBody = `<span class="ui-selection__package-copy">${packageOffer}${price ? `<span class="ui-selection__package-price">${escapeHTML(price)}${period ? `<small>${escapeHTML(period)}</small>` : ""}</span>` : ""}${description ? `<span class="ui-selection__package-description">${escapeHTML(description)}</span>` : ""}</span>${packageQuantity || packageTotal ? `<span class="ui-selection__package-footer">${packageQuantity}${packageTotal}</span>` : ""}`;
@@ -483,10 +483,7 @@
       return `<span class="${classes}" data-component="divider" role="separator" aria-orientation="vertical"${ariaLabel ? ` aria-label="${escapeHTML(ariaLabel)}"` : ""}></span>`;
     }
 
-    const iconMarkup = label && iconPath ? (() => {
-      if (!approvedAsset(iconPath)) throw new Error(`Unapproved asset: ${iconPath}`);
-      return `<span class="ui-divider__icon" aria-hidden="true" style="--ui-divider-icon:url('${escapeHTML(iconPath)}')"></span>`;
-    })() : "";
+    const iconMarkup = label && iconPath ? icon(iconPath, "ui-divider__icon") : "";
     const labelMarkup = label ? `<span class="ui-divider__label">${iconMarkup}${escapeHTML(label)}</span>` : "";
     return `<div class="${classes}" data-component="divider" role="separator" aria-orientation="horizontal"${ariaLabel ? ` aria-label="${escapeHTML(ariaLabel)}"` : ""}${margin}>${labelMarkup}</div>`;
   }
@@ -1559,6 +1556,7 @@
        done that — it has handed over the data and expects the bar. Refusing to
        compose because the variant was left unwritten is the component playing
        dumb, and what it produced was an empty bar with no error to explain it. */
+    const navId = id || `top-nav-${String(ariaLabel).toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
     const hasBarData = Boolean(contextLabel || contextOptions.length || searchPlaceholder !== "Search" || actionLabel !== "Book lessons");
     const composed = variant !== "custom" || (hasBarData && !leading && !center && !trailing);
     const searchBar = variant === "teacher-search";
@@ -1567,18 +1565,26 @@
       || (contextLabel ? { id: "context", label: contextLabel, flag: contextFlag } : null);
     const leadingContent = leading || (composed && contextSelected
       ? topNavContext({
+          /* Same reason as the search field below: this derived its id from its
+             aria-label, which is the same on every nav, so two navs on one page
+             published the same id twice — and the trigger's aria-controls then
+             pointed at an ambiguous target. */
+          id: `${navId}-context`,
           mode: searchBar ? "labelled" : "compact",
           selected: contextSelected,
           options: contextOptions.length ? contextOptions : [contextSelected],
         })
       : "");
+    /* The search element used to derive its own id from its placeholder, so two
+       navs asking for the same placeholder produced the same id twice on one
+       page — id has to be unique, and a duplicate breaks label association and
+       fragment links. Derived from the nav that owns it instead. */
     const centerContent = center || (composed
-      ? topNavSearch({ placeholder: searchPlaceholder, filter: searchBar, filterLabel: searchFilterLabel })
+      ? topNavSearch({ id: `${navId}-search`, placeholder: searchPlaceholder, filter: searchBar, filterLabel: searchFilterLabel })
       : "");
     const trailingContent = trailing || (composed
       ? button({ label: actionLabel, variant: "emphasis", size: 40, shape: "pill", leadingIcon: actionIcon })
       : "");
-    const navId = id || `top-nav-${String(ariaLabel).toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
     return `<header class="ui-top-nav${sticky ? "" : " is-flow"}" id="${escapeHTML(navId)}" data-component="top-nav" data-ui-top-nav aria-label="${escapeHTML(ariaLabel)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}><div class="ui-top-nav__leading">${leadingContent}</div><div class="ui-top-nav__center">${centerContent}</div><div class="ui-top-nav__trailing">${trailingContent}</div></header>`;
   }
 
@@ -2875,10 +2881,15 @@
     enumValue("segmented-control", "shape", shape);
     enumValue("segmented-control", "contentType", contentType);
     const normalized = options.map((option) => typeof option === "string" ? { label: option, value: option } : { ...option, label: option?.label || option?.value || "", value: option?.value || option?.label || "" });
-    if (contentType === "icon" && normalized.some((option) => !option.icon)) throw new Error("Icon segmented-control options require an approved icon and accessible label");
+    if (["icon", "role"].includes(contentType) && normalized.some((option) => !option.icon)) throw new Error("Icon segmented-control options require an approved icon and accessible label");
+    if (contentType === "role" && normalized.length !== 2) throw new Error("Role segmented-control requires exactly two options");
     const selectedValue = String(selected || normalized.find((option) => option.selected)?.value || normalized[0]?.value || "");
-    const buttons = normalized.map((option) => `<button type="button" data-demo="ui-segmented-control" data-segment-value="${escapeHTML(option.value)}" aria-label="${escapeHTML(option.label)}" aria-pressed="${String(option.value) === selectedValue}"${disabled || option.disabled ? " disabled" : ""}>${contentType === "icon" ? icon(option.icon, "ui-segmented-control__icon") : escapeHTML(option.label)}</button>`).join("");
-    return `<div class="ui-segmented-control ui-segmented-control--${size} ui-segmented-control--${shape} ui-segmented-control--${contentType}" data-component="segmented-control" data-ui-segmented-control${id ? ` id="${escapeHTML(id)}"` : ""} role="group" aria-label="${escapeHTML(ariaLabel)}">${buttons}</div>`;
+    const buttons = normalized.map((option) => {
+      const content = contentType === "icon" ? icon(option.icon, "ui-segmented-control__icon") : (contentType === "role" ? `<span class="ui-segmented-control__role-content">${icon(option.icon, "ui-segmented-control__role-icon")}<span>${escapeHTML(option.label)}</span></span>` : escapeHTML(option.label));
+      return `<button type="button" data-demo="ui-segmented-control" data-segment-value="${escapeHTML(option.value)}" aria-label="${escapeHTML(option.label)}" aria-pressed="${String(option.value) === selectedValue}"${disabled || option.disabled ? " disabled" : ""}>${content}</button>`;
+    }).join("");
+    const roleSwitch = contentType === "role" ? `<span class="ui-segmented-control__role-switch" aria-hidden="true">${icon("Assets/Icons/switch.svg", "ui-segmented-control__role-switch-icon")}</span>` : "";
+    return `<div class="ui-segmented-control ui-segmented-control--${size} ui-segmented-control--${shape} ui-segmented-control--${contentType}" data-component="segmented-control" data-ui-segmented-control${id ? ` id="${escapeHTML(id)}"` : ""} role="group" aria-label="${escapeHTML(ariaLabel)}">${buttons}${roleSwitch}</div>`;
   }
 
   function timeSlot(props = {}) {
@@ -3130,7 +3141,7 @@
     const today = action("today", { label: todayLabel, variant: "secondary", size: 32, shape: "pill", leadingIcon: "Assets/Icons/16px/today-sm.svg" });
     const scrollable = normalizedRows.length > 12;
     const calendarConfig = hasWeekViews ? escapeHTML(JSON.stringify({ id: calendarId, variant, timezone, weekLabel, todayLabel, weekViews, todayWeek: todayWeekIndex, timePicker: timePickerProps, disabled, ariaLabel, demo })) : "";
-    return `<section class="ui-calendar${scrollable ? " ui-calendar--scrollable" : ""}${disabled ? " is-disabled" : ""}" data-component="calendar" data-ui-calendar data-calendar-week-index="${activeWeekIndex}" data-calendar-today-week="${todayWeekIndex}"${calendarConfig ? ` data-calendar-config="${calendarConfig}"` : ""} id="${escapeHTML(calendarId)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""} aria-label="${escapeHTML(ariaLabel)}"><header class="ui-calendar__controls"><div class="ui-calendar__context"><span class="ui-calendar__timezone">${icon("Assets/Icons/16px/location-sm.svg", "ui-calendar__timezone-icon")}<span>${escapeHTML(timezone)}</span></span>${selectedTime ? `<div class="ui-calendar__time-picker">${selectedTime}</div>` : ""}</div><div class="ui-calendar__actions">${today}<div class="ui-calendar__week-navigation">${previous}<strong>${escapeHTML(displayedWeekLabel)}</strong>${next}</div></div></header><div class="ui-calendar__scroll"><div class="ui-calendar__grid" role="grid" aria-label="${escapeHTML(ariaLabel)}" style="--ui-calendar-day-count:${normalizedDates.length};--ui-calendar-grid-height:${(normalizedRows.length + 1) * 40}px"><div class="ui-calendar__row ui-calendar__row--header" role="row"><div class="ui-calendar__corner" aria-hidden="true"></div>${dateHeader}</div>${timeRows}</div></div></section>`;
+    return `<section class="ui-calendar${scrollable ? " ui-calendar--scrollable" : ""}${disabled ? " is-disabled" : ""}" data-component="calendar" data-ui-calendar data-calendar-week-index="${activeWeekIndex}" data-calendar-today-week="${todayWeekIndex}"${calendarConfig ? ` data-calendar-config="${calendarConfig}"` : ""} id="${escapeHTML(calendarId)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""} aria-label="${escapeHTML(ariaLabel)}"><header class="ui-calendar__controls"><div class="ui-calendar__context"><span class="ui-calendar__timezone"><span class="ui-calendar__timezone-icon" aria-hidden="true"></span><span>${escapeHTML(timezone)}</span></span>${selectedTime ? `<div class="ui-calendar__time-picker">${selectedTime}</div>` : ""}</div><div class="ui-calendar__actions">${today}<div class="ui-calendar__week-navigation">${previous}<strong>${escapeHTML(displayedWeekLabel)}</strong>${next}</div></div></header><div class="ui-calendar__scroll"><div class="ui-calendar__grid" role="grid" aria-label="${escapeHTML(ariaLabel)}" style="--ui-calendar-day-count:${normalizedDates.length};--ui-calendar-grid-height:${(normalizedRows.length + 1) * 40}px"><div class="ui-calendar__row ui-calendar__row--header" role="row"><div class="ui-calendar__corner" aria-hidden="true"></div>${dateHeader}</div>${timeRows}</div></div></section>`;
   }
 
   function popover(props = {}) {

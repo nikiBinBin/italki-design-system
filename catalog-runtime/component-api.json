@@ -3130,7 +3130,8 @@
         ],
         "contentType": [
           "text",
-          "icon"
+          "icon",
+          "role"
         ]
       },
       "states": [
@@ -3138,6 +3139,7 @@
         "pill",
         "rounded",
         "icon",
+        "role",
         "selected",
         "disabled"
       ],
