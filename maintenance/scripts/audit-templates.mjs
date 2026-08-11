@@ -137,7 +137,6 @@ for (const template of templates) {
 
      Declared exemptions are hooks that genuinely need no click handler. */
   const DRAWER_NOT_CLICK = new Set([
-    'checkbox',            // a native input; toggling is the browser's job
     'ui-slider', 'ui-slider-range', // inputs too — synced on `input`
     'filter-apply',        // the page's own decision: this template closes the drawer
   ]);

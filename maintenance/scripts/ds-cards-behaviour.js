@@ -111,6 +111,7 @@
       'ds-chip': (c) => call(ui.toggleChip, 'toggleChip', c),
       'filter-category-child': (c) => call(ui.toggleFilterCategoryChild, 'toggleFilterCategoryChild', c),
       'filter-category-parent': (c) => call(ui.toggleFilterCategoryParent, 'toggleFilterCategoryParent', c),
+      'checkbox': (c) => call(ui.toggleCheckbox, 'toggleCheckbox', c),
       'ui-rate': (c, event) => call(ui.selectRate, 'selectRate', c, event),
       /* Hooks the Catalog binds and this table did not. Found by diffing the
          two: sixteen of them, so every one of those controls rendered
@@ -168,7 +169,7 @@
        The Catalog wires those on its own pages; a static card cannot. */
     const NOT_CLICK = new Set([
       'ui-slider', 'ui-slider-range', 'ui-textarea', 'ui-select-search',
-      'ui-top-nav-search-input', 'ui-upload-input', 'checkbox',
+      'ui-top-nav-search-input', 'ui-upload-input',
       'ui-breadcrumb-item', 'ui-stepper', 'button', 'tag-remove-demo',
       'teacher-discovery-a1', 'teacher-discovery-book-preview',
       'teacher-discovery-filter-apply', 'teacher-discovery-filter-reset',
@@ -183,6 +184,12 @@
 
     /* Checkbox, radio and switch carry their state on the input, so they are
        synced rather than dispatched. */
+    /* Same driver the Catalog binds: without it a card's range renders and cannot
+       be dragged, because both inputs are pointer-events:none by design. */
+    document.addEventListener('pointerdown', (event) => {
+      if (event.target.closest?.('[data-slider-range]')) call(ui.startSliderRangeDrag, 'startSliderRangeDrag', event);
+    });
+
     document.addEventListener('input', (event) => {
       /* Range handles are inputs, so they sync rather than dispatch — without
          this a card's price range drags and nothing moves. */
@@ -190,6 +197,7 @@
       if (range) call(ui.syncSliderRange, 'syncSliderRange', range);
       const single = event.target.closest?.('[data-demo="ui-slider"]');
       if (single) call(ui.syncSliderInput, 'syncSliderInput', single);
+      if (range || single) call(ui.syncFilterPrice, 'syncFilterPrice', document);
     }, true);
 
     document.addEventListener('change', (event) => {

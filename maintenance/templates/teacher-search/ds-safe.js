@@ -178,6 +178,7 @@
       run("resetFilters", panel);
       run("syncTopNavFilterCue", panel);
     },
+    "checkbox": (c) => run("toggleCheckbox", c),
     "ui-modal-mask": (c) => run("closeModal", c),
   };
     /* The nav's green cue is state, not a toggle: it used to light up because
@@ -195,6 +196,13 @@
       if (handler) handler(hook);
       if (hook) syncFilterCue(hook);
     }, true);
+    /* The range's two inputs are pointer-events:none so their thumbs can overlap,
+       which means the drag has to be driven — the kit exports the driver and only
+       the Catalog had ever bound it, so every range outside the Catalog looked
+       finished and could not be moved at all. */
+    document.addEventListener("pointerdown", (e) => {
+      if (e.target.closest?.("[data-slider-range]")) run("startSliderRangeDrag", e);
+    });
     document.addEventListener("dragstart", (e) => run("startSidebarDrag", e));
     document.addEventListener("dragover", (e) => run("moveSidebarDrag", e));
     document.addEventListener("dragend", (e) => run("endSidebarDrag", e));
@@ -217,7 +225,7 @@
       if (range) run("syncSliderRange", range);
       const single = e.target.closest?.('[data-demo="ui-slider"]');
       if (single) run("syncSliderInput", single);
-      if (range || single) syncFilterCue(range || single);
+      if (range || single) { run("syncFilterPrice", (range || single).closest("[data-ui-modal]") || document); syncFilterCue(range || single); }
     }, true);
     const searchFocus = (state) => (e) => {
       const input = e.target.closest?.('[data-demo="ui-top-nav-search-input"]');
