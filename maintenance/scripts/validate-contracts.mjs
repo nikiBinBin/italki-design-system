@@ -22,6 +22,27 @@ const componentTokenDeclarations = new Set([...`${componentCSS}\n${runtimeSource
 for (const [, token] of runtimeSource.matchAll(/setProperty\(\s*["'](--ui-[a-z0-9-]+)/g)) componentTokenDeclarations.add(token);
 const foundationTokenDeclarations = new Set([...tokensCSS.matchAll(/(--ui-[a-z0-9-]+)\s*:/g)].map(([, token]) => token));
 
+/* contracts.js is generated from contracts.json, and nothing failed when it
+   lagged behind: the page just threw "<component> does not accept prop <name>"
+   at whoever opened it. That is how a finished SegmentedControl change looked
+   broken for one test run. Rebuild it here and compare — the same generator,
+   so a mismatch means the checked-in file is stale, not that it is wrong. */
+{
+  const runtimeContract = {
+    assetRoots: manifest.assetRoots,
+    components: Object.fromEntries(Object.entries(manifest.components).map(([name, contract]) => [name, {
+      acceptedProps: contract.acceptedProps,
+      props: contract.props,
+      ...(contract.subcomponents ? { subcomponents: contract.subcomponents } : {})
+    }]))
+  };
+  assert.equal(
+    read("catalog-runtime/contracts.js"),
+    `window.ITalkiUIContracts = ${JSON.stringify(runtimeContract, null, 2)};\n`,
+    "catalog-runtime/contracts.js is stale — run npm --prefix maintenance run build:contracts",
+  );
+}
+
 assert(catalog.includes('<link rel="stylesheet" href="catalog.css" />'), "Catalog shell styles must live outside the document");
 assert(!catalog.includes("<style>"), "Catalog must not embed its presentation CSS");
 assert(catalog.includes("Image|Approved image ratios for content and banners."), "Foundation must expose the image-ratio rule");
@@ -364,6 +385,7 @@ assert.match(ui.button({ label: "Add lesson", leadingIcon: "Assets/Icons/add.svg
 assert.match(ui.button({ label: "View profile", trailingIcon: "Assets/Icons/arrow-right-sm.svg" }), /has-trailing-icon/, "Labelled trailing-icon Buttons must expose the shared 8px trailing inset hook");
 assert.match(ui.segmentedControl({ id: "segmented-pill", options: ["Week", "Month"] }), /ui-segmented-control--pill/, "Segmented control must default to Pill");
 assert.match(ui.segmentedControl({ id: "segmented-rounded", options: ["Week", "Month"], shape: "rounded" }), /ui-segmented-control--rounded/, "Segmented control must support the Rounded variant");
+assert.match(ui.segmentedControl({ id: "segmented-icon", contentType: "icon", options: [{ label: "Morning lessons", value: "morning", icon: "Assets/Icons/16px/time-morning-sm.svg" }, { label: "Afternoon lessons", value: "afternoon", icon: "Assets/Icons/16px/time-afternoon-sm.svg" }, { label: "Evening lessons", value: "evening", icon: "Assets/Icons/16px/time-evening-sm.svg" }] }), /ui-segmented-control--icon[\s\S]*aria-label="Morning lessons"[\s\S]*ui-segmented-control__icon[\s\S]*time-evening-sm\.svg/, "Icon segmented control must retain accessible names and render three 16px icon options");
 assert.match(ui.checkbox({ checked: "mixed" }), /role="checkbox"[^>]*aria-checked="mixed"/, "Checkbox must expose mixed state through ARIA");
 assert.match(ui.checkboxGroup({ id: "accessibility-group", label: "Topics", options: ["Conversation"] }), /<fieldset[^>]*data-component="checkbox-group"/, "Checkbox group must expose a semantic fieldset");
 assert.match(ui.radio({ label: "Online lesson", value: "online", checked: true }), /role="radio"[^>]*aria-checked="true"/, "Radio must expose a checked radio state through ARIA");
