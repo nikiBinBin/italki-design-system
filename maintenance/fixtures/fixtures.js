@@ -500,7 +500,7 @@
         fixture("segmented-control", "pill", ui.segmentedControl({ id: "fixture-segmented-pill", options: ["Week", "Month"], shape: "pill" })),
         fixture("segmented-control", "rounded", ui.segmentedControl({ id: "fixture-segmented-rounded", options: ["Week", "Month"], shape: "rounded" })),
         fixture("segmented-control", "icon", ui.segmentedControl({ id: "fixture-segmented-icon", options: [{ label: "Morning lessons", value: "morning", icon: "Assets/Icons/16px/time-morning-sm.svg" }, { label: "Afternoon lessons", value: "afternoon", icon: "Assets/Icons/16px/time-afternoon-sm.svg" }, { label: "Evening lessons", value: "evening", icon: "Assets/Icons/16px/time-evening-sm.svg" }], selected: "afternoon", contentType: "icon" })),
-        fixture("segmented-control", "role", ui.segmentedControl({ id: "fixture-segmented-role", options: [{ label: "Student role", value: "student", icon: "Assets/Icons/user.svg" }, { label: "Teacher role", value: "teacher", icon: "Assets/Icons/teacher.svg" }], contentType: "role" })),
+        fixture("segmented-control", "role", ui.segmentedControl({ id: "fixture-segmented-role", options: [{ label: "Student role", value: "student", icon: "Assets/Icons/role-student.svg" }, { label: "Teacher role", value: "teacher", icon: "Assets/Icons/role-teacher.svg" }], contentType: "role" })),
         fixture("segmented-control", "selected", ui.segmentedControl({ id: "fixture-segmented-selected", options: ["Week", "Month"], selected: "Month" })),
         fixture("segmented-control", "disabled", ui.segmentedControl({ id: "fixture-segmented-disabled", options: ["Week", "Month"], disabled: true }))
       ],
