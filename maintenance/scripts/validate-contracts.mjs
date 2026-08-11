@@ -391,12 +391,13 @@ assert(componentCSS.includes(".ui-video.is-disabled .ui-video__poster { filter: 
 
 /* Link. The two decisions worth pinning: a disabled link must not be
    followable, and an external one must say so before it is clicked. */
-assert.match(ui.link({ label: "See lessons" }), /<a class="ui-link ui-link--16 ui-link--default"[^>]*href="#"/, "Link must render an anchor with a destination");
+assert.match(ui.link({ label: "See lessons" }), /<a class="ui-link ui-link--14 ui-link--default"[^>]*href="#"/, "Link must render an anchor with a destination");
 assert.doesNotMatch(ui.link({ label: "Unavailable", disabled: true }), /<a\b/, "A disabled Link must not render an anchor — it cannot be followed");
 assert.match(ui.link({ label: "Unavailable", disabled: true }), /aria-disabled="true"/, "A disabled Link must announce that it is disabled");
 assert.match(ui.link({ label: "Help Center", external: true }), /target="_blank" rel="noreferrer noopener"/, "An external Link must open safely in a new context");
 assert.match(ui.link({ label: "Help Center", external: true }), /arrow-up-right\.svg/, "An external Link must mark itself before it is clicked");
 assert.match(ui.link({ label: "See lessons", trailingIcon: "chevron" }), /chevron-right\.svg/, "Link must support the chevron affordance the teacher card uses");
+assert.match(ui.link({ label: "Default link" }), /ui-link--14/, "Link must default to the compact 14px text tier");
 assert.throws(() => ui.link({ label: "x", variant: "ghost" }), /link\.variant does not accept ghost/, "Link variants are contract-bound");
 assert(componentCSS.includes(".ui-link:hover, .ui-link.is-hover") && componentCSS.includes("text-decoration: underline"), "Link must underline on hover, not at rest");
 assert(!/\.ui-link \{[^}]*text-decoration: underline/.test(componentCSS), "Link must not underline at rest");
@@ -445,6 +446,8 @@ assert.match(ui.pagination({ pages: [1, 2, 3], current: 2, ariaLabel: "Results p
 assert.match(ui.pagination({ pages: [1, 2, 3], current: 2 }), /aria-current="page">2/, "Pagination must expose the current page");
 assert.match(ui.rate({ value: 2.5, allowHalf: true, label: "Lesson rating" }), /role="radiogroup"[^>]*aria-label="Lesson rating"/, "Rate must expose a named radiogroup");
 assert.match(ui.rate({ value: 2.5, allowHalf: true }), /aria-checked="true"/, "Rate must expose checked score through ARIA");
+assert.match(ui.rate({ id: "rate-summary", value: 4.98, variant: "summary", label: "Teacher rating" }), /ui-rate--summary[\s\S]*star-solid\.svg[\s\S]*>4\.98<\/output>/, "Rate must support a static yellow-star score summary");
+assert.match(ui.rate({ value: 4.98, variant: "summary", label: "Teacher rating" }), /role="img"[^>]*aria-label="Teacher rating: 4\.98 out of 5"/, "Rate score summaries must expose one concise accessible rating");
 assert.match(ui.sidebar({ id: "sidebar-accessibility", items: [{ id: "home", label: "Home", icon: "Assets/Icons/dashboard.svg" }], ariaLabel: "Workspace sidebar" }), /<aside[^>]*data-component="sidebar"[^>]*aria-label="Workspace sidebar"/, "Sidebar must expose a named complementary navigation surface");
 assert.match(ui.sidebar({ id: "sidebar-accessibility", items: [{ id: "more", label: "More", icon: "Assets/Icons/more.svg", more: true }], moreItems: [{ id: "community", label: "Community", icon: "Assets/Icons/community.svg" }] }), /role="menu"/, "Sidebar More must expose a menu when supplied");
 assert.match(ui.statistic({ title: "Lessons completed", value: "128" }), /role="group"[^>]*aria-label="Lessons completed, 128"/, "Statistic must expose a readable grouped value");
@@ -553,9 +556,9 @@ assert.match(ui.popover({ id: "popover-accessibility", title: "Details", body: "
 
 for (const reference of [
   '<link rel="stylesheet" href="catalog-runtime/tokens.css" />',
-  '<link rel="stylesheet" href="catalog-runtime/italki-ui.css?v=20260811-tabs-action-divider-package-icon" />',
+  '<link rel="stylesheet" href="catalog-runtime/italki-ui.css?v=20260811-link-default-14" />',
   '<script src="catalog-runtime/contracts.js"></script>',
-  '<script src="catalog-runtime/italki-ui.js?v=20260811-tabs-action-divider-package-icon"></script>',
+  '<script src="catalog-runtime/italki-ui.js?v=20260811-link-default-14"></script>',
   'function buttonComponent(props = {}) { return ui.button({ ...props, variant: props.variant === "gradient" ? "plus" : props.variant }); }',
   'function chipComponent(props = {}) { return ui.chip(props); }',
   'function tagComponent(props = {}) { return ui.tag(props); }',

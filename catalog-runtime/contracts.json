@@ -294,15 +294,16 @@
       "requiredStates": ["pages", "current", "disabled"]
     },
     "rate": {
-      "acceptedProps": ["id", "value", "count", "allowHalf", "allowClear", "disabled", "labels", "showText", "label", "state", "demo"],
+      "acceptedProps": ["id", "value", "count", "allowHalf", "allowClear", "disabled", "labels", "showText", "label", "variant", "state", "demo"],
       "props": {
+        "variant": ["interactive", "summary"],
         "allowHalf": [true, false],
         "allowClear": [true, false],
         "disabled": [true, false],
         "showText": [true, false],
         "state": ["default", "hover", "disabled"]
       },
-      "requiredStates": ["basic", "labels", "clearable", "disabled"]
+      "requiredStates": ["basic", "labels", "clearable", "disabled", "summary"]
     },
     "sidebar": {
       "acceptedProps": ["id", "variant", "collapsed", "items", "sections", "moreItems", "moreOpen", "footer", "balance", "avatarInitials", "ariaLabel", "sticky", "demo"],

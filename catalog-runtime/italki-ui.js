@@ -183,7 +183,7 @@
   function link(props = {}) {
     assertProps("link", props);
     const {
-      label = "", href = "#", size = 16, variant = "default",
+      label = "", href = "#", size = 14, variant = "default",
       trailingIcon = "none", external = false, disabled = false,
       state = "default", ariaLabel = "", demo = "",
     } = props;
@@ -515,7 +515,7 @@
     if (!/^[a-z]{2}$/.test(code)) throw new Error("avatar.flag countryCode must be an ISO 3166-1 alpha-2 code");
     if (![16, 24].includes(size)) throw new Error(`avatar.flag does not accept size ${String(size)}`);
     const label = ariaLabel || countryLabel || code.toUpperCase();
-    return `<img class="ui-flag ui-flag--${size}" data-component="avatar" data-ui-avatar-part="flag" src="Assets/Flags/${escapeHTML(code)}.svg" alt="${decorative ? "" : escapeHTML(label)}"${decorative ? ' aria-hidden="true"' : ""} />`;
+    return `<img class="ui-flag ui-flag--${size}" data-component="avatar" data-ui-avatar-part="flag" src="${escapeHTML(withBase(`Assets/Flags/${code}.svg`))}" alt="${decorative ? "" : escapeHTML(label)}"${decorative ? ' aria-hidden="true"' : ""} />`;
   }
 
   function avatar(props = {}) {
@@ -532,7 +532,7 @@
     if (!image && !initials && variant !== "logo") throw new Error("avatar without an image requires initials");
     const accessibleName = ariaLabel || name || initials || "italki";
     const content = variant === "logo"
-      ? '<img class="ui-avatar__logo" src="Assets/Icons/logo-italki-logomark-white.svg" alt="" />'
+      ? `<img class="ui-avatar__logo" src="${withBase("Assets/Icons/logo-italki-logomark-white.svg")}" alt="" />`
       : image
       ? `<img class="ui-avatar__image" src="${escapeHTML(image)}" alt="" />`
       : `<span class="ui-avatar__initials" aria-hidden="true">${escapeHTML(initials)}</span>`;
@@ -665,7 +665,7 @@
     const classes = ["ui-card", interactive ? "is-interactive" : "is-static", outlined && !interactive ? "is-outlined" : "", `ui-card--${density}`, hasMedia ? `ui-card--media-${mediaRatio.replace(":", "-")}` : ""].filter(Boolean).join(" ");
     const mediaMarkup = media
       ? `<img class="ui-card__media" src="${escapeHTML(media)}" alt="${escapeHTML(mediaAlt)}" />`
-      : mediaPlaceholder ? '<span class="ui-card__media ui-media-placeholder" aria-hidden="true"><img src="Assets/Icons/logo-italki-logomark-white.svg" alt="" /></span>' : "";
+      : mediaPlaceholder ? `<span class="ui-card__media ui-media-placeholder" aria-hidden="true"><img src="${withBase("Assets/Icons/logo-italki-logomark-white.svg")}" alt="" /></span>` : "";
     const eyebrowMarkup = eyebrow ? `<span class="ui-card__eyebrow">${escapeHTML(eyebrow)}</span>` : "";
     const titleMarkup = title ? `<h3 class="ui-card__title">${escapeHTML(title)}</h3>` : "";
     const heading = eyebrow || title || meta ? `<header class="ui-card__heading"><div>${eyebrowMarkup}${titleMarkup}</div>${meta ? `<div class="ui-card__meta">${meta}</div>` : ""}</header>` : "";
@@ -698,7 +698,7 @@
       const metricsMarkup = likes !== "" || comments !== "" ? `<span class="ui-list__metrics">${likes !== "" ? `<span>${icon("Assets/Icons/16px/upvote-sm.svg", "ui-list__metric-icon")}${escapeHTML(likes)}</span>` : ""}${comments !== "" ? `<span>${icon("Assets/Icons/16px/comments-sm.svg", "ui-list__metric-icon")}${escapeHTML(comments)}</span>` : ""}</span>` : "";
       const trailingMarkup = trailing ? `<span class="ui-list__trailing">${trailing}</span>` : "";
       const imageMarkup = imagePlaceholder
-        ? '<span class="ui-list__image-placeholder ui-media-placeholder" aria-hidden="true"><img src="Assets/Icons/logo-italki-logomark-white.svg" alt="" /></span>'
+        ? `<span class="ui-list__image-placeholder ui-media-placeholder" aria-hidden="true"><img src="${withBase("Assets/Icons/logo-italki-logomark-white.svg")}" alt="" /></span>`
         : image ? `<img class="ui-list__image" src="${escapeHTML(image)}" alt="${escapeHTML(imageAlt)}" />` : "";
       const identityMarkup = `<span class="ui-list__copy"><span class="ui-list__label">${escapeHTML(label)}</span>${descriptionMarkup}</span>`;
       const rowContent = variant === "content"
@@ -851,9 +851,11 @@
       labels = [],
       showText = false,
       label = "Rate this item",
+      variant = "interactive",
       state = "default",
       demo = ""
     } = props;
+    enumValue("rate", "variant", variant);
     enumValue("rate", "allowHalf", allowHalf);
     enumValue("rate", "allowClear", allowClear);
     enumValue("rate", "disabled", disabled);
@@ -861,6 +863,11 @@
     enumValue("rate", "state", disabled ? "disabled" : state);
     if (!Number.isInteger(count) || count < 1 || count > 10) throw new Error("rate.count must be an integer from 1 to 10");
     if (!Array.isArray(labels) || labels.some((item) => typeof item !== "string")) throw new Error("rate.labels must be an array of strings");
+    if (variant === "summary") {
+      if (!Number.isFinite(value) || value < 0 || value > count) throw new Error("rate.value must be within count");
+      const displayValue = String(value);
+      return `<div class="ui-rate ui-rate--summary"${id ? ` id="${escapeHTML(id)}"` : ""} data-component="rate" role="img" aria-label="${escapeHTML(`${label}: ${displayValue} out of ${count}`)}">${icon("Assets/Icons/star-solid.svg", "ui-rate__summary-star")}<output class="ui-rate__summary-value">${escapeHTML(displayValue)}</output></div>`;
+    }
     if (!Number.isFinite(value) || value < 0 || value > count || (!allowHalf && !Number.isInteger(value)) || (allowHalf && Math.round(value * 2) !== value * 2)) throw new Error("rate.value must be within count and match the active step");
     const activeIndex = Math.max(1, Math.ceil(value || 1));
     const display = `${value || 0} / ${count}`;
@@ -1969,7 +1976,12 @@
     const button = picker.querySelector('[data-demo="ui-date-toggle"]') || picker.querySelector(".ui-date-picker__trigger");
     button?.setAttribute("aria-expanded", String(Boolean(open)));
     const suffix = button?.querySelector(".ui-date-picker__suffix-icon");
-    if (suffix) suffix.src = open ? "Assets/Icons/arrow-up-sm.svg" : "Assets/Icons/arrow-down-sm.svg";
+    /* Through withBase, like everything else the runtime emits. A raw
+       page-relative path is correct for the Catalog and wrong on a card three
+       folders down, and this one is assigned after render — so the generator,
+       which rebases the markup it captures, never sees it. The arrow was fine
+       until the picker had been opened once, and then it was a broken image. */
+    if (suffix) suffix.src = withBase(open ? "Assets/Icons/arrow-up-sm.svg" : "Assets/Icons/arrow-down-sm.svg");
     return true;
   }
 

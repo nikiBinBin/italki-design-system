@@ -23,7 +23,7 @@ for (const root of ['components','patterns']) {
     if(e.isDirectory()) walk(f); else if(e.name.endsWith('.html')) cards.push(path.relative(STAGE,f)); } })(base);
 }
 const b=await chromium.launch();
-const dead=[], errored=[];
+const dead=[], errored=[], broken=[];
 let tested=0;
 for (const rel of cards.sort()) {
   const p=await b.newPage({viewport:{width:1280,height:1000}});
@@ -55,6 +55,16 @@ for (const rel of cards.sort()) {
     try { await el.hover({timeout:800}).catch(()=>{}); await el.click({force:true,timeout:1500}); } catch { continue; }
     await p.waitForTimeout(180);
     if (await sig() === before) dead.push(`${path.basename(rel,'.html')} · ${hook}`);
+    /* Interaction can break an image the initial render got right. A src the
+       runtime assigns after load — the date picker's arrow flipping to its
+       up state — does not pass through the generator that rebases captured
+       markup, so a page-relative path that is correct in the Catalog 404s from
+       three folders down. The card looked perfect until it had been clicked. */
+    for (const src of await p.evaluate(() => [...document.querySelectorAll('img')]
+      .filter((i) => i.complete && i.naturalWidth === 0).map((i) => i.getAttribute('src')))) {
+      const note = `${path.basename(rel,'.html')} · ${hook} → 破图 ${src}`;
+      if (!broken.includes(note)) broken.push(note);
+    }
   }
   if (errs.length) errored.push(`${path.basename(rel,'.html')}: ${errs[0]}`);
   if (warns.length) errored.push(`${path.basename(rel,'.html')}: ${warns[0]}`);
@@ -93,6 +103,8 @@ if (!cards.length || !tested) {
   await b.close(); srv.close();
   process.exit(1);
 }
+console.log(broken.length ? `\n交互后破图 ${broken.length} 处:` : '\n交互后没有破图');
+broken.forEach(x=>console.log('  '+x));
 console.log(dead.length ? `\n点了没反应的 ${dead.length} 个:` : '\n每个钩子都有反应');
 dead.forEach(x=>console.log('  '+x));
 if (errored.length) { console.log(`\n报错/缺函数 ${errored.length}:`); [...new Set(errored)].slice(0,10).forEach(x=>console.log('  '+x)); }

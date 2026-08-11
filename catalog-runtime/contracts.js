@@ -782,10 +782,15 @@ window.ITalkiUIContracts = {
         "labels",
         "showText",
         "label",
+        "variant",
         "state",
         "demo"
       ],
       "props": {
+        "variant": [
+          "interactive",
+          "summary"
+        ],
         "allowHalf": [
           true,
           false
