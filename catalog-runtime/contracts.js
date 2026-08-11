@@ -1623,6 +1623,7 @@ window.ITalkiUIContracts = {
         "selected",
         "size",
         "shape",
+        "contentType",
         "disabled",
         "ariaLabel"
       ],
@@ -1635,6 +1636,10 @@ window.ITalkiUIContracts = {
         "shape": [
           "pill",
           "rounded"
+        ],
+        "contentType": [
+          "text",
+          "icon"
         ]
       }
     },

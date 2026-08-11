@@ -3104,6 +3104,7 @@
         "selected",
         "size",
         "shape",
+        "contentType",
         "disabled",
         "ariaLabel"
       ],
@@ -3113,6 +3114,7 @@
         "selected": "\"\"",
         "size": "40",
         "shape": "\"pill\"",
+        "contentType": "\"text\"",
         "disabled": "false",
         "ariaLabel": "\"Segmented control\""
       },
@@ -3125,12 +3127,17 @@
         "shape": [
           "pill",
           "rounded"
+        ],
+        "contentType": [
+          "text",
+          "icon"
         ]
       },
       "states": [
         "default",
         "pill",
         "rounded",
+        "icon",
         "selected",
         "disabled"
       ],

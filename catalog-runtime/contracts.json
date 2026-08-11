@@ -538,12 +538,13 @@
       "requiredStates": ["closed", "open", "disabled", "details"]
     },
     "segmented-control": {
-      "acceptedProps": ["id", "options", "selected", "size", "shape", "disabled", "ariaLabel"],
+      "acceptedProps": ["id", "options", "selected", "size", "shape", "contentType", "disabled", "ariaLabel"],
       "props": {
         "size": [32, 40, 48],
-        "shape": ["pill", "rounded"]
+        "shape": ["pill", "rounded"],
+        "contentType": ["text", "icon"]
       },
-      "requiredStates": ["default", "pill", "rounded", "selected", "disabled"]
+      "requiredStates": ["default", "pill", "rounded", "icon", "selected", "disabled"]
     },
     "time-slot": {
       "acceptedProps": ["id", "label", "time", "secondary", "appearance", "state", "selected", "unavailable", "held", "loading", "disabled", "duration", "teacher", "calendarDay", "calendarMinute", "ariaLabel", "tooltip", "demo"],

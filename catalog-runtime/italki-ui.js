@@ -2870,13 +2870,15 @@
 
   function segmentedControl(props = {}) {
     assertProps("segmented-control", props);
-    const { id = "", options = [], selected = "", size = 40, shape = "pill", disabled = false, ariaLabel = "Segmented control" } = props;
+    const { id = "", options = [], selected = "", size = 40, shape = "pill", contentType = "text", disabled = false, ariaLabel = "Segmented control" } = props;
     enumValue("segmented-control", "size", size);
     enumValue("segmented-control", "shape", shape);
-    const normalized = options.map((option) => typeof option === "string" ? { label: option, value: option } : { ...option, value: option?.value || option?.label || "" });
+    enumValue("segmented-control", "contentType", contentType);
+    const normalized = options.map((option) => typeof option === "string" ? { label: option, value: option } : { ...option, label: option?.label || option?.value || "", value: option?.value || option?.label || "" });
+    if (contentType === "icon" && normalized.some((option) => !option.icon)) throw new Error("Icon segmented-control options require an approved icon and accessible label");
     const selectedValue = String(selected || normalized.find((option) => option.selected)?.value || normalized[0]?.value || "");
-    const buttons = normalized.map((option) => `<button type="button" data-demo="ui-segmented-control" data-segment-value="${escapeHTML(option.value)}" aria-pressed="${String(option.value) === selectedValue}"${disabled || option.disabled ? " disabled" : ""}>${escapeHTML(option.label)}</button>`).join("");
-    return `<div class="ui-segmented-control ui-segmented-control--${size} ui-segmented-control--${shape}" data-component="segmented-control" data-ui-segmented-control${id ? ` id="${escapeHTML(id)}"` : ""} role="group" aria-label="${escapeHTML(ariaLabel)}">${buttons}</div>`;
+    const buttons = normalized.map((option) => `<button type="button" data-demo="ui-segmented-control" data-segment-value="${escapeHTML(option.value)}" aria-label="${escapeHTML(option.label)}" aria-pressed="${String(option.value) === selectedValue}"${disabled || option.disabled ? " disabled" : ""}>${contentType === "icon" ? icon(option.icon, "ui-segmented-control__icon") : escapeHTML(option.label)}</button>`).join("");
+    return `<div class="ui-segmented-control ui-segmented-control--${size} ui-segmented-control--${shape} ui-segmented-control--${contentType}" data-component="segmented-control" data-ui-segmented-control${id ? ` id="${escapeHTML(id)}"` : ""} role="group" aria-label="${escapeHTML(ariaLabel)}">${buttons}</div>`;
   }
 
   function timeSlot(props = {}) {
