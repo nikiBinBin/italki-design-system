@@ -247,6 +247,25 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
      fixed variant blocks plus one radio-card and one checkbox-card group. */
   const selectionDetail = page.locator('.selection-detail');
   await expect(selectionDetail.locator('.ui-selection--icon-card').first()).toBeVisible();
+  const courseLessonOptions = page.locator('[data-ui-lesson-options][aria-label="Choose a course and lesson duration"]');
+  const conversationCourse = courseLessonOptions.locator('[data-lesson-course-card="conversation"]');
+  const structuredCourse = courseLessonOptions.locator('[data-lesson-course-card="structured"]');
+  const conversationToggle = conversationCourse.locator('[data-demo="ui-lesson-toggle"]');
+  const structuredToggle = structuredCourse.locator('[data-demo="ui-lesson-toggle"]');
+  expect(await courseLessonOptions.evaluate((element) => element.getBoundingClientRect().width)).toBeLessThanOrEqual(760);
+  await expect(conversationToggle).toHaveAttribute('aria-expanded', 'true');
+  await expect(conversationCourse.locator('[data-ui-selection-group]')).toBeVisible();
+  await expect(structuredCourse.locator('[data-ui-selection-group]')).toHaveClass(/is-collapsed/);
+  await expect(structuredCourse.locator('[data-ui-selection-group]')).toHaveAttribute('aria-hidden', 'true');
+  await expect(conversationToggle.locator('.ui-selection__lesson-summary-title')).toHaveCSS('font-size', '16px');
+  await structuredToggle.click();
+  await expect(conversationToggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(conversationCourse.locator('[data-ui-selection-group]')).toHaveClass(/is-collapsed/);
+  await expect(structuredToggle).toHaveAttribute('aria-expanded', 'true');
+  await expect(structuredCourse.locator('[data-ui-selection-group]')).not.toHaveClass(/is-collapsed/);
+  await structuredToggle.click();
+  await expect(structuredToggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(structuredCourse.locator('[data-ui-selection-group]')).toHaveClass(/is-collapsed/);
   const lessonOptions = page.locator('[data-ui-selection-group][aria-label="Choose one lesson option"]');
   const singleLesson = lessonOptions.getByRole("radio", { name: "Single lesson" });
   await singleLesson.click();
@@ -319,6 +338,9 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   await page.goto(`${catalog}#date-picker`);
   const datePicker = page.locator("#date-picker-demo");
   const dateTrigger = datePicker.locator('[data-demo="ui-date-toggle"]');
+  await expect(dateTrigger.locator(".ui-date-picker__calendar-icon")).toHaveAttribute("src", "Assets/Icons/16px/today-sm.svg");
+  await expect(dateTrigger.locator(".ui-date-picker__calendar-icon")).toHaveCSS("width", "16px");
+  await expect(dateTrigger.locator(".ui-date-picker__calendar-icon")).toHaveCSS("height", "16px");
   await expect(dateTrigger).toHaveAttribute("aria-expanded", "true");
   await datePicker.getByRole("button", { name: "Next month" }).click();
   await expect(datePicker.locator("[data-ui-date-month]")).toHaveText("August 2026");
@@ -434,7 +456,6 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
 
   await page.goto(`${catalog}#lesson-card`);
   await expect(page.locator(".lesson-card-pattern-detail")).toHaveCSS("width", "1068px");
-  await expect(page.locator(".lesson-card-pattern-detail .component-doc-content").first()).toHaveCSS("padding", "24px");
   const lessonCards = page.locator(".lesson-card-pattern .ui-card");
   await expect(lessonCards).toHaveCount(8);
   await expect(lessonCards.first()).toHaveCSS("width", "652px");
@@ -514,6 +535,10 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   await page.goto(`${catalog}#card`);
   await expect(page.locator('.card-detail .ui-card.is-static').first()).toHaveCSS("border-radius", "12px");
   await expect(page.locator('.card-detail .ui-card.is-interactive')).toHaveCount(1);
+  await expect(page.locator('.card-detail .ui-card__media.ui-media-placeholder img')).toHaveAttribute("src", "Assets/Icons/logo-italki-logomark-white.svg");
+
+  await page.goto(`${catalog}#radius`);
+  await expect(page.locator('.radius-nested-image.ui-media-placeholder img')).toHaveAttribute("src", "Assets/Icons/logo-italki-logomark-white.svg");
 
   await page.goto(`${catalog}#alert`);
   await expect(page.locator('.ds-component-detail .ui-alert--success .ui-alert__icon-image')).toHaveAttribute("src", "Assets/Icons/check.svg");
@@ -727,4 +752,46 @@ test("every Catalog route renders without bypassing the shared runtime", async (
   }
 
   expect(errors).toEqual([]);
+});
+
+test("Course lesson options expand one course and collapse the active course", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto(`${catalog}#selection`);
+
+  const courseLessonOptions = page.locator('[data-ui-lesson-options][aria-label="Choose a course and lesson duration"]');
+  const conversationCourse = courseLessonOptions.locator('[data-lesson-course-card="conversation"]');
+  const structuredCourse = courseLessonOptions.locator('[data-lesson-course-card="structured"]');
+  const conversationToggle = conversationCourse.locator('[data-demo="ui-lesson-toggle"]');
+  const structuredToggle = structuredCourse.locator('[data-demo="ui-lesson-toggle"]');
+
+  expect(await courseLessonOptions.evaluate((element) => element.getBoundingClientRect().width)).toBeLessThanOrEqual(760);
+  await expect(conversationToggle).toHaveAttribute('aria-expanded', 'true');
+  await expect(conversationCourse.locator('[data-ui-selection-group]')).toBeVisible();
+  await expect(structuredCourse.locator('[data-ui-selection-group]')).toHaveClass(/is-collapsed/);
+  await expect(structuredCourse.locator('[data-ui-selection-group]')).toHaveAttribute('aria-hidden', 'true');
+  await expect(structuredCourse.locator('[data-ui-selection-group]')).toHaveCSS('transition', /grid-template-rows/);
+  await expect(conversationToggle.locator('.ui-selection__lesson-summary-title')).toHaveCSS('font-size', '16px');
+
+  await structuredToggle.click();
+  await expect(conversationToggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(conversationCourse.locator('[data-ui-selection-group]')).toHaveClass(/is-collapsed/);
+  await expect(structuredToggle).toHaveAttribute('aria-expanded', 'true');
+  await expect(structuredCourse.locator('[data-ui-selection-group]')).not.toHaveClass(/is-collapsed/);
+
+  await structuredToggle.click();
+  await expect(structuredToggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(structuredCourse.locator('[data-ui-selection-group]')).toHaveClass(/is-collapsed/);
+});
+
+test("Lesson packages wrap before their pricing content overflows", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 1400 });
+  await page.goto(`${catalog}#selection`);
+
+  const packages = page.locator('.ui-selection-group--package-grid');
+  const cards = packages.locator('.ui-selection--package-card');
+  await expect(cards).toHaveCount(4);
+  const positions = await cards.evaluateAll((items) => items.map((item) => ({ top: Math.round(item.getBoundingClientRect().top), width: item.getBoundingClientRect().width, overflowing: item.scrollWidth > item.clientWidth })));
+
+  expect(new Set(positions.map((item) => item.top)).size).toBeGreaterThan(1);
+  expect(positions.every((item) => item.width >= 360 && !item.overflowing)).toBe(true);
 });

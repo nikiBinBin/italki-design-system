@@ -55,6 +55,12 @@ The parent supplies all options, selected values, disabled or unavailable choice
 - `Lesson category` is a two-level refinement: its parent `checkbox` reveals its child `chip` choices when checked and collapses them when unchecked. Child chips are independently reversible: selecting an active chip again clears it rather than producing another state. `Teacher type` uses the shared `checkbox` and `selection` contracts; its two supplied 80px choice rows expose role evidence with the documented selected outline and corner marker rather than becoming independent Card variants.
 - On small screens the same groups stack in one supplied Drawer or Sheet and preserve group order. A sticky apply or reset action, if product supplies one, belongs to the invoking surface rather than this Pattern's core content.
 
+### teacher-discovery
+
+`teacher-discovery` is the product-level result and comparison composition. It brings together supplied search context, active reversible filters, a vertically ordered teacher-result list, pagination, and one compact teacher preview rail. Each result composes the documented `teacher-card` reading order; the preview rail composes the shared `avatar`, `video`, `calendar`, and Button contracts. Hover or focus may update the supplied preview target locally, but it never changes ranking, applies a filter, fetches availability, or opens booking without a parent-supplied callback.
+
+The parent owns result count, ordering, result records, selected filter values, preview state, search submission, pagination, save state, pricing, availability, and all booking outcomes. On narrow layouts the preview becomes a normal block after the result list and no selection, price, or availability meaning is implied by its position.
+
 ### teacher-card
 
 `teacher-card` is the core teacher comparison pattern. It receives supplied identity, teaching context, trust evidence, price and duration context, optional language summary, optional saved state, and one local continuation. It composes `avatar`, optional country flag, supplied name, a supplied teacher-type label (`Community Tutor` or `Professional Teacher`) with an approved 24px local role asset, `tag`, compact evidence text, an optional icon-only save action, the shared `dropdown-menu` for secondary more actions, and one supplied booking continuation or whole-card destination. The desktop search-result form is a wide horizontal surface: a 120px Avatar and country marker with rating and completed-lessons evidence at left; name, teacher type, language facts, a two-line-clamped teaching summary, and supplied specialist or professional tags (for example `Business` and `Test Preparation`) in the flexible center; then price, supplied next availability in `Status/Info`, a 32px save action, local 32px pill `Book lesson` continuation, and 32px More action at the bottom of that same reading column. It is a white `Radius/LG` (12px) surface with 24px internal padding. A static card may use one light outer border; a whole-card link is borderless at rest and has the single approved subtle hover/focus lift.
@@ -102,6 +108,12 @@ The parent supplies the lesson or group-class type, teacher identity, current st
 The card is a summary and destination context, not a command surface. A parent may supply a whole-card destination or a separate local continuation, but does not introduce an extra primary action inside this 120px summary. Repeated cards preserve their parent-supplied order and may stack in a lesson list; responsive list behavior belongs in `EXECUTION.md`.
 
 ## Teacher Detail
+
+### teacher-detail
+
+`teacher-detail` is the product-level teacher profile composition. It presents supplied identity and trust evidence, local section navigation, about and teaching-fit information, lesson offerings, supplied availability, student review evidence, similar-teacher links, and a bounded booking rail. It composes `avatar`, `tag`, `tabs`, `time-slot`, `calendar`, `rate`, `video`, `link`, and Button contracts rather than creating profile-specific variants of them.
+
+The parent supplies every identity field, role, language and interest tag, introduction, insight, lesson, price, time-zone-aware availability, review, recommendation, online status, response-time, and booking state. The Pattern does not calculate ratings, infer availability or teacher suitability, rank similar teachers, reserve a slot, price a lesson, or submit a booking. On narrow layouts the booking rail follows the detail content as a normal section; a product-owned sticky booking action may be introduced only with its full behavior contract.
 
 `detail-hero` presents supplied identity, location, teaching focus, introduction, and core trust evidence before deeper detail. It may compose teacher identity, language summary, and trust metrics but does not own saved state, booking, price calculation, or data retrieval.
 

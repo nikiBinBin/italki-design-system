@@ -54,13 +54,6 @@ RADIUS.add(0);
 
 const REGISTERED_EXCEPTIONS = [
   {
-    match: /\.ui-checkbox__box\b/,
-    prop: "border-radius",
-    value: 6,
-    reason:
-      "Registered 6px exception for the 18px checkbox box; asserted by validate-contracts.mjs",
-  },
-  {
     match: /\.ui-radio__indicator\b/,
     prop: "margin-top",
     value: 1,

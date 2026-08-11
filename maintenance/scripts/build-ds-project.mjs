@@ -270,7 +270,7 @@ const STAGE = {
 
 // A count/dot Badge overlays the top-right of its anchor, so the anchor needs
 // enough area to stay visible underneath it.
-const ICON_TILE = '<span style="display:inline-flex;width:40px;height:40px;border-radius:var(--ui-radius-md,8px);background:var(--ui-color-hover,#EBEDF1)"></span>';
+const ICON_TILE = '<span style="display:inline-flex;width:40px;height:40px;border-radius:var(--ui-radius-md,8px);background:var(--ui-color-hover)"></span>';
 
 // ── per-component base props, in italki's own language ────────────────────
 // Only what the renderer needs to look real; the axis sweep below supplies
@@ -456,7 +456,7 @@ const CELLS = {
     ];
   })(),
   badge: (() => {
-    const anchor = `<span style="display:inline-flex;width:40px;height:40px;border-radius:var(--ui-radius-md,8px);background:var(--ui-color-primary-surface,#FFF1F1);align-items:center;justify-content:center"><img src="Assets/Icons/logo-italki-logomark.svg" alt="" style="width:20px;height:20px" /></span>`;
+    const anchor = `<span style="display:inline-flex;width:40px;height:40px;border-radius:var(--ui-radius-md,8px);background:var(--ui-color-primary-surface);align-items:center;justify-content:center"><img src="Assets/Icons/logo-italki-logomark.svg" alt="" style="width:20px;height:20px" /></span>`;
     return [
       ['Marker variants', { anchor, count: 8, ariaLabel: '8 unread inbox messages' }],
       ['Overflow count', { anchor, count: 100, overflowCount: 99, ariaLabel: '99 or more updates' }],
@@ -618,7 +618,7 @@ for (const c of COMPONENTS) {
 <link rel="stylesheet" href="../../../styles.css">
 <style>
   *{box-sizing:border-box}
-  body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page,#FFFFFF);font-family:var(--ui-font-family);color:var(--ui-color-text)}
+  body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page);font-family:var(--ui-font-family);color:var(--ui-color-text)}
   .ds-grid{display:flex;flex-wrap:wrap;gap:var(--ui-space-6,24px) var(--ui-space-8,32px);align-items:flex-start}
   .cell{min-width:0}
   /* Anchored overlays are open in a static card, so the reservation must be
@@ -791,7 +791,7 @@ window.ITalkiUIRender = function (fn, props) {
     clean[name] = props[name];
   }
   try { return kit[fn](clean); }
-  catch (e) { return '<div style="color:var(--ui-color-error,#D3382F);font:12px system-ui">' + (e && e.message || e) + '</div>'; }
+  catch (e) { return '<div style="color:var(--ui-color-error);font:12px system-ui">' + (e && e.message || e) + '</div>'; }
 };
 var REACT_ONLY = /^(children|key|ref|className|style|dangerouslySetInnerHTML)$|^(data-|aria-|on[A-Z])/;
 /* Exported for the same reason the components are: the compiler includes a
@@ -842,7 +842,7 @@ ${runtimeSrc.replace(/\}\)\(window\);\s*$/, '})(global);')}
       if (!React) return null;
       var html = '';
       try { html = UI[fn](contractProps(props)); }
-      catch (e) { html = '<div style="color:var(--ui-color-error,#D3382F);font:12px system-ui">' + (e && e.message || e) + '</div>'; }
+      catch (e) { html = '<div style="color:var(--ui-color-error);font:12px system-ui">' + (e && e.message || e) + '</div>'; }
       // display:contents so the wrapper generates no box. dangerouslySetInnerHTML
       // needs a host element, but a real box becomes the containing block for
       // everything inside it, and position:sticky can only travel within its
@@ -961,7 +961,7 @@ lettering reads as an error, and \`--ui-color-error\` is what actually means one
 --ui-space-half 2px · --ui-space-1 4px · -2 8px · -3 12px · -4 16px
 --ui-space-6 24px · -7 32px · -8 40px · -9 48px · -10 64px · -11 80px · -12 96px
 
---ui-radius-xs 4px · -md 8px · -lg 12px · -xl 16px · -2xl 24px · -full 9999px
+--ui-radius-xs 4px · -md 8px · -lg 12px · -xl 16px · -full 9999px
 --ui-shadow-card · -md · -lg · -xl
 \`\`\`
 
@@ -1027,7 +1027,7 @@ is the machine-readable contract the assertions come from.
 <link rel="stylesheet" href="../../../styles.css">
 <style>
   *{box-sizing:border-box}
-  body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page,#FFFFFF);font-family:var(--ui-font-family);color:var(--ui-color-text)}
+  body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page);font-family:var(--ui-font-family);color:var(--ui-color-text)}
   .icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:var(--ui-space-3,12px)}
   .icon-tile{display:grid;justify-items:center;gap:var(--ui-space-2,8px);margin:0;padding:var(--ui-space-4,16px) var(--ui-space-2,8px);border-radius:var(--ui-radius-lg,12px);background:var(--ui-color-divider)}
   .icon-tile figcaption{color:var(--ui-color-secondary);font-size:12px;line-height:16px;text-align:center;overflow-wrap:anywhere}
@@ -1063,7 +1063,10 @@ Generated from \`catalog-runtime/icon-manifest.js\`; run
 }
 
 // ── styling ───────────────────────────────────────────────────────────────
-write('_ds_bundle.css', readFileSync(join(RUNTIME, 'italki-ui.css'), 'utf8'));
+/* Component CSS normally resolves assets one directory above catalog-runtime.
+   The generated Design project lives two directories below the repository root,
+   so preserve those asset references when copying the shared stylesheet. */
+write('_ds_bundle.css', readFileSync(join(RUNTIME, 'italki-ui.css'), 'utf8').replaceAll('../Assets/', '../../Assets/'));
 write('tokens/tokens.css', readFileSync(join(RUNTIME, 'tokens.css'), 'utf8'));
 write('styles.css', '@import "./tokens/tokens.css";\n@import "./_ds_bundle.css";\n');
 /* No _ds_needs_recompile. That sentinel asks the app to rebuild _ds_bundle.js

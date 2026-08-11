@@ -1,5 +1,5 @@
 :root {
-  --ui-color-page: #FFFFFF;
+  --ui-color-page: #F5F6F9;
   --ui-color-card: #FFFFFF;
   --ui-color-title: #313140;
   --ui-color-text: #515164;
@@ -12,13 +12,14 @@
   --ui-color-primary: #FF4338;
   --ui-color-primary-hover: #D3382F;
   --ui-color-primary-shade-1: #FF8E87;
+  --ui-color-primary-surface: #FFF1F1;
   --ui-color-link: #59779A;
   --ui-color-link-hover: #4B647D;
   --ui-color-info: #00B3BD;
   --ui-color-info-surface: #EDFAFA;
   --ui-color-accessory-1: #FFF9E6;
   --ui-color-accessory-2: #E6F7F8;
-  --ui-color-accessory-3: #FFF2F1;
+  --ui-color-accessory-3: #FFF1F1;
   --ui-color-accessory-4: #E7FCF5;
   --ui-color-available: #98D45F;
   --ui-color-available-surface: #F4FBEA;
@@ -30,17 +31,17 @@
   --ui-color-error: #D3382F;
   --ui-color-error-surface: #FFF1F1;
   --ui-color-on-primary: #FFFFFF;
-  --ui-color-modal-mask: rgb(49 49 64 / 24%);
+  --ui-color-modal-mask: rgb(0 0 0 / 60%);
   --ui-color-upload-overlay: rgb(49 49 64 / 68%);
-  --ui-color-upload-loading: rgb(49 49 64 / 50%);
+  --ui-color-upload-loading: rgb(49 49 64 / 68%);
   --ui-color-on-primary-muted: rgb(255 255 255 / 45%);
-  --ui-gradient-pro: linear-gradient(88deg, #FF4438 9.48%, #1C07FF 99.43%);
-  --ui-gradient-pro-motion: linear-gradient(88deg, #1C07FF 4.74%, #FF4438 49.715%, #FF4438 54.74%, #1C07FF 99.715%);
+  --ui-gradient-pro: linear-gradient(88deg, #FF4338 0%, #1C07FF 100%);
+  --ui-gradient-pro-motion: linear-gradient(88deg, #1C07FF 4.74%, #FF4338 49.715%, #FF4338 54.74%, #1C07FF 99.715%);
   --ui-gradient-skeleton: linear-gradient(90deg, #EBEDF1 25%, #F5F6F9 37%, #EBEDF1 63%);
   --ui-color-on-emphasis-muted: rgb(255 255 255 / 55%);
-  --ui-color-emphasis-weak: rgb(49 49 64 / 28%);
-  --ui-color-disabled-weak: rgb(199 203 211 / 42%);
-  --ui-color-hover-overlay: rgb(49 49 64 / 8%);
+  --ui-color-emphasis-weak: #C7CBD3;
+  --ui-color-disabled-weak: #E5E8ED;
+  --ui-color-hover-overlay: #EBEDF1;
   --ui-shadow-card-hover: 0 1px 2px 0 #0F172A00, 0 4px 12px 0 #0F172A0A;
   --ui-shadow-card: 0 0 0 0 #0F172A00;
   --ui-shadow-md: 0 2px 4px 0 #001A5608, 0 4px 8px 0 #00174E0A;
@@ -53,7 +54,6 @@
   --ui-radius-md: 8px;
   --ui-radius-lg: 12px;
   --ui-radius-xl: 16px;
-  --ui-radius-2xl: 24px;
   --ui-radius-full: 9999px;
   --ui-space-0: 0px;
   --ui-space-half: 2px;
@@ -117,4 +117,44 @@
   --ui-layout-grid-gutter-desktop: 24px;
   --ui-layout-grid-gutter-tablet: 24px;
   --ui-layout-grid-gutter-mobile: 16px;
+}
+
+[data-theme="dark"] {
+  --ui-color-page: #1A1A26;
+  --ui-color-card: #313140;
+  --ui-color-title: #FFFFFF;
+  --ui-color-text: #E5E8ED;
+  --ui-color-secondary: #9C9CAC;
+  --ui-color-placeholder: #767687;
+  --ui-color-disabled: #515164;
+  --ui-color-border: #3C3C4F;
+  --ui-color-divider: #3A3A4D;
+  --ui-color-hover: #3C3C4F;
+  --ui-color-primary: #D3382F;
+  --ui-color-primary-hover: #8F2620;
+  --ui-color-primary-shade-1: #CC352C;
+  --ui-color-primary-surface: #8F2620;
+  --ui-color-link: #7DA9C0;
+  --ui-color-link-hover: #A1C7DA;
+  --ui-color-info: #009897;
+  --ui-color-info-surface: #00504F;
+  --ui-color-accessory-1: #3D2E00;
+  --ui-color-accessory-2: #3D5577;
+  --ui-color-accessory-3: #8F2620;
+  --ui-color-accessory-4: #003F2B;
+  --ui-color-available: #77B23F;
+  --ui-color-available-surface: #2F471B;
+  --ui-color-available-current-day-surface: #2F471B;
+  --ui-color-success: #00B377;
+  --ui-color-success-surface: #003F2B;
+  --ui-color-warning: #E5AC00;
+  --ui-color-warning-surface: #3D2E00;
+  --ui-color-error: #CC352C;
+  --ui-color-error-surface: #8F2620;
+  --ui-color-modal-mask: rgb(0 0 0 / 80%);
+  --ui-color-upload-overlay: rgb(49 49 64 / 68%);
+  --ui-color-upload-loading: rgb(49 49 64 / 68%);
+  --ui-color-emphasis-weak: #515164;
+  --ui-color-disabled-weak: #767687;
+  --ui-color-hover-overlay: #3C3C4F;
 }

@@ -189,7 +189,7 @@
           }).catch((error) => say("GET " + url + " failed: " + error.message));
         }
         note.style.cssText = "position:fixed;z-index:9999;top:0;left:0;right:0;padding:6px 10px;"
-          + "background:var(--ui-color-error,#D3382F);color:#fff;font:12px/1.5 system-ui";
+          + "background:var(--ui-color-error);color:var(--ui-color-on-primary);font:12px/1.5 system-ui";
         document.body.appendChild(note);
       }
     }, 30);

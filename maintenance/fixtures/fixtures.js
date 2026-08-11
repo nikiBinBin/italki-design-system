@@ -109,7 +109,9 @@
       tag: [
         fixture("tag", "default", ui.tag({ label: "Tag" })),
         fixture("tag", "removable", ui.tag({ label: "Removable", removable: true })),
-        fixture("tag", "tone", ui.tag({ label: "Error", tone: "error" }))
+        fixture("tag", "tone", ui.tag({ label: "Error", tone: "error" })),
+        fixture("tag", "status", ui.tag({ label: "Active package", size: 32, tone: "success", variant: "status", leadingIcon: "Assets/Icons/16px/lesson-package-active-sm.svg" })),
+        fixture("tag", "promo", ui.tag({ label: "Lesson completed!", size: 32, variant: "promo", leadingIcon: "Assets/Icons/16px/lesson-completed-sm.svg" }))
       ],
       checkbox: [
         fixture("checkbox", "off", ui.checkbox({ label: "Unchecked", checked: "off" })),
@@ -140,8 +142,13 @@
         fixture("selection", "icon-simple-focus", ui.selection({ label: "Basic plan", state: "focus", leading: '<img src="Assets/Icons/16px/topic-sm.svg" alt="" />' })),
         fixture("selection", "icon-simple-disabled", ui.selection({ label: "Basic plan", disabled: true, leading: '<img src="Assets/Icons/16px/topic-sm.svg" alt="" />' })),
         fixture("selection", "icon-card-default", ui.selection({ label: "Basic plan", contentType: "icon-card", leading: '<img src="Assets/Icons/16px/topic-sm.svg" alt="" />', price: "$10", period: "per month", badge: "Limited time only", description: "Includes 10 users." })),
+        fixture("selection", "package-card-default", ui.selection({ label: "5 lesson package", contentType: "package-card", selectionMode: "radio", discount: "No discount", price: "¥114.70", period: "per lesson", description: "A quick 5-lesson package lets you experience a stress-free lead up to your lessons.", quantity: "5", totalPrice: "¥573.49 CNY" })),
+        fixture("selection", "package-card-selected", ui.selection({ label: "10 lesson package", contentType: "package-card", selectionMode: "radio", selected: true, discount: "3% off", price: "¥111.32", period: "per lesson", description: "Set up to 10 lesson times in advance, so all you need to think about is learning.", quantity: "10", originalPrice: "¥1,146.97 CNY", totalPrice: "¥1,113.24 CNY" })),
+        fixture("selection", "lesson-options-detailed", ui.selectionGroup({ label: "Choose lesson duration", contentType: "lesson-options", selectionMode: "radio", courseTitle: "🎙️ Real-life Conversation (English) (📚 with materials) 进阶英语", courseMeta: "B1-C2 · Language Essentials · 2,182 lessons completed", selected: "30", options: [{ label: "30 mins", value: "30", price: "¥114.70" }, { label: "45 mins", value: "45", price: "¥168.67" }, { label: "60 mins", value: "60", price: "¥182.17" }, { label: "90 mins", value: "90", price: "¥296.86" }] })),
+        fixture("selection", "lesson-options-compact", ui.selection({ label: "👩🏻‍🏫 Structured English Course (📚 materials and textbooks) 系统学习英语", contentType: "lesson-options", selectionMode: "radio", description: "A1-B2 · Language Essentials · 111 lessons completed", price: "¥114.70+" })),
+        fixture("selection", "lesson-options-list", ui.selectionGroup({ label: "Choose a course and lesson duration", contentType: "lesson-options", selectionMode: "radio", selected: "conversation", selectedDuration: "30", courses: [{ value: "conversation", title: "Real-life Conversation", meta: "B1-C2 · Language Essentials", options: [{ label: "30 mins", value: "30", price: "¥114.70" }, { label: "45 mins", value: "45", price: "¥168.67" }] }, { value: "structured", title: "Structured English Course", meta: "A1-B2 · Language Essentials", price: "¥114.70+", options: [{ label: "30 mins", value: "30", price: "¥114.70" }, { label: "45 mins", value: "45", price: "¥168.67" }] }] })),
         fixture("selection", "avatar-default", ui.selection({ label: "Olivia Rhye", contentType: "avatar", leading: '<img src="Assets/Images/avatars/teacher-rachel.png" alt="" />', description: "Product Manager" })),
-        fixture("selection", "payment-icon-default", ui.selection({ label: "Visa ending in 4242", contentType: "payment-icon", leading: "VISA", description: "Expires 12/28" })),
+        fixture("selection", "payment-icon-default", ui.selection({ label: "Visa ending in 4242", contentType: "payment-icon", leading: '<img src="Assets/Icons/pay-visa.svg" alt="" />', description: "Expires 12/28" })),
         fixture("selection", "radio-default", ui.selection({ label: "Basic plan", contentType: "standard", selectionMode: "radio" })),
         fixture("selection", "radio-selected", ui.selection({ label: "Basic plan", contentType: "standard", selectionMode: "radio", selected: true })),
         fixture("selection", "checkbox-default", ui.selection({ label: "Written feedback", contentType: "standard", selectionMode: "checkbox" })),
@@ -237,6 +244,18 @@
         fixture("card", "compact", ui.card({ density: "compact", title: "Compact card", body: "<p>Dense local content.</p>" })),
         fixture("card", "comfortable", ui.card({ density: "comfortable", title: "Comfortable card", body: "<p>Spacious content region.</p>" }))
       ],
+      list: [
+        fixture("list", "default-size", ui.list({ id: "fixture-list-default", items: ["Lesson notes", "Practice exercises"] })),
+        fixture("list", "small-size", ui.list({ id: "fixture-list-small", size: "small", items: ["Lesson notes", "Practice exercises"] })),
+        fixture("list", "large-size", ui.list({ id: "fixture-list-large", size: "large", items: ["Lesson notes", "Practice exercises"] })),
+        fixture("list", "with-description", ui.list({ id: "fixture-list-description", items: [{ label: "Lesson notes", description: "Shared today" }] })),
+        fixture("list", "with-trailing", ui.list({ id: "fixture-list-trailing", items: [{ label: "Practice exercises", trailing: "8 items" }] })),
+        fixture("list", "interactive", ui.list({ id: "fixture-list-interactive", items: [{ label: "Upcoming lesson", href: "#lesson" }] })),
+        fixture("list", "avatar", ui.list({ id: "fixture-list-avatar", variant: "avatar", items: [{ label: "Maya Chen", description: "English teacher", avatar: ui.avatar({ name: "Maya Chen", initials: "MC", size: 40, variant: "empty" }) }] })),
+        fixture("list", "image", ui.list({ id: "fixture-list-image", variant: "image", items: [{ label: "Conversation prompts", description: "Speaking practice", imagePlaceholder: true }] })),
+        fixture("list", "content", ui.list({ id: "fixture-list-content", variant: "content", size: "large", items: [{ label: "Maya Chen", description: "English teacher", content: "A short speaking prompt can turn a quiet moment into useful practice.", avatar: ui.avatar({ name: "Maya Chen", initials: "MC", size: 40, variant: "empty" }), likes: "24", comments: "6", imagePlaceholder: true }] })),
+        fixture("list", "undivided", ui.list({ id: "fixture-list-undivided", divided: false, items: ["Lesson notes", "Practice exercises"] }))
+      ],
       alert: [
         fixture("alert", "info", ui.alert({ tone: "info", title: "Lesson reminder", description: "Your lesson starts in 30 minutes." })),
         fixture("alert", "success", ui.alert({ tone: "success", title: "Saved", description: "Your learning preference is up to date." })),
@@ -248,6 +267,7 @@
       ],
       tabs: [
         fixture("tabs", "basic", ui.tabs({ id: "fixture-tabs-basic", ariaLabel: "Lesson details", items: [{ id: "overview", label: "Overview", panel: "Lesson details content." }, { id: "reviews", label: "Reviews", panel: "Reviews content." }] })),
+        fixture("tabs", "red-line", ui.tabs({ id: "fixture-tabs-red-line", ariaLabel: "Lesson details", variant: "red-line", items: [{ id: "overview", label: "Overview", panel: "Lesson details content." }, { id: "reviews", label: "Reviews", panel: "Reviews content." }] })),
         fixture("tabs", "icon-count", ui.tabs({ id: "fixture-tabs-icon", ariaLabel: "Teacher profile", items: [{ id: "lessons", label: "Lessons", icon: "Assets/Icons/16px/lesson-sm.svg", panel: "Lessons content." }, { id: "messages", label: "Messages", icon: "Assets/Icons/16px/comments-sm.svg", count: "4", panel: "Messages content." }] })),
         fixture("tabs", "disabled", ui.tabs({ id: "fixture-tabs-disabled", ariaLabel: "Lesson availability", items: [{ id: "booking", label: "Booking", panel: "Booking content." }, { id: "history", label: "History", disabled: true, panel: "History content." }] })),
         fixture("tabs", "trailing-action", ui.tabs({ id: "fixture-tabs-extra", ariaLabel: "Teacher resources", extra: ui.button({ label: "View all", variant: "text", size: 32, shape: "pill" }), items: [{ id: "materials", label: "Materials", panel: "Materials content." }, { id: "goals", label: "Goals", panel: "Goals content." }] }))
@@ -309,6 +329,14 @@
       panel: [
         fixture("panel", "with-title", ui.panel({ title: "Lesson details", extra: ui.button({ label: "Edit", variant: "text", size: 32, shape: "pill" }), divider: true, body: "Related information shares one stable Panel surface." })),
         fixture("panel", "without-title", ui.panel({ density: "small", body: "Small-density Panel without title." }))
+      ],
+      "section-intro": [
+        fixture("section-intro", "title-only", ui.sectionIntro({ id: "fixture-section-title", title: "Upcoming lessons" })),
+        fixture("section-intro", "with-eyebrow", ui.sectionIntro({ id: "fixture-section-eyebrow", eyebrow: "Learning plan", title: "Upcoming lessons" })),
+        fixture("section-intro", "with-description", ui.sectionIntro({ id: "fixture-section-description", title: "Upcoming lessons", description: "Review what is next and continue your learning routine." })),
+        fixture("section-intro", "with-action", ui.sectionIntro({ id: "fixture-section-action", title: "Upcoming lessons", action: ui.button({ label: "View all", variant: "text", size: 32, shape: "pill" }) })),
+        fixture("section-intro", "compact", ui.sectionIntro({ id: "fixture-section-compact", title: "Lesson resources", size: "compact" })),
+        fixture("section-intro", "centered", ui.sectionIntro({ id: "fixture-section-centered", eyebrow: "Keep going", title: "Practice every day", description: "Small, steady sessions build confidence.", alignment: "center" }))
       ],
       search: [
         fixture("search", "default", ui.search({ placeholder: "Default search" })),
@@ -410,7 +438,9 @@
         fixture("progress", "default", ui.progress({ value: 62 })),
         fixture("progress", "success", ui.progress({ value: 100, status: "success" })),
         fixture("progress", "error", ui.progress({ value: 42, status: "error" })),
-        fixture("progress", "indeterminate", ui.progress({ indeterminate: true }))
+        fixture("progress", "indeterminate", ui.progress({ indeterminate: true })),
+        fixture("progress", "circle", ui.progress({ value: 62, type: "circle" })),
+        fixture("progress", "semicircle", ui.progress({ value: 75, type: "semicircle", size: 120 }))
       ],
       toast: [
         fixture("toast", "info", ui.toast({ tone: "info", title: "Lesson reminder" })),
@@ -477,6 +507,7 @@
         fixture("time-picker", "default", ui.timePicker({ id: "fixture-time-picker-default", slots: ["09:00", "10:30"] })),
         fixture("time-picker", "open", ui.timePicker({ id: "fixture-time-picker-open", slots: ["09:00", "10:30"], open: true })),
         fixture("time-picker", "selected", ui.timePicker({ id: "fixture-time-picker-selected", slots: ["09:00", "10:30"], selected: "10:30" })),
+        fixture("time-picker", "multiple", ui.timePicker({ id: "fixture-time-picker-multiple", slots: ["09:00", "10:30", "13:00"], selected: ["09:00", "13:00"], selectionMode: "multiple", open: true })),
         fixture("time-picker", "disabled", ui.timePicker({ id: "fixture-time-picker-disabled", slots: ["09:00"], disabled: true }))
       ],
       calendar: [
@@ -527,6 +558,7 @@
         badges: entries.badge.map((item) => item.markup).join(""),
         breadcrumbs: entries.breadcrumb.map((item) => item.markup).join(""),
         cards: entries.card.map((item) => item.markup).join(""),
+        lists: entries.list.map((item) => item.markup).join(""),
         alerts: entries.alert.map((item) => item.markup).join(""),
         tabs: entries.tabs.map((item) => item.markup).join(""),
         pagination: entries.pagination.map((item) => item.markup).join(""),
@@ -540,6 +572,7 @@
         selects: entries.select.map((item) => `<div class="select-fixture-cell">${item.markup}</div>`).join(""),
         sliders: entries.slider.map((item) => item.markup).join(""),
         panels: entries.panel.map((item) => item.markup).join(""),
+        sectionIntros: entries["section-intro"].map((item) => item.markup).join(""),
         formFields: entries["form-field"].map((item) => item.markup).join(""),
         textInputs: entries["text-input"].map((item) => item.markup).join(""),
         textareas: entries.textarea.map((item) => item.markup).join(""),

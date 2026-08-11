@@ -10,12 +10,17 @@ const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), "u
 const manifest = JSON.parse(read("catalog-runtime/contracts.json"));
 const tokensCSS = read("catalog-runtime/tokens.css");
 const componentCSS = read("catalog-runtime/italki-ui.css");
+const runtimeSource = read("catalog-runtime/italki-ui.js");
 const fixtureSource = fs.readFileSync(path.join(root, "maintenance", "fixtures", "fixtures.js"), "utf8");
 const catalog = read("index.html");
 const catalogStyle = read("catalog.css");
 const componentsDoc = read("docs/COMPONENTS.md");
 const componentApi = JSON.parse(read("catalog-runtime/component-api.json"));
 const foundationApi = JSON.parse(read("catalog-runtime/foundation-api.json"));
+const componentTokenReferences = new Set([...`${componentCSS}\n${runtimeSource}`.matchAll(/--ui-[a-z0-9-]+/g)].map(([token]) => token));
+const componentTokenDeclarations = new Set([...`${componentCSS}\n${runtimeSource}`.matchAll(/(--ui-[a-z0-9-]+)\s*:/g)].map(([, token]) => token));
+for (const [, token] of runtimeSource.matchAll(/setProperty\(\s*["'](--ui-[a-z0-9-]+)/g)) componentTokenDeclarations.add(token);
+const foundationTokenDeclarations = new Set([...tokensCSS.matchAll(/(--ui-[a-z0-9-]+)\s*:/g)].map(([, token]) => token));
 
 assert(catalog.includes('<link rel="stylesheet" href="catalog.css" />'), "Catalog shell styles must live outside the document");
 assert(!catalog.includes("<style>"), "Catalog must not embed its presentation CSS");
@@ -124,6 +129,9 @@ assert.equal(JSON.parse(resolvedTopNav.stdout).component, "top-nav", "Component 
 for (const [token, value] of Object.entries(manifest.tokens)) {
   assert(tokensCSS.includes(`${token}: ${value};`), `Missing or incorrect token: ${token}`);
 }
+for (const token of componentTokenReferences) {
+  assert(foundationTokenDeclarations.has(token) || componentTokenDeclarations.has(token), `Component references an undefined or retired token: ${token}`);
+}
 
 for (const token of ["--ui-shadow-md", "--ui-shadow-lg", "--ui-shadow-xl"]) {
   assert(manifest.tokens[token], `Shadow foundation token is missing: ${token}`);
@@ -131,14 +139,14 @@ for (const token of ["--ui-shadow-md", "--ui-shadow-lg", "--ui-shadow-xl"]) {
 for (const token of ["--ui-shadow-card", "--ui-shadow-card-hover"]) {
   assert(manifest.tokens[token], `Card shadow token is missing: ${token}`);
 }
-for (const token of ["--ui-shadow-button", "--ui-shadow-panel", "--ui-shadow-control", "--ui-shadow-control-hover", "--ui-shadow-surface", "--ui-shadow-floating", "--ui-shadow-dialog"]) {
-  assert(!componentCSS.includes(token), `Deprecated shadow token must not be consumed: ${token}`);
+for (const token of ["--ui-shadow-button", "--ui-shadow-panel", "--ui-shadow-control", "--ui-shadow-control-hover", "--ui-shadow-surface", "--ui-shadow-floating", "--ui-shadow-dialog", "--ui-shadow-stroke-card"]) {
+  assert(![componentCSS, runtimeSource, catalog, catalogStyle].some((source) => source.includes(token)), `Deprecated token must not be consumed: ${token}`);
 }
 assert(componentCSS.includes(".ui-modal { --ui-modal-width: 520px") && componentCSS.includes("box-shadow: var(--ui-shadow-xl)"), "Modal must consume Shadow/XL");
 assert(componentCSS.includes(".ui-select__menu") && componentCSS.includes("box-shadow: var(--ui-shadow-lg)"), "Floating menus must consume Shadow/LG");
 assert(componentCSS.includes(".ui-card {") && componentCSS.includes("box-shadow: var(--ui-shadow-card);"), "Card must consume Shadow/Card at rest");
 assert(componentCSS.includes(".ui-card.is-outlined { border: 0; box-shadow: 0 0 0 1px var(--ui-color-border); }"), "An outlined Card draws its outline with Color/Border, like every other 1px ring in the kit");
-assert(!/--ui-shadow-stroke-card/.test(tokensCSS + componentCSS), "Shadow/Stroke-card is retired: one 1px ring, one source of colour");
+assert(!/--ui-shadow-stroke-card/.test(tokensCSS), "Shadow/Stroke-card is retired: one 1px ring, one source of colour");
 assert(componentCSS.includes(".ui-card.is-interactive:hover, .ui-card.is-interactive:focus-visible { box-shadow: var(--ui-shadow-card-hover); }"), "Interactive Card must consume Shadow/Card-Hover");
 
 assert(!/#[0-9A-Fa-f]{3,8}\b/.test(componentCSS), "Component CSS must not contain raw hexadecimal colors");
@@ -167,7 +175,7 @@ assert(componentCSS.includes(".ui-date-picker--32 .ui-date-picker__trigger") && 
 assert(componentCSS.includes(".ui-textarea--32") && !componentCSS.includes(".ui-textarea--rounded"), "Textarea must use the shared Field size scale without duplicate shape presentation");
 assert(componentCSS.includes(".ui-number-stepper.is-warning") && componentCSS.includes(".ui-number-stepper.is-error"), "Number stepper must consume shared Field validation surfaces");
 assert(!/button:focus-visible,\s*input:focus-visible/.test(catalogStyle), "Catalog must not impose a global focus outline over component contracts");
-assert(componentCSS.includes(".ui-checkbox__box { width: 18px; height: 18px;") && componentCSS.includes("border-radius: 6px; background: var(--ui-color-divider);"), "Checkbox must retain its explicit 18px component geometry and registered 6px exception");
+assert(componentCSS.includes(".ui-checkbox__box { width: 18px; height: 18px;") && componentCSS.includes("border-radius: var(--ui-radius-xs); background: var(--ui-color-divider);"), "Checkbox must retain its explicit 18px geometry and Radius/XS corners");
 assert(componentCSS.includes(".ui-slider.has-tooltip .ui-slider__row { padding-top: var(--ui-space-4); }"), "Slider tooltip spacing must consume a registered Foundation token");
 assert(catalogStyle.includes(".select-detail .component-doc-block, .combobox-detail .component-doc-block { overflow: visible; }"), "Combobox Catalog examples must not clip their shared Select menu");
 assert(!catalogStyle.includes(".button-size-switch"), "Catalog presentation controls must call shared Segmented control instead of recreating button styling");
@@ -218,6 +226,9 @@ const fixtures = [
   ["selection", ui.selection({ label: "Trial lesson", value: "trial", selected: true, contentType: "standard", selectionMode: "radio" })],
   ["selection", ui.selection({ label: "Basic plan", selected: true, leading: '<img src="Assets/Icons/16px/topic-sm.svg" alt="" />' })],
   ["selection", ui.selectionGroup({ label: "Cadence", selectionMode: "radio", options: ["Weekly", "Monthly"], selected: "Weekly" })],
+  ["selection", ui.selectionGroup({ label: "Lesson package", contentType: "package-card", selectionMode: "radio", layout: "package-grid", options: [{ label: "5 lesson package", value: "five", discount: "No discount", price: "¥114.70", period: "per lesson", quantity: "5", totalPrice: "¥573.49 CNY" }] })],
+  ["selection", ui.selectionGroup({ label: "Lesson duration", contentType: "lesson-options", selectionMode: "radio", courseTitle: "Real-life Conversation", courseMeta: "B1-C2 · Language Essentials", selected: "30", options: [{ label: "30 mins", value: "30", price: "¥114.70" }, { label: "45 mins", value: "45", price: "¥168.67" }] })],
+  ["selection", ui.selectionGroup({ label: "Course lesson options", contentType: "lesson-options", selectionMode: "radio", selected: "conversation", selectedDuration: "30", courses: [{ value: "conversation", title: "Real-life Conversation", meta: "B1-C2 · Language Essentials", options: [{ label: "30 mins", value: "30", price: "¥114.70" }] }, { value: "structured", title: "Structured English Course", meta: "A1-B2 · Language Essentials", price: "¥114.70+", options: [{ label: "30 mins", value: "30", price: "¥114.70" }] }] })],
   ["date-picker", ui.datePicker({ id: "contract-date-picker", label: "Lesson date", days: [{ label: 15, value: "2026-07-15" }], selected: "2026-07-15", open: true })],
   ["tooltip", ui.tooltip({ id: "contract-tooltip", content: "Supporting text", open: true })],
   ["modal", ui.modal({ id: "contract-modal", title: "Dialog", body: "Content", open: true })],
@@ -225,6 +236,7 @@ const fixtures = [
   ["popup", ui.popup({ id: "contract-popup", title: "Details", body: "Content", open: true })],
   ["popconfirm", ui.popconfirm({ id: "contract-popconfirm", title: "Confirm", open: true })],
   ["divider", ui.divider({ label: "Details", orientation: "left", icon: "Assets/Icons/16px/morning-sm.svg" })],
+  ["section-intro", ui.sectionIntro({ id: "contract-section-intro", eyebrow: "Learning plan", title: "Upcoming lessons", description: "Continue your learning routine.", action: ui.button({ label: "View all", variant: "text", size: 32, shape: "pill" }) })],
   ["avatar", ui.avatar({ name: "Maya Chen", initials: "MC", size: 48, variant: "empty" })],
   ["avatar", ui.avatar({ name: "italki", size: 48, variant: "logo" })],
   ["avatar", ui.flag({ countryCode: "us", countryLabel: "USA", size: 24 })],
@@ -234,6 +246,9 @@ const fixtures = [
   ["breadcrumb", ui.breadcrumb({ items: [{ label: "Home" }, { label: "Lessons" }, { label: "Lesson details", current: true }] })],
   ["card", ui.card({ title: "Conversation prompts", body: "<p>Content</p>" })],
   ["card", ui.card({ title: "Lesson materials", interactive: true, outlined: false })],
+  ["list", ui.list({ id: "contract-list", size: "large", variant: "avatar", items: [{ label: "Lesson notes", description: "Shared today", trailing: "1 file", avatar: ui.avatar({ name: "Maya Chen", initials: "MC", size: 40, variant: "empty" }) }] })],
+  ["list", ui.list({ id: "contract-image-list", variant: "image", items: [{ label: "Conversation prompts", imagePlaceholder: true }] })],
+  ["list", ui.list({ id: "contract-content-list", variant: "content", items: [{ label: "Maya Chen", content: "Useful speaking practice starts small.", avatar: ui.avatar({ name: "Maya Chen", initials: "MC", size: 40, variant: "empty" }), likes: "24", comments: "6", imagePlaceholder: true }] })],
   ["alert", ui.alert({ tone: "info", title: "Lesson reminder", description: "Your lesson starts soon." })],
   ["tabs", ui.tabs({ id: "contract-tabs", ariaLabel: "Lesson details", items: [{ id: "overview", label: "Overview", panel: "Content" }, { id: "reviews", label: "Reviews", panel: "More content" }] })],
   ["pagination", ui.pagination({ pages: [1, 2, 3], current: 2 })],
@@ -260,6 +275,7 @@ const fixtures = [
   ["upload", ui.upload({ id: "contract-upload", label: "Lesson documents", accept: ".pdf", files: [{ id: "brief", name: "lesson-brief.pdf", size: 1250000, status: "complete" }] })],
   ["stepper", ui.stepper({ id: "contract-steps", items: ["Course", "Time"], current: 1 })],
   ["progress", ui.progress({ value: 62 })],
+  ["progress", ui.progress({ value: 62, type: "circle" })],
   ["toast", ui.toast({ tone: "success", title: "Saved" })],
   ["notification", ui.notification({ tone: "info", title: "Lesson reminder", description: "Your lesson starts soon." })],
   ["result", ui.result({ tone: "success", title: "Lesson booked", description: "Your lesson with Maya is confirmed." })],
@@ -351,6 +367,8 @@ const groupedFooter = ui.footer({ columns: [{ groups: [{ heading: "Language teac
 assert.match(groupedFooter, /class="ui-footer__group"/, "Footer must support semantic link groups within one supplied column");
 assert.match(groupedFooter, /data-component="select"/, "Footer utilities must be able to consume the shared Select component");
 assert.match(ui.datePicker({ id: "date-accessibility", label: "Lesson date", days: [{ label: 15, value: "2026-07-15" }], open: true }), /role="dialog"[^>]*aria-label="Lesson date calendar"/, "Date picker must expose a named calendar dialog");
+assert.match(ui.datePicker({ id: "date-navigation", label: "Lesson date", days: [{ label: 15, value: "2026-07-15" }], open: true }), /Assets\/Icons\/arrow-left\.svg[\s\S]*Assets\/Icons\/arrow-right\.svg/, "Date picker month navigation must use the shared left and right arrow icons");
+assert.match(ui.datePicker({ id: "date-range-empty", label: "Lesson date range", days: [{ label: 15, value: "2026-07-15" }], range: [], open: true }), /data-date-range="true"/, "An empty Date picker range must retain range-selection behavior until both dates are selected");
 assert.match(ui.tooltip({ id: "tooltip-accessibility", content: "Supporting text" }), /aria-describedby="tooltip-accessibility"/, "Tooltip trigger must expose an accessible description relationship");
 assert.match(ui.tooltip({ id: "tooltip-accessibility", content: "Supporting text" }), /role="tooltip"/, "Tooltip must expose a tooltip role");
 assert.match(ui.modal({ id: "modal-accessibility", title: "Dialog", body: "Content", open: true }), /role="dialog"[^>]*aria-modal="true"/, "Modal must expose a modal dialog role");
@@ -368,6 +386,8 @@ assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.jpg", durati
 assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.jpg", title: "Meet Maya" }), /aria-label="Play Meet Maya"/, "A titled Video must name what the play button starts");
 assert.match(ui.video({ poster: "Assets/Images/covers/teacher-intro.jpg", state: "disabled" }), /<button[^>]*disabled/, "A disabled Video must not be startable");
 assert(componentCSS.includes(".ui-video__play-disc") && !/ui-video__play-icon/.test(componentCSS), "Video's play affordance is a drawn disc — classroom-play.svg is itself a filled circle, so an icon inside a ring nests two circles");
+assert(componentCSS.includes(".ui-video__play { position: absolute; inset: 0; display: grid; place-items: end start; border: 0; padding: var(--ui-space-4);"), "Video play control must sit clear of the lower-left edge");
+assert(componentCSS.includes(".ui-video.is-disabled .ui-video__poster { filter: saturate(.72); opacity: .72; }") && !componentCSS.includes(".ui-video.is-disabled .ui-video__poster { filter: grayscale(1);"), "Disabled Video must retain a softened version of its cover rather than turn monochrome");
 
 /* Link. The two decisions worth pinning: a disabled link must not be
    followable, and an external one must say so before it is clicked. */
@@ -380,6 +400,8 @@ assert.match(ui.link({ label: "See lessons", trailingIcon: "chevron" }), /chevro
 assert.throws(() => ui.link({ label: "x", variant: "ghost" }), /link\.variant does not accept ghost/, "Link variants are contract-bound");
 assert(componentCSS.includes(".ui-link:hover, .ui-link.is-hover") && componentCSS.includes("text-decoration: underline"), "Link must underline on hover, not at rest");
 assert(!/\.ui-link \{[^}]*text-decoration: underline/.test(componentCSS), "Link must not underline at rest");
+assert(!catalog.includes("General Navigation to another destination, inside a sentence or a row."), "Link documentation must not render the retired component description");
+assert(catalog.includes('const isLink = byName(entry) === "link";') && catalog.includes("isFoundation || isTeacherCard || isLessonCard || isLink ? \"\" : entry.group.title"), "Link documentation must omit the General heading tag");
 
 assert.match(ui.avatar({ name: "Maya Chen", initials: "MC", size: 48, variant: "empty" }), /role="img"[^>]*aria-label="Maya Chen"/, "Avatar must expose a person name");
 assert.match(ui.avatar({ name: "italki", size: 48, variant: "logo" }), /ui-avatar--logo[\s\S]*logo-italki-logomark-white\.svg/, "Logo avatar must use the registered italki logomark asset");
@@ -393,11 +415,30 @@ assert.match(ui.card({ title: "Conversation prompts", body: "<p>Content</p>" }),
 assert.match(ui.card({ title: "Lesson materials", interactive: true, outlined: false, ariaLabel: "Open lesson materials" }), /<button[^>]*data-component="card"[^>]*aria-label="Open lesson materials"/, "Interactive Card must expose one accessible button root");
 assert.match(ui.alert({ tone: "success", title: "Saved" }), /role="alert"[^>]*aria-label="Saved"/, "Alert must expose a readable alert role");
 assert.match(ui.alert({ tone: "success", title: "Saved" }), /Assets\/Icons\/check\.svg/, "Success Alert must use the approved check icon");
-assert.match(ui.alert({ tone: "info", title: "New message", closable: true }), /Assets\/Icons\/cross-sm\.svg/, "Closable Alert must use the approved 24px close icon");
-assert.match(ui.toast({ title: "Saved", closable: true }), /Assets\/Icons\/cross-sm\.svg/, "Closable Toast must use the approved 24px close icon");
-assert.match(ui.notification({ title: "New message", closable: true }), /Assets\/Icons\/cross-sm\.svg/, "Closable Notification must use the approved 24px close icon");
+assert(catalog.includes('function alertDetail()') && !catalog.includes('Payment unsuccessful", description: "Choose another payment method to continue." })}</div>`, true)}${dsBlock("Closable"'), "Alert Semantic variants must use the standard single-column documentation width");
+assert.match(ui.alert({ tone: "info", title: "New message", closable: true }), /Assets\/Icons\/cross\.svg/, "Closable Alert must use the approved close icon inside its surface-matched dismissal control");
+assert.match(ui.toast({ title: "Saved", closable: true }), /Assets\/Icons\/cross\.svg/, "Closable Toast must use the approved close icon inside its surface-matched dismissal control");
+assert.match(ui.notification({ title: "New message", closable: true }), /Assets\/Icons\/cross\.svg/, "Closable Notification must use the approved close icon inside its surface-matched dismissal control");
+assert(componentCSS.includes("top: -6px; right: -6px; border: 1px solid var(--ui-color-border);"), "Closable feedback surfaces must keep their dismissal control close to the corner with a subtle visible boundary");
+assert(componentCSS.includes(".ui-alert.is-banner { grid-template-columns: 24px minmax(0, 1fr); align-items: start;"), "Alert Banner must align its icon with the first line of content");
+assert(componentCSS.includes(".ui-tabs__header { min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--ui-space-3); }"), "Tabs extra action must align with tab labels along the horizontal center line");
+assert.match(ui.timePicker({ id: "time-picker-multiple", slots: ["09:00", "10:30"], selected: ["09:00", "10:30"], selectionMode: "multiple", open: true }), /ui-time-picker--multiple[\s\S]*aria-multiselectable="true"/, "Time picker multiple selection must preserve its supplied selected times and multiselect semantics");
+assert.match(ui.timePicker({ id: "time-picker-empty", slots: ["09:00"] }), /class="ui-time-picker__icon is-placeholder" src="Assets\/Icons\/16px\/time-sm\.svg"/, "An unselected Time picker must retain its visible clock SVG");
+assert(componentCSS.includes(".ui-time-picker__icon.is-placeholder { opacity: .45; }") && componentCSS.includes(".ui-time-picker.is-disabled .ui-time-picker__icon { opacity: .25; }"), "Time picker icon intensity must match placeholder and disabled text states without replacing the approved SVG");
+assert(componentCSS.includes(".ui-time-slot--option { min-width: 0; min-height: 32px; border-radius: var(--ui-radius-md);"), "Time picker options must use the 8px radius token");
+assert.match(ui.selection({ contentType: "package-card", selectionMode: "radio", discount: "7% off" }), /class="ui-selection__package-offer-icon" src="Assets\/Icons\/16px\/category-sm\.svg"/, "Lesson package discounts must render the approved category icon");
+assert(componentCSS.includes(".ui-notification { --ui-dismiss-surface: var(--ui-color-card); width: min(100%, 400px); display: none; align-items: flex-start; gap: var(--ui-space-3); position: relative; overflow: visible; border: 1px solid var(--ui-color-divider);"), "Notification outer card border must use the subtle divider token");
+assert(catalog.includes('const action = buttonComponent({ label: "View lesson", variant: "secondary", size: 32, shape: "pill", demo: "button" });'), "Notification With action must use a 32px Secondary Pill button");
+assert(catalog.includes('statusTag("Decline", "neutral", "Assets/Icons/16px/lesson-canceled-sm.svg")'), "Lesson status tags must include Decline with the same neutral canceled icon treatment");
+assert(componentCSS.includes(".ui-progress--semicircle output { position: absolute; right: 0; bottom: var(--ui-space-3); left: 0;"), "Semicircle Progress label must sit within the arc rather than against the lower edge");
+assert(catalogStyle.includes(".component-section {\n        margin: 0 0 var(--space-7);\n        background: transparent;"), "Overview sections must keep the page surface while individual catalog cards own the card background");
+assert(catalogStyle.includes(".catalog-toast-stack { width: min(100%, 812px); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }"), "Toast and Notification semantic variants must support two-column presentation");
+assert(catalogStyle.includes(".shadow-token-preview { min-width: 0; display: flex; align-items: center; border-left: 1px solid var(--divider); padding: var(--space-3) var(--space-4); background: var(--card); }") && catalogStyle.includes(".shadow-token-preview i.stroke-card { box-sizing: border-box; border: 1px solid var(--border); box-shadow: none; }"), "Shadow Card documentation must keep its module surface white and distinguish a Color/Border outlined card");
+assert(catalog.includes('buttonComponent({ label: "When To Use", variant: "white", size: 32, shape: "pill", demo: "open-button-usage" })'), "Button variants When To Use must use the White button");
 assert.match(ui.tabs({ id: "tabs-accessibility", ariaLabel: "Lesson details", items: [{ id: "overview", label: "Overview", panel: "Content" }] }), /role="tablist"[^>]*aria-label="Lesson details"/, "Tabs must expose a named tablist");
 assert.match(ui.tabs({ id: "tabs-accessibility", ariaLabel: "Lesson details", items: [{ id: "overview", label: "Overview", panel: "Content" }] }), /role="tabpanel"/, "Tabs must expose a related tabpanel");
+assert(componentCSS.includes(".ui-tabs--red-line .ui-tabs__trigger { min-height: 48px; border-radius: 0; color: var(--ui-color-secondary); }") && !componentCSS.includes(".ui-tabs--red-line .ui-tabs__trigger { min-height: 48px; border-radius: 0; color: var(--ui-color-secondary); font-size:"), "Red-line Tabs must inherit the standard tab type scale");
+assert(componentCSS.includes(".ui-tabs__extra::before { width: var(--ui-space-6); position: absolute; top: 0; bottom: 0; left: calc(var(--ui-space-6) * -1); background: linear-gradient(to right, transparent, var(--ui-color-card)); content: \"\"; pointer-events: none; }"), "Tabs extra action must fade its card surface into the tab list from the left");
 assert.match(ui.pagination({ pages: [1, 2, 3], current: 2, ariaLabel: "Results pages" }), /<nav[^>]*aria-label="Results pages"/, "Pagination must expose a named navigation region");
 assert.match(ui.pagination({ pages: [1, 2, 3], current: 2 }), /aria-current="page">2/, "Pagination must expose the current page");
 assert.match(ui.rate({ value: 2.5, allowHalf: true, label: "Lesson rating" }), /role="radiogroup"[^>]*aria-label="Lesson rating"/, "Rate must expose a named radiogroup");
@@ -405,6 +446,8 @@ assert.match(ui.rate({ value: 2.5, allowHalf: true }), /aria-checked="true"/, "R
 assert.match(ui.sidebar({ id: "sidebar-accessibility", items: [{ id: "home", label: "Home", icon: "Assets/Icons/dashboard.svg" }], ariaLabel: "Workspace sidebar" }), /<aside[^>]*data-component="sidebar"[^>]*aria-label="Workspace sidebar"/, "Sidebar must expose a named complementary navigation surface");
 assert.match(ui.sidebar({ id: "sidebar-accessibility", items: [{ id: "more", label: "More", icon: "Assets/Icons/more.svg", more: true }], moreItems: [{ id: "community", label: "Community", icon: "Assets/Icons/community.svg" }] }), /role="menu"/, "Sidebar More must expose a menu when supplied");
 assert.match(ui.statistic({ title: "Lessons completed", value: "128" }), /role="group"[^>]*aria-label="Lessons completed, 128"/, "Statistic must expose a readable grouped value");
+assert.match(ui.statistic({ title: "Lessons completed", value: "", loading: true }), /aria-busy="true"[^>]*><span class="ui-statistic__title">Lessons completed<\/span><span class="ui-statistic__skeleton ui-statistic__skeleton--value"/, "Loading Statistic must preserve its title and expose a busy value skeleton");
+assert(componentCSS.includes(".ui-statistic.is-loading .ui-statistic__skeleton { background: var(--ui-gradient-skeleton); background-size: 400% 100%; animation: ui-skeleton-loading 1.4s ease infinite; }"), "Loading Statistic must use the shared skeleton animation");
 assert.match(ui.table({ id: "table-accessibility", columns: [{ id: "teacher", label: "Teacher" }], rows: [{ id: "maya", cells: [{ content: "Maya Chen", rowHeader: true }] }], ariaLabel: "Teacher lessons" }), /<section[^>]*data-component="table"[^>]*aria-label="Teacher lessons"/, "Table must expose a named region");
 assert.match(ui.table({ id: "table-accessibility", columns: [{ id: "teacher", label: "Teacher" }], rows: [{ id: "maya", cells: [{ content: "Maya Chen", rowHeader: true }] }] }), /<th scope="col"/, "Table must preserve semantic column headers");
 assert.match(ui.timeline({ id: "timeline-accessibility", items: [{ id: "booked", title: "Lesson booked" }], ariaLabel: "Lesson events" }), /<section[^>]*data-component="timeline"[^>]*aria-label="Lesson events"/, "Timeline must expose a named region");
@@ -466,10 +509,18 @@ assert(catalog.includes('data-ui-preview-stage="combobox-overlay"'), "Open Combo
 assert(catalog.includes('catalogSegmentedControl({ id: "search-size"'), "Search presentation controls must consume the shared Segmented control");
 assert(catalog.includes('ui.search({ id: "icon-search"'), "Icon library search must consume the shared Search component");
 assert.match(ui.stepper({ id: "stepper-accessibility", items: ["Course", "Time"], current: 1 }), /aria-current="step"/, "Stepper must expose the current step");
+assert.match(ui.stepper({ id: "stepper-connectors", items: ["Course", "Time", "Payment"], current: 1 }), /ui-stepper__item[\s\S]*ui-stepper__connector is-complete[\s\S]*ui-stepper__item[\s\S]*ui-stepper__connector[\s\S]*ui-stepper__item/, "Horizontal Stepper must render independent progress connectors between its step groups");
 assert(componentCSS.includes(".ui-stepper__complete-icon { width: 24px; height: 24px; display: block; filter: brightness(0) invert(1); }"), "Stepper completion marks must preserve their source icon dimensions");
-assert(componentCSS.includes(".ui-stepper--horizontal .ui-stepper__item > button { align-items: center; }"), "Horizontal Stepper current and complete content must share one vertical alignment");
+assert(componentCSS.includes(".ui-stepper--horizontal ol { align-items: center; gap: var(--ui-space-3); }") && componentCSS.includes(".ui-stepper--horizontal .ui-stepper__connector { height: 1px; min-width: 24px; flex: 1 1 32px; background: var(--ui-color-border); }"), "Horizontal Stepper must use auto-layout gaps around independent 1px connectors");
 assert.match(ui.stepper({ id: "flow-progress-accessibility", items: ["Course", "Time"], current: 1, variant: "flow-progress" }), /aria-current="step"/, "Flow progress Stepper must expose the current step");
+assert(componentCSS.includes("grid-template-rows: var(--ui-stepper-flow-marker-size) auto") && componentCSS.includes("top: calc((var(--ui-stepper-flow-marker-size) - var(--ui-stepper-flow-connector-size)) / 2)"), "Flow progress Stepper connectors must align from the marker centre independently of label height");
+assert(componentCSS.includes(".ui-stepper--flow-progress { --ui-stepper-flow-marker-size: 24px; --ui-stepper-flow-connector-size: 1px;") && componentCSS.includes("margin: 0;"), "Flow progress Stepper must remain left-aligned with a 1px connector");
+assert(componentCSS.includes(".ui-stepper--flow-progress .ui-stepper__item.is-current .ui-stepper__marker { border-color: var(--ui-color-text); color: var(--ui-color-text); background: var(--ui-color-card); }"), "Flow progress current Stepper must expose a stroked current marker");
+assert(catalog.includes('const filterModal = filterPattern({') && !catalog.includes('teacher-discovery-filter__options'), "Teacher discovery must reuse the Filter Pattern instead of recreating a local filter panel");
 assert.match(ui.progress({ value: 62, ariaLabel: "Profile progress" }), /role="progressbar"[^>]*aria-label="Profile progress"/, "Progress must expose a named progressbar");
+assert.match(ui.progress({ value: 62, type: "circle" }), /--ui-progress-ring-stroke:12px/, "Circle Progress must compensate for its SVG scale with a 12px source stroke");
+assert.match(ui.progress({ value: 62, type: "semicircle" }), /--ui-progress-ring-stroke:8px/, "Semicircle Progress must use an 8px source stroke to match the Circle's rendered line weight");
+assert(componentCSS.includes("stroke-width: var(--ui-progress-ring-stroke);"), "Circular Progress must apply its shared ring stroke variable");
 assert.match(ui.toast({ tone: "success", title: "Saved" }), /role="status"[^>]*aria-live="polite"/, "Toast must expose a polite status announcement");
 assert.match(ui.notification({ tone: "error", title: "Payment needs updating" }), /role="alert"[^>]*aria-live="polite"/, "Error Notification must expose an announced alert");
 assert.match(ui.result({ id: "result-accessibility", tone: "success", title: "Lesson booked" }), /role="status"[^>]*aria-labelledby="result-accessibility-title"/, "Result must expose its visible outcome title");
@@ -485,6 +536,8 @@ assert.match(ui.disclosure({ id: "disclosure-accessibility", title: "Details", c
 assert.match(ui.segmentedControl({ id: "segmented-accessibility", options: ["Week", "Month"] }), /aria-pressed="true"/, "Segmented control must expose its selected value");
 assert.match(ui.timePicker({ id: "time-picker-accessibility", label: "Lesson time", slots: ["09:00"] }), /role="combobox"[^>]*aria-label="Lesson time"/, "Time picker must expose a named combobox trigger");
 assert.match(ui.calendar({ id: "calendar-accessibility", dates: [{ id: "mon", label: "Mon", date: "15" }], rows: [{ id: "09-00", label: "09:00", slots: [{ state: "available" }] }] }), /role="grid"[^>]*aria-label="Weekly availability"/, "Calendar must expose a named availability grid");
+assert(componentCSS.includes(".ui-calendar--compact-availability { width: 100%; gap: var(--ui-space-1); }") && componentCSS.includes(".ui-calendar__compact-grid { width: 100%; min-width: 0; display: grid; grid-template-columns: 72px repeat(7, minmax(0, 1fr));"), "Compact availability must distribute time cells from the available module width");
+assert(catalog.includes('dsBlock("Compact availability", ui.calendar({ id: "compact-availability-calendar"') && !catalog.includes('ariaLabel: "Compact weekly availability" }), true)'), "Compact availability documentation must use the narrower standard module span");
 const lessonRecordCalendar = ui.calendar({ id: "calendar-record-accessibility", variant: "lesson-record", recordTitle: "My lessons", recordStats: [{ label: "Total lesson count", value: "421", tone: "info" }, { label: "Total practice hours", value: "562", tone: "success" }], recordMonths: [{ id: "jul", label: "Jul", weeks: [["empty", "info", "success", "mixed", "selected", "out-of-range", "empty"]] }], ariaLabel: "Lesson record" });
 assert.match(lessonRecordCalendar, /data-calendar-variant="lesson-record"/, "Calendar must expose its lesson-record variant");
 assert.match(lessonRecordCalendar, /ui-calendar__record-cell is-mixed/, "Lesson record must support mixed activity cells");
@@ -493,9 +546,9 @@ assert.match(ui.popover({ id: "popover-accessibility", title: "Details", body: "
 
 for (const reference of [
   '<link rel="stylesheet" href="catalog-runtime/tokens.css" />',
-  '<link rel="stylesheet" href="catalog-runtime/italki-ui.css" />',
+  '<link rel="stylesheet" href="catalog-runtime/italki-ui.css?v=20260811-tabs-extra-fade" />',
   '<script src="catalog-runtime/contracts.js"></script>',
-  '<script src="catalog-runtime/italki-ui.js"></script>',
+  '<script src="catalog-runtime/italki-ui.js?v=20260811-statistic-loading"></script>',
   'function buttonComponent(props = {}) { return ui.button({ ...props, variant: props.variant === "gradient" ? "plus" : props.variant }); }',
   'function chipComponent(props = {}) { return ui.chip(props); }',
   'function tagComponent(props = {}) { return ui.tag(props); }',

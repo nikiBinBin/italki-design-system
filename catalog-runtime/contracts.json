@@ -6,11 +6,11 @@
     "Assets/Images/"
   ],
   "migration": {
-    "migrated": ["button", "chip", "link", "video", "tag", "checkbox", "checkbox-group", "radio", "selection", "date-picker", "tooltip", "modal", "popup", "popconfirm", "divider", "avatar", "badge", "breadcrumb", "card", "alert", "tabs", "pagination", "rate", "sidebar", "statistic", "table", "timeline", "top-nav", "slider", "panel", "search", "select", "switch", "drawer", "form-field", "text-input", "textarea", "number-stepper", "combobox", "upload", "stepper", "progress", "toast", "notification", "result", "skeleton", "dropdown-menu", "disclosure", "segmented-control", "time-slot", "time-picker", "calendar", "popover", "footer"],
+    "migrated": ["button", "chip", "link", "video", "tag", "checkbox", "checkbox-group", "radio", "selection", "date-picker", "tooltip", "modal", "popup", "popconfirm", "divider", "section-intro", "avatar", "badge", "breadcrumb", "card", "list", "alert", "tabs", "pagination", "rate", "sidebar", "statistic", "table", "timeline", "top-nav", "slider", "panel", "search", "select", "switch", "drawer", "form-field", "text-input", "textarea", "number-stepper", "combobox", "upload", "stepper", "progress", "toast", "notification", "result", "skeleton", "dropdown-menu", "disclosure", "segmented-control", "time-slot", "time-picker", "calendar", "popover", "footer"],
     "pending": []
   },
   "tokens": {
-    "--ui-color-page": "#FFFFFF",
+    "--ui-color-page": "#F5F6F9",
     "--ui-color-card": "#FFFFFF",
     "--ui-color-title": "#313140",
     "--ui-color-text": "#515164",
@@ -23,13 +23,14 @@
     "--ui-color-primary": "#FF4338",
     "--ui-color-primary-hover": "#D3382F",
     "--ui-color-primary-shade-1": "#FF8E87",
+    "--ui-color-primary-surface": "#FFF1F1",
     "--ui-color-link": "#59779A",
     "--ui-color-link-hover": "#4B647D",
     "--ui-color-info": "#00B3BD",
     "--ui-color-info-surface": "#EDFAFA",
     "--ui-color-accessory-1": "#FFF9E6",
     "--ui-color-accessory-2": "#E6F7F8",
-    "--ui-color-accessory-3": "#FFF2F1",
+    "--ui-color-accessory-3": "#FFF1F1",
     "--ui-color-accessory-4": "#E7FCF5",
     "--ui-color-available": "#98D45F",
     "--ui-color-available-surface": "#F4FBEA",
@@ -41,17 +42,17 @@
     "--ui-color-error": "#D3382F",
     "--ui-color-error-surface": "#FFF1F1",
     "--ui-color-on-primary": "#FFFFFF",
-    "--ui-color-modal-mask": "rgb(49 49 64 / 24%)",
+    "--ui-color-modal-mask": "rgb(0 0 0 / 60%)",
     "--ui-color-upload-overlay": "rgb(49 49 64 / 68%)",
-    "--ui-color-upload-loading": "rgb(49 49 64 / 50%)",
+    "--ui-color-upload-loading": "rgb(49 49 64 / 68%)",
     "--ui-color-on-primary-muted": "rgb(255 255 255 / 45%)",
-    "--ui-gradient-pro": "linear-gradient(88deg, #FF4438 9.48%, #1C07FF 99.43%)",
-    "--ui-gradient-pro-motion": "linear-gradient(88deg, #1C07FF 4.74%, #FF4438 49.715%, #FF4438 54.74%, #1C07FF 99.715%)",
+    "--ui-gradient-pro": "linear-gradient(88deg, #FF4338 0%, #1C07FF 100%)",
+    "--ui-gradient-pro-motion": "linear-gradient(88deg, #1C07FF 4.74%, #FF4338 49.715%, #FF4338 54.74%, #1C07FF 99.715%)",
     "--ui-gradient-skeleton": "linear-gradient(90deg, #EBEDF1 25%, #F5F6F9 37%, #EBEDF1 63%)",
     "--ui-color-on-emphasis-muted": "rgb(255 255 255 / 55%)",
-    "--ui-color-emphasis-weak": "rgb(49 49 64 / 28%)",
-    "--ui-color-disabled-weak": "rgb(199 203 211 / 42%)",
-    "--ui-color-hover-overlay": "rgb(49 49 64 / 8%)",
+    "--ui-color-emphasis-weak": "#C7CBD3",
+    "--ui-color-disabled-weak": "#E5E8ED",
+    "--ui-color-hover-overlay": "#EBEDF1",
     "--ui-shadow-card-hover": "0 1px 2px 0 #0F172A00, 0 4px 12px 0 #0F172A0A",
     "--ui-shadow-card": "0 0 0 0 #0F172A00",
     "--ui-shadow-md": "0 2px 4px 0 #001A5608, 0 4px 8px 0 #00174E0A",
@@ -64,7 +65,6 @@
     "--ui-radius-md": "8px",
     "--ui-radius-lg": "12px",
     "--ui-radius-xl": "16px",
-    "--ui-radius-2xl": "24px",
     "--ui-radius-full": "9999px",
     "--ui-space-0": "0px",
     "--ui-space-half": "2px",
@@ -118,12 +118,13 @@
       "requiredStates": ["default", "duration", "titled", "hover", "disabled"]
     },
     "tag": {
-      "acceptedProps": ["label", "value", "size", "tone", "removable", "removeDemo", "removeAriaLabel"],
+      "acceptedProps": ["label", "value", "size", "tone", "variant", "leadingIcon", "removable", "removeDemo", "removeAriaLabel"],
       "props": {
         "size": [24, 32, 40],
-        "tone": ["neutral", "info", "success", "warning", "error"]
+        "tone": ["neutral", "info", "success", "warning", "error"],
+        "variant": ["default", "status", "promo"]
       },
-      "requiredStates": ["default", "removable"]
+      "requiredStates": ["default", "removable", "status", "promo"]
     },
     "checkbox": {
       "acceptedProps": ["id", "label", "checked", "state", "disabled", "toggleMode", "demo"],
@@ -153,19 +154,19 @@
       "requiredStates": ["default", "checked", "hover", "disabled", "inline", "vertical", "block"]
     },
     "selection": {
-      "acceptedProps": ["label", "value", "subtext", "description", "leading", "badge", "price", "period", "selected", "selectedMarker", "disabled", "contentType", "selectionMode", "state", "tabIndex", "demo"],
+      "acceptedProps": ["label", "value", "subtext", "description", "leading", "badge", "price", "period", "discount", "quantity", "quantityLabel", "originalPrice", "totalPrice", "selected", "selectedMarker", "disabled", "contentType", "selectionMode", "state", "tabIndex", "demo"],
       "subcomponents": {
         "group": {
-          "acceptedProps": ["label", "options", "selected", "contentType", "selectionMode", "selectedMarker", "layout"],
-          "props": { "layout": ["stack", "grid"] }
+          "acceptedProps": ["label", "options", "selected", "contentType", "selectionMode", "selectedMarker", "layout", "courseTitle", "courseMeta", "courses", "selectedDuration"],
+          "props": { "layout": ["stack", "grid", "package-grid"] }
         }
       },
       "props": {
-        "contentType": ["standard", "icon-simple", "icon-card", "avatar", "payment-icon"],
+        "contentType": ["standard", "icon-simple", "icon-card", "package-card", "lesson-options", "avatar", "payment-icon"],
         "selectionMode": ["radio", "checkbox"],
         "state": ["default", "hover", "focus", "disabled"]
       },
-      "requiredStates": ["icon-simple-default", "icon-simple-selected", "icon-simple-hover", "icon-simple-focus", "icon-simple-disabled", "icon-card-default", "avatar-default", "payment-icon-default", "radio-default", "radio-selected", "checkbox-default", "checkbox-selected", "desktop", "mobile"]
+      "requiredStates": ["icon-simple-default", "icon-simple-selected", "icon-simple-hover", "icon-simple-focus", "icon-simple-disabled", "icon-card-default", "package-card-default", "package-card-selected", "lesson-options-detailed", "lesson-options-compact", "lesson-options-list", "avatar-default", "payment-icon-default", "radio-default", "radio-selected", "checkbox-default", "checkbox-selected", "desktop", "mobile"]
     },
     "date-picker": {
       "acceptedProps": ["id", "label", "value", "placeholder", "size", "shape", "status", "open", "disabled", "state", "monthLabel", "weekdays", "days", "months", "monthIndex", "selected", "range", "demo"],
@@ -256,10 +257,11 @@
       "requiredStates": ["standard", "icon-only", "overflow", "custom-separator"]
     },
     "card": {
-      "acceptedProps": ["interactive", "outlined", "media", "mediaAlt", "mediaRatio", "eyebrow", "title", "body", "meta", "footer", "density", "ariaLabel", "href", "demo"],
+      "acceptedProps": ["interactive", "outlined", "media", "mediaAlt", "mediaPlaceholder", "mediaRatio", "eyebrow", "title", "body", "meta", "footer", "density", "ariaLabel", "href", "demo"],
       "props": {
         "interactive": [true, false],
         "outlined": [true, false],
+        "mediaPlaceholder": [true, false],
         "mediaRatio": ["16:9", "4:3", "1:1"],
         "density": ["compact", "default", "comfortable"]
       },
@@ -275,12 +277,13 @@
       "requiredStates": ["info", "success", "warning", "error", "closable", "with-action", "banner"]
     },
     "tabs": {
-      "acceptedProps": ["id", "items", "activeId", "extra", "ariaLabel", "orientation", "activation", "demo"],
+      "acceptedProps": ["id", "items", "activeId", "extra", "ariaLabel", "orientation", "variant", "activation", "demo"],
       "props": {
         "orientation": ["horizontal"],
+        "variant": ["default", "red-line"],
         "activation": ["manual", "automatic"]
       },
-      "requiredStates": ["basic", "icon-count", "disabled", "trailing-action"]
+      "requiredStates": ["basic", "red-line", "icon-count", "disabled", "trailing-action"]
     },
     "pagination": {
       "acceptedProps": ["pages", "current", "previousDisabled", "nextDisabled", "ariaLabel", "demo"],
@@ -482,11 +485,13 @@
       "requiredStates": ["default", "current", "complete", "vertical", "flow-progress"]
     },
     "progress": {
-      "acceptedProps": ["value", "max", "status", "showLabel", "indeterminate", "ariaLabel"],
+      "acceptedProps": ["value", "max", "status", "type", "size", "showLabel", "indeterminate", "ariaLabel"],
       "props": {
-        "status": ["default", "success", "error"]
+        "status": ["default", "success", "error"],
+        "type": ["line", "circle", "semicircle"],
+        "size": [80, 120]
       },
-      "requiredStates": ["default", "success", "error", "indeterminate"]
+      "requiredStates": ["default", "success", "error", "indeterminate", "circle", "semicircle"]
     },
     "toast": {
       "acceptedProps": ["id", "tone", "title", "description", "action", "duration", "closable", "open", "ariaLabel"],
@@ -549,11 +554,12 @@
       "requiredStates": ["available", "selected", "unavailable", "booked-by-others", "booked-by-you", "loading", "option"]
     },
     "time-picker": {
-      "acceptedProps": ["id", "label", "placeholder", "slots", "selected", "disabled", "open", "state", "ariaLabel"],
+      "acceptedProps": ["id", "label", "placeholder", "slots", "selected", "selectionMode", "disabled", "open", "state", "ariaLabel"],
       "props": {
-        "state": ["default", "hover", "focus", "disabled"]
+        "state": ["default", "hover", "focus", "disabled"],
+        "selectionMode": ["single", "multiple"]
       },
-      "requiredStates": ["default", "open", "selected", "disabled"]
+      "requiredStates": ["default", "open", "selected", "multiple", "disabled"]
     },
     "calendar": {
       "acceptedProps": ["id", "variant", "timezone", "weekLabel", "todayLabel", "dates", "rows", "weekViews", "activeWeek", "todayWeek", "timePicker", "availabilityLabel", "teacherAvailability", "recordTitle", "recordMonths", "recordStats", "weekdays", "disabled", "ariaLabel", "demo"],
@@ -566,6 +572,24 @@
       "acceptedProps": ["id", "columns", "utilities", "copyright", "legalLinks", "socialLinks", "ariaLabel", "demo"],
       "props": {},
       "requiredStates": ["standard", "with-utilities", "with-legal-links", "with-social-links"]
+    },
+    "section-intro": {
+      "acceptedProps": ["id", "eyebrow", "title", "description", "action", "size", "alignment", "headingLevel", "ariaLabel"],
+      "props": {
+        "size": ["compact", "default"],
+        "alignment": ["start", "center"],
+        "headingLevel": [2, 3]
+      },
+      "requiredStates": ["title-only", "with-eyebrow", "with-description", "with-action", "compact", "centered"]
+    },
+    "list": {
+      "acceptedProps": ["id", "items", "size", "variant", "divided", "ariaLabel", "demo"],
+      "props": {
+        "size": ["small", "default", "large"],
+        "variant": ["default", "avatar", "image", "content"],
+        "divided": [true, false]
+      },
+      "requiredStates": ["default-size", "small-size", "large-size", "with-description", "with-trailing", "interactive", "avatar", "image", "content", "undivided"]
     },
     "popover": {
       "acceptedProps": ["id", "title", "body", "actions", "trigger", "triggerLabel", "open", "placement", "triggerMode", "closeOnLeave", "leaveDelay", "demo", "ariaLabel"],
