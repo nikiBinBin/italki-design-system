@@ -4,13 +4,13 @@
   "note": "Mirror of the Design project templates. The project is the source of truth; these copies exist only so audit:templates exercises the real files. A stale mirror produces confident findings about a page nobody is running — re-sync before believing one.",
   "files": {
     "teacher-search/TeacherSearch.dc.html": {
-      "bytes": 35026,
-      "sha256": "2182109fd7966ccd",
+      "bytes": 35006,
+      "sha256": "12745140d63d8790",
       "origin": "written to the project from here"
     },
     "teacher-search/ds-safe.js": {
-      "bytes": 12809,
-      "sha256": "9a2dd90a75074a96",
+      "bytes": 12935,
+      "sha256": "272d5cd2c2b22968",
       "origin": "written to the project from here"
     },
     "teacher-search/filter-pattern.css": {
@@ -34,13 +34,13 @@
       "origin": "not re-verified this sync"
     },
     "teacher-profile/TeacherProfile.dc.html": {
-      "bytes": 41478,
-      "sha256": "80fcd9c49ab0cf66",
+      "bytes": 41418,
+      "sha256": "cc98be5a7d0046e4",
       "origin": "written to the project from here"
     },
     "teacher-profile/ds-safe.js": {
-      "bytes": 12809,
-      "sha256": "9a2dd90a75074a96",
+      "bytes": 12935,
+      "sha256": "272d5cd2c2b22968",
       "origin": "written to the project from here"
     },
     "teacher-profile/ds-base.js": {

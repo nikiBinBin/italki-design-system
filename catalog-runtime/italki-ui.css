@@ -331,7 +331,7 @@
 .ui-selection__badge::before { width: 6px; height: 6px; border-radius: var(--ui-radius-full); content: ""; background: var(--ui-color-success); }
 .ui-selection__package-copy { min-width: 0; display: grid; align-content: start; gap: var(--ui-space-2); }
 .ui-selection__package-offer { display: inline-flex; align-items: center; gap: var(--ui-space-1); color: var(--ui-color-info); font-size: var(--ui-font-size-14); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-20); }
-.ui-selection__package-offer-icon { width: 16px; height: 16px; flex: 0 0 16px; display: block; object-fit: contain; }
+.ui-selection__package-offer-icon { width: 16px; height: 16px; flex: 0 0 16px; display: block; background: currentColor; mask: url("../Assets/Icons/16px/category-sm.svg") center / contain no-repeat; -webkit-mask: url("../Assets/Icons/16px/category-sm.svg") center / contain no-repeat; }
 .ui-selection__package-offer.is-neutral { color: var(--ui-color-secondary); }
 .ui-selection__package-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--ui-space-1); color: var(--ui-color-title); font-size: var(--ui-font-size-20); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-28); }
 .ui-selection__package-price small { color: inherit; font: inherit; }
@@ -806,7 +806,7 @@
 .ui-statistic__prefix { margin-right: var(--ui-space-1); }
 .ui-statistic__suffix { margin-left: var(--ui-space-1); }
 .ui-statistic__description { margin: 0; }
-.ui-statistic__skeleton { display: block; border-radius: var(--ui-radius-md); background: var(--ui-color-hover); }
+.ui-statistic__skeleton { display: block; overflow: hidden; border-radius: var(--ui-radius-md); background: var(--ui-color-hover); }
 .ui-statistic.is-loading .ui-statistic__skeleton { background: var(--ui-gradient-skeleton); background-size: 400% 100%; animation: ui-skeleton-loading 1.4s ease infinite; }
 .ui-statistic__skeleton--value { width: min(100%, 104px); height: var(--ui-line-height-28); }
 .ui-statistic__skeleton--description { width: min(100%, 76px); height: 12px; margin-top: var(--ui-space-1); }
@@ -1269,15 +1269,42 @@ html.ui-modal-scroll-locked, body.ui-modal-scroll-locked { overflow: hidden; }
 .ui-stepper--vertical .ui-stepper__item { flex: 0 0 auto; }
 .ui-stepper--vertical .ui-stepper__item:not(:last-child)::after { width: 1px; height: calc(100% + var(--ui-space-3)); top: var(--ui-space-4); right: auto; bottom: auto; left: var(--ui-space-4); }
 
-.ui-stepper--flow-progress { --ui-stepper-flow-marker-size: 24px; --ui-stepper-flow-connector-size: 1px; width: min(100%, 560px); display: flex; margin: 0; padding: 0; list-style: none; }
-.ui-stepper--flow-progress .ui-stepper__item { min-width: 0; flex: 1; display: grid; grid-template-rows: var(--ui-stepper-flow-marker-size) auto; justify-items: center; align-items: start; row-gap: var(--ui-space-1); position: relative; color: var(--ui-color-secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); text-align: center; }
-.ui-stepper--flow-progress .ui-stepper__item:not(:last-child)::after { height: var(--ui-stepper-flow-connector-size); position: absolute; z-index: 0; top: calc((var(--ui-stepper-flow-marker-size) - var(--ui-stepper-flow-connector-size)) / 2); right: calc(-50% + (var(--ui-stepper-flow-marker-size) / 2)); left: calc(50% + (var(--ui-stepper-flow-marker-size) / 2)); margin: 0; border-radius: var(--ui-radius-full); background: var(--ui-color-border); content: ""; }
-.ui-stepper--flow-progress .ui-stepper__item.is-complete:not(:last-child)::after { background: var(--ui-color-text); }
+.ui-stepper__sr-only { width: 1px; height: 1px; position: absolute; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+.ui-stepper--flow-progress { --ui-stepper-flow-marker-size: 24px; --ui-stepper-flow-connector-size: 1px; width: min(100%, 560px); display: flex; align-items: flex-start; margin: 0; padding: 0; list-style: none; }
+.ui-stepper--flow-progress .ui-stepper__item { min-width: 0; flex: 0 0 var(--ui-stepper-flow-marker-size); display: grid; grid-template-rows: var(--ui-stepper-flow-marker-size) auto; justify-items: center; align-items: start; row-gap: var(--ui-space-1); color: var(--ui-color-secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); text-align: center; }
+.ui-stepper--flow-progress .ui-stepper__connector { height: var(--ui-stepper-flow-connector-size); min-width: 24px; flex: 1 1 32px; align-self: start; margin-top: calc((var(--ui-stepper-flow-marker-size) - var(--ui-stepper-flow-connector-size)) / 2); background: var(--ui-color-border); }
+.ui-stepper--flow-progress .ui-stepper__connector.is-complete { background: var(--ui-color-text); }
 .ui-stepper--flow-progress .ui-stepper__marker { width: var(--ui-stepper-flow-marker-size); height: var(--ui-stepper-flow-marker-size); box-sizing: border-box; flex-basis: var(--ui-stepper-flow-marker-size); border: 1px solid var(--ui-color-divider); color: var(--ui-color-secondary); background: var(--ui-color-divider); font-size: var(--ui-font-size-12); }
 .ui-stepper--flow-progress .ui-stepper__item.is-complete .ui-stepper__marker { border-color: var(--ui-color-text); color: var(--ui-color-card); background: var(--ui-color-text); }
 .ui-stepper--flow-progress .ui-stepper__item.is-current .ui-stepper__marker { border-color: var(--ui-color-text); color: var(--ui-color-text); background: var(--ui-color-card); }
 .ui-stepper--flow-progress .ui-stepper__item strong { min-width: 0; font: inherit; font-weight: var(--ui-font-weight-bold); }
 .ui-stepper--flow-progress .ui-stepper__complete-icon { width: 16px; height: 16px; }
+
+.ui-stepper--dots { width: max-content; display: flex; align-items: center; gap: var(--ui-space-2); margin: 0; padding: 0; list-style: none; }
+.ui-stepper--dots .ui-stepper__dot { width: 8px; height: 8px; flex: 0 0 8px; border-radius: var(--ui-radius-full); background: var(--ui-color-secondary); }
+.ui-stepper--dots .ui-stepper__dot.is-current { background: var(--ui-color-text); }
+.ui-stepper--top-indicator { width: min(100%, 375px); display: flex; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.ui-stepper--top-indicator .ui-stepper__segment { height: 8px; flex: 1; border-radius: var(--ui-radius-full); background: var(--ui-color-divider); }
+.ui-stepper--top-indicator .ui-stepper__segment.is-complete { background: var(--ui-color-info); }
+.ui-stepper--top-indicator .ui-stepper__segment.is-current { background: var(--ui-color-info-surface); }
+.ui-stepper--schedule-progress { width: min(100%, 355px); display: grid; gap: var(--ui-space-1); color: var(--ui-color-secondary); }
+.ui-stepper__schedule-meta { display: flex; align-items: center; justify-content: space-between; gap: var(--ui-space-3); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
+.ui-stepper__schedule-meta strong { display: inline-flex; gap: 2px; font: inherit; }
+.ui-stepper__schedule-meta b { color: var(--ui-color-info); font-weight: var(--ui-font-weight-regular); }
+.ui-stepper__schedule-meta i { color: var(--ui-color-secondary); font-style: normal; }
+.ui-stepper__schedule-track { height: 6px; display: block; overflow: hidden; border-radius: var(--ui-radius-full); background: var(--ui-color-hover); }
+.ui-stepper__schedule-track i { width: var(--ui-stepper-schedule-value); height: 100%; display: block; border-radius: inherit; background: var(--ui-color-info); }
+.ui-stepper--progress-steps { width: min(100%, 560px); display: flex; align-items: center; gap: var(--ui-space-2); margin: 0; padding: 0; list-style: none; }
+.ui-stepper--progress-steps .ui-stepper__item { min-width: 0; flex: 0 0 auto; display: flex; align-items: center; gap: var(--ui-space-2); }
+.ui-stepper--progress-steps .ui-stepper__item::after { display: none; }
+.ui-stepper--progress-steps .ui-stepper__marker { width: 24px; height: 24px; flex-basis: 24px; border-color: var(--ui-color-divider); color: var(--ui-color-secondary); background: var(--ui-color-card); }
+.ui-stepper--progress-steps .ui-stepper__item strong { color: var(--ui-color-secondary); font-size: var(--ui-font-size-14); font-weight: var(--ui-font-weight-medium); line-height: var(--ui-line-height-22); white-space: nowrap; }
+.ui-stepper--progress-steps .ui-stepper__connector { height: 1px; min-width: 24px; flex: 1 1 24px; background: var(--ui-color-border); }
+.ui-stepper--progress-steps .ui-stepper__connector.is-complete { background: var(--ui-color-text); }
+.ui-stepper--progress-steps .ui-stepper__item.is-complete .ui-stepper__marker { border-color: var(--ui-color-text); color: var(--ui-color-card); background: var(--ui-color-text); }
+.ui-stepper--progress-steps .ui-stepper__item.is-current .ui-stepper__marker { border-color: var(--ui-color-primary); color: var(--ui-color-card); background: var(--ui-color-primary); }
+.ui-stepper--progress-steps .ui-stepper__item.is-current strong { color: var(--ui-color-primary); }
+.ui-stepper--progress-steps .ui-stepper__complete-icon { width: 16px; height: 16px; }
 
 .ui-progress { color: var(--ui-color-text); }
 .ui-progress--line { width: min(100%, 440px); display: flex; align-items: center; gap: var(--ui-space-3); }

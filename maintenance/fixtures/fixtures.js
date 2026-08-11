@@ -432,7 +432,14 @@
         fixture("stepper", "current", ui.stepper({ id: "fixture-steps-current", items: ["Course", "Time", "Payment"], current: 1 })),
         fixture("stepper", "complete", ui.stepper({ id: "fixture-steps-complete", items: ["Course", "Time", "Payment"], current: 2 })),
         fixture("stepper", "vertical", ui.stepper({ id: "fixture-steps-vertical", items: ["Course", "Time", "Payment"], current: 1, orientation: "vertical" })),
-        fixture("stepper", "flow-progress", ui.stepper({ id: "fixture-flow-current", items: ["Course", "Time", "Payment"], current: 1, variant: "flow-progress", ariaLabel: "Booking flow progress" }))
+        fixture("stepper", "flow-progress", ui.stepper({ id: "fixture-flow-current", items: ["Course", "Time", "Payment"], current: 1, variant: "flow-progress", ariaLabel: "Booking flow progress" })),
+        /* The four variants the contract added. Every required state needs a
+           fixture or the visual check has nothing to compare a change against —
+           a variant with no baseline can be altered without anything objecting. */
+        fixture("stepper", "dots", ui.stepper({ id: "fixture-steps-dots", items: ["Course", "Time", "Payment"], current: 1, variant: "dots", ariaLabel: "Booking progress" })),
+        fixture("stepper", "top-indicator", ui.stepper({ id: "fixture-steps-top", items: ["Course", "Time", "Payment"], current: 1, variant: "top-indicator", ariaLabel: "Booking progress" })),
+        fixture("stepper", "schedule-progress", ui.stepper({ id: "fixture-steps-schedule", items: ["Course", "Time", "Payment"], current: 1, variant: "schedule-progress", ariaLabel: "Schedule progress" })),
+        fixture("stepper", "progress-steps", ui.stepper({ id: "fixture-steps-progress", items: ["Course", "Time", "Payment"], current: 1, variant: "progress-steps", ariaLabel: "Lesson progress" }))
       ],
       progress: [
         fixture("progress", "default", ui.progress({ value: 62 })),

@@ -317,7 +317,7 @@
     const feature = leading ? `<span class="ui-selection__feature ui-selection__feature--${contentType}">${leading}</span>` : "";
     const title = `<span class="ui-selection__title">${escapeHTML(label)}</span>${subtext ? `<span class="ui-selection__subtext">${escapeHTML(subtext)}</span>` : ""}`;
     const copy = `<span class="ui-selection__copy"><span class="ui-selection__title-row">${title}</span>${description ? `<span class="ui-selection__description">${escapeHTML(description)}</span>` : ""}</span>`;
-    const packageOffer = discount ? `<span class="ui-selection__package-offer${discount === "No discount" ? " is-neutral" : ""}">${icon("Assets/Icons/16px/category-sm.svg", "ui-selection__package-offer-icon")}<span>${escapeHTML(discount)}</span></span>` : "";
+    const packageOffer = discount ? `<span class="ui-selection__package-offer${discount === "No discount" ? " is-neutral" : ""}"><span class="ui-selection__package-offer-icon" aria-hidden="true"></span><span>${escapeHTML(discount)}</span></span>` : "";
     const packageQuantity = quantity ? `<span class="ui-selection__package-quantity"><strong>${escapeHTML(quantity)}</strong><span>${escapeHTML(quantityLabel)}</span></span>` : "";
     const packageTotal = originalPrice || totalPrice ? `<span class="ui-selection__package-total">${originalPrice ? `<s>${escapeHTML(originalPrice)}</s>` : ""}${totalPrice ? `<strong>${escapeHTML(totalPrice)}</strong>` : ""}</span>` : "";
     const packageBody = `<span class="ui-selection__package-copy">${packageOffer}${price ? `<span class="ui-selection__package-price">${escapeHTML(price)}${period ? `<small>${escapeHTML(period)}</small>` : ""}</span>` : ""}${description ? `<span class="ui-selection__package-description">${escapeHTML(description)}</span>` : ""}</span>${packageQuantity || packageTotal ? `<span class="ui-selection__package-footer">${packageQuantity}${packageTotal}</span>` : ""}`;
@@ -2722,21 +2722,43 @@
 
   function stepper(props = {}) {
     assertProps("stepper", props);
-    const { id = "", items = [], current = 0, variant = "default", orientation = "horizontal", ariaLabel = "Steps" } = props;
+    const { id = "", items = [], current = 0, variant = "default", orientation = "horizontal", value = 0, max = 0, label = "", ariaLabel = "" } = props;
     enumValue("stepper", "variant", variant);
     enumValue("stepper", "orientation", orientation);
     const normalized = items.map(normalizeStep);
     const currentIndex = Math.max(0, Math.min(normalized.length - 1, Number(current)));
     if (variant === "flow-progress") {
       if (orientation !== "horizontal") throw new Error("flow-progress Stepper only supports horizontal orientation");
-      const content = normalized.map((item, index) => `<li class="ui-stepper__item${index < currentIndex ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}${item.disabled ? " is-disabled" : ""}"${index === currentIndex ? ' aria-current="step"' : ""}${item.disabled ? ' aria-disabled="true"' : ""}><span class="ui-stepper__marker">${index < currentIndex ? icon("Assets/Icons/confirm-sm.svg", "ui-stepper__complete-icon") : index + 1}</span><strong>${escapeHTML(item.label)}</strong></li>`).join("");
-      return `<ol class="ui-stepper ui-stepper--flow-progress" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel)}">${content}</ol>`;
+      const flowItem = (item, index) => `<li class="ui-stepper__item${index < currentIndex ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}${item.disabled ? " is-disabled" : ""}"${index === currentIndex ? ' aria-current="step"' : ""}${item.disabled ? ' aria-disabled="true"' : ""}><span class="ui-stepper__marker">${index < currentIndex ? icon("Assets/Icons/confirm-sm.svg", "ui-stepper__complete-icon") : index + 1}</span><strong>${escapeHTML(item.label)}</strong></li>`;
+      const content = normalized.flatMap((item, index) => [flowItem(item, index), index < normalized.length - 1 ? `<li class="ui-stepper__connector${index < currentIndex ? " is-complete" : ""}" role="presentation" aria-hidden="true"></li>` : ""]).join("");
+      return `<ol class="ui-stepper ui-stepper--flow-progress" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel || "Steps")}">${content}</ol>`;
+    }
+    if (variant === "dots") {
+      const content = normalized.map((item, index) => `<li class="ui-stepper__dot${index === currentIndex ? " is-current" : ""}"${index === currentIndex ? ' aria-current="step"' : ""}><span class="ui-stepper__sr-only">${escapeHTML(item.label)}</span></li>`).join("");
+      return `<ol class="ui-stepper ui-stepper--dots" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel || "Steps")}">${content}</ol>`;
+    }
+    if (variant === "top-indicator") {
+      const content = normalized.map((item, index) => `<li class="ui-stepper__segment${index < currentIndex ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}"${index === currentIndex ? ' aria-current="step"' : ""}><span class="ui-stepper__sr-only">${escapeHTML(item.label)}</span></li>`).join("");
+      return `<ol class="ui-stepper ui-stepper--top-indicator" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel || "Steps")}">${content}</ol>`;
+    }
+    if (variant === "schedule-progress") {
+      const safeMax = Math.max(1, Number(max) || normalized.length || 1);
+      const safeValue = Math.max(0, Math.min(safeMax, Number(value)));
+      const percent = (safeValue / safeMax) * 100;
+      const progressLabel = label || "Scheduled lessons";
+      return `<div class="ui-stepper ui-stepper--schedule-progress" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} role="progressbar" aria-label="${escapeHTML(ariaLabel || progressLabel)}" aria-valuemin="0" aria-valuemax="${safeMax}" aria-valuenow="${safeValue}"><div class="ui-stepper__schedule-meta"><span>${escapeHTML(progressLabel)}</span><strong><b>${safeValue}</b><i>/${safeMax}</i></strong></div><span class="ui-stepper__schedule-track"><i style="--ui-stepper-schedule-value:${percent}%"></i></span></div>`;
+    }
+    if (variant === "progress-steps") {
+      if (orientation !== "horizontal") throw new Error("progress-steps Stepper only supports horizontal orientation");
+      const progressStep = (item, index) => `<li class="ui-stepper__item${index < currentIndex ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}${item.disabled ? " is-disabled" : ""}"${index === currentIndex ? ' aria-current="step"' : ""}${item.disabled ? ' aria-disabled="true"' : ""}><span class="ui-stepper__marker">${index < currentIndex ? icon("Assets/Icons/confirm-sm.svg", "ui-stepper__complete-icon") : index + 1}</span><strong>${escapeHTML(item.label)}</strong></li>`;
+      const content = normalized.flatMap((item, index) => [progressStep(item, index), index < normalized.length - 1 ? `<li class="ui-stepper__connector${index < currentIndex ? " is-complete" : ""}" role="presentation" aria-hidden="true"></li>` : ""]).join("");
+      return `<ol class="ui-stepper ui-stepper--progress-steps" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel || "Steps")}">${content}</ol>`;
     }
     const stepItem = (item, index) => `<li class="ui-stepper__item${index < currentIndex ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}${item.disabled ? " is-disabled" : ""}"><button type="button" data-demo="ui-stepper" data-step-index="${index}" aria-current="${index === currentIndex ? "step" : "false"}"${item.disabled ? " disabled" : ""}><span class="ui-stepper__marker">${index < currentIndex ? icon("Assets/Icons/confirm-sm.svg", "ui-stepper__complete-icon") : index + 1}</span><span><strong>${escapeHTML(item.label)}</strong>${item.description ? `<small>${escapeHTML(item.description)}</small>` : ""}</span></button></li>`;
     const content = orientation === "horizontal"
       ? normalized.flatMap((item, index) => [stepItem(item, index), index < normalized.length - 1 ? `<li class="ui-stepper__connector${index < currentIndex ? " is-complete" : ""}" role="presentation" aria-hidden="true"></li>` : ""]).join("")
       : normalized.map(stepItem).join("");
-    return `<nav class="ui-stepper ui-stepper--${orientation}" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel)}"><ol>${content}</ol></nav>`;
+    return `<nav class="ui-stepper ui-stepper--${orientation}" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel || "Steps")}"><ol>${content}</ol></nav>`;
   }
 
   function progress(props = {}) {

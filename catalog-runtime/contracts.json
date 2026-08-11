@@ -477,12 +477,12 @@
       "requiredStates": ["dropzone", "trigger", "avatar-empty", "avatar-filled", "avatar-uploading", "avatar-error", "hover", "focus", "disabled", "uploading", "complete", "error", "multiple", "accept"]
     },
     "stepper": {
-      "acceptedProps": ["id", "items", "current", "variant", "orientation", "ariaLabel"],
+      "acceptedProps": ["id", "items", "current", "variant", "orientation", "value", "max", "label", "ariaLabel"],
       "props": {
-        "variant": ["default", "flow-progress"],
+        "variant": ["default", "flow-progress", "dots", "top-indicator", "schedule-progress", "progress-steps"],
         "orientation": ["horizontal", "vertical"]
       },
-      "requiredStates": ["default", "current", "complete", "vertical", "flow-progress"]
+      "requiredStates": ["default", "current", "complete", "vertical", "flow-progress", "dots", "top-indicator", "schedule-progress", "progress-steps"]
     },
     "progress": {
       "acceptedProps": ["value", "max", "status", "type", "size", "showLabel", "indeterminate", "ariaLabel"],

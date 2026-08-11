@@ -60,6 +60,30 @@ for (const rel of cards.sort()) {
   if (warns.length) errored.push(`${path.basename(rel,'.html')}: ${warns[0]}`);
   await p.close();
 }
+/* Asked statically as well, because asking it by clicking does not work: a hook
+   with no handler produces no behaviour, but the click still moves focus and
+   that counts as "something changed". ui-lesson-toggle and ui-timeline-reverse
+   both passed this audit while doing nothing on the page.
+
+   The dispatcher answers it directly — its CLICK table is what runs, and its
+   NOT_CLICK set declares the hooks that deliberately do not. Anything a card
+   renders that is in neither is a gap. */
+const dispatcher = fs.readFileSync(path.join(REPO, 'maintenance/scripts/ds-cards-behaviour.js'), 'utf8');
+const clickTable = dispatcher.slice(dispatcher.indexOf('const CLICK = {'), dispatcher.indexOf('const NOT_CLICK'));
+const handled = new Set([...clickTable.matchAll(/'([\w-]+)':\s*\(/g)].map((m) => m[1]));
+const declared = new Set([...dispatcher.slice(dispatcher.indexOf('const NOT_CLICK'))
+  .slice(0, dispatcher.slice(dispatcher.indexOf('const NOT_CLICK')).indexOf(']'))
+  .matchAll(/'([\w-]+)'/g)].map((m) => m[1]));
+const emitted = new Set();
+for (const rel of cards) {
+  for (const m of fs.readFileSync(path.join(STAGE, rel), 'utf8').matchAll(/data-demo="([^"]+)"/g)) emitted.add(m[1]);
+}
+const unbound = [...emitted].filter((d) => !handled.has(d) && !declared.has(d)).sort();
+console.log(`\n钩子表: 卡片渲染 ${emitted.size} 种 · 分发表接 ${handled.size} 种 · 声明为非点击 ${declared.size} 种`);
+console.log(unbound.length
+  ? `没人接的 ${unbound.length} 种（点了不会有任何行为）:\n  ${unbound.join('\n  ')}`
+  : '每种都有人接，或已声明为非点击');
+
 console.log(`${cards.length} 张卡，点了 ${tested} 个钩子`);
 /* An audit that examines nothing must not read as an audit that found nothing
    wrong — pointed at the wrong root, this printed "每个钩子都有反应" over zero

@@ -285,6 +285,14 @@ for (const target of TARGETS) {
     }
   }
 
+  /* Most cards stand on the page colour, which is right for anything that
+     carries its own surface. These six do not: a tag, a badge, a progress bar,
+     a result, a segmented control and a timeline all sit on a card in real use,
+     so showing them on the page grey misreads their contrast and their edges.
+     They get the card colour instead. */
+  const ON_CARD = new Set(['Timeline', 'Tag', 'Badge', 'Progress', 'Result', 'SegmentedControl']);
+  const stageColour = ON_CARD.has(name) ? 'var(--ui-color-card)' : 'var(--ui-color-page)';
+
   const depth = isPattern ? '../../' : '../../../';
   const rebase = (html) => html.replaceAll('="Assets/', `="${depth}Assets/`);
   const body = blocks
@@ -317,7 +325,7 @@ for (const target of TARGETS) {
 <script src="${depth}_cards.js" defer></script>
 <style>
   *{box-sizing:border-box}
-  body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page);font-family:var(--ui-font-family);color:var(--ui-color-text)}
+  body{margin:0;padding:var(--ui-space-6,24px);background:${stageColour};font-family:var(--ui-font-family);color:var(--ui-color-text)}
   /* A demo is a page-level slice of the Catalog, so each takes a full row. */
   .ds-grid{display:flex;flex-direction:column;gap:var(--ui-space-8,32px)}
   .cell{min-width:0}

@@ -1438,12 +1438,19 @@ window.ITalkiUIContracts = {
         "current",
         "variant",
         "orientation",
+        "value",
+        "max",
+        "label",
         "ariaLabel"
       ],
       "props": {
         "variant": [
           "default",
-          "flow-progress"
+          "flow-progress",
+          "dots",
+          "top-indicator",
+          "schedule-progress",
+          "progress-steps"
         ],
         "orientation": [
           "horizontal",
