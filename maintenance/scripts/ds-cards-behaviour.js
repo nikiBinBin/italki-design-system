@@ -80,6 +80,16 @@
       'ui-number-stepper-increment': (c) => call(ui.adjustNumberStepper, 'adjustNumberStepper', c, 1),
       'ui-upload-remove': (c) => call(ui.removeUploadFile, 'removeUploadFile', c),
       'ui-selection-card': (c) => call(ui.toggleSelectionCard, 'toggleSelectionCard', c),
+      /* The course card header in Selection's lesson-options group. The
+         runtime emits this hook and exports the handler; the table did not
+         carry it, so clicking an unselected course did nothing at all. */
+      'ui-lesson-toggle': (c) => call(ui.toggleLessonOptions, 'toggleLessonOptions', c),
+      /* Same class of gap: the runtime exports setTimelineReverse and the card
+         renders the button, and nothing connected the two. The button sits
+         beside the timeline rather than inside it, so the handler's closest()
+         finds nothing — it also accepts a container holding one, and on a card
+         that container is the cell. */
+      'ui-timeline-reverse': (c) => call(ui.setTimelineReverse, 'setTimelineReverse', c.closest('.cell') || document.body),
       'ui-calendar-slot': (c) => call(ui.selectCalendarSlot, 'selectCalendarSlot', c),
       'ui-teacher-date': (c) => call(ui.selectTeacherAvailabilityDate, 'selectTeacherAvailabilityDate', c),
       'ui-toast-close': (c) => call(ui.dismissToast, 'dismissToast', c),
@@ -138,12 +148,30 @@
     }, true);
 
     /* Say so when the card renders a hook nobody bound. This list has fallen
-       behind the runtime three times — More, the two pin controls, drag — and
-       each time the card looked correct and did nothing when clicked, which no
-       static check can see. */
+       behind the runtime five times now — More, the two pin controls, drag, the
+       lesson-options course card and the timeline reversal — and each time the
+       card looked correct and did nothing when clicked.
+
+       The warning only earns attention if everything it names is a real gap, so
+       the hooks that are deliberately not click-dispatched are declared. Two
+       reasons for a hook to be here:
+       — its state lives on an input, so it is synced on `input`/`change`;
+       — it marks a control whose behaviour belongs to the page, not the kit:
+         following a breadcrumb, choosing a step, applying a pattern's filters.
+       The Catalog wires those on its own pages; a static card cannot. */
+    const NOT_CLICK = new Set([
+      'ui-slider', 'ui-slider-range', 'ui-textarea', 'ui-select-search',
+      'ui-top-nav-search-input', 'ui-upload-input', 'checkbox',
+      'ui-breadcrumb-item', 'ui-stepper', 'button', 'tag-remove-demo',
+      'ds-chip', 'filter-category-parent', 'filter-category-child',
+      'teacher-discovery-a1', 'teacher-discovery-book-preview',
+      'teacher-discovery-filter-apply', 'teacher-discovery-filter-reset',
+      'teacher-discovery-pagination', 'teacher-discovery-tag-remove',
+    ]);
     const unbound = new Set();
     for (const node of document.querySelectorAll('[data-demo]')) {
-      if (!CLICK[node.dataset.demo]) unbound.add(node.dataset.demo);
+      const demo = node.dataset.demo;
+      if (!CLICK[demo] && !NOT_CLICK.has(demo)) unbound.add(demo);
     }
     if (unbound.size) console.warn('ds-cards: no handler bound for ' + [...unbound].join(', '));
 

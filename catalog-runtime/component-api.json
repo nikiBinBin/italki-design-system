@@ -2691,6 +2691,9 @@
         "current",
         "variant",
         "orientation",
+        "value",
+        "max",
+        "label",
         "ariaLabel"
       ],
       "defaults": {
@@ -2699,12 +2702,19 @@
         "current": "0",
         "variant": "\"default\"",
         "orientation": "\"horizontal\"",
-        "ariaLabel": "\"Steps\""
+        "value": "0",
+        "max": "0",
+        "label": "\"\"",
+        "ariaLabel": "\"\""
       },
       "enums": {
         "variant": [
           "default",
-          "flow-progress"
+          "flow-progress",
+          "dots",
+          "top-indicator",
+          "schedule-progress",
+          "progress-steps"
         ],
         "orientation": [
           "horizontal",
@@ -2716,7 +2726,11 @@
         "current",
         "complete",
         "vertical",
-        "flow-progress"
+        "flow-progress",
+        "dots",
+        "top-indicator",
+        "schedule-progress",
+        "progress-steps"
       ],
       "subcomponents": {},
       "allowedTokens": [

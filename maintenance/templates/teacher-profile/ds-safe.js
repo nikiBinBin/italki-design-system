@@ -145,6 +145,8 @@
     "ui-number-stepper-increment": (c) => run("adjustNumberStepper", c),
     "ui-upload-remove": (c) => run("removeUploadFile", c),
     "ui-selection-card": (c) => run("toggleSelectionCard", c),
+    "ui-lesson-toggle": (c) => run("toggleLessonOptions", c),
+    "ui-timeline-reverse": (c) => run("setTimelineReverse", c),
     "ui-teacher-date": (c) => run("selectTeacherAvailabilityDate", c),
     "ui-toast-close": (c) => run("dismissToast", c),
     "ui-notification-close": (c) => run("dismissNotification", c),
