@@ -131,6 +131,14 @@
       'ui-top-nav-context-option': (c) => call(ui.selectTopNavContext, 'selectTopNavContext', c),
       'ui-top-nav-filter': (c) => call(ui.toggleTopNavFilter, 'toggleTopNavFilter', c),
       'ui-top-nav-search-clear': (c) => call(ui.clearTopNavSearch, 'clearTopNavSearch', c),
+      /* Found by the dispatcher-parity check: the Catalog and the templates wire
+         these and the cards never did, so a card's Filter reset did nothing and
+         its top-nav search neither expanded on focus nor tracked what was typed. */
+      'filter-reset': (c) => {
+        const panel = c.closest('[data-ui-modal]') || document;
+        call(ui.resetFilters, 'resetFilters', panel);
+        call(ui.syncTopNavFilterCue, 'syncTopNavFilterCue', panel);
+      },
       /* The mask closes only when the dialog says it may. */
       'ui-modal-mask': (c) => { if (c.closest('[data-ui-modal]')?.dataset.maskClosable !== 'false') call(ui.closeModal, 'closeModal', c); },
     };
@@ -190,6 +198,15 @@
       if (event.target.closest?.('[data-slider-range]')) call(ui.startSliderRangeDrag, 'startSliderRangeDrag', event);
     });
 
+    document.addEventListener('focusin', (event) => {
+      const field = event.target.closest?.('[data-demo="ui-top-nav-search-input"]');
+      if (field) call(ui.setTopNavSearchFocus, 'setTopNavSearchFocus', field, true);
+    }, true);
+    document.addEventListener('focusout', (event) => {
+      const field = event.target.closest?.('[data-demo="ui-top-nav-search-input"]');
+      if (field) call(ui.setTopNavSearchFocus, 'setTopNavSearchFocus', field, false);
+    }, true);
+
     document.addEventListener('input', (event) => {
       /* Range handles are inputs, so they sync rather than dispatch — without
          this a card's price range drags and nothing moves. */
@@ -198,6 +215,8 @@
       const single = event.target.closest?.('[data-demo="ui-slider"]');
       if (single) call(ui.syncSliderInput, 'syncSliderInput', single);
       if (range || single) call(ui.syncFilterPrice, 'syncFilterPrice', document);
+      const navSearch = event.target.closest?.('[data-demo="ui-top-nav-search-input"]');
+      if (navSearch) call(ui.syncTopNavSearch, 'syncTopNavSearch', navSearch);
     }, true);
 
     document.addEventListener('change', (event) => {
