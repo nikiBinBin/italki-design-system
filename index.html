@@ -1927,6 +1927,10 @@
         }
         if (event.target.matches("[data-demo=ui-slider-range]")) {
           ui.syncSliderRange(event.target);
+          /* The Filter pattern's price pills read off the range; the templates
+             call this from their own input handler and this page did not, so the
+             numbers moved there and stood still here. */
+          ui.syncFilterPrice(event.target.closest("[data-ui-modal], .filter-pattern-detail, .teacher-discovery-filter-pattern") || document);
           return;
         }
         if (event.target.matches("[data-demo=ui-slider]")) {
