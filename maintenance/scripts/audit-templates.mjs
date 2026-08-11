@@ -126,6 +126,51 @@ for (const template of templates) {
   const moreOpen = await page.evaluate(() => document.querySelector('.ui-sidebar__more')?.classList.contains('is-open'));
   if (!moreOpen) say('More did not open');
 
+  /* Everything the filter drawer renders has to be bound to something.
+
+     The drawer composes from the kit, so its controls arrive as data-demo hooks
+     with no onClick — and for the ones the kit had no helper for, nothing bound
+     them: 30 chips, 28 category chips, 6 parent checkboxes and both price
+     handles rendered perfectly and could not be touched. Nothing failed, the
+     shell audit passed, and the drawer looked complete. The behaviour is a kit
+     helper now and both dispatchers bind it; this is what keeps them honest.
+
+     Declared exemptions are hooks that genuinely need no click handler. */
+  const DRAWER_NOT_CLICK = new Set([
+    'checkbox',            // a native input; toggling is the browser's job
+    'ui-slider', 'ui-slider-range', // inputs too — synced on `input`
+    'filter-apply',        // the page's own decision: this template closes the drawer
+  ]);
+  if (await page.$('[data-demo="ui-top-nav-filter"]')) {
+    await page.click('[data-demo="ui-top-nav-filter"]').catch(() => say('the Filter control could not be clicked'));
+    await page.waitForTimeout(500);
+    const drawer = await page.evaluate(() => {
+      const stage = document.querySelector('#teacher-filter-modal');
+      if (!stage || !stage.classList.contains('is-open')) return null;
+      const hooks = {};
+      for (const node of stage.querySelectorAll('[data-demo]')) hooks[node.dataset.demo] = (hooks[node.dataset.demo] ?? 0) + 1;
+      const chip = stage.querySelector('[data-demo="ds-chip"]');
+      /* Asked of the thing itself, not of the table: click a chip and see. */
+      const before = chip?.classList.contains('is-selected');
+      chip?.click();
+      return { hooks, chipMoved: chip ? chip.classList.contains('is-selected') !== before : null };
+    });
+    if (!drawer) say('the filter drawer did not open');
+    else {
+      const bound = new Set([...(await page.evaluate(async (url) => {
+        const source = await fetch(url).then((r) => r.text());
+        return [...source.matchAll(/"([a-z0-9-]+)":\s*\(c\)/g)].map((m) => m[1]);
+      }, `http://127.0.0.1:4600${template.url.replace(/[^/]+$/, 'ds-safe.js')}`))]);
+      for (const [hook, count] of Object.entries(drawer.hooks)) {
+        if (bound.has(hook) || DRAWER_NOT_CLICK.has(hook)) continue;
+        say(`the filter drawer renders ${count} × "${hook}" and nothing binds it`);
+      }
+      if (drawer.chipMoved === false) say('clicking a filter chip does not select it');
+    }
+    await page.click('[data-demo="ui-modal-close"]').catch(() => {});
+    await page.waitForTimeout(300);
+  }
+
   /* Two faults that only show up once the window is narrower than whoever
      wrote the page was: the page scrolls sideways, and the app frame stops
      covering the content it is supposed to cover.
