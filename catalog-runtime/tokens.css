@@ -50,6 +50,19 @@
   --ui-shadow-thumb: 0 1px 3px rgb(49 49 64 / 12%);
   --ui-shadow-thumb-focus: 0 0 0 4px rgb(49 49 64 / 12%);
   --ui-shadow-switch: 0 1px 3px rgb(49 49 64 / 18%);
+  /* Stacking order. Four rungs, and the only rule is that a thing never shares
+     a rung with a thing it has to cover — two elements on the same rung are
+     ordered by their position in the document, which is not a decision anyone
+     made. That is exactly how the top nav's language menu ended up underneath
+     a profile page's pinned tab bar: both sat at 30, and the tab bar came
+     later in the markup.
+       content — anything a page pins or floats above its own body
+       shell   — the app frame, which covers page content
+       overlay — masks and drawers, which cover the frame as well */
+  --ui-layer-content: 30;
+  --ui-layer-top-nav: 40;
+  --ui-layer-sidebar: 41;
+  --ui-layer-overlay: 60;
   --ui-radius-xs: 4px;
   --ui-radius-md: 8px;
   --ui-radius-lg: 12px;

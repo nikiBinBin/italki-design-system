@@ -17,12 +17,14 @@
 /* Duplicates the kit default on purpose. These used to live only here, then
    only in the kit; either way the template depended on the other side being
    in step, and a bundle one version behind left the shell unpositioned.
-   Same values as .ui-sidebar / .ui-top-nav, so whichever wins, wins the same. */
-.ui-sidebar.ui-sidebar{height:100dvh;position:sticky;top:0;z-index:31;align-self:flex-start}
-.ui-top-nav.ui-top-nav{position:sticky;top:0;z-index:30}
+   Same values as .ui-sidebar / .ui-top-nav, so whichever wins, wins the same.
+   The rungs come from the --ui-layer-* scale in tokens.css; the literals are
+   only the fallback for a bundle that predates it. */
+.ui-sidebar.ui-sidebar{height:100dvh;position:sticky;top:0;z-index:var(--ui-layer-sidebar,41);align-self:flex-start}
+.ui-top-nav.ui-top-nav{position:sticky;top:0;z-index:var(--ui-layer-top-nav,40)}
 </style>
 </helmet>
-<div style="min-height:100vh;min-width:1280px;display:flex;align-items:flex-start">
+<div style="min-height:100vh;display:flex;align-items:flex-start">
 
 <x-import component-from-global-scope="SafeUI.Sidebar" variant="plus" collapsed="{{ true }}" items="{{ navItems }}" sections="{{ navSections }}" more-items="{{ moreItems }}" balance="$293.45 USD" avatar-initials="NI" sticky="{{ true }}" hint-size="260px,100vh"></x-import>
 
@@ -31,7 +33,7 @@
 <x-import component-from-global-scope="SafeUI.TopNav" aria-label="Page" context-label="Spanish teachers" context-flag="Assets/Flags/es.svg" context-options="{{ navContextOptions }}" search-placeholder="Search topics" search-filter-label="Filter" action-label="Book lessons" action-icon="nav-plus" hint-size="100%,72px"></x-import>
 
 <div style="max-width:1216px;margin:0 auto;padding:24px 24px 64px">
-<div style="display:grid;grid-template-columns:minmax(0,1fr) 348px;gap:24px;align-items:start">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,348px);gap:24px;align-items:start">
 
 <main style="min-width:0;display:flex;flex-direction:column;gap:16px">
 
@@ -94,7 +96,7 @@
 </section>
 
 <div ref="{{ tabsAnchorRef }}" style="margin-top:-16px"></div>
-<div id="profile-tabs" ref="{{ tabsBarRef }}" onClick="{{ onTabClick }}" style="position:sticky;top:72px;z-index:30;background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:0 16px">
+<div id="profile-tabs" ref="{{ tabsBarRef }}" onClick="{{ onTabClick }}" style="position:sticky;top:72px;z-index:var(--ui-layer-content,30);background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:0 16px">
 <x-import component-from-global-scope="SafeUI.Tabs" items="{{ tabItems }}" activeId="{{ activeTab }}" activation="manual" ariaLabel="Profile sections" hint-size="100%,48px"></x-import>
 </div>
 
@@ -338,7 +340,7 @@ class Component extends DCLogic {
     if (this.railRef.current) this.railRef.current.style.top = stuck ? "144px" : "96px";
     if (stuck) {
       const sidebarW = document.querySelector(".ui-sidebar")?.offsetWidth || 0;
-      Object.assign(bar.style, { position: "fixed", top: "72px", left: sidebarW + "px", right: "0", zIndex: "30", borderRadius: "0", padding: "0 24px", boxShadow: "var(--ui-shadow-thumb)" });
+      Object.assign(bar.style, { position: "fixed", top: "72px", left: sidebarW + "px", right: "0", zIndex: "var(--ui-layer-content, 30)", borderRadius: "0", padding: "0 24px", boxShadow: "var(--ui-shadow-thumb)" });
     } else {
       Object.assign(bar.style, { position: "sticky", top: "72px", left: "", right: "", borderRadius: "12px", padding: "0 16px", boxShadow: "var(--ui-shadow-card)" });
       anchor.style.height = "0px";
