@@ -36,7 +36,7 @@
 .filter-pattern__day-row .ui-chip { min-width: 0; padding-inline: 0; }
 .filter-pattern__time-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--ui-space-3); }
 .filter-pattern__time-grid .ui-selection { min-width: 0; min-height: 40px; padding: var(--ui-space-2); }
-#teacher-filter-modal .ui-selection.is-selected { box-shadow: none; }
+.filter-pattern__time-grid .ui-selection:not(.is-selected):hover { background: var(--ui-color-hover); }
 .filter-pattern__time-grid .ui-selection__body { gap: var(--ui-space-2); align-items: center; }
 .filter-pattern__time-grid .ui-selection__feature { width: 16px; height: 16px; flex-basis: 16px; border: 0; border-radius: 0; background: transparent; }
 .filter-pattern__time-grid .ui-selection__feature img { width: 16px; height: 16px; }
@@ -51,8 +51,8 @@
 .filter-pattern__teacher-type .ui-checkbox > span:last-child img { width: 38px; height: 16px; display: block; object-fit: contain; }
 .filter-pattern__teacher-type .ui-checkbox > span:last-child { display: inline-flex; align-items: center; gap: var(--ui-space-1); }
 .filter-pattern__teacher-option .ui-selection { min-height: 80px; border-radius: var(--ui-radius-lg); background: var(--ui-color-divider); }
-.filter-pattern__teacher-option .ui-selection.is-selected { background: var(--ui-color-divider); }
-.filter-pattern__teacher-option .ui-selection:hover { border-color: var(--ui-color-title); background: var(--ui-color-divider); }
+.filter-pattern__teacher-option .ui-selection.is-selected { border-color: var(--ui-color-title); background: var(--ui-color-card); box-shadow: inset 0 0 0 1px var(--ui-color-title); }
+.filter-pattern__teacher-option .ui-selection:not(.is-selected):hover { border-color: var(--ui-color-border); background: var(--ui-color-hover); }
 .filter-pattern__teacher-option .ui-selection__body { align-items: center; gap: var(--ui-space-3); }
 .filter-pattern__teacher-option .ui-selection__indicator { display: none; }
 .filter-pattern__teacher-option .ui-selection__feature { width: 24px; height: 24px; flex: 0 0 24px; order: 2; margin-left: auto; border: 0; border-radius: 0; background: transparent; }
