@@ -26,6 +26,10 @@ assert(catalog.includes('<link rel="stylesheet" href="catalog.css" />'), "Catalo
 assert(!catalog.includes("<style>"), "Catalog must not embed its presentation CSS");
 assert(catalog.includes("Image|Approved image ratios for content and banners."), "Foundation must expose the image-ratio rule");
 assert(catalog.includes("Use only 16:9 or 3:1 image crops."), "Foundation image guidance must restrict imagery to the approved ratios");
+assert.deepEqual(manifest.components.card.props.mediaRatio, ["16:9", "3:1"], "Card media must only allow the approved image ratios");
+assert(componentCSS.includes(".ui-list__image, .ui-list__image-placeholder { width: 96px; height: 54px;") && componentCSS.includes(".ui-list--content .ui-list__image, .ui-list--content .ui-list__image-placeholder { width: 160px; height: 90px;"), "List image frames must use 16:9 crops");
+assert(catalogStyle.includes(".radius-nested-image { --ui-media-placeholder-logo-width: 32px; --ui-media-placeholder-logo-height: 40px; width: min(100%, 256px); aspect-ratio: 16 / 9;"), "Radius nested media must use a 16:9 crop");
+assert(catalogStyle.includes(".radius-nested-example { display: grid; grid-template-columns: minmax(0, 288px) minmax(0, 240px); justify-content: start;"), "Radius nested outer surface must fit the approved media frame instead of expanding across the module");
 assert.deepEqual(Object.keys(componentApi.components).sort(), Object.keys(manifest.components).sort(), "Generated component API must index every registered component");
 assert.deepEqual(componentApi.usagePolicy.allowedFamilies, ["Color", "Typography", "Spacing", "Radius", "Shadow", "Motion"], "Component API must constrain consumers to registered Foundation token families");
 const catalogColorTokens = Object.keys(manifest.tokens).filter((name) => name.startsWith("--ui-color-"));

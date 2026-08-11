@@ -697,9 +697,9 @@
       .radius-application-shape { display: block; width: var(--radius-application-width); height: var(--radius-application-height); background: var(--hover); border-radius: var(--radius-application-radius); }
       .radius-application-card[data-radius-application="full"] .radius-application-shape { background: var(--emphasis); }
       .radius-application-card[data-radius-application="full"] .radius-application-shape::after { display: block; padding-top: var(--space-2); color: var(--ui-color-on-primary); content: "Tag"; font-size: var(--ui-font-size-12); font-style: normal; font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-18); text-align: center; }
-      .radius-nested-example { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: var(--space-6); align-items: stretch; }
+      .radius-nested-example { display: grid; grid-template-columns: minmax(0, 288px) minmax(0, 240px); justify-content: start; gap: var(--space-6); align-items: stretch; }
       .radius-nested-card { display: grid; gap: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: var(--space-4); background: var(--card); }
-      .radius-nested-image { --ui-media-placeholder-logo-width: 32px; --ui-media-placeholder-logo-height: 40px; width: 100%; height: 144px; border-radius: var(--radius-lg); }
+      .radius-nested-image { --ui-media-placeholder-logo-width: 32px; --ui-media-placeholder-logo-height: 40px; width: min(100%, 256px); aspect-ratio: 16 / 9; border-radius: var(--radius-lg); }
       .radius-nested-content { display: flex; align-items: center; gap: var(--space-3); }
       .radius-nested-avatar { display: flex; flex: 0 0 32px; }
       .radius-nested-copy { min-width: 0; display: grid; gap: 2px; }

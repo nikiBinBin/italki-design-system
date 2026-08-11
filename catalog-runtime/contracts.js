@@ -687,8 +687,7 @@ window.ITalkiUIContracts = {
         ],
         "mediaRatio": [
           "16:9",
-          "4:3",
-          "1:1"
+          "3:1"
         ],
         "density": [
           "compact",
