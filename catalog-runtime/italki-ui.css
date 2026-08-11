@@ -331,7 +331,8 @@
 .ui-selection__badge::before { width: 6px; height: 6px; border-radius: var(--ui-radius-full); content: ""; background: var(--ui-color-success); }
 .ui-selection__package-copy { min-width: 0; display: grid; align-content: start; gap: var(--ui-space-2); }
 .ui-selection__package-offer { display: inline-flex; align-items: center; gap: var(--ui-space-1); color: var(--ui-color-info); font-size: var(--ui-font-size-14); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-20); }
-.ui-selection__package-offer-icon { width: 16px; height: 16px; flex: 0 0 16px; display: block; background: currentColor; mask: url("../Assets/Icons/16px/category-sm.svg") center / contain no-repeat; -webkit-mask: url("../Assets/Icons/16px/category-sm.svg") center / contain no-repeat; }
+.ui-selection__package-offer-icon { width: 16px; height: 16px; flex: 0 0 16px; display: block; object-fit: contain; filter: invert(55%) sepia(60%) saturate(779%) hue-rotate(141deg) brightness(91%) contrast(93%); }
+.ui-selection__package-offer.is-neutral .ui-selection__package-offer-icon { filter: none; }
 .ui-selection__package-offer.is-neutral { color: var(--ui-color-secondary); }
 .ui-selection__package-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--ui-space-1); color: var(--ui-color-title); font-size: var(--ui-font-size-20); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-28); }
 .ui-selection__package-price small { color: inherit; font: inherit; }
@@ -655,6 +656,7 @@
 .ui-tabs.has-extra .ui-tabs__header { gap: 0; }
 .ui-tabs__extra { min-height: 40px; display: flex; align-items: center; position: relative; z-index: 1; padding-left: var(--ui-space-6); background: var(--ui-color-card); }
 .ui-tabs__extra::before { width: var(--ui-space-6); position: absolute; top: 0; bottom: 0; left: calc(var(--ui-space-6) * -1); background: linear-gradient(to right, transparent, var(--ui-color-card)); content: ""; pointer-events: none; }
+.ui-tabs__extra::after { width: 1px; height: 16px; position: absolute; top: 50%; left: var(--ui-space-3); background: var(--ui-color-divider); content: ""; transform: translateY(-50%); pointer-events: none; }
 .ui-tabs__panel { min-height: 56px; padding: var(--ui-space-4) 0 0; color: var(--ui-color-text); font-size: var(--ui-font-size-14); line-height: var(--ui-line-height-20); }
 .ui-tabs__panel[hidden] { display: none; }
 .ui-tabs__panel.is-entering { animation: ui-tabs-panel-enter 180ms ease-out; }

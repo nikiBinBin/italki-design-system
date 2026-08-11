@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>italki Design Catalog</title>
     <link rel="stylesheet" href="catalog-runtime/tokens.css" />
-    <link rel="stylesheet" href="catalog-runtime/italki-ui.css?v=20260811-tabs-extra-fade" />
+    <link rel="stylesheet" href="catalog-runtime/italki-ui.css?v=20260811-tabs-action-divider-package-icon" />
     <link rel="stylesheet" href="catalog.css" />
   </head>
   <body>
@@ -28,7 +28,7 @@
     </div>
     <script src="catalog-runtime/icon-manifest.js"></script>
     <script src="catalog-runtime/contracts.js"></script>
-    <script src="catalog-runtime/italki-ui.js?v=20260811-statistic-loading"></script>
+    <script src="catalog-runtime/italki-ui.js?v=20260811-tabs-action-divider-package-icon"></script>
     <script>
       const ui = window.ITalkiUI;
       if (!ui) throw new Error("italki UI kit did not load");
@@ -1191,7 +1191,8 @@
       function stepperDetail() {
         const steps = [{ label: "Course" }, { label: "Time" }, { label: "Payment" }];
         const flowSteps = ["Course", "Schedule", "Payment"];
-        const variants = `<div class="ds-stack"><div><p class="ds-subsection-label">Default</p>${ui.stepper({ id: "booking-stepper", items: steps, current: 1 })}</div><div><p class="ds-subsection-label">Flow progress</p>${ui.stepper({ id: "booking-flow", items: flowSteps, current: 1, variant: "flow-progress", ariaLabel: "Booking flow progress" })}</div></div>`;
+        const indicatorSteps = ["Step 1", "Step 2", "Step 3", "Step 4"];
+        const variants = `<div class="ds-stack"><div><p class="ds-subsection-label">Default</p>${ui.stepper({ id: "booking-stepper", items: steps, current: 1 })}</div><div><p class="ds-subsection-label">Flow progress</p>${ui.stepper({ id: "booking-flow", items: flowSteps, current: 1, variant: "flow-progress", ariaLabel: "Booking flow progress" })}</div><div><p class="ds-subsection-label">Dotted pagination</p>${ui.stepper({ id: "booking-dots", items: ["Slide 1", "Slide 2", "Slide 3"], current: 0, variant: "dots", ariaLabel: "Lesson introduction slides" })}</div><div><p class="ds-subsection-label">Top indicator</p>${ui.stepper({ id: "booking-top-indicator", items: indicatorSteps, current: 1, variant: "top-indicator", ariaLabel: "Booking step 2 of 4" })}</div><div><p class="ds-subsection-label">Schedule progress</p>${ui.stepper({ id: "booking-schedule-progress", variant: "schedule-progress", value: 18, max: 20, label: "Scheduled lessons", ariaLabel: "18 of 20 scheduled lessons" })}</div><div><p class="ds-subsection-label">Progress steps</p>${ui.stepper({ id: "booking-progress-steps", items: indicatorSteps, current: 0, variant: "progress-steps", ariaLabel: "Four-step booking progress" })}</div></div>`;
         const states = `<div class="ds-stack">${ui.stepper({ id: "booking-stepper-complete", items: steps, current: 2 })}${ui.stepper({ id: "booking-flow-complete", items: flowSteps, current: 2, variant: "flow-progress", ariaLabel: "Completed booking flow progress" })}</div>`;
         return `<div class="component-doc-grid stepper-detail">${dsBlock("Variants", variants, true)}${dsBlock("States", states, true, "states")}${dsBlock("Features", ui.stepper({ id: "booking-stepper-vertical", items: steps.map((item, index) => ({ ...item, description: ["Choose lesson type", "Pick a time", "Confirm booking"][index] })), current: 1, orientation: "vertical" }), true)}</div>`;
       }

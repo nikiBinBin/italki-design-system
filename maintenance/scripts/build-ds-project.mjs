@@ -105,6 +105,15 @@ const SLUGS = {
   Layout: 'data-display', Overlays: 'overlays', Feedback: 'feedback', Navigation: 'navigation',
 };
 
+/* Documented on their parent's card, not on one of their own.
+   The Catalog has no route for either: #checkbox carries the three checkbox
+   group demos and #select carries the combobox, so splitting them out produced
+   two extra cards whose content already existed one level up — a local page and
+   two cloud cards for the same thing. They keep their wrapper, their contract
+   and their types, because the components are real and a page may still mount
+   them; only the card goes. */
+const NO_CARD_OF_ITS_OWN = new Set(['CheckboxGroup', 'Combobox']);
+
 const COMPONENTS = [
   ['Button', 'button', 'button', 'actions'],
   ['Link', 'link', 'link', 'actions'],
@@ -610,6 +619,7 @@ for (const c of COMPONENTS) {
   const enums = contract.props ?? {};
 
   // Card — static HTML, produced by the real renderer.
+  if (!NO_CARD_OF_ITS_OWN.has(c.name))
   write(`${dir}/${c.name}.html`, `<!-- @dsCard group="${c.group}" -->
 <!doctype html>
 <html lang="en"><head>
