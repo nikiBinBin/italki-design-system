@@ -2943,10 +2943,10 @@
     if (contentType === "role" && normalized.length !== 2) throw new Error("Role segmented-control requires exactly two options");
     const selectedValue = String(selected || normalized.find((option) => option.selected)?.value || normalized[0]?.value || "");
     const buttons = normalized.map((option) => {
-      const content = contentType === "icon" ? icon(option.icon, "ui-segmented-control__icon") : (contentType === "role" ? `<span class="ui-segmented-control__role-content">${icon(option.icon, "ui-segmented-control__role-icon")}<span>${escapeHTML(option.label)}</span></span>` : escapeHTML(option.label));
+      const content = contentType === "icon" ? icon(option.icon, "ui-segmented-control__icon") : (contentType === "role" ? `<span class="ui-segmented-control__role-content">${icon(option.icon, `ui-segmented-control__role-icon ui-segmented-control__role-icon--${escapeHTML(option.value)}`)}<span>${escapeHTML(option.label)}</span></span>` : escapeHTML(option.label));
       return `<button type="button" data-demo="ui-segmented-control" data-segment-value="${escapeHTML(option.value)}" aria-label="${escapeHTML(option.label)}" aria-pressed="${String(option.value) === selectedValue}"${disabled || option.disabled ? " disabled" : ""}>${content}</button>`;
     }).join("");
-    const roleSwitch = contentType === "role" ? `<span class="ui-segmented-control__role-switch" aria-hidden="true">${icon("Assets/Icons/switch.svg", "ui-segmented-control__role-switch-icon")}</span>` : "";
+    const roleSwitch = contentType === "role" ? `<span class="ui-segmented-control__role-switch" aria-hidden="true">${icon("Assets/Icons/role-switch.svg", "ui-segmented-control__role-switch-icon")}</span>` : "";
     return `<div class="ui-segmented-control ui-segmented-control--${size} ui-segmented-control--${shape} ui-segmented-control--${contentType}" data-component="segmented-control" data-ui-segmented-control${id ? ` id="${escapeHTML(id)}"` : ""} role="group" aria-label="${escapeHTML(ariaLabel)}">${buttons}${roleSwitch}</div>`;
   }
 
