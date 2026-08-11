@@ -10,7 +10,7 @@
     "test:contract": "npm run build:contracts && npm run build:api && npm run build:icons && node scripts/validate-contracts.mjs && npm run lint:foundation && npm run lint:type",
     "pretest:visual": "npm run build:contracts",
     "test:visual": "playwright test",
-    "test": "npm run test:contract && npm run test:visual",
+    "test": "npm run test:contract && npm run audit:coverage && npm run test:visual",
     "lint:foundation": "node scripts/lint-foundation.mjs",
     "build:icons": "node scripts/build-icon-manifest.mjs",
     "build:ds": "node scripts/build-ds-project.mjs && node scripts/build-ds-cards.mjs",
@@ -21,7 +21,8 @@
     "audit:hooks": "node scripts/audit-hooks.mjs",
     "audit:templates": "node scripts/audit-templates.mjs",
     "serve:templates": "node scripts/serve-templates.mjs",
-    "audit:adherence": "node scripts/audit-adherence.mjs"
+    "audit:adherence": "node scripts/audit-adherence.mjs",
+    "audit:coverage": "node scripts/audit-coverage.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",
