@@ -361,6 +361,7 @@ assert.match(ui.checkboxGroup({ id: "accessibility-group", label: "Topics", opti
 assert.match(ui.radio({ label: "Online lesson", value: "online", checked: true }), /role="radio"[^>]*aria-checked="true"/, "Radio must expose a checked radio state through ARIA");
 assert.match(ui.radioGroup({ label: "Lesson length", options: ["30 min", "45 min"], selected: "45 min" }), /role="radiogroup"[^>]*aria-label="Lesson length"/, "Radio group must expose a named radiogroup");
 assert(componentCSS.includes(".ui-selection__feature { width: 32px; height: 32px;") && componentCSS.includes("border-radius: var(--ui-radius-md); background: var(--ui-color-card); }"), "Selection leading feature must use the shared rounded surface token");
+assert(componentCSS.includes(".ui-selection__body { min-width: 0; display: flex; align-items: flex-start; gap: var(--ui-space-2); }") && componentCSS.includes(".ui-selection__card-header { min-width: 0; position: relative; display: flex; align-items: center; gap: var(--ui-space-2); padding: var(--ui-space-4); }"), "Selection icons must sit close to their titles without changing card padding");
 assert.match(ui.selectionGroup({ label: "Lesson type", options: ["Private lesson"] }), /role="radiogroup"[^>]*aria-label="Lesson type"/, "Selection group must expose a named radiogroup");
 assert.match(ui.footer({ columns: [{ heading: "Explore", links: ["Teachers"] }], socialLinks: [{ label: "YouTube", icon: "Assets/Icons/youtube.svg" }] }), /data-component="footer"/, "Footer must expose its shared component root");
 const groupedFooter = ui.footer({ columns: [{ groups: [{ heading: "Language teachers", links: ["English teachers"] }, { heading: "More", links: ["FAQ"] }] }], utilities: ui.select({ id: "footer-contract-language", label: "Language", options: ["English"], selected: "English", size: 40, shape: "rounded" }) });
@@ -403,6 +404,7 @@ assert(componentCSS.includes(".ui-link:hover, .ui-link.is-hover") && componentCS
 assert(!/\.ui-link \{[^}]*text-decoration: underline/.test(componentCSS), "Link must not underline at rest");
 assert(!catalog.includes("General Navigation to another destination, inside a sentence or a row."), "Link documentation must not render the retired component description");
 assert(catalog.includes('const isLink = byName(entry) === "link";') && catalog.includes("isFoundation || isTeacherCard || isLessonCard || isLink ? \"\" : entry.group.title"), "Link documentation must omit the General heading tag");
+assert(catalogStyle.includes(".link-inverse-stage { display: inline-flex; align-items: center; border-radius: var(--radius-md); padding: var(--space-2) var(--space-3); background: var(--ui-color-text); }"), "Inverse Link must be demonstrated on the Text surface, one tonal step below Title");
 
 assert.match(ui.avatar({ name: "Maya Chen", initials: "MC", size: 48, variant: "empty" }), /role="img"[^>]*aria-label="Maya Chen"/, "Avatar must expose a person name");
 assert.match(ui.avatar({ name: "italki", size: 48, variant: "logo" }), /ui-avatar--logo[\s\S]*logo-italki-logomark-white\.svg/, "Logo avatar must use the registered italki logomark asset");
@@ -426,7 +428,7 @@ assert(componentCSS.includes(".ui-tabs__header { min-width: 0; display: grid; gr
 assert.match(ui.timePicker({ id: "time-picker-multiple", slots: ["09:00", "10:30"], selected: ["09:00", "10:30"], selectionMode: "multiple", open: true }), /ui-time-picker--multiple[\s\S]*aria-multiselectable="true"/, "Time picker multiple selection must preserve its supplied selected times and multiselect semantics");
 assert.match(ui.timePicker({ id: "time-picker-empty", slots: ["09:00"] }), /class="ui-time-picker__icon is-placeholder" src="Assets\/Icons\/16px\/time-sm\.svg"/, "An unselected Time picker must retain its visible clock SVG");
 assert(componentCSS.includes(".ui-time-picker__icon.is-placeholder { opacity: .45; }") && componentCSS.includes(".ui-time-picker.is-disabled .ui-time-picker__icon { opacity: .25; }"), "Time picker icon intensity must match placeholder and disabled text states without replacing the approved SVG");
-assert(componentCSS.includes(".ui-time-slot--option { min-width: 0; min-height: 32px; border-radius: var(--ui-radius-md);"), "Time picker options must use the 8px radius token");
+assert(componentCSS.includes(".ui-time-slot--option { min-width: 0; min-height: 32px; border-radius: var(--ui-radius-md);") && componentCSS.includes(".ui-time-slot--option.is-selected { color: var(--ui-color-card); border-color: var(--ui-color-info); background: var(--ui-color-info); }"), "Time picker options must use the 8px radius token and the selected availability color");
 assert.match(ui.selection({ contentType: "package-card", selectionMode: "radio", discount: "7% off" }), /class="ui-selection__package-offer-icon" src="Assets\/Icons\/16px\/category-sm\.svg"/, "Lesson package discounts must render the approved category icon with their offer text");
 assert(componentCSS.includes(".ui-selection__package-offer-icon { width: 16px; height: 16px; flex: 0 0 16px; display: block; object-fit: contain; filter:") && componentCSS.includes(".ui-selection__package-offer.is-neutral .ui-selection__package-offer-icon { filter: none; }"), "Lesson package discount icons must remain visible and use matching offer tones");
 assert(componentCSS.includes(".ui-notification { --ui-dismiss-surface: var(--ui-color-card); width: min(100%, 400px); display: none; align-items: flex-start; gap: var(--ui-space-3); position: relative; overflow: visible; border: 1px solid var(--ui-color-divider);"), "Notification outer card border must use the subtle divider token");
@@ -556,9 +558,9 @@ assert.match(ui.popover({ id: "popover-accessibility", title: "Details", body: "
 
 for (const reference of [
   '<link rel="stylesheet" href="catalog-runtime/tokens.css" />',
-  '<link rel="stylesheet" href="catalog-runtime/italki-ui.css?v=20260811-link-default-14" />',
+  '<link rel="stylesheet" href="catalog-runtime/italki-ui.css?v=20260811-selection-icon-gap" />',
   '<script src="catalog-runtime/contracts.js"></script>',
-  '<script src="catalog-runtime/italki-ui.js?v=20260811-link-default-14"></script>',
+  '<script src="catalog-runtime/italki-ui.js?v=20260811-selection-icon-gap"></script>',
   'function buttonComponent(props = {}) { return ui.button({ ...props, variant: props.variant === "gradient" ? "plus" : props.variant }); }',
   'function chipComponent(props = {}) { return ui.chip(props); }',
   'function tagComponent(props = {}) { return ui.tag(props); }',

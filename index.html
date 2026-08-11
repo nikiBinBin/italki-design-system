@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>italki Design Catalog</title>
     <link rel="stylesheet" href="catalog-runtime/tokens.css" />
-    <link rel="stylesheet" href="catalog-runtime/italki-ui.css?v=20260811-tabs-action-divider-package-icon" />
+    <link rel="stylesheet" href="catalog-runtime/italki-ui.css?v=20260811-selection-icon-gap" />
     <link rel="stylesheet" href="catalog.css" />
   </head>
   <body>
@@ -28,7 +28,7 @@
     </div>
     <script src="catalog-runtime/icon-manifest.js"></script>
     <script src="catalog-runtime/contracts.js"></script>
-    <script src="catalog-runtime/italki-ui.js?v=20260811-tabs-action-divider-package-icon"></script>
+    <script src="catalog-runtime/italki-ui.js?v=20260811-selection-icon-gap"></script>
     <script>
       const ui = window.ITalkiUI;
       if (!ui) throw new Error("italki UI kit did not load");
@@ -388,7 +388,7 @@
         return `<div class="component-doc-grid ds-component-detail link-detail">${
           dsBlock("Default", row(
             link({ label: "See beginner lessons" })
-            + link({ label: "Compact link", size: 14 }),
+            + link({ label: "Large link", size: 16 }),
           ))
         }${
           dsBlock("Variants", row(
@@ -491,7 +491,7 @@
       function rateDetail() {
         const descriptions = ["Terrible", "Poor", "Okay", "Good", "Excellent"];
         const clearable = `<div class="ds-stack rate-clear-examples"><div class="rate-clear-row"><span>Allow clear</span>${ui.rate({ id: "rate-clearable", value: 3, label: "Clearable rating" })}</div><div class="rate-clear-row"><span>Keep selection</span>${ui.rate({ id: "rate-fixed", value: 3, allowClear: false, label: "Fixed rating" })}</div></div>`;
-        return `<div class="component-doc-grid ds-component-detail rate-detail">${dsBlock("Basic", ui.rate({ id: "rate-basic", value: 2.5, allowHalf: true, label: "Rate this lesson" }))}${dsBlock("With description", ui.rate({ id: "rate-copy", value: 3, labels: descriptions, showText: true, label: "Rate lesson quality" }))}${dsBlock("Clearable", clearable)}${dsBlock("Disabled", ui.rate({ id: "rate-disabled", value: 3, disabled: true, labels: descriptions, showText: true, label: "Unavailable lesson rating" }))}</div>`;
+        return `<div class="component-doc-grid ds-component-detail rate-detail">${dsBlock("Basic", ui.rate({ id: "rate-basic", value: 2.5, allowHalf: true, label: "Rate this lesson" }))}${dsBlock("Score summary", ui.rate({ id: "rate-summary", value: 4.98, variant: "summary", label: "Teacher rating" }))}${dsBlock("With description", ui.rate({ id: "rate-copy", value: 3, labels: descriptions, showText: true, label: "Rate lesson quality" }))}${dsBlock("Clearable", clearable)}${dsBlock("Disabled", ui.rate({ id: "rate-disabled", value: 3, disabled: true, labels: descriptions, showText: true, label: "Unavailable lesson rating" }))}</div>`;
       }
       function sliderDetail() {
         const marks = (range = false) => `<div class="ui-slider__marks-row${range ? " is-range" : ""}"><div class="ui-slider__marks"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div><span aria-hidden="true"></span></div>`;
