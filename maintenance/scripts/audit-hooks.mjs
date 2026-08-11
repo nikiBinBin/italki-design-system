@@ -88,6 +88,87 @@ const emitted = new Set();
 for (const rel of cards) {
   for (const m of fs.readFileSync(path.join(STAGE, rel), 'utf8').matchAll(/data-demo="([^"]+)"/g)) emitted.add(m[1]);
 }
+/* One kit, three hand-maintained dispatchers — the Catalog's own chain in
+   index.html, the cards' CLICK table, and the templates' ds-safe.js. Every
+   "why can't I click this" today came from the same shape: the kit exported the
+   behaviour and only some of the three wired it. Four of them in one afternoon —
+   the filter category tree, a standalone checkbox, the range slider's drag
+   driver, and the price read-out.
+
+   The hook-level diff above cannot see most of those, because they are not
+   clicks: startSliderRangeDrag hangs off pointerdown, syncSliderRange and
+   syncFilterPrice off input. So this asks the question one level up — which of
+   the kit's behaviours does each host reference at all — and reports any that
+   some hosts wire and others do not.
+
+   Exemptions are per behaviour, with the reason, because a real single-host
+   behaviour exists: the Catalog's pages carry demo switchers that no card and
+   no template has. */
+const HOST_ONLY = new Map([
+  ['setChipPresentation', 'the Catalog page has a size/shape switcher above the chip demos'],
+  ['setSelectPresentation', 'same switcher, on the select demos'],
+  ['setButtonPresentation', 'same switcher, on the button demos'],
+  ['setSelectionPresentation', 'same switcher, on the selection demos'],
+  ['setTimeSlotPresentation', 'same switcher, on the time slot demos'],
+  ['setTagPresentation', 'same switcher, on the tag demos'],
+  ['setAvatarPresentation', 'same switcher, on the avatar demos'],
+  ['setSegmentedControlPresentation', 'same switcher, on the segmented control demos'],
+  ['countFilterSelections', 'called by syncTopNavFilterCue, not wired to an event'],
+  ['setTopNavFilterCount', 'called by syncTopNavFilterCue, not wired to an event'],
+  ['setCheckboxValue', 'called by the category helpers, not wired to an event'],
+  ['syncSearchInput', 'the Catalog binds its own sidebar search field'],
+  ['setTimelineReverse', 'the cards reach it through a cell container; templates render no timeline'],
+  ['closeDatePickers', 'a document-level dismissal the Catalog runs for its own pages'],
+  ['closePopconfirms', 'same dismissal sweep'],
+  ['closePopups', 'same dismissal sweep'],
+  ['closeSelects', 'same dismissal sweep'],
+  ['closeTimePickers', 'same dismissal sweep'],
+  ['closeTopNavContexts', 'same dismissal sweep'],
+  ['openPopup', 'the Catalog opens one from a page control; cards and templates toggle'],
+  ['setSelectOpen', 'the Catalog forces a demo open; elsewhere the trigger decides'],
+  ['setSidebarVariant', 'the Catalog page switches the sidebar variant from a control'],
+  ['setTimelineTone', 'a Catalog page control'],
+  ['setUploadFiles', 'the Catalog seeds a demo file list'],
+  ['resetRatePreview', 'the Catalog resets its rate demo on mouseleave'],
+  ['setDatePickerPresentation', 'a Catalog page switcher'],
+  ['setNumberStepperPresentation', 'a Catalog page switcher'],
+  ['setTextInputPresentation', 'a Catalog page switcher'],
+  ['setTextareaPresentation', 'a Catalog page switcher'],
+  ['syncCheckboxGroup', 'the kit checkbox is a button, so only the cards need the native-change path'],
+]);
+const BEHAVIOUR = /^(toggle|select|set|sync|clear|dismiss|open|close|adjust|remove|start|move|end|pin|unpin|navigate|notify|reset|count)[A-Z]/;
+const kitSource = fs.readFileSync(path.join(REPO, 'catalog-runtime/italki-ui.js'), 'utf8');
+const exported = new Set([...kitSource.slice(kitSource.lastIndexOf('return {')).matchAll(/^\s*([a-zA-Z]+),$/gm)]
+  .map((m) => m[1]).filter((name) => BEHAVIOUR.test(name)));
+const HOSTS = [
+  ['Catalog', 'index.html'],
+  ['卡片', 'maintenance/scripts/ds-cards-behaviour.js'],
+  ['模版', 'maintenance/templates/teacher-search/ds-safe.js'],
+];
+const wiredBy = new Map();
+for (const [label, rel] of HOSTS) {
+  const src = fs.readFileSync(path.join(REPO, rel), 'utf8');
+  const names = new Set([
+    ...[...src.matchAll(/\bui\.([a-zA-Z]+)\s*\(/g)].map((m) => m[1]),
+    ...[...src.matchAll(/run\("([a-zA-Z]+)"/g)].map((m) => m[1]),
+    ...[...src.matchAll(/call\(ui\.([a-zA-Z]+)/g)].map((m) => m[1]),
+  ]);
+  for (const name of names) {
+    if (!exported.has(name)) continue;
+    if (!wiredBy.has(name)) wiredBy.set(name, new Set());
+    wiredBy.get(name).add(label);
+  }
+}
+const lopsided = [...wiredBy.entries()]
+  .filter(([name, hosts]) => hosts.size < HOSTS.length && !HOST_ONLY.has(name))
+  .map(([name, hosts]) => `${name} —— 只有 ${[...hosts].join('、')} 接了，缺 ${HOSTS.map(([l]) => l).filter((l) => !hosts.has(l)).join('、')}`)
+  .sort();
+console.log(`\n行为接线: kit 导出行为 ${exported.size} 个 · 三个宿主共接 ${wiredBy.size} 个 · 已登记单宿主豁免 ${HOST_ONLY.size} 个`);
+console.log(lopsided.length
+  ? `接线不齐的 ${lopsided.length} 个（某个宿主上点不动）:\n  ${lopsided.join('\n  ')}`
+  : '三个宿主接线一致');
+if (lopsided.length) errored.push(`dispatcher parity: ${lopsided.length} behaviour(s) wired by some hosts and not others`);
+
 const unbound = [...emitted].filter((d) => !handled.has(d) && !declared.has(d)).sort();
 console.log(`\n钩子表: 卡片渲染 ${emitted.size} 种 · 分发表接 ${handled.size} 种 · 声明为非点击 ${declared.size} 种`);
 console.log(unbound.length
