@@ -171,14 +171,29 @@
     "ds-chip": (c) => run("toggleChip", c),
     "filter-category-child": (c) => run("toggleFilterCategoryChild", c),
     "filter-category-parent": (c) => run("toggleFilterCategoryParent", c),
+    /* Reset really resets. It had no hook at all, so the button rendered and
+       did nothing. */
+    "filter-reset": (c) => {
+      const panel = c.closest("[data-ui-modal]") || document;
+      run("resetFilters", panel);
+      run("syncTopNavFilterCue", panel);
+    },
     "ui-modal-mask": (c) => run("closeModal", c),
   };
+    /* The nav's green cue is state, not a toggle: it used to light up because
+       the panel had been opened, and the number beside it came from a prop.
+       After anything inside the panel moves, recount and tell the control. */
+    const syncFilterCue = (node) => {
+      const panel = node?.closest?.("[data-ui-modal]");
+      if (panel) run("syncTopNavFilterCue", panel);
+    };
   if (!alreadyListening) {
     document.addEventListener("click", (event) => {
       if (!event.target.closest?.("[data-ui-sidebar-more]")) run("closeSidebarMore");
       const hook = event.target.closest?.("[data-demo]");
       const handler = hook && CLICK[hook.dataset.demo];
       if (handler) handler(hook);
+      if (hook) syncFilterCue(hook);
     }, true);
     document.addEventListener("dragstart", (e) => run("startSidebarDrag", e));
     document.addEventListener("dragover", (e) => run("moveSidebarDrag", e));
@@ -202,6 +217,7 @@
       if (range) run("syncSliderRange", range);
       const single = e.target.closest?.('[data-demo="ui-slider"]');
       if (single) run("syncSliderInput", single);
+      if (range || single) syncFilterCue(range || single);
     }, true);
     const searchFocus = (state) => (e) => {
       const input = e.target.closest?.('[data-demo="ui-top-nav-search-input"]');

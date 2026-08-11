@@ -328,6 +328,18 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   await expect(lessonCategoryParent).toHaveAttribute('aria-checked', 'false');
   await lessonCategoryParent.click();
   await expect(lessonCategoryChildren).toBeVisible();
+  const nativeSpeaker = filterDialog.getByRole('button', { name: 'Native speaker' });
+  await nativeSpeaker.click();
+  await expect(nativeSpeaker).toHaveAttribute('aria-pressed', 'true');
+  /* The label sits four levels inside the card, so climbing one parent lands on
+     the title row. Filtered by text instead. */
+  const selectedTime = filterDialog.locator('[data-component="selection"]').filter({ hasText: '12:00 - 16:00' });
+  await expect(selectedTime).toHaveClass(/is-selected/);
+  await filterDialog.getByRole('button', { name: 'Reset' }).click();
+  await expect(nativeSpeaker).toHaveAttribute('aria-pressed', 'false');
+  await expect(lessonCategoryParent).toHaveAttribute('aria-checked', 'false');
+  await expect(lessonCategoryChildren).toBeHidden();
+  await expect(selectedTime).not.toHaveClass(/is-selected/);
   await expect(filterDialog.locator('.filter-pattern__teacher-option')).toHaveCount(2);
   await expect(filterDialog.getByRole('button', { name: 'Show teachers' })).toBeVisible();
   await filterDialog.getByRole('button', { name: 'Close dialog' }).click();

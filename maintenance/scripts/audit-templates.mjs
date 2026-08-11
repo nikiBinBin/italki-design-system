@@ -166,6 +166,39 @@ for (const template of templates) {
         say(`the filter drawer renders ${count} × "${hook}" and nothing binds it`);
       }
       if (drawer.chipMoved === false) say('clicking a filter chip does not select it');
+
+      /* The nav's cue has to mean "filters are applied", not "the panel was
+         opened" — it used to flip on every press of the control, with a count
+         that came from a prop nobody updated. And Reset had no hook at all, so
+         it rendered and did nothing. Both are asked of the rendered page: one
+         chip selected reads 1 and lights the dot, Reset returns it to 0 and
+         empties the panel. */
+      const cue = await page.evaluate(async () => {
+        /* The cue fades in over 180ms, so a computed opacity read on the same
+           tick as the class lands is still the start of the transition. */
+        const settle = () => new Promise((done) => setTimeout(done, 260));
+        await settle();
+        const nav = document.querySelector('[data-demo="ui-top-nav-filter"]');
+        const panel = document.querySelector('#teacher-filter-modal');
+        const read = () => ({
+          count: Number(nav.dataset.filterCount || 0),
+          lit: getComputedStyle(nav.querySelector('i')).opacity === '1',
+          copy: nav.querySelector('span').textContent,
+        });
+        const afterOneChip = read();
+        const reset = panel.querySelector('[data-demo="filter-reset"]');
+        reset?.click();
+        await settle();
+        return { afterOneChip, hasReset: !!reset, afterReset: read(),
+                 leftSelected: panel.querySelectorAll('[data-demo="ds-chip"].is-selected, [data-filter-category-child].is-selected').length };
+      });
+      if (cue.afterOneChip.count !== 1 || !cue.afterOneChip.lit) {
+        say(`one selected filter should read 1 and light the cue — got ${cue.afterOneChip.count} and ${cue.afterOneChip.lit ? 'lit' : 'unlit'} ("${cue.afterOneChip.copy}")`);
+      }
+      if (!cue.hasReset) say('the filter drawer has no Reset control');
+      else if (cue.afterReset.count !== 0 || cue.afterReset.lit || cue.leftSelected) {
+        say(`Reset left ${cue.leftSelected} selection(s) and the cue at ${cue.afterReset.count}`);
+      }
     }
     await page.click('[data-demo="ui-modal-close"]').catch(() => {});
     await page.waitForTimeout(300);
