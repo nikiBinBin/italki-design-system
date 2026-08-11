@@ -294,7 +294,7 @@ for (const target of TARGETS) {
      a result, a segmented control and a timeline all sit on a card in real use,
      so showing them on the page grey misreads their contrast and their edges.
      They get the card colour instead. */
-  const ON_CARD = new Set(['Timeline', 'Tag', 'Badge', 'Progress', 'Result', 'SegmentedControl']);
+  const ON_CARD = new Set(['Timeline', 'Tag', 'Badge', 'Progress', 'Result', 'SegmentedControl', 'Radio', 'Tabs', 'Avatar', 'Stepper']);
   const stageColour = ON_CARD.has(name) ? 'var(--ui-color-card)' : 'var(--ui-color-page)';
 
   const depth = isPattern ? '../../' : '../../../';
