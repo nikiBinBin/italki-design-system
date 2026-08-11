@@ -558,9 +558,9 @@ assert.match(ui.popover({ id: "popover-accessibility", title: "Details", body: "
 
 for (const reference of [
   '<link rel="stylesheet" href="catalog-runtime/tokens.css" />',
-  '<link rel="stylesheet" href="catalog-runtime/italki-ui.css?v=20260811-selection-icon-gap" />',
+  '<link rel="stylesheet" href="catalog-runtime/italki-ui.css?v=20260811-breadcrumb-separator-size" />',
   '<script src="catalog-runtime/contracts.js"></script>',
-  '<script src="catalog-runtime/italki-ui.js?v=20260811-selection-icon-gap"></script>',
+  '<script src="catalog-runtime/italki-ui.js?v=20260811-breadcrumb-separator-size"></script>',
   'function buttonComponent(props = {}) { return ui.button({ ...props, variant: props.variant === "gradient" ? "plus" : props.variant }); }',
   'function chipComponent(props = {}) { return ui.chip(props); }',
   'function tagComponent(props = {}) { return ui.tag(props); }',
