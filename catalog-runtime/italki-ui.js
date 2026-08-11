@@ -2451,6 +2451,64 @@
     input.closest(".ui-slider-vertical__control")?.style.setProperty("--ui-slider-progress", `${progress}%`);
   }
 
+  /* The Filter pattern's category tree. This behaviour existed only inside the
+     Catalog's own dispatcher, so the pattern shipped as a card and as a
+     template with its behaviour left behind — 28 child chips, 6 parent
+     checkboxes and every plain chip in the drawer rendered correctly and could
+     not be selected. Behaviour keyed off a data-demo hook belongs beside the
+     other helpers, where each host binds it from the same place instead of
+     reimplementing it or going without. Lifted verbatim; the Catalog calls
+     these now rather than keeping its own copy. */
+  const setFilterChipSelected = (chip, selected) => {
+    chip.classList.toggle("is-selected", selected);
+    chip.setAttribute("aria-pressed", String(selected));
+  };
+
+  function toggleFilterCategoryChild(control) {
+    const category = control?.closest?.("[data-filter-category]");
+    if (!category) return false;
+    const children = [...category.querySelectorAll("[data-filter-category-child]")];
+    const all = category.querySelector("[data-filter-category-all]");
+    const individualChildren = children.filter((child) => child !== all);
+    const parent = category.querySelector('[data-demo="filter-category-parent"]');
+    if (control === all) {
+      const selectingAll = !control.classList.contains("is-selected");
+      setFilterChipSelected(control, selectingAll);
+      individualChildren.forEach((child) => setFilterChipSelected(child, false));
+      if (parent) setCheckboxValue(parent, selectingAll ? "on" : "off");
+      category.dataset.expanded = String(selectingAll);
+      category.querySelector("[data-filter-category-children]").hidden = !selectingAll;
+      return selectingAll;
+    }
+    toggleChip(control);
+    if (all) setFilterChipSelected(all, false);
+    if (parent) setCheckboxValue(parent, "off");
+    const hasSelectedChild = individualChildren.some((child) => child.classList.contains("is-selected"));
+    category.dataset.expanded = String(hasSelectedChild);
+    category.querySelector("[data-filter-category-children]").hidden = !hasSelectedChild;
+    return control.classList.contains("is-selected");
+  }
+
+  function toggleFilterCategoryParent(control) {
+    const category = control?.closest?.("[data-filter-category]");
+    if (!category) return false;
+    const children = [...category.querySelectorAll("[data-filter-category-child]")];
+    const all = category.querySelector("[data-filter-category-all]");
+    const individualChildren = children.filter((child) => child !== all);
+    const hasSelectedChild = individualChildren.some((child) => child.classList.contains("is-selected"));
+    const checkingParent = control.dataset.value !== "on";
+    setCheckboxValue(control, checkingParent ? "on" : "off");
+    if (checkingParent) {
+      if (all) setFilterChipSelected(all, true);
+      individualChildren.forEach((child) => setFilterChipSelected(child, false));
+    } else if (!hasSelectedChild && all) {
+      setFilterChipSelected(all, false);
+    }
+    category.dataset.expanded = String(checkingParent || hasSelectedChild);
+    category.querySelector("[data-filter-category-children]").hidden = !(checkingParent || hasSelectedChild);
+    return checkingParent;
+  }
+
   function syncSliderRange(input) {
     const range = input?.closest?.("[data-slider-range]");
     if (!range) return;
@@ -3618,6 +3676,8 @@
     togglePopconfirm,
     handlePopconfirmKeydown,
     toggleChip,
+    toggleFilterCategoryChild,
+    toggleFilterCategoryParent,
     toggleSwitch,
     clearSearch,
     syncSearchInput,

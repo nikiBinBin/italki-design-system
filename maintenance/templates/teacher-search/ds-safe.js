@@ -163,6 +163,14 @@
     "ui-time-picker-slot": (c) => run("selectTimePickerSlot", c),
     "ui-upload-trigger": (c) => run("openUploadPicker", c),
     "ui-top-nav-filter": (c) => run("toggleTopNavFilter", c),
+    /* The Filter pattern's own controls. The drawer composes from the kit, so
+       its chips and category tree arrive as data-demo hooks with no onClick —
+       and nothing bound them: 30 chips, 6 parent checkboxes and both price
+       handles rendered correctly and could not be touched. The behaviour is a
+       kit helper now, so this is a binding, not a reimplementation. */
+    "ds-chip": (c) => run("toggleChip", c),
+    "filter-category-child": (c) => run("toggleFilterCategoryChild", c),
+    "filter-category-parent": (c) => run("toggleFilterCategoryParent", c),
     "ui-modal-mask": (c) => run("closeModal", c),
   };
   if (!alreadyListening) {
@@ -186,6 +194,14 @@
     document.addEventListener("input", (e) => {
       const input = e.target.closest?.('[data-demo="ui-top-nav-search-input"]');
       if (input) run("syncTopNavSearch", input);
+    }, true);
+    document.addEventListener("input", (e) => {
+      /* The range handles are inputs, so they are synced rather than clicked —
+         without this the price range could be dragged and nothing moved. */
+      const range = e.target.closest?.('[data-demo="ui-slider-range"]');
+      if (range) run("syncSliderRange", range);
+      const single = e.target.closest?.('[data-demo="ui-slider"]');
+      if (single) run("syncSliderInput", single);
     }, true);
     const searchFocus = (state) => (e) => {
       const input = e.target.closest?.('[data-demo="ui-top-nav-search-input"]');

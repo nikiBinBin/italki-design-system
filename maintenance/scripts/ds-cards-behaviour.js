@@ -104,6 +104,13 @@
       'ui-sidebar-pin': (c) => call(ui.pinSidebarItem, 'pinSidebarItem', c),
       'ui-sidebar-unpin': (c) => call(ui.unpinSidebarItem, 'unpinSidebarItem', c),
       'ui-segmented-control': (c) => call(ui.selectSegmentedControl, 'selectSegmentedControl', c),
+      /* The Filter pattern's own controls. Its behaviour lived only in the
+         Catalog's dispatcher, so the card rendered 30 chips and a category tree
+         that could not be touched — and NOT_CLICK below called them page-level,
+         which is what kept the gap invisible. They are kit helpers now. */
+      'ds-chip': (c) => call(ui.toggleChip, 'toggleChip', c),
+      'filter-category-child': (c) => call(ui.toggleFilterCategoryChild, 'toggleFilterCategoryChild', c),
+      'filter-category-parent': (c) => call(ui.toggleFilterCategoryParent, 'toggleFilterCategoryParent', c),
       'ui-rate': (c, event) => call(ui.selectRate, 'selectRate', c, event),
       /* Hooks the Catalog binds and this table did not. Found by diffing the
          two: sixteen of them, so every one of those controls rendered
@@ -163,7 +170,6 @@
       'ui-slider', 'ui-slider-range', 'ui-textarea', 'ui-select-search',
       'ui-top-nav-search-input', 'ui-upload-input', 'checkbox',
       'ui-breadcrumb-item', 'ui-stepper', 'button', 'tag-remove-demo',
-      'ds-chip', 'filter-category-parent', 'filter-category-child',
       'teacher-discovery-a1', 'teacher-discovery-book-preview',
       'teacher-discovery-filter-apply', 'teacher-discovery-filter-reset',
       'teacher-discovery-pagination', 'teacher-discovery-tag-remove',
@@ -177,6 +183,15 @@
 
     /* Checkbox, radio and switch carry their state on the input, so they are
        synced rather than dispatched. */
+    document.addEventListener('input', (event) => {
+      /* Range handles are inputs, so they sync rather than dispatch — without
+         this a card's price range drags and nothing moves. */
+      const range = event.target.closest?.('[data-demo="ui-slider-range"]');
+      if (range) call(ui.syncSliderRange, 'syncSliderRange', range);
+      const single = event.target.closest?.('[data-demo="ui-slider"]');
+      if (single) call(ui.syncSliderInput, 'syncSliderInput', single);
+    }, true);
+
     document.addEventListener('change', (event) => {
       const box = event.target.closest('[data-component="checkbox"] input, [data-component="checkbox-group"] input');
       if (box) call(ui.syncCheckboxGroup, 'syncCheckboxGroup', box);

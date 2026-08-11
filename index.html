@@ -1242,7 +1242,7 @@
       function segmentedControlDetail() {
         const shapeControl = ui.segmentedControl({ id: "segmented-shape", options: [{ label: "Pill", value: "pill" }, { label: "Rounded", value: "rounded" }], selected: "pill", size: 32, ariaLabel: "Segmented control shape" });
         const iconOptions = [{ label: "Morning lessons", value: "morning", icon: "Assets/Icons/16px/time-morning-sm.svg" }, { label: "Afternoon lessons", value: "afternoon", icon: "Assets/Icons/16px/time-afternoon-sm.svg" }, { label: "Evening lessons", value: "evening", icon: "Assets/Icons/16px/time-evening-sm.svg" }];
-        const roleOptions = [{ label: "Student role", value: "student", icon: "Assets/Icons/student.svg" }, { label: "Teacher role", value: "teacher", icon: "Assets/Icons/teacher.svg" }];
+        const roleOptions = [{ label: "Student role", value: "student", icon: "Assets/Icons/user.svg" }, { label: "Teacher role", value: "teacher", icon: "Assets/Icons/teacher.svg" }];
         return `<section class="segmented-control-detail" data-segmented-detail><div class="segmented-control-global-controls">${shapeControl}</div><div class="component-doc-grid segmented-detail">${dsBlock("Default", ui.segmentedControl({ id: "schedule-view", options: ["Week", "Month"], selected: "Week", shape: "pill" }))}${dsBlock("Selection", ui.segmentedControl({ id: "lesson-view", options: ["Upcoming", "Completed", "Cancelled"], selected: "Completed", shape: "pill" }))}${dsBlock("Icon", ui.segmentedControl({ id: "lesson-time", options: iconOptions, selected: "afternoon", contentType: "icon", shape: "pill", ariaLabel: "Lesson time of day" }))}${dsBlock("Role", ui.segmentedControl({ id: "account-role", options: roleOptions, selected: "student", contentType: "role", ariaLabel: "Account role" }))}${dsBlock("Disabled", ui.segmentedControl({ id: "disabled-view", options: ["Student", "Teacher"], disabled: true, shape: "pill" }))}</div></section>`;
       }
       function timeSlotDetail() {
@@ -1700,33 +1700,7 @@
         else if (type === "ui-popconfirm-close") ui.closePopconfirm(control, true);
         else if (type === "ui-alert-close") ui.dismissAlert(control);
         else if (type === "tag-remove-demo") control.closest("[data-component=tag]").remove();
-        else if (type === "filter-category-child") {
-          const category = control.closest("[data-filter-category]");
-          if (!category) return;
-          const children = [...category.querySelectorAll("[data-filter-category-child]")];
-          const all = category.querySelector("[data-filter-category-all]");
-          const individualChildren = children.filter((child) => child !== all);
-          const parent = category.querySelector('[data-demo="filter-category-parent"]');
-          const setChipSelected = (chipControl, selected) => {
-            chipControl.classList.toggle("is-selected", selected);
-            chipControl.setAttribute("aria-pressed", String(selected));
-          };
-          if (control === all) {
-            const selectingAll = !control.classList.contains("is-selected");
-            setChipSelected(control, selectingAll);
-            individualChildren.forEach((child) => setChipSelected(child, false));
-            if (parent) ui.setCheckboxValue(parent, selectingAll ? "on" : "off");
-            category.dataset.expanded = String(selectingAll);
-            category.querySelector("[data-filter-category-children]").hidden = !selectingAll;
-          } else {
-            ui.toggleChip(control);
-            if (all) setChipSelected(all, false);
-            if (parent) ui.setCheckboxValue(parent, "off");
-            const hasSelectedChild = individualChildren.some((child) => child.classList.contains("is-selected"));
-            category.dataset.expanded = String(hasSelectedChild);
-            category.querySelector("[data-filter-category-children]").hidden = !hasSelectedChild;
-          }
-        }
+        else if (type === "filter-category-child") ui.toggleFilterCategoryChild(control);
         else if (type === "ds-chip") {
           ui.toggleChip(control);
         }
@@ -1844,28 +1818,7 @@
           ui.setSelectPresentation(detail, { size: selectedSize, shape: control.dataset.shape });
         }
         else if (type === "ui-checkbox-group-item" || type === "ui-checkbox-group-all") ui.toggleCheckboxGroup(control);
-        else if (type === "filter-category-parent") {
-          const category = control.closest("[data-filter-category]");
-          if (category) {
-            const children = [...category.querySelectorAll("[data-filter-category-child]")];
-            const all = category.querySelector("[data-filter-category-all]");
-            const individualChildren = children.filter((child) => child !== all);
-            const hasSelectedChild = individualChildren.some((child) => child.classList.contains("is-selected"));
-            const checkingParent = control.dataset.value !== "on";
-            ui.setCheckboxValue(control, checkingParent ? "on" : "off");
-            if (checkingParent) {
-              if (all) { all.classList.add("is-selected"); all.setAttribute("aria-pressed", "true"); }
-              individualChildren.forEach((child) => { child.classList.remove("is-selected"); child.setAttribute("aria-pressed", "false"); });
-            } else if (!hasSelectedChild && all) {
-              all.classList.remove("is-selected");
-              all.setAttribute("aria-pressed", "false");
-            }
-            const expanded = checkingParent || hasSelectedChild;
-            category.dataset.expanded = String(expanded);
-            const childrenPanel = category.querySelector("[data-filter-category-children]");
-            if (childrenPanel) childrenPanel.hidden = !expanded;
-          }
-        }
+        else if (type === "filter-category-parent") ui.toggleFilterCategoryParent(control);
         else if (type === "checkbox") {
           const toggleMode = control.dataset.checkboxToggle || "binary";
           if (toggleMode !== "controlled") {
