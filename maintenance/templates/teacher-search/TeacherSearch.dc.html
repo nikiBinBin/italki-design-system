@@ -440,7 +440,7 @@ class Component extends DCLogic {
       + field("My speaking language", ["Chinese (Mandarin)", "Japanese"].map((label) => chip(label)).join(""))
       + field("Popular languages", ["English", "Spanish", "French", "Korean", "German", "Italian", "Portuguese", "Russian"].map((label) => chip(label)).join(""))
       + `</section>`
-      + `<section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Price range</h3></header><div class="filter-pattern__price-chart" aria-hidden="true">${histogram}</div><div class="filter-pattern__price-range">${UI.sliderRange({ lower: 20, upper: 70, label: "Lesson price" })}<div class="filter-pattern__range-values"><span>Minimum<output>$12</output></span><span>Maximum<output>$227</output></span></div></div></section>`
+      + `<section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Price range</h3></header><div class="filter-pattern__price-chart" aria-hidden="true">${histogram}</div><div class="filter-pattern__price-range"><div data-price-floor="12" data-price-ceiling="227">${UI.sliderRange({ lower: 20, upper: 70, label: "Lesson price" })}</div><div class="filter-pattern__range-values"><span>Minimum<output data-filter-price="min">$55</output></span><span>Maximum<output data-filter-price="max">$162</output></span></div></div></section>`
       + `<section class="filter-pattern__card filter-pattern__availability"><header class="filter-pattern__card-head"><h3>Availability</h3></header>${availability}</section>`
       + lessonCategory + teacherType + `</div>`;
   }

@@ -1917,6 +1917,23 @@
     control.setAttribute("aria-checked", value === "mixed" ? "mixed" : String(value === "on"));
   }
 
+  /* A standalone checkbox is a button with role="checkbox", so it has no native
+     toggle — and this logic lived only in the Catalog's dispatcher. Everywhere
+     else the control rendered and refused to tick, which is how "Plus features
+     available" ended up unclickable inside the filter. The mode is the
+     component's own: binary flips on/off, indeterminate cycles through mixed,
+     and controlled means the page owns the value. */
+  function toggleCheckbox(control) {
+    if (!control || control.disabled) return null;
+    const mode = control.dataset.checkboxToggle || "binary";
+    if (mode === "controlled") return control.dataset.value || "off";
+    const next = mode === "indeterminate"
+      ? (control.dataset.value === "mixed" ? "off" : "mixed")
+      : (control.dataset.value === "on" ? "off" : "on");
+    setCheckboxValue(control, next);
+    return next;
+  }
+
   const checkboxGroupItems = (group) => [...(group?.querySelectorAll?.('[data-demo="ui-checkbox-group-item"]') || [])];
 
   function syncCheckboxGroup(group) {
@@ -2566,6 +2583,36 @@
     return checkingParent;
   }
 
+  /* The Filter pattern shows the chosen price beside the range as two pills. They
+     were static markup — the slider moved, its own value box was hidden, and the
+     numbers people actually read never changed. The slider works in its own 0–100
+     scale, so the pattern declares the money the ends stand for and this maps
+     between them. */
+  function syncFilterPrice(scope) {
+    const root = scope || document;
+    if (!root.querySelectorAll) return;
+    for (const range of root.querySelectorAll("[data-price-floor][data-price-ceiling]")) {
+      const lower = range.querySelector('[data-range-handle="lower"]');
+      const upper = range.querySelector('[data-range-handle="upper"]');
+      if (!lower || !upper) continue;
+      const floor = Number(range.dataset.priceFloor);
+      const ceiling = Number(range.dataset.priceCeiling);
+      const min = Number(lower.min || 0);
+      const max = Number(lower.max || 100);
+      const money = (value) => {
+        const share = (Number(value) - min) / ((max - min) || 1);
+        return `$${Math.round(floor + share * (ceiling - floor))}`;
+      };
+      const write = (which, text) => {
+        const out = range.querySelector(`[data-filter-price="${which}"]`)
+          || root.querySelector(`[data-filter-price="${which}"]`);
+        if (out) out.textContent = text;
+      };
+      write("min", money(lower.value));
+      write("max", money(upper.value));
+    }
+  }
+
   function syncSliderRange(input) {
     const range = input?.closest?.("[data-slider-range]");
     if (!range) return;
@@ -2605,6 +2652,11 @@
       if (pointerEvent.pointerId !== event.pointerId) return;
       active.value = String(valueAtPointer(pointerEvent));
       syncSliderRange(active);
+      /* Setting .value from script does not fire `input`, so anything a page
+         hangs off the range — the Filter pattern's price pills, its selection
+         count — never heard the drag and sat at the value the markup was
+         rendered with. The driver is what moved it, so the driver says so. */
+      active.dispatchEvent(new Event("input", { bubbles: true }));
     };
     const finish = (pointerEvent) => {
       if (pointerEvent.pointerId !== event.pointerId) return;
@@ -3675,6 +3727,7 @@
     popover,
     footer,
     setCheckboxValue,
+    toggleCheckbox,
     syncCheckboxGroup,
     toggleCheckboxGroup,
     selectRadio,
@@ -3758,6 +3811,7 @@
     setChipPresentation,
     syncSliderInput,
     syncSliderRange,
+    syncFilterPrice,
     startSliderRangeDrag,
     setTimelineReverse,
     setTimelineTone,
