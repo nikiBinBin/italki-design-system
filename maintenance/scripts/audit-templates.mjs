@@ -126,6 +126,63 @@ for (const template of templates) {
   const moreOpen = await page.evaluate(() => document.querySelector('.ui-sidebar__more')?.classList.contains('is-open'));
   if (!moreOpen) say('More did not open');
 
+  /* Two faults that only show up once the window is narrower than whoever
+     wrote the page was: the page scrolls sideways, and the app frame stops
+     covering the content it is supposed to cover.
+
+     Both were found by eye. The sideways scroll came from one min-width:1280px
+     on the outer wrapper, which also made the 1180px and 900px breakpoints in
+     the pattern stylesheets unreachable — they had never once run. The
+     stacking fault was the top nav's language menu appearing underneath the
+     profile's pinned tab bar, because the bar and the nav both sat at z-index
+     30 and the bar came later in the markup.
+
+     Asking at 1024 rather than at 1440 is the whole point: at 1440 both pass. */
+  await page.setViewportSize({ width: 1024, height: 900 });
+  await page.waitForTimeout(400);
+  const narrow = await page.evaluate(() => {
+    const doc = document.documentElement;
+    const widest = () => {
+      let worst = null;
+      for (const el of document.querySelectorAll('body *')) {
+        const r = el.getBoundingClientRect();
+        if (r.width === 0 || r.right <= doc.clientWidth + 1) continue;
+        if (!worst || r.right > worst.right) worst = { right: Math.round(r.right), el };
+      }
+      if (!worst) return null;
+      const s = getComputedStyle(worst.el);
+      return `${worst.el.tagName.toLowerCase()}${worst.el.id ? '#' + worst.el.id : ''}` +
+        `${worst.el.className ? '.' + worst.el.className.toString().trim().split(/\s+/).join('.') : ''}` +
+        ` (min-width ${s.minWidth}, reaches ${worst.right}px)`;
+    };
+    return { overflow: doc.scrollWidth - doc.clientWidth, widest: widest() };
+  });
+  if (narrow.overflow > 0) say(`scrolls sideways by ${narrow.overflow}px at 1024 — widest box ${narrow.widest}`);
+
+  /* The shell is only above the page if it is above the page's own pinned
+     bars, so the question has to be asked with one of those bars pinned. */
+  await page.evaluate(() => window.scrollTo(0, 700));
+  await page.waitForTimeout(300);
+  await page.click('.ui-top-nav-context__trigger', { force: true }).catch(() => say('the top nav context trigger could not be clicked'));
+  await page.waitForTimeout(300);
+  const covered = await page.evaluate(() => {
+    const menu = document.querySelector('.ui-top-nav-context__menu');
+    if (!menu) return null;
+    const m = menu.getBoundingClientRect();
+    if (m.width === 0) return null;
+    /* Sample down the menu: whatever the page pins, the menu must be the thing
+       a click lands on everywhere it is drawn. */
+    for (const t of [0.1, 0.35, 0.6, 0.85]) {
+      const hit = document.elementFromPoint(m.left + m.width / 2, m.top + m.height * t);
+      if (hit && !hit.closest('.ui-top-nav-context__menu')) {
+        return `${hit.tagName.toLowerCase()}${hit.className ? '.' + hit.className.toString().trim().split(/\s+/)[0] : ''}` +
+          ` covers the top nav menu (z-index ${getComputedStyle(hit.closest('[style*="z-index"], [id]') || hit).zIndex})`;
+      }
+    }
+    return null;
+  });
+  if (covered) say(covered);
+
   console.log(`  ${template.name.padEnd(16)} sidebar ${state.width}px${state.collapsed ? ' collapsed' : ''} · ${state.navRows} rows · top nav ${state.topNavFilled ? 'filled' : 'EMPTY'}`);
   await page.close();
 }

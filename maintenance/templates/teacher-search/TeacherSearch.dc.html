@@ -15,15 +15,17 @@
 <link rel="stylesheet" href="./teacher-card-pattern.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>body{margin:0;color:var(--ui-color-text);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;font-weight:500}#teacher-filter-modal{position:fixed;inset:0;z-index:60;min-height:0;display:block;background:transparent;pointer-events:none}#teacher-filter-modal.is-open{pointer-events:auto}#teacher-filter-modal .ui-modal{width:min(920px,100%);max-height:calc(100vh - 32px)}body{margin:0;background:var(--ui-color-divider);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}*{box-sizing:border-box}a{color:var(--ui-color-link);text-decoration:none}a:hover{color:var(--ui-color-link-hover);text-decoration:underline}/* Duplicates the kit default on purpose. These used to live only here, then
+<style>body{margin:0;color:var(--ui-color-text);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;font-weight:500}#teacher-filter-modal{position:fixed;inset:0;z-index:var(--ui-layer-overlay,60);min-height:0;display:block;background:transparent;pointer-events:none}#teacher-filter-modal.is-open{pointer-events:auto}#teacher-filter-modal .ui-modal{max-height:calc(100vh - 32px)}body{margin:0;background:var(--ui-color-divider);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}*{box-sizing:border-box}a{color:var(--ui-color-link);text-decoration:none}a:hover{color:var(--ui-color-link-hover);text-decoration:underline}/* Duplicates the kit default on purpose. These used to live only here, then
    only in the kit; either way the template depended on the other side being
    in step, and a bundle one version behind left the shell unpositioned.
-   Same values as .ui-sidebar / .ui-top-nav, so whichever wins, wins the same. */
-.ui-sidebar.ui-sidebar{height:100dvh;position:sticky;top:0;z-index:31;align-self:flex-start}
-.ui-top-nav.ui-top-nav{position:sticky;top:0;z-index:30}
+   Same values as .ui-sidebar / .ui-top-nav, so whichever wins, wins the same.
+   The rungs come from the --ui-layer-* scale in tokens.css; the literals are
+   only the fallback for a bundle that predates it. */
+.ui-sidebar.ui-sidebar{height:100dvh;position:sticky;top:0;z-index:var(--ui-layer-sidebar,41);align-self:flex-start}
+.ui-top-nav.ui-top-nav{position:sticky;top:0;z-index:var(--ui-layer-top-nav,40)}
 </style>
 </helmet>
-<div style="min-height:100vh;min-width:1280px;display:flex;align-items:flex-start">
+<div style="min-height:100vh;display:flex;align-items:flex-start">
 
 <x-import component-from-global-scope="SafeUI.Sidebar" variant="plus" items="{{ navItems }}" sections="{{ navSections }}" more-items="{{ moreItems }}" footer="{{ sidebarFooter }}" hint-size="324px,100vh"></x-import>
 
@@ -53,7 +55,7 @@
 </div>
 
 <div style="max-width:1216px;margin:0 auto;padding:0 24px 24px">
-<div style="display:grid;grid-template-columns:minmax(0,1fr) 348px;gap:24px;align-items:start">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,348px);gap:24px;align-items:start">
 
 <div style="grid-column:1;grid-row:2;min-width:0">
 <div style="display:flex;flex-direction:column;gap:16px">
