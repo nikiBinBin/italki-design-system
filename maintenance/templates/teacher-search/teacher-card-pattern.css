@@ -34,8 +34,10 @@
 .teacher-pattern-price > span:not(.sc-interp) { color: var(--ui-color-secondary); font-size: 12px; line-height: 18px; }
 .teacher-pattern-price .teacher-pattern-availability, .teacher-pattern-price .teacher-pattern-availability span { color: var(--ui-color-info); }
 .teacher-pattern-actions { display: flex; align-items: center; gap: var(--ui-space-2); }
-.teacher-pattern-card { width: 100%; cursor: pointer; transition: border-color 120ms ease, box-shadow 120ms ease; }
-.teacher-pattern-card:hover { border-color: var(--ui-color-title); box-shadow: var(--ui-shadow-md); }
+/* Hover reads as elevation, not as an outline: the border stays put and the card
+   steps up one rung of the shadow ladder, same as .ui-card.is-interactive. */
+.teacher-pattern-card { width: 100%; box-shadow: var(--ui-shadow-card); cursor: pointer; transition: box-shadow 120ms ease; }
+.teacher-pattern-card:hover { box-shadow: var(--ui-shadow-card-hover); }
 @media (max-width: 1180px) {
 .teacher-pattern-card { grid-template-columns: 100px minmax(0, 1fr); gap: var(--ui-space-6); }
 .teacher-pattern-avatar, .teacher-pattern-avatar > img:first-child { width: 100px; height: 100px; }

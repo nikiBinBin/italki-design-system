@@ -129,6 +129,11 @@ const COMPONENTS = [
   ['Panel', 'panel', 'panel', 'data-display'],
   ['Statistic', 'statistic', 'statistic', 'data-display'],
   ['Table', 'table', 'table', 'data-display'],
+  /* The renderer, the contract and the Catalog route all existed; only this
+     line did not, so List had no card and no wrapper — the same silent gap the
+     Image foundation had. A component the list never names is a component the
+     project does not have. */
+  ['List', 'list', 'list', 'data-display'],
   ['Tag', 'tag', 'tag', 'data-display'],
   ['Timeline', 'timeline', 'timeline', 'data-display'],
   ['Alert', 'alert', 'alert', 'feedback'],
@@ -305,6 +310,16 @@ const BASE = {
   divider: {},
   panel: { title: 'Upcoming lesson', body: 'Tuesday, 18:15 with Rachel Green.' },
   statistic: { title: 'Lessons completed', value: '48' },
+  /* Sample rows carrying every slot the four variants ask for. An item without
+     a label throws, so the generated sheet rendered nothing and the card was
+     never written at all — List had no card and no wrapper for that reason
+     alone. The avatar, content and image slots are here too, so the sheet
+     renders all four variants instead of reporting three quiet failures on
+     every build. */
+  list: { ariaLabel: 'Lesson resources', items: [
+    { id: 'notes', label: 'Lesson notes', description: 'Shared today', trailing: '1 file', href: '#lesson-notes', avatar: UI.avatar({ initials: 'LN', size: 40, variant: 'empty' }), imagePlaceholder: true, content: 'Reviewed with your teacher after Tuesday\\'s lesson.' },
+    { id: 'practice', label: 'Practice exercises', description: 'Speaking confidence', trailing: '8 items', href: '#practice', avatar: UI.avatar({ initials: 'PE', size: 40, variant: 'empty' }), imagePlaceholder: true, content: 'Eight speaking drills, five minutes each.' },
+  ] },
   table: { ariaLabel: 'Upcoming lessons', columns: [
     { id: 'teacher', label: 'Teacher' }, { id: 'language', label: 'Language' },
     { id: 'time', label: 'Time' }, { id: 'status', label: 'Status', align: 'right' },
