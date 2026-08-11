@@ -1,22 +1,22 @@
 {
   "project": "f7eb9b7d-40fb-4766-bccc-0202f1c91fb8",
   "syncedAt": "2026-08-08",
-  "note": "Mirror of the Design project templates. The project is the source of truth; these copies exist only so audit:templates exercises the real files. A stale mirror produces confident findings about a page nobody is running — re-sync before believing one.",
+  "note": "Mirror of the Design project templates. The project is the source of truth; these copies exist only so audit:templates exercises the real files. A stale mirror produces confident findings about a page nobody is running \u2014 re-sync before believing one.",
   "files": {
     "teacher-search/TeacherSearch.dc.html": {
       "bytes": 35483,
       "sha256": "9e974556494ffc419796d39c33647c5dca1778f0bf54df47a20ba5db4501f36f",
-      "origin": "pushed 2026-08-11 — layer scale + width clamp"
+      "origin": "pushed 2026-08-11 \u2014 layer scale + width clamp"
     },
     "teacher-search/ds-safe.js": {
-      "bytes": 12935,
-      "sha256": "272d5cd2c2b22968",
-      "origin": "written to the project from here"
+      "bytes": 13974,
+      "sha256": "ac59c1343982dfe9f9963f9a9b0de178b0461a4d9dd17bd509237a731d8c544d",
+      "origin": "pushed 2026-08-11 \u2014 filter drawer bindings"
     },
     "teacher-search/filter-pattern.css": {
       "bytes": 6623,
       "sha256": "a5fff028eb82903776ec8ede448d06a987fee96dc9cf61d13c1d7b3ad934814f",
-      "origin": "pushed 2026-08-11 — layer scale + width clamp"
+      "origin": "pushed 2026-08-11 \u2014 layer scale + width clamp"
     },
     "teacher-search/teacher-card-pattern.css": {
       "bytes": 5194,
@@ -36,12 +36,12 @@
     "teacher-profile/TeacherProfile.dc.html": {
       "bytes": 41642,
       "sha256": "3d7e8c7abf4a5760e745367b1f3b68c94e1a87299d1903608f970bae5f17e724",
-      "origin": "pushed 2026-08-11 — layer scale + width clamp"
+      "origin": "pushed 2026-08-11 \u2014 layer scale + width clamp"
     },
     "teacher-profile/ds-safe.js": {
-      "bytes": 12935,
-      "sha256": "272d5cd2c2b22968",
-      "origin": "written to the project from here"
+      "bytes": 13974,
+      "sha256": "ac59c1343982dfe9f9963f9a9b0de178b0461a4d9dd17bd509237a731d8c544d",
+      "origin": "pushed 2026-08-11 \u2014 filter drawer bindings"
     },
     "teacher-profile/ds-base.js": {
       "bytes": 1489,
