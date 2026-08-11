@@ -169,8 +169,8 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
 
   await page.goto(`${catalog}#segmented-control`);
   const segmentedBlocks = page.locator(".segmented-detail > .component-doc-block");
-  await expect(segmentedBlocks).toHaveCount(3);
-  const segmentedBoxes = await Promise.all([0, 1, 2].map((index) => segmentedBlocks.nth(index).boundingBox()));
+  await expect(segmentedBlocks).toHaveCount(4);
+  const segmentedBoxes = await Promise.all([0, 1, 2, 3].map((index) => segmentedBlocks.nth(index).boundingBox()));
   expect(segmentedBoxes.every(Boolean)).toBe(true);
   expect(segmentedBoxes[0].y).toBeCloseTo(segmentedBoxes[1].y, 1);
   expect(segmentedBoxes[1].y).toBeCloseTo(segmentedBoxes[2].y, 1);
@@ -461,21 +461,41 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   await expect(lessonCards.first()).toHaveCSS("width", "652px");
   await expect(lessonCards.first()).toHaveCSS("height", "120px");
   await expect(lessonCards.first().locator('[data-component="avatar"]')).toHaveCount(1);
-  await expect(lessonCards.first().locator(".ui-avatar__initials")).toHaveText("SY");
+  /* The card used to fall back to "SY" initials; it carries the teacher's photo
+     now. Same intent — the right person is on the card — asked of what draws it,
+     and asked whether the image loaded: a bad path leaves an empty circle that
+     asserting the src alone would happily pass. */
+  await expect(lessonCards.first()).toContainText("Sunshine Yolanda");
+  const lessonAvatarImage = lessonCards.first().locator('[data-component="avatar"] img:not(.ui-avatar__flag)').first();
+  await expect(lessonAvatarImage).toHaveAttribute("src", /Assets\/Images\/avatars\//);
+  expect(await lessonAvatarImage.evaluate((image) => image.complete && image.naturalWidth > 0)).toBe(true);
   await expect(lessonCards.first().locator(".ui-card__content")).toHaveCSS("padding", "0px");
   /* Outlined cards stroke with an inset shadow so hover states never shift
      layout. */
   await expect(lessonCards.filter({ hasText: "English Group Class" })).toHaveCSS("box-shadow", /0px 0px 0px 1px/);
+  /* The four status strips take their fill from the accessory tokens. Spelling
+     the rgb() out here meant a token being retuned read as a broken card:
+     --ui-color-accessory-3 moved by one unit in the red channel and this line
+     failed, while the card was exactly as designed. Resolved through the token
+     instead — a wrong token still fails, a retuned one does not. */
+  const tokenColour = (token) => page.evaluate((name) => {
+    const probe = document.createElement("span");
+    probe.style.color = `var(${name})`;
+    document.body.append(probe);
+    const value = getComputedStyle(probe).color;
+    probe.remove();
+    return value;
+  }, token);
   await expect(lessonCards.first().locator(".lesson-card-pattern__status")).toHaveCSS("height", "40px");
-  await expect(lessonCards.first().locator(".lesson-card-pattern__status")).toHaveCSS("background-color", "rgb(230, 247, 248)");
+  await expect(lessonCards.first().locator(".lesson-card-pattern__status")).toHaveCSS("background-color", await tokenColour("--ui-color-accessory-2"));
   await expect(lessonCards.first().locator(".lesson-card-pattern__status-icon")).toHaveAttribute("src", "Assets/Icons/16px/lesson-upcoming-sm.svg");
   /* Normalized to the 16px spacing token. */
   await expect(lessonCards.first().locator(".lesson-card-pattern__body")).toHaveCSS("margin-top", "16px");
-  await expect(lessonCards.filter({ hasText: "Waiting" }).locator(".lesson-card-pattern__status")).toHaveCSS("background-color", "rgb(255, 249, 230)");
+  await expect(lessonCards.filter({ hasText: "Waiting" }).locator(".lesson-card-pattern__status")).toHaveCSS("background-color", await tokenColour("--ui-color-accessory-1"));
   await expect(lessonCards.filter({ hasText: "Waiting" }).locator(".lesson-card-pattern__status-icon")).toHaveAttribute("src", "Assets/Icons/16px/lesson-waiting-sm.svg");
-  await expect(lessonCards.filter({ hasText: "Action required" }).locator(".lesson-card-pattern__status")).toHaveCSS("background-color", "rgb(255, 242, 241)");
+  await expect(lessonCards.filter({ hasText: "Action required" }).locator(".lesson-card-pattern__status")).toHaveCSS("background-color", await tokenColour("--ui-color-accessory-3"));
   await expect(lessonCards.filter({ hasText: "Active package" }).first()).toHaveCSS("height", "128px");
-  await expect(lessonCards.filter({ hasText: "Lesson completed!" }).locator(".lesson-card-pattern__status")).toHaveCSS("background-color", "rgb(231, 252, 245)");
+  await expect(lessonCards.filter({ hasText: "Lesson completed!" }).locator(".lesson-card-pattern__status")).toHaveCSS("background-color", await tokenColour("--ui-color-accessory-4"));
 
   await page.goto(`${catalog}#tooltip`);
   const tooltipTrigger = page.getByRole("button", { name: "Hover me" });
@@ -622,11 +642,26 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   await expect(sidebar.getByRole("menu")).toBeHidden();
   await sidebar.getByRole("button", { name: "Hide sidebar" }).click();
   await expect(sidebar).toHaveClass(/is-collapsed/);
-  await expect(page.locator('.sidebar-demo-stage')).toHaveCSS('background-color', 'rgb(255, 255, 255)');
-  await sidebar.getByRole("button", { name: "Show sidebar" }).click();
+  /* Three sidebar figures share this stage class, so the bare locator is not
+     unique. All three should be white, so ask all three. */
+  const sidebarStages = page.locator('.sidebar-demo-stage');
+  await expect(sidebarStages).toHaveCount(3);
+  for (const stage of await sidebarStages.all()) {
+    await expect(stage).toHaveCSS('background-color', await tokenColour('--ui-color-card'));
+  }
+  /* There is no "Show sidebar" button — the collapse control is hidden while
+     collapsed and the brand is what expands it again. The kit only ever
+     labels "Hide sidebar", so this had been waiting on a control that has
+     never existed. */
+  await sidebar.locator('[data-demo="ui-sidebar-brand"]').click();
   await expect(sidebar).not.toHaveClass(/is-collapsed/);
-  await page.getByRole("button", { name: "Plus" }).click();
-  await expect(sidebar).toHaveClass(/ui-sidebar--plus/);
+  /* The route shows the variants as three captioned figures now, not as one
+     sidebar with a variant switcher, so there is no "Plus" button to press.
+     Same question asked of the shape that replaced it. */
+  const sidebarFigures = page.locator(".sidebar-demo-figure");
+  await expect(sidebarFigures).toHaveCount(3);
+  await expect(sidebarFigures.filter({ hasText: "Plus" }).locator(".ui-sidebar")).toHaveClass(/ui-sidebar--plus/);
+  await expect(sidebarFigures.filter({ hasText: "Collapsed" }).locator(".ui-sidebar")).toHaveClass(/is-collapsed/);
 
   await page.goto(`${catalog}#dropdown-menu`);
   const lessonActions = page.locator("#lesson-actions");
@@ -639,9 +674,13 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   await expect(lessonActionsArrow).toHaveCSS("transform", "none");
 
   await page.goto(`${catalog}#statistic`);
-  await expect(page.locator('.ds-component-detail .ui-statistic')).toHaveCount(5);
+  /* Four rendered figures and three loading ones. The loading demo used to be a
+     single card, and each card skeletons both its lines, so the bare skeleton
+     class matches six elements — named per line instead. */
+  await expect(page.locator('.ds-component-detail .ui-statistic')).toHaveCount(7);
+  await expect(page.locator('.ds-component-detail .ui-statistic.is-loading')).toHaveCount(3);
   await expect(page.locator('.ds-component-detail .ui-statistic__prefix')).toHaveText("$");
-  await expect(page.locator('.ds-component-detail .ui-statistic.is-loading .ui-statistic__skeleton')).toBeVisible();
+  await expect(page.locator('.ds-component-detail .ui-statistic.is-loading .ui-statistic__skeleton--value').first()).toBeVisible();
 
   await page.goto(`${catalog}#table`);
   await expect(page.locator('#teacher-lessons-table table')).toBeVisible();
@@ -659,19 +698,26 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
 
   await page.goto(`${catalog}#top-nav`);
   const topNav = page.locator('#top-nav-teacher');
-  const contextTrigger = topNav.getByRole('button', { name: 'Teacher language' });
+  /* The trigger is labelled by what it switches, not by the language it is
+     showing: "Navigation context". */
+  const contextTrigger = topNav.getByRole('button', { name: 'Navigation context' });
   await contextTrigger.click();
   await expect(contextTrigger).toHaveAttribute('aria-expanded', 'true');
   await topNav.getByRole('menuitem', { name: 'French Teachers' }).click();
   await expect(contextTrigger).toHaveAttribute('aria-expanded', 'false');
   await expect(topNav.locator('.ui-top-nav-context__label')).toHaveText('French Teachers');
-  const navSearch = page.locator('#top-nav-search-teacher');
+  /* The search element's id is derived from its placeholder now, and both top
+     navs on this route share a placeholder — so the id is not unique and not a
+     usable handle. Scoped through the nav under test instead. */
+  const navSearch = topNav.locator('.ui-top-nav-search');
   const filter = navSearch.getByRole('button', { name: 'Filter' });
   await expect(navSearch).toHaveCSS('width', '400px');
   await filter.click();
   await expect(filter).toHaveAttribute('aria-pressed', 'true');
   await expect(navSearch).toHaveCSS('width', '400px');
-  const navSearchInput = navSearch.getByRole('textbox', { name: 'Search teachers' });
+  /* Named by its placeholder, so pinning the copy makes the test fail when the
+     demo's wording changes. There is one field in this nav — ask for it. */
+  const navSearchInput = navSearch.getByRole('textbox');
   await navSearchInput.fill('French');
   await expect(navSearch).toHaveClass(/has-query/);
   await navSearch.getByRole('button', { name: 'Clear search' }).click();

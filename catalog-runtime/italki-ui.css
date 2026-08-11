@@ -977,7 +977,7 @@ html.ui-modal-scroll-locked, body.ui-modal-scroll-locked { overflow: hidden; }
 .ui-slider__control::before, .ui-slider__range::before { right: 0; left: 0; background: var(--ui-color-border); }
 .ui-slider__control::after { width: var(--ui-slider-progress, 0%); left: 0; background: var(--ui-color-text); }
 .ui-slider.is-reversed .ui-slider__control::after { right: 0; left: auto; }
-.ui-slider__value { width: 28px; flex: 0 0 28px; color: var(--ui-color-title); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-bold); text-align: right; white-space: nowrap; }
+.ui-slider__value { width: 28px; flex: 0 0 28px; color: var(--ui-color-title); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-18); text-align: right; white-space: nowrap; }
 .ui-slider__value--range { width: 44px; flex-basis: 44px; }
 .slider-with-marks { width: min(100%, 480px); display: grid; gap: var(--ui-space-2); }
 .slider-with-marks .ui-slider { width: 100%; }
@@ -1413,6 +1413,10 @@ html.ui-modal-scroll-locked, body.ui-modal-scroll-locked { overflow: hidden; }
 .ui-segmented-control button:last-child { border-right: 0; }
 .ui-segmented-control--32 button { min-height: 32px; font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
 .ui-segmented-control--48 button { min-height: 48px; }
+.ui-segmented-control--icon button { min-width: 40px; display: inline-flex; align-items: center; justify-content: center; padding: 0 var(--ui-space-2); }
+.ui-segmented-control--icon.ui-segmented-control--32 button { min-width: 32px; }
+.ui-segmented-control--icon.ui-segmented-control--48 button { min-width: 48px; }
+.ui-segmented-control__icon { width: 16px; height: 16px; display: block; object-fit: contain; }
 .ui-segmented-control button:hover:not(:disabled), .ui-segmented-control button:focus-visible { outline: 0; background: var(--ui-color-divider); }
 .ui-segmented-control button[aria-pressed="true"] { color: var(--ui-color-title); background: var(--ui-color-divider); }
 .ui-segmented-control button:disabled { color: var(--ui-color-disabled); cursor: not-allowed; }

@@ -4,7 +4,10 @@ const fixture = "http://127.0.0.1:4173/maintenance/fixtures/visual-regression.ht
 
 test("documented component states remain visually stable", async ({ page }) => {
   await page.goto(fixture);
-  await expect(page.locator("[data-contract-state]")).toHaveCount(323);
+  /* Tracks the fixture: it goes up when a documented state is added — List, Section intro and
+     the segmented control icon type brought the last ten — and a drop means states stopped
+     rendering. Each pair is unique, so this counts states, not duplicates. */
+  await expect(page.locator("[data-contract-state]")).toHaveCount(333);
   await expect(page.locator('[data-contract-component="button"][data-contract-state="loading"] .ui-button')).toHaveAttribute("disabled", "");
   await expect(page.locator('[data-contract-component="checkbox"][data-contract-state="mixed"] [role="checkbox"]')).toHaveAttribute("aria-checked", "mixed");
   await expect(page.locator('[data-contract-component="checkbox-group"][data-contract-state="select-all"] [data-demo="ui-checkbox-group-all"]')).toHaveAttribute("aria-checked", "mixed");
@@ -16,7 +19,9 @@ test("documented component states remain visually stable", async ({ page }) => {
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="icon-simple-focus"] .ui-selection')).toHaveCSS("box-shadow", /rgb\(49, 49, 64\)/);
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="icon-card-default"] .ui-selection')).toHaveClass(/ui-selection--icon-card/);
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="lesson-options-list"] [data-ui-lesson-options]')).toBeVisible();
-  expect(await page.locator('[data-contract-component="selection"][data-contract-state="package-card-default"] .ui-selection__package-offer').evaluate((offer) => getComputedStyle(offer, '::before').webkitMaskImage.includes('category-sm.svg'))).toBe(true);
+  /* The icon is an <img> in the markup, not a ::before mask — see the dedicated
+     test at the bottom of this file for the whole story. */
+  await expect(page.locator('[data-contract-component="selection"][data-contract-state="package-card-default"] .ui-selection__package-offer .ui-selection__package-offer-icon')).toHaveAttribute("src", /category-sm\.svg$/);
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="radio-selected"] [role="radio"]')).toHaveAttribute("aria-checked", "true");
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="checkbox-selected"] [role="checkbox"]')).toHaveAttribute("aria-checked", "true");
   /* The size variants gave way to responsive desktop/mobile fixtures. */
@@ -66,7 +71,10 @@ test("documented component states remain visually stable", async ({ page }) => {
   await expect(page.locator('[data-contract-component="sidebar"][data-contract-state="expanded-section"] [data-ui-sidebar-section].is-open')).toBeVisible();
   await expect(page.locator('[data-contract-component="sidebar"][data-contract-state="more-open"] [role="menu"]')).toBeVisible();
   await expect(page.locator('[data-contract-component="statistic"][data-contract-state="with-affix"] .ui-statistic__prefix')).toHaveText("$");
-  await expect(page.locator('[data-contract-component="statistic"][data-contract-state="loading"] .ui-statistic__skeleton')).toBeVisible();
+  /* The loading state skeletons both lines now, so the bare block class matches
+     two elements. Named individually — that is the shape being documented. */
+  await expect(page.locator('[data-contract-component="statistic"][data-contract-state="loading"] .ui-statistic__skeleton--value')).toBeVisible();
+  await expect(page.locator('[data-contract-component="statistic"][data-contract-state="loading"] .ui-statistic__skeleton--description')).toBeVisible();
   await expect(page.locator('[data-contract-component="table"][data-contract-state="default"] table')).toBeVisible();
   await expect(page.locator('[data-contract-component="table"][data-contract-state="with-action"] .ui-button--text')).toBeVisible();
   await expect(page.locator('[data-contract-component="table"][data-contract-state="loading"] [aria-busy="true"] .ui-table__skeleton')).toHaveCount(12);
@@ -103,7 +111,13 @@ test("documented component states remain visually stable", async ({ page }) => {
   await expect(page.locator('[data-contract-component="upload"][data-contract-state="dropzone"] input[type="file"]')).toHaveAttribute("accept", ".pdf,.docx,.png,.jpg");
   await expect(page.locator('[data-contract-component="upload"][data-contract-state="trigger"] [data-demo="ui-upload-trigger"]')).toBeVisible();
   await expect(page.locator('[data-contract-component="upload"][data-contract-state="avatar-empty"] .ui-upload__avatar')).toBeVisible();
-  await expect(page.locator('[data-contract-component="upload"][data-contract-state="avatar-filled"] .ui-upload__avatar-image')).toHaveAttribute("src", "Assets/Icons/user.svg");
+  /* "Filled" showed the user glyph, which is what the empty state shows; it
+      carries a real photo now, which is the point of the state. Pinning the one
+      filename would fail the next time the sample photo changes, so this asks
+      that the filled state holds a photo and that the photo loaded. */
+  const filledAvatar = page.locator('[data-contract-component="upload"][data-contract-state="avatar-filled"] .ui-upload__avatar-image');
+  await expect(filledAvatar).toHaveAttribute("src", /Assets\/Images\//);
+  expect(await filledAvatar.evaluate((image) => image.complete && image.naturalWidth > 0)).toBe(true);
   await expect(page.locator('[data-contract-component="upload"][data-contract-state="avatar-uploading"] .ui-upload__avatar-loading .ui-upload__file-spinner')).toBeVisible();
   await expect(page.locator('[data-contract-component="upload"][data-contract-state="avatar-error"] .ui-upload__avatar-copy small[role="alert"]')).toHaveText(/smaller than 5 MB/);
   await expect(page.locator('[data-contract-component="upload"][data-contract-state="uploading"] .ui-upload__file-spinner')).toBeVisible();
@@ -141,8 +155,16 @@ test("documented component states remain visually stable", async ({ page }) => {
   await expect(page.locator("section:has(#selections)")).toHaveScreenshot("selection-states.png", { animations: "disabled" });
 });
 
-test("lesson package discounts render the category icon", async ({ page }) => {
+/* The icon used to be a ::before mask on the offer line; it is a real <img> in
+   the markup now, so the mask assertion had been testing an implementation that
+   no longer exists — and passing it back would have taken removing the icon
+   with it. Asked of the element that actually draws it, and asked whether it
+   loaded: a wrong path renders an empty box, which the src alone would miss. */
+test("lesson package offers render the category icon", async ({ page }) => {
   await page.goto(fixture);
-  const offer = page.locator('[data-contract-component="selection"][data-contract-state="package-card-default"] .ui-selection__package-offer');
-  expect(await offer.evaluate((element) => getComputedStyle(element, '::before').webkitMaskImage.includes('category-sm.svg'))).toBe(true);
+  for (const state of ["package-card-default", "package-card-selected"]) {
+    const icon = page.locator(`[data-contract-component="selection"][data-contract-state="${state}"] .ui-selection__package-offer .ui-selection__package-offer-icon`);
+    await expect(icon).toHaveAttribute("src", /category-sm\.svg$/);
+    expect(await icon.evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true);
+  }
 });
