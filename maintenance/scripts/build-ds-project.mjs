@@ -21,7 +21,7 @@
 //   tokens/tokens.css  the token layer
 //   components/<slug>/<Name>/<Name>.{html,jsx,d.ts,prompt.md}
 
-import { mkdirSync, readFileSync, writeFileSync, rmSync, existsSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync, rmSync, existsSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -128,6 +128,7 @@ const COMPONENTS = [
   ['Divider', 'divider', 'divider', 'data-display'],
   ['Panel', 'panel', 'panel', 'data-display'],
   ['Statistic', 'statistic', 'statistic', 'data-display'],
+  ['SectionIntro', 'sectionIntro', 'section-intro', 'data-display'],
   ['Table', 'table', 'table', 'data-display'],
   /* The renderer, the contract and the Catalog route all existed; only this
      line did not, so List had no card and no wrapper — the same silent gap the
@@ -310,6 +311,10 @@ const BASE = {
   divider: {},
   panel: { title: 'Upcoming lesson', body: 'Tuesday, 18:15 with Rachel Green.' },
   statistic: { title: 'Lessons completed', value: '48' },
+  /* A title is required, and the generated sheet has no way to invent one — the
+     sheet threw on every cell and the card was never written, the same way
+     List's was. */
+  sectionIntro: { title: 'Upcoming lessons', eyebrow: 'This week', description: 'Four lessons booked, two awaiting confirmation.' },
   /* Sample rows carrying every slot the four variants ask for. An item without
      a label throws, so the generated sheet rendered nothing and the card was
      never written at all — List had no card and no wrapper for that reason
@@ -317,7 +322,7 @@ const BASE = {
      renders all four variants instead of reporting three quiet failures on
      every build. */
   list: { ariaLabel: 'Lesson resources', items: [
-    { id: 'notes', label: 'Lesson notes', description: 'Shared today', trailing: '1 file', href: '#lesson-notes', avatar: UI.avatar({ initials: 'LN', size: 40, variant: 'empty' }), imagePlaceholder: true, content: 'Reviewed with your teacher after Tuesday\\'s lesson.' },
+    { id: 'notes', label: 'Lesson notes', description: 'Shared today', trailing: '1 file', href: '#lesson-notes', avatar: UI.avatar({ initials: 'LN', size: 40, variant: 'empty' }), imagePlaceholder: true, content: 'Reviewed with your teacher after the lesson.' },
     { id: 'practice', label: 'Practice exercises', description: 'Speaking confidence', trailing: '8 items', href: '#practice', avatar: UI.avatar({ initials: 'PE', size: 40, variant: 'empty' }), imagePlaceholder: true, content: 'Eight speaking drills, five minutes each.' },
   ] },
   table: { ariaLabel: 'Upcoming lessons', columns: [
