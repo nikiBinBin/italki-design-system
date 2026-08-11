@@ -430,3 +430,134 @@ for (const line of report.stubs) console.log(`  · ${line}`);
 if (report.css) console.log(`  _patterns.css: ${report.css}`);
 for (const line of report.skipped) console.log(`  ! ${line}`);
 if (report.skipped.length) process.exitCode = 1;
+
+/* ── the card index ────────────────────────────────────────────────────────
+   The pane lists cards from _ds_manifest.json, not by scanning the tree, and
+   the app rebuilds that file only on its own self-check.
+   Written here rather than in build-ds-project, because the foundation and
+   pattern cards do not exist until this pass has captured them: counting too
+   early listed fifty-six of the seventy-two. Three times now a card
+   has landed in the project and stayed invisible for hours — Image, List,
+   SectionIntro — and hand-patching the file does not survive either: the app's
+   next pass replaces it, and `build:ds` wipes it from the output folder.
+
+   So the builder writes it. Cards and components are computed from what this
+   script just emitted, which is the part that goes stale. The token list is
+   parsed from the same two stylesheets the app reads, with `kind` inferred the
+   way the app's own output does it — a value with a unit is spacing, a bare
+   number is other, a reference to a colour token is a colour, and a name about
+   type is font. If an inference is off, the pane groups one token under the
+   wrong heading until the app's next self-check corrects it; a missing card is
+   the worse failure of the two. */
+const manifestCards = [];
+{
+  const walk = (dir) => {
+    for (const entry of readdirSync(join(OUT, dir), { withFileTypes: true })) {
+      const rel = `${dir}/${entry.name}`;
+      if (entry.isDirectory()) { walk(rel); continue; }
+      if (!entry.name.endsWith('.html')) continue;
+      const first = readFileSync(join(OUT, rel), 'utf8').split('\n', 1)[0];
+      const marker = first.match(/@dsCard group="([^"]+)"/);
+      if (marker) manifestCards.push({ path: rel, group: marker[1] });
+    }
+  };
+  for (const root of ['components', 'patterns']) if (existsSync(join(OUT, root))) walk(root);
+  manifestCards.sort((a, b) => a.group.localeCompare(b.group) || a.path.localeCompare(b.path));
+}
+
+const manifestComponents = [];
+{
+  const walk = (dir) => {
+    for (const entry of readdirSync(join(OUT, dir), { withFileTypes: true })) {
+      const rel = `${dir}/${entry.name}`;
+      if (entry.isDirectory()) { walk(rel); continue; }
+      if (entry.name.endsWith('.jsx')) manifestComponents.push({ name: entry.name.replace(/\.jsx$/, ''), sourcePath: rel });
+    }
+  };
+  walk('components');
+  /* Kit first: it installs the runtime the wrappers resolve at render time. */
+  manifestComponents.sort((a, b) => (a.name === 'Kit' ? -1 : b.name === 'Kit' ? 1 : a.sourcePath.localeCompare(b.sourcePath)));
+}
+
+const tokenKind = (name, value) => {
+  if (/shadow/.test(name)) return 'shadow';
+  if (/radius/.test(name)) return 'radius';
+  if (/font|line-height|family|weight|-text$/.test(name)) return 'font';
+  if (/^var\(--ui-color-/.test(value)) return 'color';
+  if (/gradient/.test(name)) return 'other';
+  if (/^(#|rgb|hsl)/.test(value)) return 'color';
+  if (/^-?[\d.]+(px|%|em|rem|vh|vw)$/.test(value)) return 'spacing';
+  return 'other';
+};
+const manifestTokens = [];
+const manifestThemes = [];
+{
+  /* Comments first, or their prose lands in the selector: a note above a rule
+     that mentions --ui- was read as a scope and turned into a theme whose label
+     was three paragraphs long. */
+  const strip = (css) => css.replace(/\/\*[\s\S]*?\*\//g, '');
+  const sheets = [['tokens/tokens.css', strip(readFileSync(join(OUT, 'tokens/tokens.css'), 'utf8'))],
+                  ['_ds_bundle.css', strip(readFileSync(join(OUT, '_ds_bundle.css'), 'utf8'))]];
+  for (const [definedIn, css] of sheets) {
+    /* Each rule contributes its scope, so a token redefined under the dark
+       theme or on a component block is listed with the selector that sets it. */
+    for (const rule of css.matchAll(/([^{}]+)\{([^}]*)\}/g)) {
+      const selector = rule[1].trim().replace(/\s+/g, ' ');
+      if (!/--ui-/.test(rule[2])) continue;
+      const scope = selector === ':root' || selector === 'html' ? null : selector;
+      for (const decl of rule[2].matchAll(/(--ui-[\w-]+)\s*:\s*([^;]+)/g)) {
+        const name = decl[1], value = decl[2].trim();
+        const entry = { name, value, kind: tokenKind(name, value), definedIn };
+        if (scope) entry.scope = scope;
+        manifestTokens.push(entry);
+      }
+      /* A theme is a selector that restates the palette, not any block that
+         happens to set a custom property — .ui-avatar declaring its own size is
+         a component knob, and the app lists those under tokens only. */
+      const theme = scope && scope.match(/^\[data-theme="([^"]+)"\]$/);
+      if (theme && !manifestThemes.some((t) => t.selector === scope)) {
+        manifestThemes.push({ selector: scope, label: theme[1].replace(/\b\w/, (c) => c.toUpperCase()) });
+      }
+    }
+  }
+}
+
+const manifestTemplates = [];
+{
+  const base = join(REPO, 'maintenance/templates');
+  if (existsSync(base)) {
+    for (const entry of readdirSync(base, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
+      const page = readdirSync(join(base, entry.name)).find((f) => f.endsWith('.dc.html'));
+      if (!page) continue;
+      const src = readFileSync(join(base, entry.name, page), 'utf8');
+      const marker = src.match(/@template name="([^"]*)" description="([^"]*)"/);
+      if (!marker) continue;
+      manifestTemplates.push({
+        name: marker[1],
+        /* The app stores a truncated description; matching its length keeps a
+           rebuild from looking like an edit. */
+        description: marker[2].slice(0, 200),
+        folder: `templates/${entry.name}`,
+        entryPath: `templates/${entry.name}/${page}`,
+        thumbnail: { path: `templates/${entry.name}/.thumbnail`, kind: 'captured' },
+      });
+    }
+  }
+}
+
+writeFileSync(join(OUT, '_ds_manifest.json'), `${JSON.stringify({
+  namespace: 'ItalkiUI',
+  components: manifestComponents,
+  startingPoints: [],
+  cards: manifestCards,
+  templates: manifestTemplates,
+  hasThumbnailHtml: true,
+  globalCssPaths: ['tokens/tokens.css', '_ds_bundle.css', 'styles.css'],
+  tokens: manifestTokens,
+  themes: manifestThemes,
+  fonts: [],
+  brandFonts: [],
+  source: 'build-ds-project',
+})}\n`);
+console.log(`  _ds_manifest.json: ${manifestCards.length} cards · ${manifestComponents.length} components · ${manifestTokens.length} tokens`);
