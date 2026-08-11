@@ -540,7 +540,7 @@
 .ui-breadcrumb__icon { width: 24px; height: 24px; flex: 0 0 24px; object-fit: contain; }
 .ui-breadcrumb__current { overflow: hidden; color: var(--ui-color-title); font-weight: var(--ui-font-weight-semibold); text-overflow: ellipsis; white-space: nowrap; }
 .ui-breadcrumb__separator-wrap { margin: 0 var(--ui-space-2); }
-.ui-breadcrumb__separator { width: 16px; height: 16px; flex: 0 0 16px; object-fit: contain; opacity: .68; }
+.ui-breadcrumb__separator { width: 24px; height: 24px; flex: 0 0 24px; object-fit: contain; opacity: .68; }
 /* A text separator matches the 22px item line box rather than the 16px icon
    slot: a 16px box centered in a 22px row drops the glyph ~3px below the
    labels' baseline, which reads as misalignment on a literal like "/". */

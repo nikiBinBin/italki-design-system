@@ -530,7 +530,7 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   const overflowTrigger = breadcrumb.getByRole("button", { name: "Show hidden path items" });
   await overflowTrigger.click();
   await expect(breadcrumb.getByRole("menu")).toBeVisible();
-  await expect(page.locator('.breadcrumb-detail .ui-breadcrumb__separator').first()).toHaveCSS("width", "16px");
+  await expect(page.locator('.breadcrumb-detail .ui-breadcrumb__separator').first()).toHaveCSS("width", "24px");
 
   await page.goto(`${catalog}#card`);
   await expect(page.locator('.card-detail .ui-card.is-static').first()).toHaveCSS("border-radius", "12px");
