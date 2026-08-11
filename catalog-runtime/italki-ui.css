@@ -688,6 +688,9 @@
 .ui-rate.is-disabled .ui-rate__star-fill { filter: grayscale(1); }
 .ui-rate__output, .ui-rate__text { min-width: 36px; margin-left: var(--ui-space-2); color: var(--ui-color-secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
 .ui-rate__text { min-width: 0; color: var(--ui-color-text); font-weight: var(--ui-font-weight-semibold); }
+.ui-rate--summary { gap: var(--ui-space-1); }
+.ui-rate__summary-star { width: 16px; height: 16px; display: block; }
+.ui-rate__summary-value { min-width: 0; margin: 0; color: var(--ui-color-title); font-size: var(--ui-font-size-14); font-weight: var(--ui-font-weight-semibold); line-height: var(--ui-line-height-20); }
 
 /* Sticky by default. A shell that scrolls away is the exception, not the
    norm, and every consumer that wanted the norm had to rediscover it: two

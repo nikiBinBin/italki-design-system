@@ -51,6 +51,8 @@ test("documented component states remain visually stable", async ({ page }) => {
   await expect(page.locator('[data-contract-component="rate"][data-contract-state="basic"] .ui-rate__item.is-half')).toHaveCount(1);
   await expect(page.locator('[data-contract-component="rate"][data-contract-state="basic"] .ui-rate__star-base').first()).toHaveAttribute("src", "Assets/Icons/star-outline.svg");
   await expect(page.locator('[data-contract-component="rate"][data-contract-state="basic"] .ui-rate__star-image').first()).toHaveAttribute("src", "Assets/Icons/star-solid.svg");
+  await expect(page.locator('[data-contract-component="rate"][data-contract-state="summary"] .ui-rate__summary-star')).toHaveAttribute("src", "Assets/Icons/star-solid.svg");
+  await expect(page.locator('[data-contract-component="rate"][data-contract-state="summary"] .ui-rate__summary-value')).toHaveText("4.98");
   await expect(page.locator('[data-contract-component="rate"][data-contract-state="labels"] [data-rate-text]')).toHaveText("Okay");
   await expect(page.locator('[data-contract-component="rate"][data-contract-state="disabled"] [role="radio"][disabled]')).toHaveCount(5);
   await expect(page.locator('[data-contract-component="sidebar"][data-contract-state="normal"] [data-ui-sidebar]')).toBeVisible();

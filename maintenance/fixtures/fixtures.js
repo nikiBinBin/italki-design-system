@@ -279,6 +279,7 @@
       ],
       rate: [
         fixture("rate", "basic", ui.rate({ value: 2.5, allowHalf: true, label: "Rate this lesson" })),
+        fixture("rate", "summary", ui.rate({ value: 4.98, variant: "summary", label: "Teacher rating" })),
         fixture("rate", "labels", ui.rate({ value: 3, labels: ["Terrible", "Poor", "Okay", "Good", "Excellent"], showText: true, label: "Rate lesson quality" })),
         fixture("rate", "clearable", ui.rate({ value: 3, allowClear: true, label: "Clearable rating" })),
         fixture("rate", "disabled", ui.rate({ value: 3, disabled: true, label: "Unavailable lesson rating" }))
