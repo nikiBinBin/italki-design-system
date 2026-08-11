@@ -5,9 +5,9 @@ const fixture = "http://127.0.0.1:4173/maintenance/fixtures/visual-regression.ht
 test("documented component states remain visually stable", async ({ page }) => {
   await page.goto(fixture);
   /* Tracks the fixture: it goes up when a documented state is added — List, Section intro and
-     the segmented control icon type brought the last ten — and a drop means states stopped
+     the segmented control's icon and role types brought the last eleven — and a drop means states stopped
      rendering. Each pair is unique, so this counts states, not duplicates. */
-  await expect(page.locator("[data-contract-state]")).toHaveCount(333);
+  await expect(page.locator("[data-contract-state]")).toHaveCount(334);
   await expect(page.locator('[data-contract-component="button"][data-contract-state="loading"] .ui-button')).toHaveAttribute("disabled", "");
   await expect(page.locator('[data-contract-component="checkbox"][data-contract-state="mixed"] [role="checkbox"]')).toHaveAttribute("aria-checked", "mixed");
   await expect(page.locator('[data-contract-component="checkbox-group"][data-contract-state="select-all"] [data-demo="ui-checkbox-group-all"]')).toHaveAttribute("aria-checked", "mixed");
@@ -19,9 +19,9 @@ test("documented component states remain visually stable", async ({ page }) => {
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="icon-simple-focus"] .ui-selection')).toHaveCSS("box-shadow", /rgb\(49, 49, 64\)/);
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="icon-card-default"] .ui-selection')).toHaveClass(/ui-selection--icon-card/);
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="lesson-options-list"] [data-ui-lesson-options]')).toBeVisible();
-  /* The icon is an <img> in the markup, not a ::before mask — see the dedicated
-     test at the bottom of this file for the whole story. */
-  await expect(page.locator('[data-contract-component="selection"][data-contract-state="package-card-default"] .ui-selection__package-offer .ui-selection__package-offer-icon')).toHaveAttribute("src", /category-sm\.svg$/);
+  /* The icon is a masked span painted with currentColor — see the dedicated test
+     at the bottom of this file for the whole story. */
+  await expect(page.locator('[data-contract-component="selection"][data-contract-state="package-card-default"] .ui-selection__package-offer .ui-selection__package-offer-icon')).toHaveCSS("mask-image", /category-sm\.svg/);
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="radio-selected"] [role="radio"]')).toHaveAttribute("aria-checked", "true");
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="checkbox-selected"] [role="checkbox"]')).toHaveAttribute("aria-checked", "true");
   /* The size variants gave way to responsive desktop/mobile fixtures. */
@@ -155,16 +155,40 @@ test("documented component states remain visually stable", async ({ page }) => {
   await expect(page.locator("section:has(#selections)")).toHaveScreenshot("selection-states.png", { animations: "disabled" });
 });
 
-/* The icon used to be a ::before mask on the offer line; it is a real <img> in
-   the markup now, so the mask assertion had been testing an implementation that
-   no longer exists — and passing it back would have taken removing the icon
-   with it. Asked of the element that actually draws it, and asked whether it
-   loaded: a wrong path renders an empty box, which the src alone would miss. */
-test("lesson package offers render the category icon", async ({ page }) => {
+/* This icon has now been three things: a ::before mask, an <img> tinted by a
+   hand-tuned filter chain, and a masked span painted with currentColor. The
+   point of the last move is that the colour comes from a token rather than from
+   a filter imitating one — so the test asks for exactly that, and would fail
+   again if anyone reintroduced a baked-in tint. */
+test("lesson package offers paint the category icon with the offer's own colour", async ({ page }) => {
   await page.goto(fixture);
+  const tokenColour = (token) => page.evaluate((name) => {
+    const probe = document.createElement("span");
+    probe.style.color = `var(${name})`;
+    document.body.append(probe);
+    const value = getComputedStyle(probe).color;
+    probe.remove();
+    return value;
+  }, token);
   for (const state of ["package-card-default", "package-card-selected"]) {
-    const icon = page.locator(`[data-contract-component="selection"][data-contract-state="${state}"] .ui-selection__package-offer .ui-selection__package-offer-icon`);
-    await expect(icon).toHaveAttribute("src", /category-sm\.svg$/);
-    expect(await icon.evaluate((img) => img.complete && img.naturalWidth > 0)).toBe(true);
+    const offer = page.locator(`[data-contract-component="selection"][data-contract-state="${state}"] .ui-selection__package-offer`);
+    const icon = offer.locator(".ui-selection__package-offer-icon");
+    await expect(icon).toHaveCSS("mask-image", /category-sm\.svg/);
+    await expect(icon).toHaveCSS("mask-repeat", "no-repeat");
+    /* currentColor, so the paint is whatever the offer text is — info for a
+       discount, secondary for "No discount". Compared against the offer's own
+       resolved colour rather than a literal. */
+    const [paint, text] = await Promise.all([
+      icon.evaluate((element) => getComputedStyle(element).backgroundColor),
+      offer.evaluate((element) => getComputedStyle(element).color),
+    ]);
+    expect(paint).toBe(text);
+    expect([await tokenColour("--ui-color-info"), await tokenColour("--ui-color-secondary")]).toContain(paint);
+    /* An <img> reports naturalWidth when its path is wrong; a mask just paints
+       nothing. So the path is fetched — this is the only thing standing between
+       a renamed icon and a silently empty square. */
+    const maskUrl = await icon.evaluate((element) => getComputedStyle(element).maskImage.match(/url\("?([^")]+)"?\)/)?.[1]);
+    expect(maskUrl, "the icon must carry a mask url").toBeTruthy();
+    expect((await page.request.get(new URL(maskUrl, page.url()).href)).ok(), `${maskUrl} must resolve`).toBe(true);
   }
 });

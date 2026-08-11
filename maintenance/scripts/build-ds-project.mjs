@@ -1096,7 +1096,13 @@ Generated from \`catalog-runtime/icon-manifest.js\`; run
 /* Component CSS normally resolves assets one directory above catalog-runtime.
    The generated Design project lives two directories below the repository root,
    so preserve those asset references when copying the shared stylesheet. */
-write('_ds_bundle.css', readFileSync(join(RUNTIME, 'italki-ui.css'), 'utf8').replaceAll('../Assets/', '../../Assets/'));
+/* url() in CSS resolves against the stylesheet, not the page. In the repo the
+   kit sits in catalog-runtime/ and reaches assets as ../Assets/; here the bundle
+   lands beside Assets/ at the project root, so the same reference has to lose
+   the hop. The old rewrite added one instead of removing it — it had never run,
+   because until the offer and timezone icons became masks the kit CSS contained
+   no url() at all. */
+write('_ds_bundle.css', readFileSync(join(RUNTIME, 'italki-ui.css'), 'utf8').replaceAll('url("../Assets/', 'url("Assets/'));
 write('tokens/tokens.css', readFileSync(join(RUNTIME, 'tokens.css'), 'utf8'));
 write('styles.css', '@import "./tokens/tokens.css";\n@import "./_ds_bundle.css";\n');
 /* No _ds_needs_recompile. That sentinel asks the app to rebuild _ds_bundle.js

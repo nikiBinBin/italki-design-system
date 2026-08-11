@@ -122,6 +122,34 @@ for (const rel of cards.sort()) {
   await cardPage.waitForTimeout(120);
   const card = await cardPage.evaluate(measure, 'card');
 
+  /* A cell an open overlay is sitting on top of is a cell nobody can read. The
+     TimePicker card looked like one control opening two lists: its Multiple
+     selection menu covered the Open demo's label and field, and the Open
+     demo's own menu covered Disabled. Absolutely positioned overlays reserve
+     no height, so this is only visible geometrically — never in the markup. */
+  const covered = await cardPage.evaluate(() => {
+    const cells = [...document.querySelectorAll('.cell')];
+    const out = [];
+    for (const [index, cell] of cells.entries()) {
+      for (const overlay of cell.querySelectorAll('*')) {
+        const style = getComputedStyle(overlay);
+        if (style.position !== 'absolute' || style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) continue;
+        const box = overlay.getBoundingClientRect();
+        if (box.height < 24) continue;
+        for (const later of cells.slice(index + 1)) {
+          const other = later.getBoundingClientRect();
+          const y = Math.min(box.bottom, other.bottom) - Math.max(box.top, other.top);
+          const x = Math.min(box.right, other.right) - Math.max(box.left, other.left);
+          if (y > 8 && x > 8) {
+            out.push(`"${cell.querySelector('.cell-label')?.textContent}" 的浮层盖住了 "${later.querySelector('.cell-label')?.textContent}" ${Math.round(y)}px`);
+            break;
+          }
+        }
+      }
+    }
+    return out;
+  });
+
   /* Hover a few wrappers for real: a tooltip that never reveals is invisible
      to any check of the markup alone. */
   let hoverTried = 0, hoverShown = 0;
@@ -198,6 +226,7 @@ for (const rel of cards.sort()) {
   const seen = fingerprints.get(body);
   if (seen) issues.push(`identical to ${seen}`); else fingerprints.set(body, name);
 
+  for (const note of covered) issues.push(note);
   if (issues.length) findings.push({ name, route, issues });
 }
 

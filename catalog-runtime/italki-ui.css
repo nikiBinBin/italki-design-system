@@ -330,8 +330,7 @@
 .ui-selection__badge::before { width: 6px; height: 6px; border-radius: var(--ui-radius-full); content: ""; background: var(--ui-color-success); }
 .ui-selection__package-copy { min-width: 0; display: grid; align-content: start; gap: var(--ui-space-2); }
 .ui-selection__package-offer { display: inline-flex; align-items: center; gap: var(--ui-space-1); color: var(--ui-color-info); font-size: var(--ui-font-size-14); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-20); }
-.ui-selection__package-offer-icon { width: 16px; height: 16px; flex: 0 0 16px; display: block; object-fit: contain; filter: invert(55%) sepia(60%) saturate(779%) hue-rotate(141deg) brightness(91%) contrast(93%); }
-.ui-selection__package-offer.is-neutral .ui-selection__package-offer-icon { filter: none; }
+.ui-selection__package-offer-icon { width: 16px; height: 16px; flex: 0 0 16px; display: block; background: currentColor; -webkit-mask: url("../Assets/Icons/16px/category-sm.svg") center / contain no-repeat; mask: url("../Assets/Icons/16px/category-sm.svg") center / contain no-repeat; }
 .ui-selection__package-offer.is-neutral { color: var(--ui-color-secondary); }
 .ui-selection__package-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--ui-space-1); color: var(--ui-color-title); font-size: var(--ui-font-size-20); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-28); }
 .ui-selection__package-price small { color: inherit; font: inherit; }
@@ -464,7 +463,7 @@
 .ui-divider--horizontal.ui-divider--border.has-label::before, .ui-divider--horizontal.ui-divider--border.has-label::after { border-color: var(--ui-color-border); }
 .ui-divider--horizontal.has-label.is-dashed::before, .ui-divider--horizontal.has-label.is-dashed::after { border-top-style: dashed; }
 .ui-divider__label { display: inline-flex; align-items: center; gap: var(--ui-space-2); padding-inline: var(--ui-space-3); }
-.ui-divider__icon { width: 16px; height: 16px; display: block; flex: 0 0 16px; background: currentColor; -webkit-mask: var(--ui-divider-icon) center / contain no-repeat; mask: var(--ui-divider-icon) center / contain no-repeat; }
+.ui-divider__icon { width: 16px; height: 16px; display: block; flex: 0 0 16px; object-fit: contain; }
 .ui-divider--horizontal.is-plain { font-weight: var(--ui-font-weight-medium); }
 .ui-divider--horizontal.is-left::before { width: var(--ui-divider-edge, 5%); flex: 0 0 var(--ui-divider-edge, 5%); }
 .ui-divider--horizontal.is-right::after { width: var(--ui-divider-edge, 5%); flex: 0 0 var(--ui-divider-edge, 5%); }
@@ -1417,7 +1416,18 @@ html.ui-modal-scroll-locked, body.ui-modal-scroll-locked { overflow: hidden; }
 .ui-segmented-control--icon.ui-segmented-control--32 button { min-width: 32px; }
 .ui-segmented-control--icon.ui-segmented-control--48 button { min-width: 48px; }
 .ui-segmented-control__icon { width: 16px; height: 16px; display: block; object-fit: contain; }
-.ui-segmented-control button:hover:not(:disabled), .ui-segmented-control button:focus-visible { outline: 0; background: var(--ui-color-divider); }
+.ui-segmented-control--icon button[aria-pressed="true"] .ui-segmented-control__icon { filter: brightness(.32); }
+.ui-segmented-control--role { width: min(100%, 640px); position: relative; gap: var(--ui-space-2); overflow: visible; border: 0; border-radius: var(--ui-radius-xl); padding: var(--ui-space-2); background: var(--ui-color-divider); }
+.ui-segmented-control--role button { min-width: 0; min-height: 112px; flex: 1; display: flex; align-items: center; justify-content: center; border-right: 0; border-radius: var(--ui-radius-lg); padding: var(--ui-space-3); color: var(--ui-color-secondary); background: transparent; font-size: var(--ui-font-size-16); font-weight: var(--ui-font-weight-medium); line-height: var(--ui-line-height-24); }
+.ui-segmented-control--role .ui-segmented-control__role-content { display: grid; justify-items: center; gap: var(--ui-space-2); }
+.ui-segmented-control--role .ui-segmented-control__role-icon { width: 32px; height: 32px; display: block; object-fit: contain; opacity: .5; }
+.ui-segmented-control--role button[aria-pressed="true"] { color: var(--ui-color-title); background: var(--ui-color-card); box-shadow: var(--ui-shadow-md); }
+.ui-segmented-control--role button[aria-pressed="true"] .ui-segmented-control__role-icon { opacity: 1; }
+.ui-segmented-control--role button:hover:not(:disabled), .ui-segmented-control--role button:focus-visible { background: color-mix(in srgb, var(--ui-color-card) 64%, transparent); }
+.ui-segmented-control--role button[aria-pressed="true"]:hover:not(:disabled), .ui-segmented-control--role button[aria-pressed="true"]:focus-visible { background: var(--ui-color-card); }
+.ui-segmented-control__role-switch { width: 40px; height: 40px; position: absolute; z-index: 1; top: 50%; left: 50%; display: grid; place-items: center; border: 1px solid var(--ui-color-border); border-radius: var(--ui-radius-full); background: var(--ui-color-card); box-shadow: var(--ui-shadow-md); pointer-events: none; transform: translate(-50%, -50%); }
+.ui-segmented-control__role-switch-icon { width: 24px; height: 24px; display: block; object-fit: contain; }
+.ui-segmented-control button:hover:not(:disabled), .ui-segmented-control button:focus-visible { outline: 0; background: var(--ui-color-hover); }
 .ui-segmented-control button[aria-pressed="true"] { color: var(--ui-color-title); background: var(--ui-color-divider); }
 .ui-segmented-control button:disabled { color: var(--ui-color-disabled); cursor: not-allowed; }
 
@@ -1466,7 +1476,7 @@ html.ui-modal-scroll-locked, body.ui-modal-scroll-locked { overflow: hidden; }
 .ui-calendar__context { min-width: 0; gap: var(--ui-space-3); }
 .ui-calendar__actions { min-width: 0; gap: var(--ui-space-4); }
 .ui-calendar__timezone { gap: var(--ui-space-1); color: var(--ui-color-text); font-size: var(--ui-font-size-14); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-20); white-space: nowrap; }
-.ui-calendar__timezone-icon { width: 16px; height: 16px; flex: 0 0 16px; filter: invert(60%) sepia(43%) saturate(3789%) hue-rotate(140deg) brightness(98%) contrast(101%); }
+.ui-calendar__timezone-icon { width: 16px; height: 16px; flex: 0 0 16px; display: block; background: var(--ui-color-info); -webkit-mask: url("../Assets/Icons/16px/location-sm.svg") center / contain no-repeat; mask: url("../Assets/Icons/16px/location-sm.svg") center / contain no-repeat; }
 .ui-calendar__time-picker { width: min(var(--ui-width-control-compact), 34vw); }
 .ui-calendar__time-picker .ui-time-picker { width: 100%; }
 .ui-calendar__week-navigation { gap: var(--ui-space-2); }

@@ -1639,7 +1639,8 @@ window.ITalkiUIContracts = {
         ],
         "contentType": [
           "text",
-          "icon"
+          "icon",
+          "role"
         ]
       }
     },

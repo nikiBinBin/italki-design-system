@@ -169,8 +169,8 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
 
   await page.goto(`${catalog}#segmented-control`);
   const segmentedBlocks = page.locator(".segmented-detail > .component-doc-block");
-  await expect(segmentedBlocks).toHaveCount(4);
-  const segmentedBoxes = await Promise.all([0, 1, 2, 3].map((index) => segmentedBlocks.nth(index).boundingBox()));
+  await expect(segmentedBlocks).toHaveCount(5);
+  const segmentedBoxes = await Promise.all([0, 1, 2, 3, 4].map((index) => segmentedBlocks.nth(index).boundingBox()));
   expect(segmentedBoxes.every(Boolean)).toBe(true);
   expect(segmentedBoxes[0].y).toBeCloseTo(segmentedBoxes[1].y, 1);
   expect(segmentedBoxes[1].y).toBeCloseTo(segmentedBoxes[2].y, 1);

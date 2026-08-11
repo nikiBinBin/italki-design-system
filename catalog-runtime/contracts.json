@@ -542,9 +542,9 @@
       "props": {
         "size": [32, 40, 48],
         "shape": ["pill", "rounded"],
-        "contentType": ["text", "icon"]
+        "contentType": ["text", "icon", "role"]
       },
-      "requiredStates": ["default", "pill", "rounded", "icon", "selected", "disabled"]
+      "requiredStates": ["default", "pill", "rounded", "icon", "role", "selected", "disabled"]
     },
     "time-slot": {
       "acceptedProps": ["id", "label", "time", "secondary", "appearance", "state", "selected", "unavailable", "held", "loading", "disabled", "duration", "teacher", "calendarDay", "calendarMinute", "ariaLabel", "tooltip", "demo"],

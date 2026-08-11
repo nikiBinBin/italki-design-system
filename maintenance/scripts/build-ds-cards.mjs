@@ -338,6 +338,17 @@ for (const target of TARGETS) {
   .ds-grid{display:flex;flex-direction:column;gap:var(--ui-space-8,32px)}
   .cell{min-width:0}
   .cell-label{font-size:12px;line-height:16px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ui-color-secondary);margin:0 0 var(--ui-space-2,8px)}
+  /* An open anchored overlay is positioned absolutely, so it reserves no height
+     and simply covers the cell below it. On TimePicker that hid the Open and
+     Disabled demos completely, and the two menus left showing read as one
+     control that had opened two lists; on DatePicker it covered 176px of the
+     States demo. The Catalog reserves height on its own demo blocks for this,
+     which a card loses when it re-wraps the demo in .cell — so here the open
+     overlay takes part in layout instead, the same treatment the Catalog's
+     combobox-flow stage already uses. A card is a spec sheet: every state has
+     to be readable at once, which matters more than the overlay floating. */
+  .cell .ui-time-picker.is-open .ui-time-picker__menu,
+  .cell .ui-date-picker.is-open .ui-date-picker__popup{position:static;margin-top:var(--ui-space-2,8px)}
   /* Calendar and TimeSlot gate their tooltips on a class the runtime adds while
      pointing at a slot, so on a static card — which ships no handlers — they
      could never appear. Let plain :hover stand in, so the card shows the same
