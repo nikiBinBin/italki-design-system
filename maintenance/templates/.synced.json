@@ -4,19 +4,19 @@
   "note": "Mirror of the Design project templates. The project is the source of truth; these copies exist only so audit:templates exercises the real files. A stale mirror produces confident findings about a page nobody is running \u2014 re-sync before believing one.",
   "files": {
     "teacher-search/TeacherSearch.dc.html": {
-      "bytes": 35483,
-      "sha256": "9e974556494ffc419796d39c33647c5dca1778f0bf54df47a20ba5db4501f36f",
-      "origin": "pushed 2026-08-11 \u2014 layer scale + width clamp"
+      "bytes": 35547,
+      "sha256": "05498bf7aa75c0242b66e633b7851d6fe1405e8090e36f4b5f8697a5b8908d11",
+      "origin": "pushed 2026-08-11 \u2014 filter drag/checkbox/price"
     },
     "teacher-search/ds-safe.js": {
-      "bytes": 13974,
-      "sha256": "ac59c1343982dfe9f9963f9a9b0de178b0461a4d9dd17bd509237a731d8c544d",
-      "origin": "pushed 2026-08-11 \u2014 filter drawer bindings"
+      "bytes": 15312,
+      "sha256": "41b03f47d47571a1bc04637df7f522341b730227fd84067a1aa6940940ead433",
+      "origin": "pushed 2026-08-11 \u2014 filter drag/checkbox/price"
     },
     "teacher-search/filter-pattern.css": {
-      "bytes": 6623,
-      "sha256": "a5fff028eb82903776ec8ede448d06a987fee96dc9cf61d13c1d7b3ad934814f",
-      "origin": "pushed 2026-08-11 \u2014 layer scale + width clamp"
+      "bytes": 6759,
+      "sha256": "b6bba963ecee9e46a7d1a75adcd46ecdb026f9a274d27b9dfc75c0b0c226beac",
+      "origin": "pushed 2026-08-11 \u2014 filter drag/checkbox/price"
     },
     "teacher-search/teacher-card-pattern.css": {
       "bytes": 5194,
@@ -39,9 +39,9 @@
       "origin": "pushed 2026-08-11 \u2014 layer scale + width clamp"
     },
     "teacher-profile/ds-safe.js": {
-      "bytes": 13974,
-      "sha256": "ac59c1343982dfe9f9963f9a9b0de178b0461a4d9dd17bd509237a731d8c544d",
-      "origin": "pushed 2026-08-11 \u2014 filter drawer bindings"
+      "bytes": 15312,
+      "sha256": "41b03f47d47571a1bc04637df7f522341b730227fd84067a1aa6940940ead433",
+      "origin": "pushed 2026-08-11 \u2014 filter drag/checkbox/price"
     },
     "teacher-profile/ds-base.js": {
       "bytes": 1489,
