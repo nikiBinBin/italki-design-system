@@ -3310,6 +3310,7 @@
       trigger.textContent = selectedLabels.join(", ") || root.dataset.timePickerPlaceholder || "Choose a time";
       trigger.classList.toggle("ui-time-picker__placeholder", selectedLabels.length === 0);
     }
+    root.querySelector(".ui-time-picker__icon")?.classList.toggle("is-placeholder", selectedLabels.length === 0);
     if (!multiple) {
       root.classList.remove("is-open");
       root.querySelector(".ui-time-picker__trigger")?.setAttribute("aria-expanded", "false");
