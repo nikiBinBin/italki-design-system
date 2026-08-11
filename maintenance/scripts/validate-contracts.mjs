@@ -426,8 +426,8 @@ assert.match(ui.timePicker({ id: "time-picker-multiple", slots: ["09:00", "10:30
 assert.match(ui.timePicker({ id: "time-picker-empty", slots: ["09:00"] }), /class="ui-time-picker__icon is-placeholder" src="Assets\/Icons\/16px\/time-sm\.svg"/, "An unselected Time picker must retain its visible clock SVG");
 assert(componentCSS.includes(".ui-time-picker__icon.is-placeholder { opacity: .45; }") && componentCSS.includes(".ui-time-picker.is-disabled .ui-time-picker__icon { opacity: .25; }"), "Time picker icon intensity must match placeholder and disabled text states without replacing the approved SVG");
 assert(componentCSS.includes(".ui-time-slot--option { min-width: 0; min-height: 32px; border-radius: var(--ui-radius-md);"), "Time picker options must use the 8px radius token");
-assert.match(ui.selection({ contentType: "package-card", selectionMode: "radio", discount: "7% off" }), /class="ui-selection__package-offer"><span class="ui-selection__package-offer-icon" aria-hidden="true"><\/span><span>7% off<\/span>/, "Lesson package discounts must render the approved category icon with their offer text");
-assert(componentCSS.includes(".ui-selection__package-offer-icon { width: 16px; height: 16px; flex: 0 0 16px; display: block; background: currentColor; mask: url(\"../Assets/Icons/16px/category-sm.svg\") center / contain no-repeat; -webkit-mask: url(\"../Assets/Icons/16px/category-sm.svg\") center / contain no-repeat; }") && componentCSS.includes(".ui-selection__package-offer.is-neutral { color: var(--ui-color-secondary); }"), "Lesson package discount icons must inherit their matching offer text color");
+assert.match(ui.selection({ contentType: "package-card", selectionMode: "radio", discount: "7% off" }), /class="ui-selection__package-offer-icon" src="Assets\/Icons\/16px\/category-sm\.svg"/, "Lesson package discounts must render the approved category icon with their offer text");
+assert(componentCSS.includes(".ui-selection__package-offer-icon { width: 16px; height: 16px; flex: 0 0 16px; display: block; object-fit: contain; filter:") && componentCSS.includes(".ui-selection__package-offer.is-neutral .ui-selection__package-offer-icon { filter: none; }"), "Lesson package discount icons must remain visible and use matching offer tones");
 assert(componentCSS.includes(".ui-notification { --ui-dismiss-surface: var(--ui-color-card); width: min(100%, 400px); display: none; align-items: flex-start; gap: var(--ui-space-3); position: relative; overflow: visible; border: 1px solid var(--ui-color-divider);"), "Notification outer card border must use the subtle divider token");
 assert(catalog.includes('const action = buttonComponent({ label: "View lesson", variant: "secondary", size: 32, shape: "pill", demo: "button" });'), "Notification With action must use a 32px Secondary Pill button");
 assert(catalog.includes('statusTag("Decline", "neutral", "Assets/Icons/16px/lesson-canceled-sm.svg")'), "Lesson status tags must include Decline with the same neutral canceled icon treatment");
@@ -440,7 +440,7 @@ assert(catalog.includes('buttonComponent({ label: "When To Use", variant: "white
 assert.match(ui.tabs({ id: "tabs-accessibility", ariaLabel: "Lesson details", items: [{ id: "overview", label: "Overview", panel: "Content" }] }), /role="tablist"[^>]*aria-label="Lesson details"/, "Tabs must expose a named tablist");
 assert.match(ui.tabs({ id: "tabs-accessibility", ariaLabel: "Lesson details", items: [{ id: "overview", label: "Overview", panel: "Content" }] }), /role="tabpanel"/, "Tabs must expose a related tabpanel");
 assert(componentCSS.includes(".ui-tabs--red-line .ui-tabs__trigger { min-height: 48px; border-radius: 0; color: var(--ui-color-secondary); }") && !componentCSS.includes(".ui-tabs--red-line .ui-tabs__trigger { min-height: 48px; border-radius: 0; color: var(--ui-color-secondary); font-size:"), "Red-line Tabs must inherit the standard tab type scale");
-assert(componentCSS.includes(".ui-tabs__extra::before { width: var(--ui-space-6); position: absolute; top: 0; bottom: 0; left: calc(var(--ui-space-6) * -1); background: linear-gradient(to right, transparent, var(--ui-color-card)); content: \"\"; pointer-events: none; }"), "Tabs extra action must fade its card surface into the tab list from the left");
+assert(componentCSS.includes(".ui-tabs__extra::before { width: var(--ui-space-6); position: absolute; top: 0; bottom: 0; left: calc(var(--ui-space-6) * -1); background: linear-gradient(to right, transparent, var(--ui-color-card)); content: \"\"; pointer-events: none; }") && componentCSS.includes(".ui-tabs__extra::after { width: 1px; height: 16px; position: absolute; top: 50%; left: var(--ui-space-3); background: var(--ui-color-divider); content: \"\"; transform: translateY(-50%); pointer-events: none; }"), "Tabs extra action must fade from the left and include its separating divider");
 assert.match(ui.pagination({ pages: [1, 2, 3], current: 2, ariaLabel: "Results pages" }), /<nav[^>]*aria-label="Results pages"/, "Pagination must expose a named navigation region");
 assert.match(ui.pagination({ pages: [1, 2, 3], current: 2 }), /aria-current="page">2/, "Pagination must expose the current page");
 assert.match(ui.rate({ value: 2.5, allowHalf: true, label: "Lesson rating" }), /role="radiogroup"[^>]*aria-label="Lesson rating"/, "Rate must expose a named radiogroup");
@@ -553,9 +553,9 @@ assert.match(ui.popover({ id: "popover-accessibility", title: "Details", body: "
 
 for (const reference of [
   '<link rel="stylesheet" href="catalog-runtime/tokens.css" />',
-  '<link rel="stylesheet" href="catalog-runtime/italki-ui.css?v=20260811-stepper-indicators" />',
+  '<link rel="stylesheet" href="catalog-runtime/italki-ui.css?v=20260811-tabs-action-divider-package-icon" />',
   '<script src="catalog-runtime/contracts.js"></script>',
-  '<script src="catalog-runtime/italki-ui.js?v=20260811-stepper-indicators"></script>',
+  '<script src="catalog-runtime/italki-ui.js?v=20260811-tabs-action-divider-package-icon"></script>',
   'function buttonComponent(props = {}) { return ui.button({ ...props, variant: props.variant === "gradient" ? "plus" : props.variant }); }',
   'function chipComponent(props = {}) { return ui.chip(props); }',
   'function tagComponent(props = {}) { return ui.tag(props); }',

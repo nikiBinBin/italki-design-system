@@ -70,7 +70,11 @@ const ROUTE_ALIAS = { Button: 'button-variants', Icon: 'icon-library' };
    build-ds-project.mjs generates for them from the contracts and the icon
    manifest, which is the only place their content exists. */
 const KEEP_GENERATED = new Set([
-  'Logo', 'CheckboxGroup', 'Combobox',
+  /* CheckboxGroup and Combobox used to sit here for the same reason — no route
+     of their own — and build-ds-project no longer emits a card for either. They
+     are documented on the Checkbox and Select cards, which is where the Catalog
+     documents them. */
+  'Logo',
   /* The icon-library route is a browser, not a component demo: a size
      switcher, a search field and seven category headings, none of which work
      on a static card. The generated sheet is just the icons. */

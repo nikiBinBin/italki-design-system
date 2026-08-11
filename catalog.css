@@ -732,7 +732,7 @@
       .radius-fallback-list li + li { border-top: 1px solid var(--divider); }
       .radius-fallback-list strong { color: var(--title); font-weight: var(--ui-font-weight-bold); }
       .radius-fallback-token { color: var(--title); font-weight: var(--ui-font-weight-bold); }
-      .shadow-detail { display: grid; gap: var(--space-7); }
+      .shadow-detail { display: grid; gap: var(--space-7); background: var(--card); }
       .shadow-reference-section { display: grid; gap: var(--space-3); }
       .shadow-reference-section h2 { margin: 0; color: var(--title); font-size: var(--ui-font-size-18); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-24); }
       .shadow-scale-table { overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-control); background: var(--card); }
