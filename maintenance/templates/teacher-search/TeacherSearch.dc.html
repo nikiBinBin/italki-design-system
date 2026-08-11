@@ -387,7 +387,7 @@ class Component extends DCLogic {
     const timeOption = (label, icon, selected = false) =>
       `<div>${UI.selection({ label, value: label, selected, contentType: "icon-simple", selectionMode: "checkbox", leading: `<img src="${icon}" alt="" />`, demo: "ui-selection-card" })}</div>`;
     const teacherOption = (label, description, icon) =>
-      `<div class="filter-pattern__teacher-option">${UI.selection({ label, value: label, description, selected: true, selectedMarker: true, contentType: "icon-simple", selectionMode: "checkbox", leading: `<img src="${icon}" alt="" />`, demo: "ui-selection-card" })}</div>`;
+      `<div class="filter-pattern__teacher-option">${UI.selection({ label, value: label, description, selectedMarker: true, contentType: "icon-simple", selectionMode: "checkbox", leading: `<img src="${icon}" alt="" />`, demo: "ui-selection-card" })}</div>`;
     /* A category chip carries the group it belongs to, so the disclosure can
        find its children. The Catalog rewrites the demo hook the same way. */
     const categoryChip = (categoryId, label, selected = false) =>
@@ -405,14 +405,14 @@ class Component extends DCLogic {
       items: [
         { id: "general", label: "General", panel:
           `<div class="filter-pattern__cluster"><div class="filter-pattern__chip-row">${chip("Instant lesson")}${chip("Within 72 hours")}</div></div>`
-          + `<div class="filter-pattern__cluster"><p class="filter-pattern__caption">Days of the week</p><div class="filter-pattern__day-row">${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => chip(day, day === "Mon")).join("")}</div></div>`
-          + `<div class="filter-pattern__cluster"><p class="filter-pattern__caption">Time range</p><div class="filter-pattern__time-grid">${timeOption("00:00 - 04:00", "Assets/Icons/morning.svg")}${timeOption("04:00 - 08:00", "Assets/Icons/morning.svg")}${timeOption("08:00 - 12:00", "Assets/Icons/afternoon.svg")}${timeOption("12:00 - 16:00", "Assets/Icons/afternoon.svg", true)}${timeOption("16:00 - 20:00", "Assets/Icons/evening.svg", true)}${timeOption("20:00 - 24:00", "Assets/Icons/night.svg")}</div></div>` },
+          + `<div class="filter-pattern__cluster"><p class="filter-pattern__caption">Days of the week</p><div class="filter-pattern__day-row">${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => chip(day)).join("")}</div></div>`
+          + `<div class="filter-pattern__cluster"><p class="filter-pattern__caption">Time range</p><div class="filter-pattern__time-grid">${timeOption("00:00 - 04:00", "Assets/Icons/morning.svg")}${timeOption("04:00 - 08:00", "Assets/Icons/morning.svg")}${timeOption("08:00 - 12:00", "Assets/Icons/afternoon.svg")}${timeOption("12:00 - 16:00", "Assets/Icons/afternoon.svg")}${timeOption("16:00 - 20:00", "Assets/Icons/evening.svg")}${timeOption("20:00 - 24:00", "Assets/Icons/night.svg")}</div></div>` },
         { id: "specific", label: "Specific time", panel: `<p class="filter-pattern__caption">Choose an exact date and time with the documented Date picker and Time slot components.</p>` },
       ],
     });
 
     const lessonCategory = `<section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Lesson category</h3></header><div class="filter-pattern__check-list">`
-      + categoryGroup("language-essentials", "Language Essentials", ["All", "Pronunciation", "Grammar", "Spelling", "Reading", "Listening", "Writing", "Speaking"], true)
+      + categoryGroup("language-essentials", "Language Essentials", ["All", "Pronunciation", "Grammar", "Spelling", "Reading", "Listening", "Writing", "Speaking"])
       + categoryGroup("conversation", "Conversation", ["All", "Everyday conversation", "Speaking confidence", "Small talk"])
       + categoryGroup("business", "Business", ["All", "Meetings", "Presentations", "Interviews"])
       + categoryGroup("test-preparation", "Test Preparation", ["All", "IELTS", "TOEFL", "TOEIC"])
@@ -423,7 +423,7 @@ class Component extends DCLogic {
     /* The Plus row needs its badge inside the checkbox label, which the
        component does not model. Rewriting its own output is how the Catalog
        does it too — the alternative is hand-rolling the checkbox. */
-    const plusCheckbox = UI.checkbox({ id: "filter-plus", label: "Plus features available", checked: "on", demo: "checkbox" })
+    const plusCheckbox = UI.checkbox({ id: "filter-plus", label: "Plus features available", demo: "checkbox" })
       .replace("<span>Plus features available</span>", '<span><img src="Assets/Icons/Plustag.svg" alt="" /><span>Plus features available</span></span>');
     const teacherType = `<section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Teacher type</h3></header><div class="filter-pattern__teacher-type">`
       + plusCheckbox
@@ -528,7 +528,7 @@ class Component extends DCLogic {
          is the same failure as every other copied choice — the component was
          right and the props were a private opinion. */
       filterFooter:
-        UI.button({ label: "Reset", variant: "secondary", size: 40, shape: "default" })
+        UI.button({ label: "Reset", variant: "secondary", size: 40, shape: "default", demo: "filter-reset" })
         + UI.button({ label: "Show 1,284 teachers", variant: "red", size: 40, shape: "default", demo: "filter-apply" }),
       languageOptions,
     };

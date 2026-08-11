@@ -1000,7 +1000,8 @@
       .lesson-card-overview { max-width: 100%; }
 .lesson-card-overview .ui-card { min-height: 120px; }
       /* Pattern layout only. All interactive controls within Filter are shared catalog-runtime primitives. */
-.filter-pattern-detail { width: 100%; margin: 0; }
+.filter-pattern-detail { width: 100%; margin: 0; display: grid; justify-items: center; }
+.filter-pattern-detail > .ui-modal-stage--inline { width: 100%; justify-content: center; }
       .filter-pattern-detail .ui-modal-stage { min-height: 780px; }
       .filter-pattern-detail .ui-modal__layer, .teacher-discovery-filter-pattern .ui-modal__layer { padding: var(--space-4); }
 .filter-pattern-detail .ui-modal, .teacher-discovery-filter-pattern .ui-modal { --ui-modal-width: 920px; max-height: calc(100% - var(--space-8)); display: flex; flex-direction: column; }

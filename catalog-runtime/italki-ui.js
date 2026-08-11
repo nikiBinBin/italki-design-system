@@ -1680,14 +1680,71 @@
     input.focus();
   }
 
+  /* Opening the panel and having filters applied are two different facts, and
+     this conflated them: every press flipped the green cue and appended a count
+     that came from a prop nobody updated, so the nav announced "Filter · 3"
+     because someone had opened the drawer. Pressing is aria-pressed. The cue
+     and the number belong to what is actually selected, which is what
+     setTopNavFilterCount is for. */
   function toggleTopNavFilter(control) {
-    const filtered = !control.classList.contains("is-filtered");
-    control.classList.toggle("is-filtered", filtered);
-    control.setAttribute("aria-pressed", String(filtered));
+    if (!control) return false;
+    const pressed = control.getAttribute("aria-pressed") !== "true";
+    control.setAttribute("aria-pressed", String(pressed));
+    return pressed;
+  }
+
+  function setTopNavFilterCount(control, count) {
+    if (!control) return 0;
+    const total = Math.max(0, Number(count) || 0);
+    control.dataset.filterCount = String(total);
+    control.classList.toggle("is-filtered", total > 0);
     const label = control.dataset.filterLabel || "Filter";
-    const count = control.dataset.filterCount || "0";
     const copy = control.querySelector("span");
-    if (copy) copy.textContent = filtered ? `${label} · ${count}` : label;
+    if (copy) copy.textContent = total > 0 ? `${label} · ${total}` : label;
+    return total;
+  }
+
+  /* What "one filter" means, counted off the markup the pattern renders: a
+     selected chip, a ticked category, a chosen option card, a range dragged off
+     the value it was rendered with. Reading the DOM rather than a store is
+     deliberate — the selections live there, because the pattern's controls are
+     driven by these helpers and nothing else. */
+  function countFilterSelections(scope) {
+    const root = scope || document;
+    if (!root.querySelectorAll) return 0;
+    let count = root.querySelectorAll('[data-demo="ds-chip"].is-selected, [data-filter-category-child].is-selected').length;
+    count += root.querySelectorAll('[data-demo="filter-category-parent"][data-value="on"]').length;
+    count += root.querySelectorAll(".ui-selection.is-selected").length;
+    for (const input of root.querySelectorAll('[data-demo="ui-slider-range"], [data-demo="ui-slider"]')) {
+      if (input.value !== input.defaultValue) { count += 1; break; }
+    }
+    for (const box of root.querySelectorAll('[data-demo="checkbox"]')) {
+      if (box.dataset.value === "on") count += 1;
+    }
+    return count;
+  }
+
+  function resetFilters(scope) {
+    const root = scope || document;
+    if (!root.querySelectorAll) return 0;
+    root.querySelectorAll('[data-demo="ds-chip"], [data-filter-category-child]').forEach((chip) => setFilterChipSelected(chip, false));
+    root.querySelectorAll('[data-demo="filter-category-parent"], [data-demo="checkbox"]').forEach((box) => setCheckboxValue(box, "off"));
+    root.querySelectorAll("[data-filter-category]").forEach((category) => {
+      category.dataset.expanded = "false";
+      const children = category.querySelector("[data-filter-category-children]");
+      if (children) children.hidden = true;
+    });
+    root.querySelectorAll(".ui-selection.is-selected").forEach((card) => setSelectionCardState(card, false));
+    for (const input of root.querySelectorAll('[data-demo="ui-slider-range"], [data-demo="ui-slider"]')) {
+      input.value = input.defaultValue;
+      if (input.dataset.rangeHandle) syncSliderRange(input); else syncSliderInput(input);
+    }
+    return 0;
+  }
+
+  /* One call for hosts: recount what the panel holds and tell the control. */
+  function syncTopNavFilterCue(scope, control) {
+    return setTopNavFilterCount(control || document.querySelector('[data-demo="ui-top-nav-filter"]'), countFilterSelections(scope));
   }
 
   function modal(props = {}) {
@@ -3711,6 +3768,10 @@
     syncTopNavSearch,
     clearTopNavSearch,
     toggleTopNavFilter,
+    setTopNavFilterCount,
+    countFilterSelections,
+    resetFilters,
+    syncTopNavFilterCue,
     setDrawerOpen,
     openDrawer,
     closeDrawer,
