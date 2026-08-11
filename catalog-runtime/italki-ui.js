@@ -170,11 +170,14 @@
 
   function tag(props = {}) {
     assertProps("tag", props);
-    const { label = "", value = label, size = 24, tone = "neutral", removable = false, removeDemo = "", removeAriaLabel = "" } = props;
+    const { label = "", value = label, size = 24, tone = "neutral", variant = "default", leadingIcon = "", removable = false, removeDemo = "", removeAriaLabel = "" } = props;
     enumValue("tag", "size", size);
     enumValue("tag", "tone", tone);
+    enumValue("tag", "variant", variant);
+    if (leadingIcon && !approvedAsset(leadingIcon)) throw new Error(`tag.leadingIcon must be an approved asset: ${leadingIcon}`);
+    const leading = icon(leadingIcon, "ui-tag__icon");
     const remove = removable ? `<button class="ui-tag__remove" type="button"${removeDemo ? ` data-demo="${escapeHTML(removeDemo)}"` : ""}${removeAriaLabel ? ` aria-label="${escapeHTML(removeAriaLabel)}"` : ` aria-label="Remove ${escapeHTML(label)}"`}>${icon("Assets/Icons/16px/cross-sm.svg", "ui-tag__remove-icon")}</button>` : "";
-    return `<span class="ui-tag ui-tag--${size} ui-tag--${tone}" data-component="tag" data-value="${escapeHTML(value)}"><span>${escapeHTML(label)}</span>${remove}</span>`;
+    return `<span class="ui-tag ui-tag--${size} ui-tag--${tone} ui-tag--${variant}" data-component="tag" data-value="${escapeHTML(value)}">${leading}<span class="ui-tag__label">${escapeHTML(label)}</span>${remove}</span>`;
   }
 
   function link(props = {}) {
@@ -300,7 +303,7 @@
 
   function selection(props = {}) {
     assertProps("selection", props);
-    const { label = "Selection", value = label, subtext = "", description = "", leading = "", badge = "", price = "", period = "", selected = false, selectedMarker = false, disabled = false, contentType = "icon-simple", selectionMode = "checkbox", state = "default", tabIndex = selectionMode === "checkbox" ? 0 : (selected ? 0 : -1), demo = "" } = props;
+    const { label = "Selection", value = label, subtext = "", description = "", leading = "", badge = "", price = "", period = "", discount = "", quantity = "", quantityLabel = "Lessons", originalPrice = "", totalPrice = "", selected = false, selectedMarker = false, disabled = false, contentType = "icon-simple", selectionMode = "checkbox", state = "default", tabIndex = selectionMode === "checkbox" ? 0 : (selected ? 0 : -1), demo = "" } = props;
     enumValue("selection", "contentType", contentType);
     enumValue("selection", "selectionMode", selectionMode);
     enumValue("selection", "state", state);
@@ -314,25 +317,65 @@
     const feature = leading ? `<span class="ui-selection__feature ui-selection__feature--${contentType}">${leading}</span>` : "";
     const title = `<span class="ui-selection__title">${escapeHTML(label)}</span>${subtext ? `<span class="ui-selection__subtext">${escapeHTML(subtext)}</span>` : ""}`;
     const copy = `<span class="ui-selection__copy"><span class="ui-selection__title-row">${title}</span>${description ? `<span class="ui-selection__description">${escapeHTML(description)}</span>` : ""}</span>`;
-    const body = contentType === "icon-card"
-      ? `<span class="ui-selection__card-header">${feature}<span class="ui-selection__card-title">${escapeHTML(label)}</span>${indicator}</span><span class="ui-selection__card-body">${badge ? `<span class="ui-selection__badge">${badge}</span>` : ""}<span class="ui-selection__card-copy">${price ? `<span class="ui-selection__price">${escapeHTML(price)}${period ? `<small>${escapeHTML(period)}</small>` : ""}</span>` : ""}${description ? `<span class="ui-selection__description">${escapeHTML(description)}</span>` : ""}</span></span>`
+    const packageOffer = discount ? `<span class="ui-selection__package-offer${discount === "No discount" ? " is-neutral" : ""}">${icon("Assets/Icons/16px/category-sm.svg", "ui-selection__package-offer-icon")}<span>${escapeHTML(discount)}</span></span>` : "";
+    const packageQuantity = quantity ? `<span class="ui-selection__package-quantity"><strong>${escapeHTML(quantity)}</strong><span>${escapeHTML(quantityLabel)}</span></span>` : "";
+    const packageTotal = originalPrice || totalPrice ? `<span class="ui-selection__package-total">${originalPrice ? `<s>${escapeHTML(originalPrice)}</s>` : ""}${totalPrice ? `<strong>${escapeHTML(totalPrice)}</strong>` : ""}</span>` : "";
+    const packageBody = `<span class="ui-selection__package-copy">${packageOffer}${price ? `<span class="ui-selection__package-price">${escapeHTML(price)}${period ? `<small>${escapeHTML(period)}</small>` : ""}</span>` : ""}${description ? `<span class="ui-selection__package-description">${escapeHTML(description)}</span>` : ""}</span>${packageQuantity || packageTotal ? `<span class="ui-selection__package-footer">${packageQuantity}${packageTotal}</span>` : ""}`;
+    const lessonSummary = `<span class="ui-selection__lesson-summary-copy"><span class="ui-selection__lesson-summary-title">${escapeHTML(label)}</span>${description ? `<span class="ui-selection__lesson-summary-meta">${escapeHTML(description)}</span>` : ""}</span>${price ? `<span class="ui-selection__lesson-summary-price">${escapeHTML(price)}</span>` : ""}`;
+    const cardFeature = contentType === "icon-card" ? leading : feature;
+    const body = contentType === "lesson-options"
+      ? lessonSummary
+      : contentType === "package-card"
+      ? packageBody
+      : contentType === "icon-card"
+      ? `<span class="ui-selection__card-header">${cardFeature}<span class="ui-selection__card-title">${escapeHTML(label)}</span>${indicator}</span><span class="ui-selection__card-body"><span class="ui-selection__card-copy">${price ? `<span class="ui-selection__price">${escapeHTML(price)}${period ? `<small>${escapeHTML(period)}</small>` : ""}</span>` : ""}${description ? `<span class="ui-selection__description">${escapeHTML(description)}</span>` : ""}</span>${badge ? `<span class="ui-selection__badge">${badge}</span>` : ""}</span>`
       : `<span class="ui-selection__body">${isControlLeading ? indicator : ""}${feature}${copy}${isControlLeading ? "" : indicator}</span>`;
-    const classes = ["ui-selection", `ui-selection--${contentType}`, `ui-selection--${selectionMode}`, selected ? "is-selected" : "", selectedMarker ? "uses-selected-marker" : "", selected && selectedMarker ? "has-selected-marker" : "", isDisabled ? "is-disabled" : "", state === "hover" ? "is-hover" : "", state === "focus" ? "is-focused" : ""].filter(Boolean).join(" ");
+    const usesSelectedMarker = selectedMarker || contentType === "package-card";
+    const classes = ["ui-selection", `ui-selection--${contentType}`, `ui-selection--${selectionMode}`, selected ? "is-selected" : "", usesSelectedMarker ? "uses-selected-marker" : "", selected && usesSelectedMarker ? "has-selected-marker" : "", isDisabled ? "is-disabled" : "", state === "hover" ? "is-hover" : "", state === "focus" ? "is-focused" : ""].filter(Boolean).join(" ");
     return `<button class="${classes}" type="button" data-component="selection" data-demo="${escapeHTML(demo || "ui-selection-card")}" data-selection-mode="${selectionMode}" data-selection-value="${escapeHTML(value)}" role="${selectionMode}" aria-checked="${selected}" aria-label="${escapeHTML(label)}" tabindex="${tabIndex}"${isDisabled ? " disabled" : ""}>${body}</button>`;
   }
 
   function selectionGroup(props = {}) {
     assertProps("selection", props, "group");
-    const { label = "Selection", options = [], selected = "", contentType = "icon-simple", selectionMode = "radio", selectedMarker = false, layout = "stack" } = props;
+    const { label = "Selection", options = [], selected = "", contentType = "icon-simple", selectionMode = "radio", selectedMarker = false, layout = "stack", courseTitle = "", courseMeta = "", courses = [], selectedDuration = "" } = props;
     enumValue("selection", "contentType", contentType);
     enumValue("selection", "selectionMode", selectionMode);
     enumValue("selection", "layout", layout, "group");
     const normalized = options.map((option) => typeof option === "string" ? { label: option, value: option } : { ...option, value: option?.value || option?.label || "" });
     const selectedValues = new Set((Array.isArray(selected) ? selected : [selected]).filter(Boolean).map(String));
+    if (contentType === "lesson-options" && courses.length) {
+      if (selectionMode !== "radio") throw new Error("selection.lesson-options requires radio selectionMode");
+      const courseCards = courses.map((course, courseIndex) => {
+        const courseValue = String(course?.value || course?.label || course?.title || courseIndex);
+        const courseSelected = selectedValues.has(courseValue);
+        const courseOptions = Array.isArray(course?.options) ? course.options : (Array.isArray(course?.durations) ? course.durations : []);
+        const durationValue = String(course?.selectedDuration || (courseSelected ? selectedDuration : ""));
+        const durationRows = courseOptions.map((option, optionIndex) => {
+          const optionValue = String(option?.value || option?.label || optionIndex);
+          const optionSelected = durationValue === optionValue;
+          const disabled = Boolean(option?.disabled);
+          return `<button class="ui-selection__lesson-option${optionSelected ? " is-selected" : ""}${disabled ? " is-disabled" : ""}" type="button" data-component="selection" data-demo="ui-selection-card" data-selection-mode="radio" data-selection-value="${escapeHTML(optionValue)}" role="radio" aria-checked="${optionSelected}" aria-label="${escapeHTML(`${option?.label || optionValue}${option?.price ? `, ${option.price}` : ""}`)}" tabindex="${optionSelected || (!durationValue && optionIndex === 0) ? 0 : -1}"${disabled ? " disabled" : ""}><span class="ui-selection__lesson-option-label">${escapeHTML(option?.label || optionValue)}</span>${option?.price ? `<span class="ui-selection__lesson-option-price">${escapeHTML(option.price)}</span>` : ""}<span class="ui-selection__lesson-option-indicator" aria-hidden="true"></span></button>`;
+        }).join("");
+        const summary = `<button class="ui-selection__lesson-toggle${courseSelected ? " is-selected" : ""}" type="button" data-demo="ui-lesson-toggle" data-lesson-course="${escapeHTML(courseValue)}" aria-expanded="${courseSelected}" aria-checked="${courseSelected}" role="radio"><span class="ui-selection__lesson-summary-copy"><span class="ui-selection__lesson-summary-title">${escapeHTML(course?.title || course?.label || courseValue)}</span>${course?.meta ? `<span class="ui-selection__lesson-summary-meta">${escapeHTML(course.meta)}</span>` : ""}</span>${course?.price ? `<span class="ui-selection__lesson-summary-price">${escapeHTML(course.price)}</span>` : ""}</button>`;
+        const durationMarkup = `<div class="ui-selection__lesson-options${courseSelected ? "" : " is-collapsed"}" data-ui-selection-group role="radiogroup" aria-label="${escapeHTML(`${course?.title || courseValue} duration`)}" aria-hidden="${!courseSelected}"${courseSelected ? "" : " inert"}><div class="ui-selection__lesson-options-inner">${durationRows}</div></div>`;
+        return `<section class="ui-selection__lesson-card${courseSelected ? " is-expanded" : ""}" data-lesson-course-card="${escapeHTML(courseValue)}">${summary}${durationMarkup}</section>`;
+      }).join("");
+      return `<div class="ui-selection-group ui-selection-group--lesson-options-list" data-component="selection-group" data-ui-lesson-options data-selection-mode="radio" role="group" aria-label="${escapeHTML(label)}">${courseCards}</div>`;
+    }
+    if (contentType === "lesson-options") {
+      if (selectionMode !== "radio") throw new Error("selection.lesson-options requires radio selectionMode");
+      if (!courseTitle) throw new Error("selection.lesson-options requires courseTitle");
+      const optionsMarkup = normalized.map((option, index) => {
+        const optionSelected = selectedValues.has(String(option.value));
+        const disabled = Boolean(option.disabled);
+        return `<button class="ui-selection__lesson-option${optionSelected ? " is-selected" : ""}${disabled ? " is-disabled" : ""}" type="button" data-component="selection" data-demo="ui-selection-card" data-selection-mode="radio" data-selection-value="${escapeHTML(option.value)}" role="radio" aria-checked="${optionSelected}" aria-label="${escapeHTML(`${option.label}${option.price ? `, ${option.price}` : ""}`)}" tabindex="${optionSelected || (!selectedValues.size && index === 0) ? 0 : -1}"${disabled ? " disabled" : ""}><span class="ui-selection__lesson-option-label">${escapeHTML(option.label)}</span>${option.price ? `<span class="ui-selection__lesson-option-price">${escapeHTML(option.price)}</span>` : ""}<span class="ui-selection__lesson-option-indicator" aria-hidden="true"></span></button>`;
+      }).join("");
+      return `<section class="ui-selection-group ui-selection-group--lesson-options${selectedValues.size ? " is-selected" : ""}" data-component="selection-group" data-ui-selection-group data-selection-mode="radio" role="radiogroup" aria-label="${escapeHTML(label)}"><header class="ui-selection__lesson-header"><span class="ui-selection__lesson-title">${escapeHTML(courseTitle)}</span>${courseMeta ? `<span class="ui-selection__lesson-meta">${escapeHTML(courseMeta)}</span>` : ""}</header><div class="ui-selection__lesson-options">${optionsMarkup}</div></section>`;
+    }
     const content = normalized.map((option, index) => {
       const optionSelected = selectedValues.has(String(option.value));
       const optionMode = option.selectionMode || selectionMode;
-      return selection({ label: option.label, value: option.value, subtext: option.subtext || "", description: option.description || "", leading: option.leading || "", badge: option.badge || "", price: option.price || "", period: option.period || "", selected: optionSelected, selectedMarker: option.selectedMarker ?? selectedMarker, disabled: Boolean(option.disabled), contentType: option.contentType || contentType, selectionMode: optionMode, tabIndex: optionMode === "radio" ? (optionSelected || (!selectedValues.size && index === 0) ? 0 : -1) : 0 });
+      return selection({ label: option.label, value: option.value, subtext: option.subtext || "", description: option.description || "", leading: option.leading || "", badge: option.badge || "", price: option.price || "", period: option.period || "", discount: option.discount || "", quantity: option.quantity || "", quantityLabel: option.quantityLabel || "Lessons", originalPrice: option.originalPrice || "", totalPrice: option.totalPrice || "", selected: optionSelected, selectedMarker: option.selectedMarker ?? selectedMarker, disabled: Boolean(option.disabled), contentType: option.contentType || contentType, selectionMode: optionMode, tabIndex: optionMode === "radio" ? (optionSelected || (!selectedValues.size && index === 0) ? 0 : -1) : 0 });
     }).join("");
     const groupRole = selectionMode === "radio" ? "radiogroup" : "group";
     return `<div class="ui-selection-group ui-selection-group--${selectionMode} ui-selection-group--${layout}" data-component="selection-group" data-ui-selection-group data-selection-mode="${selectionMode}" role="${groupRole}" aria-label="${escapeHTML(label)}">${content}</div>`;
@@ -371,7 +414,7 @@
 
   function datePicker(props = {}) {
     assertProps("date-picker", props);
-    const { id = "", label = "Choose a date", value = "", placeholder = "Choose a date", size = 40, shape = "default", status = "default", open = false, disabled = false, state = "default", monthLabel = "", weekdays = defaultDateWeekdays, days = [], months = [], monthIndex = 0, selected = "", range = [], demo = "" } = props;
+    const { id = "", label = "Choose a date", value = "", placeholder = "Choose a date", size = 40, shape = "default", status = "default", open = false, disabled = false, state = "default", monthLabel = "", weekdays = defaultDateWeekdays, days = [], months = [], monthIndex = 0, selected = "", range = null, demo = "" } = props;
     enumValue("date-picker", "size", size);
     enumValue("date-picker", "shape", shape);
     enumValue("date-picker", "status", status);
@@ -381,19 +424,20 @@
     const index = Math.min(Math.max(Number(monthIndex) || 0, 0), providedMonths.length - 1);
     const activeMonth = providedMonths[index] || { label: monthLabel || "Calendar", days };
     const normalizedDays = normalizeDateDays(activeMonth.days ?? days);
+    const isRange = Array.isArray(range);
     const values = selectedDateValues(selected, range);
     const triggerValue = value || datePickerLabel(normalizedDays, values, placeholder);
     const rootId = id || `date-picker-${String(label).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "field"}`;
     const isDisabled = disabled || presentation.state === "disabled";
     const isOpen = Boolean(open) && !isDisabled;
     const classes = ["ui-date-picker", `ui-date-picker--${size}`, `ui-date-picker--${resolveControlShape(size, shape)}`, isOpen ? "is-open" : "", isDisabled ? "is-disabled" : "", presentation.state === "hover" ? "is-hover" : "", presentation.state === "focus" ? "is-focus" : "", presentation.status !== "default" ? `is-${presentation.status}` : ""].filter(Boolean).join(" ");
-    const calendar = icon("Assets/Icons/calendar.svg", "ui-date-picker__calendar-icon");
+    const calendar = icon("Assets/Icons/16px/today-sm.svg", "ui-date-picker__calendar-icon");
     const suffix = icon(isOpen ? "Assets/Icons/arrow-up-sm.svg" : "Assets/Icons/arrow-down-sm.svg", "ui-date-picker__suffix-icon");
     const previousDisabled = index === 0;
     const nextDisabled = index === providedMonths.length - 1;
-    const popup = `<div class="ui-date-picker__popup" id="${escapeHTML(rootId)}-popup" role="dialog" aria-label="${escapeHTML(label)} calendar"><div class="ui-date-picker__header"><button type="button" data-demo="ui-date-previous" aria-label="Previous month"${previousDisabled ? " disabled" : ""}>${icon("Assets/Icons/arrow-left-sm.svg", "ui-date-picker__month-icon")}</button><strong data-ui-date-month>${escapeHTML(activeMonth.label || monthLabel || "Calendar")}</strong><button type="button" data-demo="ui-date-next" aria-label="Next month"${nextDisabled ? " disabled" : ""}>${icon("Assets/Icons/arrow-right-sm.svg", "ui-date-picker__month-icon")}</button></div><div class="ui-date-picker__weekdays">${(Array.isArray(weekdays) ? weekdays : defaultDateWeekdays).map((day) => `<span>${escapeHTML(day)}</span>`).join("")}</div><div class="ui-date-picker__grid" data-ui-date-grid>${datePickerGrid(normalizedDays, values)}</div></div>`;
+    const popup = `<div class="ui-date-picker__popup" id="${escapeHTML(rootId)}-popup" role="dialog" aria-label="${escapeHTML(label)} calendar"><div class="ui-date-picker__header"><button type="button" data-demo="ui-date-previous" aria-label="Previous month"${previousDisabled ? " disabled" : ""}>${icon("Assets/Icons/arrow-left.svg", "ui-date-picker__month-icon")}</button><strong data-ui-date-month>${escapeHTML(activeMonth.label || monthLabel || "Calendar")}</strong><button type="button" data-demo="ui-date-next" aria-label="Next month"${nextDisabled ? " disabled" : ""}>${icon("Assets/Icons/arrow-right.svg", "ui-date-picker__month-icon")}</button></div><div class="ui-date-picker__weekdays">${(Array.isArray(weekdays) ? weekdays : defaultDateWeekdays).map((day) => `<span>${escapeHTML(day)}</span>`).join("")}</div><div class="ui-date-picker__grid" data-ui-date-grid>${datePickerGrid(normalizedDays, values)}</div></div>`;
     const isPlaceholder = !value && values.length === 0;
-    return `<div class="${classes}" id="${escapeHTML(rootId)}" data-component="date-picker" data-ui-date-picker data-date-values="${escapeHTML(JSON.stringify(values))}" data-date-months="${escapeHTML(JSON.stringify(providedMonths))}" data-date-month-index="${index}" data-date-range="${Array.isArray(range) && range.length ? "true" : "false"}"><button class="ui-date-picker__trigger" type="button" data-demo="${escapeHTML(demo || "ui-date-toggle")}" aria-label="${escapeHTML(label)}" aria-haspopup="dialog" aria-expanded="${isOpen}" aria-controls="${escapeHTML(rootId)}-popup"${isDisabled ? " disabled" : ""}>${calendar}<span class="${isPlaceholder ? "ui-date-picker__placeholder" : ""}" data-ui-date-label>${escapeHTML(triggerValue)}</span>${suffix}</button>${popup}</div>`;
+    return `<div class="${classes}" id="${escapeHTML(rootId)}" data-component="date-picker" data-ui-date-picker data-date-values="${escapeHTML(JSON.stringify(values))}" data-date-months="${escapeHTML(JSON.stringify(providedMonths))}" data-date-month-index="${index}" data-date-range="${isRange ? "true" : "false"}"><button class="ui-date-picker__trigger" type="button" data-demo="${escapeHTML(demo || "ui-date-toggle")}" aria-label="${escapeHTML(label)}" aria-haspopup="dialog" aria-expanded="${isOpen}" aria-controls="${escapeHTML(rootId)}-popup"${isDisabled ? " disabled" : ""}>${calendar}<span class="${isPlaceholder ? "ui-date-picker__placeholder" : ""}" data-ui-date-label>${escapeHTML(triggerValue)}</span>${suffix}</button>${popup}</div>`;
   }
 
   function tooltip(props = {}) {
@@ -445,6 +489,23 @@
     })() : "";
     const labelMarkup = label ? `<span class="ui-divider__label">${iconMarkup}${escapeHTML(label)}</span>` : "";
     return `<div class="${classes}" data-component="divider" role="separator" aria-orientation="horizontal"${ariaLabel ? ` aria-label="${escapeHTML(ariaLabel)}"` : ""}${margin}>${labelMarkup}</div>`;
+  }
+
+  function sectionIntro(props = {}) {
+    assertProps("section-intro", props);
+    const { id = "", eyebrow = "", title = "", description = "", action = "", size = "default", alignment = "start", headingLevel = 2, ariaLabel = "" } = props;
+    enumValue("section-intro", "size", size);
+    enumValue("section-intro", "alignment", alignment);
+    enumValue("section-intro", "headingLevel", headingLevel);
+    if (!title && !ariaLabel) throw new Error("section-intro requires a title or ariaLabel");
+    const headingTag = `h${headingLevel}`;
+    const headingId = id ? `${id}-title` : "";
+    const classes = ["ui-section-intro", `ui-section-intro--${size}`, `ui-section-intro--${alignment}`, action ? "has-action" : ""].filter(Boolean).join(" ");
+    const eyebrowMarkup = eyebrow ? `<p class="ui-section-intro__eyebrow">${escapeHTML(eyebrow)}</p>` : "";
+    const titleMarkup = title ? `<${headingTag} class="ui-section-intro__title"${headingId ? ` id="${escapeHTML(headingId)}"` : ""}>${escapeHTML(title)}</${headingTag}>` : "";
+    const descriptionMarkup = description ? `<p class="ui-section-intro__description">${escapeHTML(description)}</p>` : "";
+    const copy = `<div class="ui-section-intro__copy">${eyebrowMarkup}${titleMarkup}${descriptionMarkup}</div>`;
+    return `<header class="${classes}" data-component="section-intro"${id ? ` id="${escapeHTML(id)}"` : ""}${ariaLabel ? ` aria-label="${escapeHTML(ariaLabel)}"` : ""}${headingId ? ` aria-labelledby="${escapeHTML(headingId)}"` : ""}>${copy}${action ? `<div class="ui-section-intro__action">${action}</div>` : ""}</header>`;
   }
 
   function flag(props = {}) {
@@ -589,7 +650,7 @@
 
   function card(props = {}) {
     assertProps("card", props);
-    const { interactive = false, outlined = true, media = "", mediaAlt = "", mediaRatio = "16:9", eyebrow = "", title = "", body = "", meta = "", footer = "", density = "default", ariaLabel = "", href = "", demo = "" } = props;
+    const { interactive = false, outlined = true, media = "", mediaAlt = "", mediaPlaceholder = false, mediaRatio = "16:9", eyebrow = "", title = "", body = "", meta = "", footer = "", density = "default", ariaLabel = "", href = "", demo = "" } = props;
     enumValue("card", "interactive", interactive);
     enumValue("card", "outlined", outlined);
     enumValue("card", "mediaRatio", mediaRatio);
@@ -600,14 +661,52 @@
     const rootAttributes = interactive
       ? (href ? ` href="${escapeHTML(href)}"` : ' type="button"')
       : "";
-    const classes = ["ui-card", interactive ? "is-interactive" : "is-static", outlined && !interactive ? "is-outlined" : "", `ui-card--${density}`, media ? `ui-card--media-${mediaRatio.replace(":", "-")}` : ""].filter(Boolean).join(" ");
-    const mediaMarkup = media ? `<img class="ui-card__media" src="${escapeHTML(media)}" alt="${escapeHTML(mediaAlt)}" />` : "";
+    const hasMedia = Boolean(media || mediaPlaceholder);
+    const classes = ["ui-card", interactive ? "is-interactive" : "is-static", outlined && !interactive ? "is-outlined" : "", `ui-card--${density}`, hasMedia ? `ui-card--media-${mediaRatio.replace(":", "-")}` : ""].filter(Boolean).join(" ");
+    const mediaMarkup = media
+      ? `<img class="ui-card__media" src="${escapeHTML(media)}" alt="${escapeHTML(mediaAlt)}" />`
+      : mediaPlaceholder ? '<span class="ui-card__media ui-media-placeholder" aria-hidden="true"><img src="Assets/Icons/logo-italki-logomark-white.svg" alt="" /></span>' : "";
     const eyebrowMarkup = eyebrow ? `<span class="ui-card__eyebrow">${escapeHTML(eyebrow)}</span>` : "";
     const titleMarkup = title ? `<h3 class="ui-card__title">${escapeHTML(title)}</h3>` : "";
     const heading = eyebrow || title || meta ? `<header class="ui-card__heading"><div>${eyebrowMarkup}${titleMarkup}</div>${meta ? `<div class="ui-card__meta">${meta}</div>` : ""}</header>` : "";
     const bodyMarkup = body ? `<div class="ui-card__body">${body}</div>` : "";
     const footerMarkup = footer ? `<footer class="ui-card__footer">${footer}</footer>` : "";
     return `<${tag} class="${classes}" data-component="card"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}${ariaLabel ? ` aria-label="${escapeHTML(ariaLabel)}"` : ""}${rootAttributes}>${mediaMarkup}<div class="ui-card__content">${heading}${bodyMarkup}${footerMarkup}</div></${tag}>`;
+  }
+
+  function list(props = {}) {
+    assertProps("list", props);
+    const { id = "", items = [], size = "default", variant = "default", divided = true, ariaLabel = "List", demo = "" } = props;
+    enumValue("list", "size", size);
+    enumValue("list", "variant", variant);
+    enumValue("list", "divided", divided);
+    if (!Array.isArray(items) || !items.length) throw new Error("list requires at least one item");
+    const content = items.map((rawItem, index) => {
+      const item = typeof rawItem === "string" ? { label: rawItem } : rawItem || {};
+      const { id: itemId = `item-${index + 1}`, label = "", description = "", content = "", avatar = "", likes = "", comments = "", trailing = "", image = "", imageAlt = "", imagePlaceholder = false, href = "", disabled = false, ariaLabel: itemAriaLabel = "", demo: itemDemo = "" } = item;
+      if (!label && !itemAriaLabel) throw new Error("list item requires a label or ariaLabel");
+      if (variant === "avatar" && !avatar) throw new Error("list.avatar items require an avatar slot");
+      if (variant === "image" && !image && !imagePlaceholder) throw new Error("list.image items require an image or placeholder");
+      if (variant === "content" && (!avatar || !content || (!image && !imagePlaceholder))) throw new Error("list.content items require avatar, content, and image or placeholder");
+      if (image && !approvedAsset(image)) throw new Error(`list.image must be an approved asset: ${image}`);
+      const interactive = Boolean(href || itemDemo);
+      const tag = href && !disabled ? "a" : interactive ? "button" : "div";
+      const actionAttrs = href && !disabled ? ` href="${escapeHTML(href)}"` : interactive ? ` type="button"${disabled ? " disabled" : ""}` : "";
+      const avatarMarkup = avatar ? `<span class="ui-list__avatar">${avatar}</span>` : "";
+      const descriptionMarkup = description ? `<span class="ui-list__description">${escapeHTML(description)}</span>` : "";
+      const contentMarkup = content ? `<span class="ui-list__content">${escapeHTML(content)}</span>` : "";
+      const metricsMarkup = likes !== "" || comments !== "" ? `<span class="ui-list__metrics">${likes !== "" ? `<span>${icon("Assets/Icons/16px/upvote-sm.svg", "ui-list__metric-icon")}${escapeHTML(likes)}</span>` : ""}${comments !== "" ? `<span>${icon("Assets/Icons/16px/comments-sm.svg", "ui-list__metric-icon")}${escapeHTML(comments)}</span>` : ""}</span>` : "";
+      const trailingMarkup = trailing ? `<span class="ui-list__trailing">${trailing}</span>` : "";
+      const imageMarkup = imagePlaceholder
+        ? '<span class="ui-list__image-placeholder ui-media-placeholder" aria-hidden="true"><img src="Assets/Icons/logo-italki-logomark-white.svg" alt="" /></span>'
+        : image ? `<img class="ui-list__image" src="${escapeHTML(image)}" alt="${escapeHTML(imageAlt)}" />` : "";
+      const identityMarkup = `<span class="ui-list__copy"><span class="ui-list__label">${escapeHTML(label)}</span>${descriptionMarkup}</span>`;
+      const rowContent = variant === "content"
+        ? `${avatarMarkup}${identityMarkup}${imageMarkup}${contentMarkup}${metricsMarkup}${trailingMarkup}`
+        : `${avatarMarkup}${identityMarkup}${trailingMarkup}${imageMarkup}`;
+      return `<li class="ui-list__item${interactive ? " is-interactive" : ""}${disabled ? " is-disabled" : ""}" data-list-item="${escapeHTML(itemId)}"><${tag} class="ui-list__row"${actionAttrs}${itemAriaLabel ? ` aria-label="${escapeHTML(itemAriaLabel)}"` : ""}${itemDemo || demo ? ` data-demo="${escapeHTML(itemDemo || demo)}"` : ""}>${rowContent}</${tag}></li>`;
+    }).join("");
+    return `<ul class="ui-list ui-list--${size} ui-list--${variant}${divided ? " is-divided" : ""}" data-component="list"${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel)}">${content}</ul>`;
   }
 
   function alert(props = {}) {
@@ -623,7 +722,7 @@
       warning: "Assets/Icons/warning.svg",
       error: "Assets/Icons/error.svg"
     };
-    const close = closable ? `<button class="ui-alert__close" type="button" data-demo="ui-alert-close" aria-label="Dismiss alert">${icon("Assets/Icons/cross-sm.svg", "ui-alert__close-icon")}</button>` : "";
+    const close = closable ? `<button class="ui-alert__close" type="button" data-demo="ui-alert-close" aria-label="Dismiss alert">${icon("Assets/Icons/cross.svg", "ui-alert__close-icon")}</button>` : "";
     const descriptionMarkup = description ? `<span class="ui-alert__description">${escapeHTML(description)}</span>` : "";
     const actionMarkup = action ? `<div class="ui-alert__action">${action}</div>` : "";
     const classes = ["ui-alert", `ui-alert--${tone}`, action ? "has-action" : "", closable ? "is-closable" : "", banner ? "is-banner" : ""].filter(Boolean).join(" ");
@@ -636,8 +735,9 @@
 
   function tabs(props = {}) {
     assertProps("tabs", props);
-    const { id = "tabs", items = [], activeId = "", extra = "", ariaLabel = "Tabs", orientation = "horizontal", activation = "automatic", demo = "" } = props;
+    const { id = "tabs", items = [], activeId = "", extra = "", ariaLabel = "Tabs", orientation = "horizontal", variant = "default", activation = "automatic", demo = "" } = props;
     enumValue("tabs", "orientation", orientation);
+    enumValue("tabs", "variant", variant);
     enumValue("tabs", "activation", activation);
     if (!Array.isArray(items) || !items.length) throw new Error("tabs requires at least one item");
     const normalizedItems = items.map((item, index) => ({ ...item, id: item?.id || `${id}-${index}` }));
@@ -654,7 +754,7 @@
     }).join("");
     const panels = normalizedItems.map((item) => `<section class="ui-tabs__panel" id="${escapeHTML(item.id)}-panel" role="tabpanel" aria-labelledby="${escapeHTML(item.id)}-tab"${item.id === activeItem.id ? "" : " hidden"}>${item.panel || ""}</section>`).join("");
     const extraMarkup = extra ? `<div class="ui-tabs__extra">${extra}</div>` : "";
-    return `<section class="ui-tabs ui-tabs--${orientation}${extra ? " has-extra" : ""}" data-component="tabs" data-ui-tabs data-activation="${activation}" aria-label="${escapeHTML(ariaLabel)}"><div class="ui-tabs__header"><div class="ui-tabs__list" role="tablist" aria-orientation="${orientation}" aria-label="${escapeHTML(ariaLabel)}">${triggers}</div>${extraMarkup}</div>${panels}</section>`;
+    return `<section class="ui-tabs ui-tabs--${orientation} ui-tabs--${variant}${extra ? " has-extra" : ""}" data-component="tabs" data-ui-tabs data-activation="${activation}" aria-label="${escapeHTML(ariaLabel)}"><div class="ui-tabs__header"><div class="ui-tabs__list" role="tablist" aria-orientation="${orientation}" aria-label="${escapeHTML(ariaLabel)}">${triggers}</div>${extraMarkup}</div>${panels}</section>`;
   }
 
   function selectTab(control) {
@@ -1329,11 +1429,14 @@
     if (!title && !ariaLabel) throw new Error("statistic requires a title or ariaLabel");
     if (!loading && value === "") throw new Error("statistic requires a value unless loading");
     const readableValue = `${prefix}${value}${suffix}`;
-    const label = ariaLabel || [title, readableValue, description].filter(Boolean).join(", ");
+    const label = ariaLabel || (loading ? [title, "Loading"].filter(Boolean).join(", ") : [title, readableValue, description].filter(Boolean).join(", "));
     const amount = loading
-      ? '<span class="ui-statistic__skeleton" aria-hidden="true"></span>'
+      ? '<span class="ui-statistic__skeleton ui-statistic__skeleton--value" aria-hidden="true"></span>'
       : `<strong class="ui-statistic__value">${prefix ? `<span class="ui-statistic__prefix">${escapeHTML(prefix)}</span>` : ""}${escapeHTML(value)}${suffix ? `<span class="ui-statistic__suffix">${escapeHTML(suffix)}</span>` : ""}</strong>`;
-    return `<section class="ui-statistic${loading ? " is-loading" : ""}" data-component="statistic" role="group" aria-label="${escapeHTML(label)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}><span class="ui-statistic__title">${escapeHTML(title)}</span>${amount}${description ? `<small class="ui-statistic__description">${escapeHTML(description)}</small>` : ""}</section>`;
+    const supporting = loading
+      ? '<span class="ui-statistic__skeleton ui-statistic__skeleton--description" aria-hidden="true"></span>'
+      : (description ? `<small class="ui-statistic__description">${escapeHTML(description)}</small>` : "");
+    return `<section class="ui-statistic${loading ? " is-loading" : ""}" data-component="statistic" role="group" aria-label="${escapeHTML(label)}"${loading ? ' aria-busy="true"' : ""}${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}><span class="ui-statistic__title">${escapeHTML(title)}</span>${amount}${supporting}</section>`;
   }
 
   function table(props = {}) {
@@ -1813,6 +1916,29 @@
     return next;
   }
 
+  function toggleLessonOptions(control) {
+    if (!control || control.disabled) return false;
+    const list = control.closest("[data-ui-lesson-options]");
+    if (!list) return false;
+    const card = control.closest("[data-lesson-course-card]");
+    const shouldExpand = !card?.classList.contains("is-expanded");
+    list.querySelectorAll("[data-lesson-course-card]").forEach((item) => {
+      const expanded = shouldExpand && item === card;
+      item.classList.toggle("is-expanded", expanded);
+      const toggle = item.querySelector("[data-demo=ui-lesson-toggle]");
+      const options = item.querySelector("[data-ui-selection-group]");
+      toggle?.classList.toggle("is-selected", expanded);
+      toggle?.setAttribute("aria-expanded", String(expanded));
+      toggle?.setAttribute("aria-checked", String(expanded));
+      if (options) {
+        options.classList.toggle("is-collapsed", !expanded);
+        options.setAttribute("aria-hidden", String(!expanded));
+        options.inert = !expanded;
+      }
+    });
+    return true;
+  }
+
   function handleSelectionCardKeydown(event) {
     const control = event.target?.closest?.('[data-demo="ui-selection-card"]');
     if (!control || control.dataset.selectionMode !== "radio" || !["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(event.key)) return false;
@@ -1889,14 +2015,16 @@
     if (!picker || control.disabled) return false;
     const value = String(control.dataset.dateValue || "");
     let values = readDatePickerValues(picker);
-    if (picker.dataset.dateRange === "true") {
-      values = values.length === 1 ? [values[0], value] : [value];
+    const isRange = picker.dataset.dateRange === "true";
+    if (isRange) {
+      values = values.length === 1 && values[0] !== value ? [values[0], value] : [value];
       const days = [...picker.querySelectorAll('[data-demo="ui-date-day"]')];
       if (values.length === 2 && days.findIndex((day) => day.dataset.dateValue === values[0]) > days.findIndex((day) => day.dataset.dateValue === values[1])) values.reverse();
     } else values = [value];
     picker.dataset.dateValues = JSON.stringify(values);
     syncDatePicker(picker);
-    setDatePickerOpen(picker.querySelector(".ui-date-picker__trigger"), false);
+    const isRangeComplete = isRange && values.length === 2 && values[0] !== values[1];
+    if (!isRange || isRangeComplete) setDatePickerOpen(picker.querySelector(".ui-date-picker__trigger"), false);
     return true;
   }
 
@@ -2604,18 +2732,31 @@
       const content = normalized.map((item, index) => `<li class="ui-stepper__item${index < currentIndex ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}${item.disabled ? " is-disabled" : ""}"${index === currentIndex ? ' aria-current="step"' : ""}${item.disabled ? ' aria-disabled="true"' : ""}><span class="ui-stepper__marker">${index < currentIndex ? icon("Assets/Icons/confirm-sm.svg", "ui-stepper__complete-icon") : index + 1}</span><strong>${escapeHTML(item.label)}</strong></li>`).join("");
       return `<ol class="ui-stepper ui-stepper--flow-progress" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel)}">${content}</ol>`;
     }
-    const content = normalized.map((item, index) => `<li class="ui-stepper__item${index < currentIndex ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}${item.disabled ? " is-disabled" : ""}"><button type="button" data-demo="ui-stepper" data-step-index="${index}" aria-current="${index === currentIndex ? "step" : "false"}"${item.disabled ? " disabled" : ""}><span class="ui-stepper__marker">${index < currentIndex ? icon("Assets/Icons/confirm-sm.svg", "ui-stepper__complete-icon") : index + 1}</span><span><strong>${escapeHTML(item.label)}</strong>${item.description ? `<small>${escapeHTML(item.description)}</small>` : ""}</span></button></li>`).join("");
+    const stepItem = (item, index) => `<li class="ui-stepper__item${index < currentIndex ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}${item.disabled ? " is-disabled" : ""}"><button type="button" data-demo="ui-stepper" data-step-index="${index}" aria-current="${index === currentIndex ? "step" : "false"}"${item.disabled ? " disabled" : ""}><span class="ui-stepper__marker">${index < currentIndex ? icon("Assets/Icons/confirm-sm.svg", "ui-stepper__complete-icon") : index + 1}</span><span><strong>${escapeHTML(item.label)}</strong>${item.description ? `<small>${escapeHTML(item.description)}</small>` : ""}</span></button></li>`;
+    const content = orientation === "horizontal"
+      ? normalized.flatMap((item, index) => [stepItem(item, index), index < normalized.length - 1 ? `<li class="ui-stepper__connector${index < currentIndex ? " is-complete" : ""}" role="presentation" aria-hidden="true"></li>` : ""]).join("")
+      : normalized.map(stepItem).join("");
     return `<nav class="ui-stepper ui-stepper--${orientation}" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel)}"><ol>${content}</ol></nav>`;
   }
 
   function progress(props = {}) {
     assertProps("progress", props);
-    const { value = 0, max = 100, status = "default", showLabel = true, indeterminate = false, ariaLabel = "Progress" } = props;
+    const { value = 0, max = 100, status = "default", type = "line", size = 80, showLabel = true, indeterminate = false, ariaLabel = "Progress" } = props;
     enumValue("progress", "status", status);
+    enumValue("progress", "type", type);
+    enumValue("progress", "size", size);
+    if (indeterminate && type !== "line") throw new Error("indeterminate progress only supports the line type");
     const safeMax = Math.max(1, Number(max));
     const safeValue = Math.min(safeMax, Math.max(0, Number(value)));
     const percent = Math.round((safeValue / safeMax) * 100);
-    return `<div class="ui-progress ui-progress--${status}${indeterminate ? " is-indeterminate" : ""}" data-component="progress" role="progressbar" aria-label="${escapeHTML(ariaLabel)}" aria-valuemin="0" aria-valuemax="${safeMax}"${indeterminate ? " aria-valuetext=\"Loading\"" : ` aria-valuenow="${safeValue}"`}><span class="ui-progress__track"><i style="--ui-progress-value:${percent}%"></i></span>${showLabel ? `<output>${indeterminate ? "Loading" : `${percent}%`}</output>` : ""}</div>`;
+    const label = indeterminate ? "Loading" : `${percent}%`;
+    const colorClass = `ui-progress--${status}`;
+    if (type === "line") return `<div class="ui-progress ui-progress--line ${colorClass}${indeterminate ? " is-indeterminate" : ""}" data-component="progress" role="progressbar" aria-label="${escapeHTML(ariaLabel)}" aria-valuemin="0" aria-valuemax="${safeMax}"${indeterminate ? " aria-valuetext=\"Loading\"" : ` aria-valuenow="${safeValue}"`}><span class="ui-progress__track"><i style="--ui-progress-value:${percent}%"></i></span>${showLabel ? `<output>${label}</output>` : ""}</div>`;
+    const circularPath = type === "circle"
+      ? '<circle class="ui-progress__ring-track" cx="60" cy="60" r="52" pathLength="100"></circle><circle class="ui-progress__ring-value" cx="60" cy="60" r="52" pathLength="100"></circle>'
+      : '<path class="ui-progress__ring-track" d="M 8 60 A 52 52 0 0 1 112 60" pathLength="100"></path><path class="ui-progress__ring-value" d="M 8 60 A 52 52 0 0 1 112 60" pathLength="100"></path>';
+    const ringStroke = type === "circle" ? 12 : 8;
+    return `<div class="ui-progress ui-progress--${type} ${colorClass}" data-component="progress" role="progressbar" aria-label="${escapeHTML(ariaLabel)}" aria-valuemin="0" aria-valuemax="${safeMax}" aria-valuenow="${safeValue}" style="--ui-progress-size:${size}px;--ui-progress-value:${percent};--ui-progress-ring-stroke:${ringStroke}px"><svg class="ui-progress__ring" viewBox="0 0 120 ${type === "circle" ? 120 : 68}" aria-hidden="true">${circularPath}</svg>${showLabel ? `<output>${label}</output>` : ""}</div>`;
   }
 
   function toast(props = {}) {
@@ -2623,7 +2764,7 @@
     const { id = "", tone = "info", title = "", description = "", action = "", duration = 0, closable = true, open = true, ariaLabel = "" } = props;
     enumValue("toast", "tone", tone);
     const iconByTone = { info: "Assets/Icons/info.svg", success: "Assets/Icons/check.svg", warning: "Assets/Icons/warning.svg", error: "Assets/Icons/error.svg" };
-    const close = closable ? `<button class="ui-toast__close" type="button" data-demo="ui-toast-close" aria-label="Dismiss notification">${icon("Assets/Icons/cross-sm.svg", "ui-toast__close-icon")}</button>` : "";
+    const close = closable ? `<button class="ui-toast__close" type="button" data-demo="ui-toast-close" aria-label="Dismiss notification">${icon("Assets/Icons/cross.svg", "ui-toast__close-icon")}</button>` : "";
     return `<section class="ui-toast ui-toast--${tone}${open ? " is-open" : ""}" data-component="toast"${id ? ` id="${escapeHTML(id)}"` : ""}${duration ? ` data-duration="${Math.max(0, Number(duration))}"` : ""} role="status" aria-live="polite" aria-label="${escapeHTML(ariaLabel || title || "Notification")}">${icon(iconByTone[tone], "ui-toast__icon")}<div class="ui-toast__copy">${title ? `<strong>${escapeHTML(title)}</strong>` : ""}${description ? `<p>${escapeHTML(description)}</p>` : ""}${action ? `<div class="ui-toast__action">${action}</div>` : ""}</div>${close}</section>`;
   }
 
@@ -2632,7 +2773,7 @@
     const { id = "", tone = "info", title = "", description = "", action = "", closable = true, open = true, ariaLabel = "" } = props;
     enumValue("notification", "tone", tone);
     const iconByTone = { info: "Assets/Icons/info.svg", success: "Assets/Icons/check.svg", warning: "Assets/Icons/warning.svg", error: "Assets/Icons/error.svg" };
-    const close = closable ? `<button class="ui-notification__close" type="button" data-demo="ui-notification-close" aria-label="Dismiss notification">${icon("Assets/Icons/cross-sm.svg", "ui-notification__close-icon")}</button>` : "";
+    const close = closable ? `<button class="ui-notification__close" type="button" data-demo="ui-notification-close" aria-label="Dismiss notification">${icon("Assets/Icons/cross.svg", "ui-notification__close-icon")}</button>` : "";
     const role = tone === "error" ? "alert" : "status";
     return `<section class="ui-notification ui-notification--${tone}${open ? " is-open" : ""}" data-component="notification"${id ? ` id="${escapeHTML(id)}"` : ""} role="${role}" aria-live="polite" aria-label="${escapeHTML(ariaLabel || title || "Notification")}">${icon(iconByTone[tone], "ui-notification__icon")}<div class="ui-notification__copy">${title ? `<strong>${escapeHTML(title)}</strong>` : ""}${description ? `<p>${escapeHTML(description)}</p>` : ""}${action ? `<div class="ui-notification__action">${action}</div>` : ""}</div>${close}</section>`;
   }
@@ -2735,17 +2876,21 @@
 
   function timePicker(props = {}) {
     assertProps("time-picker", props);
-    const { id = "", label = "Time", placeholder = "Choose a time", slots = [], selected = "", disabled = false, open = false, state = "default", ariaLabel = "" } = props;
+    const { id = "", label = "Time", placeholder = "Choose a time", slots = [], selected = "", selectionMode = "single", disabled = false, open = false, state = "default", ariaLabel = "" } = props;
     enumValue("time-picker", "state", disabled ? "disabled" : state);
+    enumValue("time-picker", "selectionMode", selectionMode);
     const pickerId = id || `time-picker-${String(label).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "time"}`;
-    const triggerLabel = selected || placeholder;
-    const slotMarkup = slots.map((slot, index) => {
+    const selectedValues = new Set((Array.isArray(selected) ? selected : [selected]).filter((value) => value !== "" && value !== undefined && value !== null).map(String));
+    const normalizedSlots = slots.map((slot, index) => {
       const normalized = typeof slot === "string" ? { label: slot } : slot || {};
-      const value = normalized.value || normalized.label || `slot-${index}`;
-      return timeSlot({ id: `${pickerId}-${value}`, label: normalized.label || value, secondary: normalized.secondary || "", appearance: "option", state: normalized.state || "available", selected: String(value) === String(selected), unavailable: Boolean(normalized.unavailable), held: Boolean(normalized.held), loading: Boolean(normalized.loading), disabled: Boolean(normalized.disabled), demo: "ui-time-picker-slot" });
-    }).join("");
-    const classes = ["ui-time-picker", open ? "is-open" : "", disabled ? "is-disabled" : "", state === "default" ? "" : `is-${state}`].filter(Boolean).join(" ");
-    return `<div class="${classes}" data-component="time-picker" data-ui-time-picker${id ? ` id="${escapeHTML(pickerId)}"` : ""}><button class="ui-time-picker__trigger" type="button" data-demo="ui-time-picker-toggle" role="combobox" aria-label="${escapeHTML(ariaLabel || label)}" aria-expanded="${open}" aria-controls="${escapeHTML(pickerId)}-menu"${disabled ? " disabled" : ""}>${icon("Assets/Icons/16px/time-sm.svg", "ui-time-picker__icon")}<span class="${selected ? "" : "ui-time-picker__placeholder"}">${escapeHTML(triggerLabel)}</span>${icon("Assets/Icons/arrow-down-sm.svg", "ui-time-picker__suffix")}</button><div class="ui-time-picker__menu" id="${escapeHTML(pickerId)}-menu" role="listbox" aria-label="${escapeHTML(label)} options"${open ? "" : " aria-hidden=\"true\""}>${slotMarkup}</div></div>`;
+      return { ...normalized, value: String(normalized.value || normalized.label || `slot-${index}`), label: String(normalized.label || normalized.value || `slot-${index}`) };
+    });
+    const selectedLabels = normalizedSlots.filter((slot) => selectedValues.has(slot.value)).map((slot) => slot.label);
+    const triggerLabel = selectedLabels.join(", ") || placeholder;
+    const triggerIcon = icon("Assets/Icons/16px/time-sm.svg", `ui-time-picker__icon${selectedLabels.length ? "" : " is-placeholder"}`);
+    const slotMarkup = normalizedSlots.map((slot) => timeSlot({ id: `${pickerId}-${slot.value}`, label: slot.label, secondary: slot.secondary || "", appearance: "option", state: slot.state || "available", selected: selectedValues.has(slot.value), unavailable: Boolean(slot.unavailable), held: Boolean(slot.held), loading: Boolean(slot.loading), disabled: Boolean(slot.disabled), demo: "ui-time-picker-slot" }).replace('data-demo="ui-time-picker-slot"', `data-demo="ui-time-picker-slot" data-time-picker-value="${escapeHTML(slot.value)}"`)).join("");
+    const classes = ["ui-time-picker", `ui-time-picker--${selectionMode}`, open ? "is-open" : "", disabled ? "is-disabled" : "", state === "default" ? "" : `is-${state}`].filter(Boolean).join(" ");
+    return `<div class="${classes}" data-component="time-picker" data-ui-time-picker data-time-picker-selection-mode="${selectionMode}" data-time-picker-placeholder="${escapeHTML(placeholder)}"${id ? ` id="${escapeHTML(pickerId)}"` : ""}><button class="ui-time-picker__trigger" type="button" data-demo="ui-time-picker-toggle" role="combobox" aria-label="${escapeHTML(ariaLabel || label)}" aria-expanded="${open}" aria-controls="${escapeHTML(pickerId)}-menu"${disabled ? " disabled" : ""}>${triggerIcon}<span class="${selectedLabels.length ? "" : "ui-time-picker__placeholder"}">${escapeHTML(triggerLabel)}</span>${icon("Assets/Icons/arrow-down-sm.svg", "ui-time-picker__suffix")}</button><div class="ui-time-picker__menu" id="${escapeHTML(pickerId)}-menu" role="listbox" aria-label="${escapeHTML(label)} options"${selectionMode === "multiple" ? ' aria-multiselectable="true"' : ""}${open ? "" : " aria-hidden=\"true\""}>${slotMarkup}</div></div>`;
   }
 
   function calendar(props = {}) {
@@ -3115,19 +3260,27 @@
   function selectTimePickerSlot(control) {
     const root = control?.closest?.("[data-ui-time-picker]");
     if (!root || control.disabled) return false;
-    root.querySelectorAll(".ui-time-slot").forEach((slot) => {
+    const multiple = root.dataset.timePickerSelectionMode === "multiple";
+    if (multiple) {
+      const selected = !control.classList.contains("is-selected");
+      control.setAttribute("aria-pressed", String(selected));
+      control.classList.toggle("is-selected", selected);
+    } else root.querySelectorAll(".ui-time-slot").forEach((slot) => {
       const selected = slot === control;
       slot.setAttribute("aria-pressed", String(selected));
       slot.classList.toggle("is-selected", selected);
     });
+    const selectedLabels = [...root.querySelectorAll(".ui-time-slot.is-selected")].map((slot) => slot.querySelector(".ui-time-slot__label")?.textContent || "").filter(Boolean);
     const trigger = root.querySelector(".ui-time-picker__trigger span");
     if (trigger) {
-      trigger.textContent = control.querySelector(".ui-time-slot__label")?.textContent || "";
-      trigger.classList.remove("ui-time-picker__placeholder");
+      trigger.textContent = selectedLabels.join(", ") || root.dataset.timePickerPlaceholder || "Choose a time";
+      trigger.classList.toggle("ui-time-picker__placeholder", selectedLabels.length === 0);
     }
-    root.classList.remove("is-open");
-    root.querySelector(".ui-time-picker__trigger")?.setAttribute("aria-expanded", "false");
-    root.querySelector(".ui-time-picker__menu")?.setAttribute("aria-hidden", "true");
+    if (!multiple) {
+      root.classList.remove("is-open");
+      root.querySelector(".ui-time-picker__trigger")?.setAttribute("aria-expanded", "false");
+      root.querySelector(".ui-time-picker__menu")?.setAttribute("aria-hidden", "true");
+    }
     return true;
   }
 
@@ -3308,12 +3461,14 @@
     datePicker,
     tooltip,
     divider,
+    sectionIntro,
     avatar,
     flag,
     avatarGroup,
     badge,
     breadcrumb,
     card,
+    list,
     alert,
     tabs,
     pagination,
@@ -3362,6 +3517,7 @@
     selectRadio,
     handleRadioKeydown,
     toggleSelectionCard,
+    toggleLessonOptions,
     handleSelectionCardKeydown,
     toggleBreadcrumb,
     closeBreadcrumbs,

@@ -35,7 +35,7 @@
 
 <main style="min-width:0;display:flex;flex-direction:column;gap:16px">
 
-<section id="profile-top" data-screen-label="Profile header" style="background:var(--ui-color-card);border-radius:12px;box-shadow:0 1px 2px rgb(49 49 64 / 6%);padding:24px">
+<section id="profile-top" data-screen-label="Profile header" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px">
 <div style="display:flex;gap:24px;align-items:flex-start">
 <div style="position:relative;flex:0 0 auto">
 <x-import component-from-global-scope="SafeUI.Avatar" image="https://randomuser.me/api/portraits/women/44.jpg" flag="es" size="{{ 120 }}" ariaLabel="Lucía Fernández, Spain" hint-size="120px,120px"></x-import>
@@ -94,11 +94,11 @@
 </section>
 
 <div ref="{{ tabsAnchorRef }}" style="margin-top:-16px"></div>
-<div id="profile-tabs" ref="{{ tabsBarRef }}" onClick="{{ onTabClick }}" style="position:sticky;top:72px;z-index:30;background:var(--ui-color-card);border-radius:12px;box-shadow:0 1px 2px rgb(49 49 64 / 6%);padding:0 16px">
+<div id="profile-tabs" ref="{{ tabsBarRef }}" onClick="{{ onTabClick }}" style="position:sticky;top:72px;z-index:30;background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:0 16px">
 <x-import component-from-global-scope="SafeUI.Tabs" items="{{ tabItems }}" activeId="{{ activeTab }}" activation="manual" ariaLabel="Profile sections" hint-size="100%,48px"></x-import>
 </div>
 
-<section id="section-about" data-screen-label="About" style="background:var(--ui-color-card);border-radius:12px;box-shadow:0 1px 2px rgb(49 49 64 / 6%);padding:24px;display:flex;flex-direction:column;gap:16px">
+<section id="section-about" data-screen-label="About" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px;display:flex;flex-direction:column;gap:16px">
 <h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">About me</h2>
 <p style="margin:0;color:var(--ui-color-text);font-size:14px;line-height:22px;text-wrap:pretty">¡Hola! I'm Lucía, a DELE examiner with 8 years of classroom experience in Madrid and 6 years teaching online. Every lesson is built around what you need to say next week — a job interview, a trip, a conversation with your in-laws — not around a textbook chapter.</p>
 <sc-if value="{{ readMore }}" hint-placeholder-val="{{ false }}">
@@ -123,7 +123,7 @@
 </div>
 </section>
 
-<section id="section-lessons" data-screen-label="Lessons" style="background:var(--ui-color-card);border-radius:12px;box-shadow:0 1px 2px rgb(49 49 64 / 6%);padding:24px;display:flex;flex-direction:column;gap:4px">
+<section id="section-lessons" data-screen-label="Lessons" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px;display:flex;flex-direction:column;gap:4px">
 <h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">Lessons</h2>
 <p style="margin:0 0 8px;color:var(--ui-color-secondary);font-size:12px;line-height:18px">All lessons are 1-on-1 in the italki Classroom. Cancel free up to 24 hours before.</p>
 <sc-for list="{{ lessons }}" as="l" hint-placeholder-count="5">
@@ -150,7 +150,7 @@
 </sc-for>
 </section>
 
-<section id="section-availability" data-screen-label="Availability" style="background:var(--ui-color-card);border-radius:12px;box-shadow:0 1px 2px rgb(49 49 64 / 6%);padding:24px;display:flex;flex-direction:column;gap:16px">
+<section id="section-availability" data-screen-label="Availability" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px;display:flex;flex-direction:column;gap:16px">
 <h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">Availability</h2>
 <div style="display:flex;flex-direction:column;gap:8px">
 <h3 style="margin:0;color:var(--ui-color-title);font-size:14px;font-weight:600;line-height:20px">Next available</h3>
@@ -167,7 +167,7 @@
 </div>
 </section>
 
-<section id="section-reviews" data-screen-label="Reviews" style="background:var(--ui-color-card);border-radius:12px;box-shadow:0 1px 2px rgb(49 49 64 / 6%);padding:24px;display:flex;flex-direction:column;gap:16px">
+<section id="section-reviews" data-screen-label="Reviews" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px;display:flex;flex-direction:column;gap:16px">
 <h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">Student reviews</h2>
 <div style="display:flex;gap:40px;align-items:center;flex-wrap:wrap">
 <div style="display:grid;gap:4px;justify-items:center">
@@ -223,7 +223,7 @@
 </div>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">
 <sc-for list="{{ similar }}" as="t" hint-placeholder-count="3">
-<article style="display:flex;flex-direction:column;gap:12px;background:var(--ui-color-card);border:1px solid transparent;border-radius:12px;box-shadow:0 1px 2px rgb(49 49 64 / 6%);padding:16px;cursor:pointer;transition:border-color 120ms ease,box-shadow 120ms ease" style-hover="border-color:var(--ui-color-title);box-shadow:var(--ui-shadow-md)">
+<article style="display:flex;flex-direction:column;gap:12px;background:var(--ui-color-card);border:1px solid transparent;border-radius:12px;box-shadow:var(--ui-shadow-card);padding:16px;cursor:pointer;transition:border-color 120ms ease,box-shadow 120ms ease" style-hover="border-color:var(--ui-color-title);box-shadow:var(--ui-shadow-md)">
 <div style="display:flex;align-items:center;gap:12px">
 <x-import component-from-global-scope="SafeUI.Avatar" image="{{ t.photo }}" flag="{{ t.flag }}" size="{{ 56 }}" ariaLabel="{{ t.aria }}" hint-size="56px,56px"></x-import>
 <div style="min-width:0;display:grid;gap:0">
@@ -247,11 +247,11 @@
 
 </main>
 
-<aside ref="{{ railRef }}" data-screen-label="Booking rail" style="grid-column:2;position:sticky;top:96px;transition:top .18s ease;display:flex;flex-direction:column;gap:16px;background:var(--ui-color-card);border-radius:12px;box-shadow:0 1px 2px rgb(49 49 64 / 6%);padding:16px" aria-label="Book Lucía Fernández">
+<aside ref="{{ railRef }}" data-screen-label="Booking rail" style="grid-column:2;position:sticky;top:96px;transition:top .18s ease;display:flex;flex-direction:column;gap:16px;background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:16px" aria-label="Book Lucía Fernández">
 <div onClick="{{ toggleVideo }}" style="position:relative">
 <x-import component-from-global-scope="SafeUI.Video" poster="Assets/Images/covers/teacher-intro.jpg" poster-alt="Lucía's introduction video" title="Meet Lucía" duration="1:24" play-label="{{ videoAria }}" hint-size="100%,196px"></x-import>
 <sc-if value="{{ videoPlaying }}" hint-placeholder-val="{{ false }}">
-<div style="position:absolute;right:0;bottom:0;left:0;height:3px;overflow:hidden;border-radius:0 0 8px 8px;background:rgb(255 255 255 / 25%)"><div style="height:100%;background:var(--ui-color-link);animation:video-progress 84s linear forwards"></div></div>
+<div style="position:absolute;right:0;bottom:0;left:0;height:3px;overflow:hidden;border-radius:0 0 8px 8px;background:var(--ui-color-on-primary-muted)"><div style="height:100%;background:var(--ui-color-link);animation:video-progress 84s linear forwards"></div></div>
 </sc-if>
 </div>
 <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
@@ -338,9 +338,9 @@ class Component extends DCLogic {
     if (this.railRef.current) this.railRef.current.style.top = stuck ? "144px" : "96px";
     if (stuck) {
       const sidebarW = document.querySelector(".ui-sidebar")?.offsetWidth || 0;
-      Object.assign(bar.style, { position: "fixed", top: "72px", left: sidebarW + "px", right: "0", zIndex: "30", borderRadius: "0", padding: "0 24px", boxShadow: "0 1px 2px rgb(49 49 64 / 12%)" });
+      Object.assign(bar.style, { position: "fixed", top: "72px", left: sidebarW + "px", right: "0", zIndex: "30", borderRadius: "0", padding: "0 24px", boxShadow: "var(--ui-shadow-thumb)" });
     } else {
-      Object.assign(bar.style, { position: "sticky", top: "72px", left: "", right: "", borderRadius: "12px", padding: "0 16px", boxShadow: "0 1px 2px rgb(49 49 64 / 6%)" });
+      Object.assign(bar.style, { position: "sticky", top: "72px", left: "", right: "", borderRadius: "12px", padding: "0 16px", boxShadow: "var(--ui-shadow-card)" });
       anchor.style.height = "0px";
     }
   };

@@ -5,7 +5,7 @@
   ],
   "colors": {
     "--ui-color-page": {
-      "value": "#FFFFFF"
+      "value": "#F5F6F9"
     },
     "--ui-color-card": {
       "value": "#FFFFFF"
@@ -43,6 +43,9 @@
     "--ui-color-primary-shade-1": {
       "value": "#FF8E87"
     },
+    "--ui-color-primary-surface": {
+      "value": "#FFF1F1"
+    },
     "--ui-color-link": {
       "value": "#59779A"
     },
@@ -62,7 +65,7 @@
       "value": "#E6F7F8"
     },
     "--ui-color-accessory-3": {
-      "value": "#FFF2F1"
+      "value": "#FFF1F1"
     },
     "--ui-color-accessory-4": {
       "value": "#E7FCF5"
@@ -98,13 +101,13 @@
       "value": "#FFFFFF"
     },
     "--ui-color-modal-mask": {
-      "value": "rgb(49 49 64 / 24%)"
+      "value": "rgb(0 0 0 / 60%)"
     },
     "--ui-color-upload-overlay": {
       "value": "rgb(49 49 64 / 68%)"
     },
     "--ui-color-upload-loading": {
-      "value": "rgb(49 49 64 / 50%)"
+      "value": "rgb(49 49 64 / 68%)"
     },
     "--ui-color-on-primary-muted": {
       "value": "rgb(255 255 255 / 45%)"
@@ -113,13 +116,13 @@
       "value": "rgb(255 255 255 / 55%)"
     },
     "--ui-color-emphasis-weak": {
-      "value": "rgb(49 49 64 / 28%)"
+      "value": "#C7CBD3"
     },
     "--ui-color-disabled-weak": {
-      "value": "rgb(199 203 211 / 42%)"
+      "value": "#E5E8ED"
     },
     "--ui-color-hover-overlay": {
-      "value": "rgb(49 49 64 / 8%)"
+      "value": "#EBEDF1"
     }
   }
 }

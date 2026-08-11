@@ -150,6 +150,8 @@ window.ITalkiUIContracts = {
         "value",
         "size",
         "tone",
+        "variant",
+        "leadingIcon",
         "removable",
         "removeDemo",
         "removeAriaLabel"
@@ -166,6 +168,11 @@ window.ITalkiUIContracts = {
           "success",
           "warning",
           "error"
+        ],
+        "variant": [
+          "default",
+          "status",
+          "promo"
         ]
       }
     },
@@ -260,6 +267,11 @@ window.ITalkiUIContracts = {
         "badge",
         "price",
         "period",
+        "discount",
+        "quantity",
+        "quantityLabel",
+        "originalPrice",
+        "totalPrice",
         "selected",
         "selectedMarker",
         "disabled",
@@ -274,6 +286,8 @@ window.ITalkiUIContracts = {
           "standard",
           "icon-simple",
           "icon-card",
+          "package-card",
+          "lesson-options",
           "avatar",
           "payment-icon"
         ],
@@ -297,12 +311,17 @@ window.ITalkiUIContracts = {
             "contentType",
             "selectionMode",
             "selectedMarker",
-            "layout"
+            "layout",
+            "courseTitle",
+            "courseMeta",
+            "courses",
+            "selectedDuration"
           ],
           "props": {
             "layout": [
               "stack",
-              "grid"
+              "grid",
+              "package-grid"
             ]
           }
         }
@@ -641,6 +660,7 @@ window.ITalkiUIContracts = {
         "outlined",
         "media",
         "mediaAlt",
+        "mediaPlaceholder",
         "mediaRatio",
         "eyebrow",
         "title",
@@ -658,6 +678,10 @@ window.ITalkiUIContracts = {
           false
         ],
         "outlined": [
+          true,
+          false
+        ],
+        "mediaPlaceholder": [
           true,
           false
         ],
@@ -709,12 +733,17 @@ window.ITalkiUIContracts = {
         "extra",
         "ariaLabel",
         "orientation",
+        "variant",
         "activation",
         "demo"
       ],
       "props": {
         "orientation": [
           "horizontal"
+        ],
+        "variant": [
+          "default",
+          "red-line"
         ],
         "activation": [
           "manual",
@@ -1427,6 +1456,8 @@ window.ITalkiUIContracts = {
         "value",
         "max",
         "status",
+        "type",
+        "size",
         "showLabel",
         "indeterminate",
         "ariaLabel"
@@ -1436,6 +1467,15 @@ window.ITalkiUIContracts = {
           "default",
           "success",
           "error"
+        ],
+        "type": [
+          "line",
+          "circle",
+          "semicircle"
+        ],
+        "size": [
+          80,
+          120
         ]
       }
     },
@@ -1635,6 +1675,7 @@ window.ITalkiUIContracts = {
         "placeholder",
         "slots",
         "selected",
+        "selectionMode",
         "disabled",
         "open",
         "state",
@@ -1646,6 +1687,10 @@ window.ITalkiUIContracts = {
           "hover",
           "focus",
           "disabled"
+        ],
+        "selectionMode": [
+          "single",
+          "multiple"
         ]
       }
     },
@@ -1693,6 +1738,61 @@ window.ITalkiUIContracts = {
         "demo"
       ],
       "props": {}
+    },
+    "section-intro": {
+      "acceptedProps": [
+        "id",
+        "eyebrow",
+        "title",
+        "description",
+        "action",
+        "size",
+        "alignment",
+        "headingLevel",
+        "ariaLabel"
+      ],
+      "props": {
+        "size": [
+          "compact",
+          "default"
+        ],
+        "alignment": [
+          "start",
+          "center"
+        ],
+        "headingLevel": [
+          2,
+          3
+        ]
+      }
+    },
+    "list": {
+      "acceptedProps": [
+        "id",
+        "items",
+        "size",
+        "variant",
+        "divided",
+        "ariaLabel",
+        "demo"
+      ],
+      "props": {
+        "size": [
+          "small",
+          "default",
+          "large"
+        ],
+        "variant": [
+          "default",
+          "avatar",
+          "image",
+          "content"
+        ],
+        "divided": [
+          true,
+          false
+        ]
+      }
     },
     "popover": {
       "acceptedProps": [

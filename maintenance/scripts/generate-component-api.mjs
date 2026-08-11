@@ -12,14 +12,15 @@ const renderers = {
   button: "button", chip: "chip", tag: "tag", checkbox: "checkbox", "checkbox-group": "checkboxGroup",
   radio: "radio", selection: "selection", "date-picker": "datePicker", tooltip: "tooltip", modal: "modal",
   popup: "popup", popconfirm: "popconfirm", divider: "divider", avatar: "avatar", badge: "badge",
-  breadcrumb: "breadcrumb", card: "card", alert: "alert", tabs: "tabs", pagination: "pagination",
+  breadcrumb: "breadcrumb", card: "card", list: "list", alert: "alert", tabs: "tabs", pagination: "pagination",
   rate: "rate", sidebar: "sidebar", statistic: "statistic", table: "table", timeline: "timeline",
   "top-nav": "topNav", slider: "slider", panel: "panel", search: "search", select: "select",
   switch: "switchControl", drawer: "drawer", "form-field": "formField", "text-input": "textInput",
   textarea: "textarea", "number-stepper": "numberStepper", combobox: "combobox", upload: "upload", stepper: "stepper",
   progress: "progress", toast: "toast", notification: "notification", result: "result", skeleton: "skeleton",
   "dropdown-menu": "dropdownMenu", disclosure: "disclosure", "segmented-control": "segmentedControl",
-  "time-slot": "timeSlot", "time-picker": "timePicker", calendar: "calendar", popover: "popover", footer: "footer"
+  "time-slot": "timeSlot", "time-picker": "timePicker", calendar: "calendar", popover: "popover", footer: "footer",
+  "section-intro": "sectionIntro"
 };
 
 function functionSlice(name) {

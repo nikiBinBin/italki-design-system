@@ -112,7 +112,7 @@
      flush against the last card instead of drifting on past it. -->
 <div style="grid-column:1;grid-row:3;display:flex;justify-content:center;margin-top:32px"><x-import component-from-global-scope="SafeUI.Pagination" pages="{{ resultPages }}" current="{{ 1 }}" ariaLabel="Search results pages" hint-size="320px,32px"></x-import></div>
 
-<aside ref="{{ previewRef }}" style="grid-column:2;grid-row:2;margin-top:0;transition:margin-top .18s ease;position:sticky;top:96px;display:flex;flex-direction:column;gap:16px;border-radius:12px;background:var(--ui-color-card);box-shadow:0 1px 2px rgb(49 49 64 / 6%);padding:16px" aria-label="Teacher preview">
+<aside ref="{{ previewRef }}" style="grid-column:2;grid-row:2;margin-top:0;transition:margin-top .18s ease;position:sticky;top:96px;display:flex;flex-direction:column;gap:16px;border-radius:12px;background:var(--ui-color-card);box-shadow:var(--ui-shadow-card);padding:16px" aria-label="Teacher preview">
 
 <div style="display:flex;align-items:center;gap:8px">
 <x-import component-from-global-scope="SafeUI.Avatar" image="{{ previewPhoto }}" size="{{ 32 }}" ariaLabel="{{ previewName }}" hint-size="32px,32px"></x-import>
@@ -320,7 +320,7 @@ class Component extends DCLogic {
     const el = document.createElement("div");
     el.id = "ds-kit-missing";
     el.textContent = "Design-system bundle not loaded: neither window.ITalkiUI nor window.ItalkiUI.raw is available.";
-    el.style.cssText = "position:fixed;z-index:9999;top:0;left:0;right:0;padding:8px 12px;background:var(--ui-color-error,#D3382F);color:var(--ui-color-on-primary,#fff);font:12px/1.5 system-ui";
+    el.style.cssText = "position:fixed;z-index:9999;top:0;left:0;right:0;padding:8px 12px;background:var(--ui-color-error);color:var(--ui-color-on-primary);font:12px/1.5 system-ui";
     document.body.appendChild(el);
   }
 

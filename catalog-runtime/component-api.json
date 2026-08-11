@@ -292,6 +292,8 @@
         "value",
         "size",
         "tone",
+        "variant",
+        "leadingIcon",
         "removable",
         "removeDemo",
         "removeAriaLabel"
@@ -301,6 +303,8 @@
         "value": "label",
         "size": "24",
         "tone": "\"neutral\"",
+        "variant": "\"default\"",
+        "leadingIcon": "\"\"",
         "removable": "false",
         "removeDemo": "\"\"",
         "removeAriaLabel": "\"\""
@@ -317,11 +321,18 @@
           "success",
           "warning",
           "error"
+        ],
+        "variant": [
+          "default",
+          "status",
+          "promo"
         ]
       },
       "states": [
         "default",
-        "removable"
+        "removable",
+        "status",
+        "promo"
       ],
       "subcomponents": {},
       "allowedTokens": [
@@ -506,6 +517,11 @@
         "badge",
         "price",
         "period",
+        "discount",
+        "quantity",
+        "quantityLabel",
+        "originalPrice",
+        "totalPrice",
         "selected",
         "selectedMarker",
         "disabled",
@@ -524,6 +540,11 @@
         "badge": "\"\"",
         "price": "\"\"",
         "period": "\"\"",
+        "discount": "\"\"",
+        "quantity": "\"\"",
+        "quantityLabel": "\"Lessons\"",
+        "originalPrice": "\"\"",
+        "totalPrice": "\"\"",
         "selected": "false",
         "selectedMarker": "false",
         "disabled": "false",
@@ -538,6 +559,8 @@
           "standard",
           "icon-simple",
           "icon-card",
+          "package-card",
+          "lesson-options",
           "avatar",
           "payment-icon"
         ],
@@ -559,6 +582,11 @@
         "icon-simple-focus",
         "icon-simple-disabled",
         "icon-card-default",
+        "package-card-default",
+        "package-card-selected",
+        "lesson-options-detailed",
+        "lesson-options-compact",
+        "lesson-options-list",
         "avatar-default",
         "payment-icon-default",
         "radio-default",
@@ -577,12 +605,17 @@
             "contentType",
             "selectionMode",
             "selectedMarker",
-            "layout"
+            "layout",
+            "courseTitle",
+            "courseMeta",
+            "courses",
+            "selectedDuration"
           ],
           "props": {
             "layout": [
               "stack",
-              "grid"
+              "grid",
+              "package-grid"
             ]
           }
         }
@@ -635,7 +668,7 @@
         "months": "[]",
         "monthIndex": "0",
         "selected": "\"\"",
-        "range": "[]",
+        "range": "null",
         "demo": "\"\""
       },
       "enums": {
@@ -1205,6 +1238,7 @@
         "outlined",
         "media",
         "mediaAlt",
+        "mediaPlaceholder",
         "mediaRatio",
         "eyebrow",
         "title",
@@ -1221,6 +1255,7 @@
         "outlined": "true",
         "media": "\"\"",
         "mediaAlt": "\"\"",
+        "mediaPlaceholder": "false",
         "mediaRatio": "\"16:9\"",
         "eyebrow": "\"\"",
         "title": "\"\"",
@@ -1238,6 +1273,10 @@
           false
         ],
         "outlined": [
+          true,
+          false
+        ],
+        "mediaPlaceholder": [
           true,
           false
         ],
@@ -1335,6 +1374,7 @@
         "extra",
         "ariaLabel",
         "orientation",
+        "variant",
         "activation",
         "demo"
       ],
@@ -1345,12 +1385,17 @@
         "extra": "\"\"",
         "ariaLabel": "\"Tabs\"",
         "orientation": "\"horizontal\"",
+        "variant": "\"default\"",
         "activation": "\"automatic\"",
         "demo": "\"\""
       },
       "enums": {
         "orientation": [
           "horizontal"
+        ],
+        "variant": [
+          "default",
+          "red-line"
         ],
         "activation": [
           "manual",
@@ -1359,6 +1404,7 @@
       },
       "states": [
         "basic",
+        "red-line",
         "icon-count",
         "disabled",
         "trailing-action"
@@ -2688,6 +2734,8 @@
         "value",
         "max",
         "status",
+        "type",
+        "size",
         "showLabel",
         "indeterminate",
         "ariaLabel"
@@ -2696,6 +2744,8 @@
         "value": "0",
         "max": "100",
         "status": "\"default\"",
+        "type": "\"line\"",
+        "size": "80",
         "showLabel": "true",
         "indeterminate": "false",
         "ariaLabel": "\"Progress\""
@@ -2705,13 +2755,24 @@
           "default",
           "success",
           "error"
+        ],
+        "type": [
+          "line",
+          "circle",
+          "semicircle"
+        ],
+        "size": [
+          80,
+          120
         ]
       },
       "states": [
         "default",
         "success",
         "error",
-        "indeterminate"
+        "indeterminate",
+        "circle",
+        "semicircle"
       ],
       "subcomponents": {},
       "allowedTokens": [
@@ -3151,6 +3212,7 @@
         "placeholder",
         "slots",
         "selected",
+        "selectionMode",
         "disabled",
         "open",
         "state",
@@ -3162,6 +3224,7 @@
         "placeholder": "\"Choose a time\"",
         "slots": "[]",
         "selected": "\"\"",
+        "selectionMode": "\"single\"",
         "disabled": "false",
         "open": "false",
         "state": "\"default\"",
@@ -3173,12 +3236,17 @@
           "hover",
           "focus",
           "disabled"
+        ],
+        "selectionMode": [
+          "single",
+          "multiple"
         ]
       },
       "states": [
         "default",
         "open",
         "selected",
+        "multiple",
         "disabled"
       ],
       "subcomponents": {},
@@ -3292,6 +3360,121 @@
         "with-utilities",
         "with-legal-links",
         "with-social-links"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "section-intro": {
+      "renderer": "sectionIntro",
+      "props": [
+        "id",
+        "eyebrow",
+        "title",
+        "description",
+        "action",
+        "size",
+        "alignment",
+        "headingLevel",
+        "ariaLabel"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "eyebrow": "\"\"",
+        "title": "\"\"",
+        "description": "\"\"",
+        "action": "\"\"",
+        "size": "\"default\"",
+        "alignment": "\"start\"",
+        "headingLevel": "2",
+        "ariaLabel": "\"\""
+      },
+      "enums": {
+        "size": [
+          "compact",
+          "default"
+        ],
+        "alignment": [
+          "start",
+          "center"
+        ],
+        "headingLevel": [
+          2,
+          3
+        ]
+      },
+      "states": [
+        "title-only",
+        "with-eyebrow",
+        "with-description",
+        "with-action",
+        "compact",
+        "centered"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "list": {
+      "renderer": "list",
+      "props": [
+        "id",
+        "items",
+        "size",
+        "variant",
+        "divided",
+        "ariaLabel",
+        "demo"
+      ],
+      "defaults": {
+        "id": "\"\"",
+        "items": "[]",
+        "size": "\"default\"",
+        "variant": "\"default\"",
+        "divided": "true",
+        "ariaLabel": "\"List\"",
+        "demo": "\"\""
+      },
+      "enums": {
+        "size": [
+          "small",
+          "default",
+          "large"
+        ],
+        "variant": [
+          "default",
+          "avatar",
+          "image",
+          "content"
+        ],
+        "divided": [
+          true,
+          false
+        ]
+      },
+      "states": [
+        "default-size",
+        "small-size",
+        "large-size",
+        "with-description",
+        "with-trailing",
+        "interactive",
+        "avatar",
+        "image",
+        "content",
+        "undivided"
       ],
       "subcomponents": {},
       "allowedTokens": [

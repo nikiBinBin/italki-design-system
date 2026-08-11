@@ -4,7 +4,7 @@ const fixture = "http://127.0.0.1:4173/maintenance/fixtures/visual-regression.ht
 
 test("documented component states remain visually stable", async ({ page }) => {
   await page.goto(fixture);
-  await expect(page.locator("[data-contract-state]")).toHaveCount(300);
+  await expect(page.locator("[data-contract-state]")).toHaveCount(323);
   await expect(page.locator('[data-contract-component="button"][data-contract-state="loading"] .ui-button')).toHaveAttribute("disabled", "");
   await expect(page.locator('[data-contract-component="checkbox"][data-contract-state="mixed"] [role="checkbox"]')).toHaveAttribute("aria-checked", "mixed");
   await expect(page.locator('[data-contract-component="checkbox-group"][data-contract-state="select-all"] [data-demo="ui-checkbox-group-all"]')).toHaveAttribute("aria-checked", "mixed");
@@ -15,6 +15,8 @@ test("documented component states remain visually stable", async ({ page }) => {
   /* The focus stroke is the title-color inset ring from the shared kit. */
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="icon-simple-focus"] .ui-selection')).toHaveCSS("box-shadow", /rgb\(49, 49, 64\)/);
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="icon-card-default"] .ui-selection')).toHaveClass(/ui-selection--icon-card/);
+  await expect(page.locator('[data-contract-component="selection"][data-contract-state="lesson-options-list"] [data-ui-lesson-options]')).toBeVisible();
+  expect(await page.locator('[data-contract-component="selection"][data-contract-state="package-card-default"] .ui-selection__package-offer').evaluate((offer) => getComputedStyle(offer, '::before').webkitMaskImage.includes('category-sm.svg'))).toBe(true);
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="radio-selected"] [role="radio"]')).toHaveAttribute("aria-checked", "true");
   await expect(page.locator('[data-contract-component="selection"][data-contract-state="checkbox-selected"] [role="checkbox"]')).toHaveAttribute("aria-checked", "true");
   /* The size variants gave way to responsive desktop/mobile fixtures. */
@@ -135,4 +137,10 @@ test("documented component states remain visually stable", async ({ page }) => {
   await expect(page.locator('[data-contract-component="footer"][data-contract-state="with-social-links"] .ui-footer__social-link')).toBeVisible();
   await expect(page.locator('[data-contract-component="popover"][data-contract-state="open"] [role="dialog"]')).toBeVisible();
   await expect(page.locator("section:has(#selections)")).toHaveScreenshot("selection-states.png", { animations: "disabled" });
+});
+
+test("lesson package discounts render the category icon", async ({ page }) => {
+  await page.goto(fixture);
+  const offer = page.locator('[data-contract-component="selection"][data-contract-state="package-card-default"] .ui-selection__package-offer');
+  expect(await offer.evaluate((element) => getComputedStyle(element, '::before').webkitMaskImage.includes('category-sm.svg'))).toBe(true);
 });
