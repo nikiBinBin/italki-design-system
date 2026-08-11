@@ -520,10 +520,14 @@ class Component extends DCLogic {
       filterOpen: this.state.filterOpen,
       filterBody: this.filterBody(UI),
       /* Two buttons the kit renders. Neither can carry an onClick — this is a
-         markup string — so the drawer closes through the delegated handler. */
+         markup string — so the drawer closes through the delegated handler.
+         The treatment follows the Filter pattern's own footer: secondary and
+         red at 40, default shape. It had drifted to text/32/pill here, which
+         is the same failure as every other copied choice — the component was
+         right and the props were a private opinion. */
       filterFooter:
-        UI.button({ label: "Reset", variant: "text", size: 32, shape: "pill" })
-        + UI.button({ label: "Show 1,284 teachers", variant: "red", size: 32, shape: "pill", demo: "filter-apply" }),
+        UI.button({ label: "Reset", variant: "secondary", size: 40, shape: "default" })
+        + UI.button({ label: "Show 1,284 teachers", variant: "red", size: 40, shape: "default", demo: "filter-apply" }),
       languageOptions,
     };
   }
