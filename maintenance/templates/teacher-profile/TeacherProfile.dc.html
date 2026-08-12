@@ -11,6 +11,7 @@
 <helmet>
 <script src="./ds-base.js"></script>
 <script src="./ds-safe.js"></script>
+<link rel="stylesheet" href="./booking-flow.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>body{margin:0;background:var(--ui-color-divider);color:var(--ui-color-text);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;font-weight:500;-webkit-font-smoothing:antialiased}*{box-sizing:border-box}a{color:var(--ui-color-link);text-decoration:none}a:hover{color:var(--ui-color-link-hover);text-decoration:underline}@keyframes video-progress{from{width:0}to{width:100%}}#profile-tabs .ui-tabs__panel{display:none}#profile-tabs .ui-tabs__list{border-bottom:0}#profile-tabs .ui-tabs__header{margin:0}#profile-tabs .ui-tabs__extra{display:none}#section-availability .ui-time-slot.ui-time-slot--option{padding:4px 12px;height:auto}
@@ -22,6 +23,12 @@
    only the fallback for a bundle that predates it. */
 .ui-sidebar.ui-sidebar{height:100dvh;position:sticky;top:0;z-index:var(--ui-layer-sidebar,41);align-self:flex-start}
 .ui-top-nav.ui-top-nav{position:sticky;top:0;z-index:var(--ui-layer-top-nav,40)}
+/* The booking flow is this page's overlay. A drawer stage carries
+   min-height:272px so it can be demonstrated inline, which on a real page is
+   empty space below the fold — fixed and inert until it opens. */
+#booking-drawer{position:fixed;inset:0;z-index:var(--ui-layer-overlay,60);min-height:0;overflow:visible;background:transparent;pointer-events:none}
+#booking-drawer.is-open{pointer-events:auto}
+#booking-drawer .ui-drawer__layer{position:fixed;inset:0}
 </style>
 </helmet>
 <div style="min-height:100vh;display:flex;align-items:flex-start">
@@ -145,7 +152,7 @@
 <strong style="color:var(--ui-color-title);font-size:16px;line-height:24px">{{ l.price }}</strong>
 <span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ l.per }}</span>
 </div>
-<x-import component-from-global-scope="SafeUI.Button" label="Book" variant="secondary" size="{{ 32 }}" shape="pill" hint-size="64px,32px"></x-import>
+<span onClick="{{ l.onBook }}" style="display:inline-flex"><x-import component-from-global-scope="SafeUI.Button" label="Book" variant="secondary" size="{{ 32 }}" shape="pill" hint-size="64px,32px"></x-import></span>
 </div>
 </article>
 </div>
@@ -264,7 +271,7 @@
 <span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">Trial · {{ trialPrice }}</span>
 </div>
 <div style="display:flex;flex-direction:column;gap:8px">
-<div style="display:grid"><x-import component-from-global-scope="SafeUI.Button" label="{{ bookTrialLabel }}" variant="red" size="{{ 40 }}" shape="pill" hint-size="100%,40px"></x-import></div>
+<div style="display:grid"><span onClick="{{ bookTrial }}" style="display:grid"><x-import component-from-global-scope="SafeUI.Button" label="{{ bookTrialLabel }}" variant="red" size="{{ 40 }}" shape="pill" hint-size="100%,40px"></x-import></span></div>
 <div style="display:grid"><x-import component-from-global-scope="SafeUI.Button" label="Contact teacher" variant="secondary" size="{{ 40 }}" shape="pill" leadingIcon="message" hint-size="100%,40px"></x-import></div>
 </div>
 <div style="height:1px;background:var(--ui-color-divider)"></div>
@@ -281,6 +288,9 @@
 </div>
 </div>
 </div>
+
+<x-import component-from-global-scope="SafeUI.Drawer" id="booking-drawer" placement="bottom" size="wide" title="{{ drawerTitle }}" open="{{ bookingOpen }}" trigger="" body="{{ stepBody }}" footer="{{ stepFooter }}" hint-size="100%,640px"></x-import>
+
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;superTutor&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Teacher status&quot;},&quot;onlineNow&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Teacher status&quot;},&quot;trialPrice&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;US$8.00&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Pricing&quot;}}">
 class Component extends DCLogic {
@@ -312,6 +322,48 @@ class Component extends DCLogic {
   static ROW_LABELS = ["09:00", "10:00", "11:00", "12:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
   static PAGE_SIZE = 4;
 
+  /* ── Booking flow ────────────────────────────────────────────────────────
+     Five steps in a bottom drawer, started from the rail or from a lesson row.
+     Two rules from the brief live here rather than in the markup: a trial has
+     the length its teacher set, so its step states the length and the quantity
+     step is not part of the sequence at all; and every regular lesson type
+     offers 60 minutes, which is the length italki promises on every type. */
+  static BOOKING_COURSES = [
+    { value: "conversation", title: "Conversation Practice", meta: "A2 – C2 · 1,214 lessons taught",
+      options: [{ label: "30 mins", value: "30", price: "US$9.00" }, { label: "45 mins", value: "45", price: "US$12.00" }, { label: "60 mins", value: "60", price: "US$14.00" }, { label: "90 mins", value: "90", price: "US$20.00" }] },
+    { value: "dele", title: "DELE Exam Prep", meta: "A2 – C1 · 642 lessons taught",
+      options: [{ label: "60 mins", value: "60", price: "US$18.00" }, { label: "90 mins", value: "90", price: "US$26.00" }] },
+    { value: "business", title: "Business Spanish", meta: "B1 – C2 · 318 lessons taught",
+      options: [{ label: "60 mins", value: "60", price: "US$16.00" }] },
+    { value: "grammar", title: "Grammar Foundations", meta: "A1 – B1 · 257 lessons taught",
+      options: [{ label: "60 mins", value: "60", price: "US$12.00" }] },
+  ];
+  static PACKAGES = [
+    { value: "1", label: "Single lesson", off: 0, description: "Try one lesson and decide afterwards." },
+    { value: "5", label: "5 lessons", off: 5, description: "A short package to build a routine." },
+    { value: "10", label: "10 lessons", off: 10, description: "The usual choice for a full term." },
+    { value: "20", label: "20 lessons", off: 15, description: "Set it and forget it for the next few months." },
+  ];
+  static BOOKING_DAYS = [
+    { value: "mon-10", label: "Mon 10" }, { value: "tue-11", label: "Tue 11" }, { value: "wed-12", label: "Wed 12" },
+    { value: "thu-13", label: "Thu 13" }, { value: "fri-14", label: "Fri 14" }, { value: "sat-15", label: "Sat 15" }, { value: "sun-16", label: "Sun 16" },
+  ];
+  static BOOKING_TIMES = ["08:00", "09:00", "10:30", "12:00", "14:30", "16:30", "18:00", "19:30"];
+  static BOOKING_TAKEN = { "mon-10": ["12:00", "16:30"], "tue-11": ["08:00"], "wed-12": ["18:00", "19:30"], "thu-13": ["09:00"], "fri-14": ["14:30"], "sat-15": ["10:30", "12:00"], "sun-16": ["08:00", "09:00"] };
+  static PLATFORMS = [
+    { value: "italki-classroom", label: "italki Classroom", description: "No install — opens in the browser, with the whiteboard and lesson notes.", icon: "Assets/Icons/video-classroom.svg" },
+    { value: "zoom", label: "Zoom", description: "Share your Zoom link with the teacher after booking.", icon: "Assets/Icons/video-zoom.svg" },
+    { value: "google-meet", label: "Google Meet", description: "The teacher sends a Meet link before the lesson.", icon: "Assets/Icons/video-googleHangouts.svg" },
+    { value: "skype", label: "Skype", description: "The teacher will send an invitation before the lesson.", icon: "Assets/Icons/video-skype.svg" },
+  ];
+  static BOOKING_STEPS = [
+    { id: "type", title: "Lesson type and length", caption: "Pick what you want to work on, and how long each lesson should be." },
+    { id: "quantity", title: "How many lessons", caption: "Buying several at once lowers the price per lesson." },
+    { id: "time", title: "Schedule the lesson", caption: "Times are shown in your own timezone." },
+    { id: "platform", title: "Video platform", caption: "Where the lesson will take place." },
+    { id: "review", title: "Review and confirm", caption: "Check the details before you pay." },
+  ];
+
   state = {
     activeTab: "about",
     readMore: false,
@@ -321,6 +373,18 @@ class Component extends DCLogic {
     reviewFilter: "All",
     reviewPage: 0,
     pickedSlot: null,
+    bookingOpen: false,
+    bookingStep: 0,
+    kind: "normal",
+    course: "conversation",
+    duration: "60",
+    quantity: "5",
+    /* Buying a package asks a question a single lesson does not: schedule the
+       first lesson now, or all of them. Both paths are real — "all" collects one
+       slot per lesson and will not continue until every one is placed. */
+    scope: "first",
+    slots: [],
+    platform: "italki-classroom",
   };
 
   tabsAnchorRef = React.createRef();
@@ -360,6 +424,47 @@ class Component extends DCLogic {
     window.addEventListener("resize", this.syncTabsBar);
     this.onDocClick = (e) => {
       if (this.state.moreOpen && !e.target.closest?.("[data-more-menu]")) this.setState({ moreOpen: false });
+      /* The flow's body is markup the kit builds, so its controls arrive as
+         data-demo hooks with no onClick. ds-safe binds the kit's own behaviours;
+         what is decided here is which step we are on and what has been chosen. */
+      if (e.target.closest?.('[data-demo="ui-drawer-mask"], [data-demo="ui-drawer-close"]')) return this.setState({ bookingOpen: false });
+      if (e.target.closest?.("#booking-drawer")) {
+        if (e.target.closest?.('[data-demo="booking-back"]')) return this.bookingBack();
+        if (e.target.closest?.('[data-demo="booking-next"]')) return this.bookingNext();
+        const segment = e.target.closest?.('[data-demo="ui-segmented-control"]');
+        if (segment) {
+          const value = segment.dataset.segmentValue;
+          if (value === "first" || value === "all") return this.setState({ scope: value, slots: [] });
+          return this.setState(value === "trial"
+            ? { kind: value, quantity: "1", duration: String(this.props.trialMinutes ?? 30), slots: [] }
+            : { kind: value, quantity: "5", duration: "60", slots: [] });
+        }
+        const card = e.target.closest?.("[data-lesson-course-card]");
+        const option = e.target.closest?.('[data-demo="ui-selection-card"]');
+        if (option) {
+          const value = option.dataset.selectionValue;
+          const step = this.bookingStep().id;
+          if (step === "type") return this.setState({ course: card?.dataset.lessonCourseCard ?? this.state.course, duration: value });
+          if (step === "quantity") return this.setState({ quantity: value, slots: [] });
+          if (step === "platform") return this.setState({ platform: value });
+        }
+        if (card) return this.setState({ course: card.dataset.lessonCourseCard });
+        const chip = e.target.closest?.("[data-booking-day-chip]");
+        if (chip) return this.setState({ bookingDay: chip.dataset.bookingDayChip });
+        const slot = e.target.closest?.("[data-booking-slot]");
+        if (slot && !slot.disabled) {
+          const pick = { day: slot.dataset.bookingDay, time: slot.dataset.bookingTime };
+          return this.setState((st) => {
+            const without = st.slots.filter((x) => !(x.day === pick.day && x.time === pick.time));
+            /* One slot per lesson: picking again clears it, and the first-lesson
+               mode holds exactly one. */
+            if (without.length !== st.slots.length) return { slots: without };
+            if (this.bookingScope() === "first") return { slots: [pick] };
+            return st.slots.length >= this.bookingCount() ? {} : { slots: [...st.slots, pick] };
+          });
+        }
+        return;
+      }
       /* The review pager is the Pagination component now, so its buttons are
          markup and cannot carry onClick. The page it names is on the button. */
       const pager = e.target.closest?.("#section-reviews .ui-pagination");
@@ -393,6 +498,165 @@ class Component extends DCLogic {
         return { state: open ? "available" : "unavailable" };
       }),
     }));
+  }
+
+  /* ── the flow's own logic ───────────────────────────────────────────────── */
+  bookingSteps() { return Component.BOOKING_STEPS.filter((x) => !(x.id === "quantity" && this.state.kind === "trial")); }
+  bookingStep() { return this.bookingSteps()[Math.min(this.state.bookingStep, this.bookingSteps().length - 1)]; }
+  bookingCourse() { return Component.BOOKING_COURSES.find((c) => c.value === this.state.course) ?? Component.BOOKING_COURSES[0]; }
+  bookingPack() { return Component.PACKAGES.find((x) => x.value === this.state.quantity) ?? Component.PACKAGES[0]; }
+  bookingMinutes() { return this.state.kind === "trial" ? Number(this.props.trialMinutes ?? 30) : Number(this.state.duration); }
+  bookingCount() { return this.state.kind === "trial" ? 1 : Number(this.state.quantity); }
+  /* "all" only exists once there is more than one lesson to place. */
+  bookingScope() { return this.bookingCount() > 1 ? this.state.scope : "first"; }
+  bookingNeeded() { return this.bookingScope() === "all" ? this.bookingCount() : 1; }
+  bookingUnit() {
+    if (this.state.kind === "trial") return Number(String(this.props.trialPrice ?? "US$8.00").replace(/[^0-9.]/g, "")) || 8;
+    const course = this.bookingCourse();
+    const option = course.options.find((o) => o.value === this.state.duration) ?? course.options[0];
+    return Number(option.price.replace(/[^0-9.]/g, "")) * (1 - this.bookingPack().off / 100);
+  }
+  bookingTotal() { return this.bookingUnit() * this.bookingCount(); }
+  money(value) { return `US$${value.toFixed(2)}`; }
+  slotLabel(slot) {
+    const day = Component.BOOKING_DAYS.find((d) => d.value === slot.day);
+    return `${day ? day.label : slot.day}, ${slot.time}`;
+  }
+  openBooking(patch) {
+    this.setState({ bookingOpen: true, bookingStep: 0, slots: [], ...patch });
+  }
+  bookingNext() {
+    if (this.state.bookingStep >= this.bookingSteps().length - 1) return this.setState({ bookingOpen: false, bookingStep: 0 });
+    this.setState((st) => ({ bookingStep: st.bookingStep + 1 }));
+  }
+  bookingBack() {
+    if (this.state.bookingStep === 0) return this.setState({ bookingOpen: false });
+    this.setState((st) => ({ bookingStep: st.bookingStep - 1 }));
+  }
+
+  bookingBody(UI) {
+    const step = this.bookingStep();
+    const indicator = UI.stepper({
+      variant: "progress-steps", ariaLabel: "Booking progress", current: this.state.bookingStep,
+      items: this.bookingSteps().map((x) => ({ id: x.id, label: x.title })),
+    });
+    return `<div class="booking-step">${indicator}<div class="booking-step__head"><h4>${step.title}</h4><p>${step.caption}</p></div>${this[`booking_${step.id}`](UI)}</div>`;
+  }
+
+  booking_type(UI) {
+    const kind = UI.segmentedControl({
+      id: "booking-kind", ariaLabel: "Lesson type", shape: "pill", size: 40, selected: this.state.kind,
+      options: [{ label: "Trial lesson", value: "trial" }, { label: "Regular lesson", value: "normal" }],
+    });
+    if (this.state.kind === "trial") {
+      return `<div class="booking-card">${kind}
+        <p class="booking-caption">A trial lesson is a short first meeting to set goals and check your level. Its length is set by the teacher, so there is nothing to choose here.</p>
+        <div class="booking-fixed"><span>Trial lesson · <strong>${this.bookingMinutes()} minutes</strong></span><strong>${this.money(this.bookingUnit())}</strong></div>
+        ${UI.alert({ tone: "info", title: "One per teacher", description: "You can take one trial lesson with each teacher, and only before your first regular lesson." })}</div>`;
+    }
+    return `<div class="booking-card">${kind}<p class="booking-caption">Every lesson type offers 60 minutes; some offer shorter and longer lessons too.</p>${UI.selectionGroup({
+      label: "Choose a lesson type and length", contentType: "lesson-options", selectionMode: "radio",
+      selected: this.state.course, selectedDuration: this.state.duration,
+      courses: Component.BOOKING_COURSES.map((c) => ({ value: c.value, title: c.title, meta: c.meta, options: c.options })),
+    })}</div>`;
+  }
+
+  booking_quantity(UI) {
+    const course = this.bookingCourse();
+    const option = course.options.find((o) => o.value === this.state.duration) ?? course.options[0];
+    const base = Number(option.price.replace(/[^0-9.]/g, ""));
+    return `<div class="booking-card">${UI.selectionGroup({
+      label: "How many lessons", contentType: "package-card", selectionMode: "radio", layout: "package-grid",
+      selected: this.state.quantity, selectedMarker: true,
+      options: Component.PACKAGES.map((x) => {
+        const unit = base * (1 - x.off / 100);
+        return {
+          label: x.label, value: x.value, description: x.description,
+          discount: x.off ? `${x.off}% off` : "No discount",
+          price: this.money(unit), period: "per lesson",
+          quantity: x.value, quantityLabel: "Lessons",
+          totalPrice: this.money(unit * Number(x.value)),
+          originalPrice: x.off ? this.money(base * Number(x.value)) : "",
+        };
+      }),
+    })}<p class="booking-caption">Package lessons never expire while you keep booking with this teacher.</p></div>`;
+  }
+
+  booking_time(UI) {
+    const needed = this.bookingNeeded();
+    const chosen = this.state.slots;
+    const scope = this.bookingCount() > 1 ? UI.segmentedControl({
+      id: "booking-scope", ariaLabel: "How much to schedule", shape: "pill", size: 32, selected: this.bookingScope(),
+      options: [{ label: "Schedule the first lesson", value: "first" }, { label: `Schedule all ${this.bookingCount()}`, value: "all" }],
+    }) : "";
+    const days = Component.BOOKING_DAYS.map((d) => UI.chip({ label: d.label, size: 32, selected: this.state.bookingDay === d.value, demo: "ds-chip" })
+      .replace('data-demo="ds-chip"', `data-demo="ds-chip" data-booking-day-chip="${d.value}"`)).join("");
+    const day = this.state.bookingDay ?? Component.BOOKING_DAYS[0].value;
+    const taken = Component.BOOKING_TAKEN[day] ?? [];
+    const slots = Component.BOOKING_TIMES.map((time) => {
+      const unavailable = taken.includes(time);
+      const picked = chosen.some((sl) => sl.day === day && sl.time === time);
+      return UI.timeSlot({
+        appearance: "option", label: time,
+        state: unavailable ? "booked-by-others" : picked ? "selected" : "available",
+        ariaLabel: `${time}${unavailable ? ", booked" : picked ? ", chosen" : ""}`,
+      }).replace("<button", `<button data-booking-slot data-booking-day="${day}" data-booking-time="${time}"`);
+    }).join("");
+    const done = chosen.length >= needed;
+    const progress = needed > 1
+      ? UI.alert({ tone: done ? "success" : "info", title: `${chosen.length} of ${needed} lessons scheduled`,
+          description: chosen.length ? chosen.map((sl) => this.slotLabel(sl)).join(" · ") : "Pick a time for each lesson in the package." })
+      : chosen.length ? UI.alert({ tone: "success", title: "Lesson time", description: `${this.slotLabel(chosen[0])} · ${this.bookingMinutes()} minutes` }) : "";
+    return `<div class="booking-card">${scope}<h5>Pick a day</h5><div class="booking-slots">${days}</div>
+      <h5>Then a time</h5><p class="booking-caption">Shown in Asia/Shanghai · each lesson lasts ${this.bookingMinutes()} minutes.</p>
+      <div class="booking-slots">${slots}</div>${progress}</div>`;
+  }
+
+  booking_platform(UI) {
+    return `<div class="booking-card">${UI.selectionGroup({
+      label: "Video platform", contentType: "icon-simple", selectionMode: "radio", selected: this.state.platform,
+      options: Component.PLATFORMS.map((x) => ({ label: x.label, value: x.value, description: x.description, leading: `<img src="${x.icon}" alt="" />` })),
+    })}</div>`;
+  }
+
+  booking_review(UI) {
+    const rows = this.bookingSummary().map((r) => `<div class="booking-summary__row"><dt>${r.label}</dt><dd>${r.value}</dd></div>`).join("");
+    return `<div class="booking-card"><h5>Your lesson</h5><dl class="booking-summary">${rows}
+      <div class="booking-summary__row booking-summary__total"><dt>Total</dt><dd>${this.money(this.bookingTotal())}</dd></div></dl></div>
+      <div class="booking-card"><h5>Payment</h5>${UI.selectionGroup({
+        label: "Payment method", contentType: "payment-icon", selectionMode: "radio", selected: "visa",
+        options: [
+          { label: "Visa ending in 4242", value: "visa", description: "Expires 12/28", leading: '<img src="Assets/Icons/pay-visa.svg" alt="" />' },
+          { label: "italki Wallet", value: "wallet", description: "Balance US$293.45", leading: '<img src="Assets/Icons/wallet.svg" alt="" />' },
+        ],
+      })}<p class="booking-caption">You will not be charged until the teacher accepts the request. Free cancellation up to 24 hours before the lesson.</p></div>`;
+  }
+
+  bookingSummary() {
+    const chosen = this.state.slots;
+    const when = !chosen.length ? "Not chosen yet"
+      : chosen.length === 1 ? this.slotLabel(chosen[0])
+      : `${this.slotLabel(chosen[0])} + ${chosen.length - 1} more`;
+    return [
+      { label: "Lesson type", value: this.state.kind === "trial" ? "Trial lesson" : this.bookingCourse().title },
+      { label: "Length", value: `${this.bookingMinutes()} minutes` },
+      { label: "Lessons", value: this.state.kind === "trial" ? "1 (trial)" : `${this.bookingCount()} × ${this.money(this.bookingUnit())}` },
+      { label: "Scheduled", value: this.bookingScope() === "all" && this.bookingCount() > 1 ? `${chosen.length} of ${this.bookingCount()} · ${when}` : when },
+      { label: "Platform", value: (Component.PLATFORMS.find((x) => x.value === this.state.platform) ?? Component.PLATFORMS[0]).label },
+    ];
+  }
+
+  bookingFooter(UI) {
+    const last = this.state.bookingStep === this.bookingSteps().length - 1;
+    /* The schedule is the only step that can be left unanswered, so Continue is
+       refused there rather than doing nothing quietly. */
+    const blocked = this.bookingStep().id === "time" && this.state.slots.length < this.bookingNeeded();
+    return `<div class="booking-footer">
+      <span class="booking-footer__spend">${last ? "Total" : "Running total"}<strong>${this.money(this.bookingTotal())}</strong></span>
+      <span class="booking-footer__actions">
+        ${UI.button({ label: this.state.bookingStep === 0 ? "Cancel" : "Back", variant: "secondary", size: 40, shape: "default", demo: "booking-back" })}
+        ${UI.button({ label: last ? "Confirm and pay" : "Continue", variant: "red", size: 40, shape: "default", disabled: blocked, demo: "booking-next" })}
+      </span></div>`;
   }
 
   /* Plain data only. An earlier version built nav content by calling a vanilla
@@ -487,6 +751,11 @@ class Component extends DCLogic {
       onlineNow: this.props.onlineNow ?? true,
       trialPrice,
       bookTrialLabel: `Book trial · ${trialPrice}`,
+      bookingOpen: this.state.bookingOpen,
+      drawerTitle: `Book a lesson · Step ${this.state.bookingStep + 1} of ${this.bookingSteps().length}`,
+      stepBody: typeof Component.kit()?.selectionGroup === "function" ? this.bookingBody(Component.kit()) : "",
+      stepFooter: typeof Component.kit()?.selectionGroup === "function" ? this.bookingFooter(Component.kit()) : "",
+      bookTrial: () => this.openBooking({ kind: "trial", quantity: "1", duration: String(this.props.trialMinutes ?? 30) }),
       speaksTags: [
         { text: "Spanish · Native", tone: "info" },
         { text: "English · C2", tone: "neutral" },
@@ -528,13 +797,17 @@ class Component extends DCLogic {
         { icon: "../../Assets/Icons/teacher-trending.svg", title: "In demand", caption: "38 lessons booked this week" },
         { icon: "../../Assets/Icons/teacher-students.svg", title: "Long-term students", caption: "68% book again after 5 lessons" },
       ],
+      /* Booking from a lesson row starts the flow on that row's type, which is
+         the whole reason the row has a Book button of its own. */
       lessons: [
         { name: "Trial Lesson", tag: "New students only", desc: "A 30-minute first meeting to set goals and check your level.", meta: "30 min · one per student", price: trialPrice, per: "30 min", divider: false },
-        { name: "Conversation Practice", tag: "", desc: "Everyday speaking with corrections delivered in the chat.", meta: "A2 – C2 · 1,214 lessons taught", price: "US$14.00", per: "60 min", divider: true },
-        { name: "DELE Exam Prep", tag: "", desc: "Mock exams, marking criteria and technique from a DELE examiner.", meta: "A2 – C1 · 642 lessons taught", price: "US$18.00", per: "60 min", divider: true },
-        { name: "Business Spanish", tag: "", desc: "Meetings, emails and calls — rehearsed with your real agenda.", meta: "B1 – C2 · 318 lessons taught", price: "US$16.00", per: "60 min", divider: true },
-        { name: "Grammar Foundations", tag: "", desc: "From sounds to sentences, built in the right order.", meta: "A1 – B1 · 257 lessons taught", price: "US$12.00", per: "60 min", divider: true },
-      ],
+        { name: "Conversation Practice", tag: "", desc: "Everyday speaking with corrections delivered in the chat.", meta: "A2 – C2 · 1,214 lessons taught", price: "US$14.00", per: "60 min", divider: true, course: "conversation" },
+        { name: "DELE Exam Prep", tag: "", desc: "Mock exams, marking criteria and technique from a DELE examiner.", meta: "A2 – C1 · 642 lessons taught", price: "US$18.00", per: "60 min", divider: true, course: "dele" },
+        { name: "Business Spanish", tag: "", desc: "Meetings, emails and calls — rehearsed with your real agenda.", meta: "B1 – C2 · 318 lessons taught", price: "US$16.00", per: "60 min", divider: true, course: "business" },
+        { name: "Grammar Foundations", tag: "", desc: "From sounds to sentences, built in the right order.", meta: "A1 – B1 · 257 lessons taught", price: "US$12.00", per: "60 min", divider: true, course: "grammar" },
+      ].map((l) => ({ ...l, onBook: () => this.openBooking(l.name === "Trial Lesson"
+        ? { kind: "trial", quantity: "1", duration: String(this.props.trialMinutes ?? 30) }
+        : { kind: "normal", course: l.course, duration: "60", quantity: "5" }) })),
       weekDates: C.DAYS.map((d) => d.label + " " + d.date),
       weekRows: C.availability(),
       nextSlots: [
