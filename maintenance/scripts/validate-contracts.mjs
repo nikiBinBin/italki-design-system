@@ -45,6 +45,7 @@ const foundationTokenDeclarations = new Set([...tokensCSS.matchAll(/(--ui-[a-z0-
 
 assert(catalog.includes('<link rel="stylesheet" href="catalog.css" />'), "Catalog shell styles must live outside the document");
 assert(!catalog.includes("<style>"), "Catalog must not embed its presentation CSS");
+assert(!catalog.includes('gallery.innerHTML = `${taskStartSection()}'), "Overview must not render the Start with a task section");
 assert(catalog.includes("Image|Approved image ratios for content and banners."), "Foundation must expose the image-ratio rule");
 assert(catalog.includes("Use only 16:9 or 3:1 image crops."), "Foundation image guidance must restrict imagery to the approved ratios");
 assert.deepEqual(manifest.components.card.props.mediaRatio, ["16:9", "3:1"], "Card media must only allow the approved image ratios");
