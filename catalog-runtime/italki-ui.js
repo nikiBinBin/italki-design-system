@@ -2012,6 +2012,7 @@
     list.querySelectorAll("[data-lesson-course-card]").forEach((item) => {
       const expanded = shouldExpand && item === card;
       item.classList.toggle("is-expanded", expanded);
+      item.classList.remove("is-preview-expanded");
       const toggle = item.querySelector("[data-demo=ui-lesson-toggle]");
       const options = item.querySelector("[data-ui-selection-group]");
       toggle?.classList.toggle("is-selected", expanded);
@@ -2023,6 +2024,19 @@
         options.inert = !expanded;
       }
     });
+    return true;
+  }
+
+  function previewLessonOptions(card, preview) {
+    if (!card || card.classList.contains("is-expanded")) return false;
+    const toggle = card.querySelector("[data-demo=ui-lesson-toggle]");
+    const options = card.querySelector("[data-ui-selection-group]");
+    if (!toggle || !options) return false;
+    card.classList.toggle("is-preview-expanded", preview);
+    toggle.setAttribute("aria-expanded", String(preview));
+    options.classList.toggle("is-collapsed", !preview);
+    options.setAttribute("aria-hidden", String(!preview));
+    options.inert = !preview;
     return true;
   }
 
@@ -3655,9 +3669,23 @@
   }
 
   global.document?.addEventListener?.("pointerover", (event) => {
+    const lessonCard = event.target?.closest?.("[data-lesson-course-card]");
+    if (lessonCard) previewLessonOptions(lessonCard, true);
     const wrapper = event.target?.closest?.(".ui-calendar .ui-tooltip-wrap");
     setActiveCalendarTooltip(wrapper);
     positionCalendarTooltip(wrapper);
+  });
+  global.document?.addEventListener?.("pointerout", (event) => {
+    const lessonCard = event.target?.closest?.("[data-lesson-course-card]");
+    if (lessonCard && !lessonCard.contains(event.relatedTarget)) previewLessonOptions(lessonCard, false);
+  });
+  global.document?.addEventListener?.("focusin", (event) => {
+    const lessonCard = event.target?.closest?.("[data-lesson-course-card]");
+    if (lessonCard) previewLessonOptions(lessonCard, true);
+  });
+  global.document?.addEventListener?.("focusout", (event) => {
+    const lessonCard = event.target?.closest?.("[data-lesson-course-card]");
+    if (lessonCard && !lessonCard.contains(event.relatedTarget)) previewLessonOptions(lessonCard, false);
   });
   global.document?.addEventListener?.("scroll", (event) => {
     syncCalendarTooltipPosition(event.target);
@@ -3739,6 +3767,7 @@
     handleRadioKeydown,
     toggleSelectionCard,
     toggleLessonOptions,
+    previewLessonOptions,
     handleSelectionCardKeydown,
     toggleBreadcrumb,
     closeBreadcrumbs,

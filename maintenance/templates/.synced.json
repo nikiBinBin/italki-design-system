@@ -34,9 +34,9 @@
       "origin": "not re-verified this sync"
     },
     "teacher-profile/TeacherProfile.dc.html": {
-      "bytes": 41642,
-      "sha256": "3d7e8c7abf4a5760e745367b1f3b68c94e1a87299d1903608f970bae5f17e724",
-      "origin": "pushed 2026-08-11 \u2014 layer scale + width clamp"
+      "bytes": 61080,
+      "sha256": "0e145a1b589bf39761d18f03b3e62e47b042f92c7c05e36050f83413e2ad8813",
+      "origin": "pushed 2026-08-12 \u2014 booking flow on the profile"
     },
     "teacher-profile/ds-safe.js": {
       "bytes": 15312,
@@ -52,6 +52,11 @@
       "bytes": 69150,
       "sha256": "8fe7df74405f3c55",
       "origin": "not re-verified this sync"
+    },
+    "teacher-profile/booking-flow.css": {
+      "bytes": 4135,
+      "sha256": "1034ce5b364f380037c9c26eaba4a28706620b24eafdb7b652a19e538a7aa750",
+      "origin": "pushed 2026-08-12 \u2014 booking flow on the profile"
     }
   }
 }
