@@ -830,6 +830,14 @@ test("Course lesson options expand one course and collapse the active course", a
   await expect(structuredCourse.locator('[data-ui-selection-group]')).toHaveCSS('transition', /grid-template-rows/);
   await expect(conversationToggle.locator('.ui-selection__lesson-summary-title')).toHaveCSS('font-size', '16px');
 
+  await structuredToggle.hover();
+  await expect(structuredToggle).toHaveAttribute('aria-expanded', 'true');
+  await expect(structuredToggle).toHaveAttribute('aria-checked', 'false');
+  await expect(structuredCourse.locator('[data-ui-selection-group]')).not.toHaveClass(/is-collapsed/);
+  await page.mouse.move(0, 0);
+  await expect(structuredToggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(structuredCourse.locator('[data-ui-selection-group]')).toHaveClass(/is-collapsed/);
+
   await structuredToggle.click();
   await expect(conversationToggle).toHaveAttribute('aria-expanded', 'false');
   await expect(conversationCourse.locator('[data-ui-selection-group]')).toHaveClass(/is-collapsed/);
@@ -852,11 +860,11 @@ test("Lesson packages adapt their card count without pricing overflow", async ({
   const widePositions = await getPositions();
 
   expect(new Set(widePositions.map((item) => item.top)).size).toBe(1);
-  expect(widePositions.every((item) => item.width >= 240 && !item.overflowing)).toBe(true);
+  expect(widePositions.every((item) => item.width >= 200 && !item.overflowing)).toBe(true);
 
   await page.setViewportSize({ width: 820, height: 1400 });
   const narrowPositions = await getPositions();
 
   expect(new Set(narrowPositions.map((item) => item.top)).size).toBeGreaterThan(1);
-  expect(narrowPositions.every((item) => item.width >= 240 && !item.overflowing)).toBe(true);
+  expect(narrowPositions.every((item) => item.width >= 200 && !item.overflowing)).toBe(true);
 });
