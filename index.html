@@ -1113,7 +1113,7 @@
         document.getElementById("page-title").textContent = "Overview";
         document.getElementById("total").innerHTML = downloadDocument("docs/COMPONENTS.md", "COMPONENTS.md");
         document.querySelector(".page-heading").classList.add("has-heading-action");
-        gallery.innerHTML = `${taskStartSection()}${overviewComponentSection(principlesGroup)}${overviewCatalogGroup({ id: "foundation", title: "Foundation", description: "Visual tokens and shared system constraints.", groups: [foundationGroup], showChildHeadings: false })}${overviewCatalogGroup({ id: "components", title: "Components", description: "Reusable UI contracts, grouped by their task and visual role.", groups: componentGroups })}${overviewCatalogGroup({ id: "patterns", title: "Patterns", description: "Product-specific compositions built from documented components and supplied business data.", groups: [patternsGroup], showChildHeadings: false })}`;
+        gallery.innerHTML = `${overviewComponentSection(principlesGroup)}${overviewCatalogGroup({ id: "foundation", title: "Foundation", description: "Visual tokens and shared system constraints.", groups: [foundationGroup], showChildHeadings: false })}${overviewCatalogGroup({ id: "components", title: "Components", description: "Reusable UI contracts, grouped by their task and visual role.", groups: componentGroups })}${overviewCatalogGroup({ id: "patterns", title: "Patterns", description: "Product-specific compositions built from documented components and supplied business data.", groups: [patternsGroup], showChildHeadings: false })}`;
         updateNavigation();
         updateStickyHeading();
       }
