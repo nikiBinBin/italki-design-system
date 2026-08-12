@@ -841,15 +841,22 @@ test("Course lesson options expand one course and collapse the active course", a
   await expect(structuredCourse.locator('[data-ui-selection-group]')).toHaveClass(/is-collapsed/);
 });
 
-test("Lesson packages wrap before their pricing content overflows", async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 1400 });
+test("Lesson packages adapt their card count without pricing overflow", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1400 });
   await page.goto(`${catalog}#selection`);
 
   const packages = page.locator('.ui-selection-group--package-grid');
   const cards = packages.locator('.ui-selection--package-card');
   await expect(cards).toHaveCount(4);
-  const positions = await cards.evaluateAll((items) => items.map((item) => ({ top: Math.round(item.getBoundingClientRect().top), width: item.getBoundingClientRect().width, overflowing: item.scrollWidth > item.clientWidth })));
+  const getPositions = () => cards.evaluateAll((items) => items.map((item) => ({ top: Math.round(item.getBoundingClientRect().top), width: item.getBoundingClientRect().width, overflowing: item.scrollWidth > item.clientWidth })));
+  const widePositions = await getPositions();
 
-  expect(new Set(positions.map((item) => item.top)).size).toBeGreaterThan(1);
-  expect(positions.every((item) => item.width >= 360 && !item.overflowing)).toBe(true);
+  expect(new Set(widePositions.map((item) => item.top)).size).toBe(1);
+  expect(widePositions.every((item) => item.width >= 240 && !item.overflowing)).toBe(true);
+
+  await page.setViewportSize({ width: 820, height: 1400 });
+  const narrowPositions = await getPositions();
+
+  expect(new Set(narrowPositions.map((item) => item.top)).size).toBeGreaterThan(1);
+  expect(narrowPositions.every((item) => item.width >= 240 && !item.overflowing)).toBe(true);
 });
