@@ -2679,7 +2679,12 @@
     enumValue("drawer", "placement", placement);
     enumValue("drawer", "size", size);
     const drawerId = id || `drawer-${String(title).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "panel"}`;
-    const triggerMarkup = trigger || button({ label: triggerLabel, variant: "secondary", size: 32, shape: "pill", demo: demo || "ui-drawer-open", ariaExpanded: open, ariaControls: `${drawerId}-dialog` });
+    /* An empty trigger means the page supplies its own; only an absent one asks
+       for the default button. Modal had the same bug: passing trigger="" still
+       rendered "Open drawer" beside a page's own control. */
+    const triggerMarkup = trigger === undefined
+      ? button({ label: triggerLabel, variant: "secondary", size: 32, shape: "pill", demo: demo || "ui-drawer-open", ariaExpanded: open, ariaControls: `${drawerId}-dialog` })
+      : trigger;
     const close = closable ? `<button class="ui-drawer__close" type="button" data-demo="ui-drawer-close" aria-label="Close drawer">${icon("Assets/Icons/cross.svg", "ui-drawer__close-icon")}</button>` : "";
     const footerMarkup = footer ? `<footer class="ui-drawer__footer">${footer}</footer>` : "";
     return `<div class="ui-drawer-stage${open ? " is-open" : ""}" id="${escapeHTML(drawerId)}" data-component="drawer" data-ui-drawer data-mask-closable="${maskClosable}" data-keyboard-closable="${keyboardClosable}">${triggerMarkup}<div class="ui-drawer__layer"${open ? "" : " aria-hidden=\"true\""}><button class="ui-drawer__mask" type="button" data-demo="ui-drawer-mask" aria-label="Close drawer"></button><aside class="ui-drawer ui-drawer--${placement} ui-drawer--${size}" id="${escapeHTML(drawerId)}-dialog" role="dialog" aria-modal="true" aria-labelledby="${escapeHTML(drawerId)}-title" tabindex="-1"><div class="ui-drawer__content"><header class="ui-drawer__header"><h3 id="${escapeHTML(drawerId)}-title">${escapeHTML(title)}</h3>${close}</header><div class="ui-drawer__body">${body}</div>${footerMarkup}</div></aside></div></div>`;

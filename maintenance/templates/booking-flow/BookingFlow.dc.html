@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Booking Flow" description="Booking a lesson, step by step in a bottom drawer — lesson type and length, how many lessons, when, which video platform, then review and confirm. A trial lesson has the length its teacher set and skips the quantity step." -->
+<helmet>
+<script src="./ds-base.js"></script>
+<script src="./ds-safe.js"></script>
+<link rel="stylesheet" href="./booking-flow.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>body{margin:0;background:var(--ui-color-divider);color:var(--ui-color-text);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;font-weight:500;-webkit-font-smoothing:antialiased}*{box-sizing:border-box}a{color:var(--ui-color-link);text-decoration:none}a:hover{color:var(--ui-color-link-hover);text-decoration:underline}
+/* Duplicates the kit default on purpose. These used to live only here, then
+   only in the kit; either way the template depended on the other side being
+   in step, and a bundle one version behind left the shell unpositioned.
+   The rungs come from the --ui-layer-* scale in tokens.css; the literals are
+   only the fallback for a bundle that predates it. */
+.ui-sidebar.ui-sidebar{height:100dvh;position:sticky;top:0;z-index:var(--ui-layer-sidebar,41);align-self:flex-start}
+.ui-top-nav.ui-top-nav{position:sticky;top:0;z-index:var(--ui-layer-top-nav,40)}
+/* The flow is the page's overlay, not a block in its column. A drawer stage
+   carries min-height:272px so it can be demonstrated inline, and on a page that
+   is 272px of empty space below the fold — enough to scroll the sticky sidebar
+   out of its own containing block, which is what the audit caught. Fixed and
+   inert until it opens. */
+#booking-drawer{position:fixed;inset:0;z-index:var(--ui-layer-overlay,60);min-height:0;overflow:visible;background:transparent;pointer-events:none}
+#booking-drawer.is-open{pointer-events:auto}
+#booking-drawer .ui-drawer__layer{position:fixed;inset:0}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;align-items:flex-start">
+
+<x-import component-from-global-scope="SafeUI.Sidebar" variant="plus" collapsed="{{ true }}" items="{{ navItems }}" sections="{{ navSections }}" more-items="{{ moreItems }}" balance="$293.45 USD" avatar-initials="NI" sticky="{{ true }}" hint-size="72px,100vh"></x-import>
+
+<div style="flex:1;min-width:0">
+
+<x-import component-from-global-scope="SafeUI.TopNav" aria-label="Page" context-label="Spanish teachers" context-flag="Assets/Flags/es.svg" context-options="{{ navContextOptions }}" search-placeholder="Search topics" search-filter-label="Filter" action-label="Book lessons" action-icon="nav-plus" hint-size="100%,72px"></x-import>
+
+<div class="booking-page">
+
+<section class="booking-card" data-screen-label="Teacher">
+<div class="booking-teacher">
+<x-import component-from-global-scope="SafeUI.Avatar" image="https://randomuser.me/api/portraits/women/44.jpg" flag="es" size="{{ 64 }}" ariaLabel="Lucía Fernández, Spain" hint-size="64px,64px"></x-import>
+<div class="booking-teacher__copy">
+<h1>Lucía Fernández</h1>
+<p>Professional Teacher · Spanish</p>
+<div class="booking-teacher__meta"><span>4.98 ★ · 2,431 lessons</span><span>Responds within 1 hour</span></div>
+</div>
+</div>
+<div class="booking-cta">
+<div style="display:grid"><span onClick="{{ openFlow }}" style="display:grid"><x-import component-from-global-scope="SafeUI.Button" label="Book a lesson" variant="red" size="{{ 40 }}" shape="pill" hint-size="100%,40px"></x-import></span></div>
+<p class="booking-caption">Free cancellation up to 24 hours before the lesson starts.</p>
+</div>
+</section>
+
+<section class="booking-card" data-screen-label="What you picked">
+<h5>Your selection</h5>
+<dl class="booking-summary">
+<sc-for list="{{ summaryRows }}" as="row" hint-placeholder-count="4">
+<div class="booking-summary__row"><dt>{{ row.label }}</dt><dd>{{ row.value }}</dd></div>
+</sc-for>
+</dl>
+</section>
+
+</div>
+</div>
+</div>
+
+<x-import component-from-global-scope="SafeUI.Drawer" id="booking-drawer" placement="bottom" size="wide" title="{{ drawerTitle }}" open="{{ open }}" trigger="" body="{{ stepBody }}" footer="{{ stepFooter }}" hint-size="100%,640px"></x-import>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;trialPrice&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;US$8.00&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Pricing&quot;},&quot;trialMinutes&quot;:{&quot;editor&quot;:&quot;number&quot;,&quot;default&quot;:30,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Pricing&quot;}}">
+class Component extends DCLogic {
+  /* The teacher's own setup. A trial lesson has one length, decided by the
+     teacher; every other lesson type carries its own durations, and the flow
+     guarantees 60 minutes is among them because that is the length italki
+     promises on every type. */
+  static COURSES = [
+    { value: "conversation", title: "🎙️ Real-life Conversation (Spanish)", meta: "B1–C2 · Language Essentials · 2,182 lessons completed",
+      options: [{ label: "30 mins", value: "30", price: "US$9.00" }, { label: "45 mins", value: "45", price: "US$12.00" }, { label: "60 mins", value: "60", price: "US$14.00" }, { label: "90 mins", value: "90", price: "US$20.00" }] },
+    { value: "dele", title: "📘 DELE Exam Preparation", meta: "A2–C1 · Test Preparation · 642 lessons completed",
+      options: [{ label: "60 mins", value: "60", price: "US$18.00" }, { label: "90 mins", value: "90", price: "US$26.00" }] },
+    { value: "business", title: "💼 Business Spanish", meta: "B1–C2 · Business · 318 lessons completed",
+      options: [{ label: "60 mins", value: "60", price: "US$16.00" }] },
+  ];
+
+  static PACKAGES = [
+    { value: "1", label: "Single lesson", quantity: "1", discount: "No discount", description: "Try one lesson and decide afterwards.", unit: 14 },
+    { value: "5", label: "5 lessons", quantity: "5", discount: "3% off", description: "A short package to build a routine.", unit: 13.58 },
+    { value: "10", label: "10 lessons", quantity: "10", discount: "5% off", description: "The usual choice for a full term.", unit: 13.3 },
+    { value: "20", label: "20 lessons", quantity: "20", discount: "7% off", description: "Set it and forget it for the next few months.", unit: 13.02 },
+  ];
+
+  static DAYS = [
+    { value: "mon-10", label: "Mon 10", date: "Mo 10" }, { value: "tue-11", label: "Tue 11", date: "Tu 11" },
+    { value: "wed-12", label: "Wed 12", date: "We 12" }, { value: "thu-13", label: "Thu 13", date: "Th 13" },
+    { value: "fri-14", label: "Fri 14", date: "Fr 14" }, { value: "sat-15", label: "Sat 15", date: "Sa 15" },
+    { value: "sun-16", label: "Sun 16", date: "Su 16" },
+  ];
+  static TIMES = ["08:00", "09:00", "10:30", "12:00", "14:30", "16:30", "18:00", "19:30"];
+  static TAKEN = { "mon-10": ["12:00", "16:30"], "tue-11": ["08:00"], "wed-12": ["18:00", "19:30"], "thu-13": ["09:00"], "fri-14": ["14:30"], "sat-15": ["10:30", "12:00"], "sun-16": ["08:00", "09:00"] };
+
+  static PLATFORMS = [
+    { value: "italki-classroom", label: "italki Classroom", description: "No install — opens in the browser, with the whiteboard and lesson notes.", icon: "Assets/Icons/video-classroom.svg" },
+    { value: "zoom", label: "Zoom", description: "Share your Zoom link with the teacher after booking.", icon: "Assets/Icons/video-zoom.svg" },
+    { value: "skype", label: "Skype", description: "The teacher will send an invitation before the lesson.", icon: "Assets/Icons/video-skype.svg" },
+    { value: "teams", label: "Microsoft Teams", description: "Useful when your company already runs Teams.", icon: "Assets/Icons/video-teams.svg" },
+    { value: "wechat", label: "WeChat", description: "Add each other before the first lesson.", icon: "Assets/Icons/video-wechat.svg" },
+  ];
+
+  /* The five steps of the brief. Quantity is skipped for a trial, because a
+     trial is one lesson by definition — the flow drops the step rather than
+     showing it with a single choice. */
+  static STEPS = [
+    { id: "type", title: "Lesson type and length", caption: "Pick what you want to work on, and how long each lesson should be." },
+    { id: "quantity", title: "How many lessons", caption: "Buying several at once lowers the price per lesson." },
+    { id: "time", title: "Schedule the lesson", caption: "Times are shown in your own timezone." },
+    { id: "platform", title: "Video platform", caption: "Where the lesson will take place." },
+    { id: "review", title: "Review and confirm", caption: "Check the details before you pay." },
+  ];
+
+  state = {
+    open: false,
+    step: 0,
+    kind: "normal",
+    course: "conversation",
+    duration: "60",
+    quantity: "5",
+    day: null,
+    time: null,
+    platform: "italki-classroom",
+  };
+
+  componentDidMount() {
+    document.getElementById("ds-kit-missing")?.remove();
+    if (typeof Component.kit()?.avatar !== "function") {
+      this.timer = setInterval(() => {
+        if (typeof Component.kit()?.avatar !== "function") return;
+        clearInterval(this.timer);
+        this.forceUpdate();
+      }, 50);
+    }
+    /* The drawer's body is markup the kit builds, so its controls arrive as
+       data-demo hooks with no onClick. The kit's own behaviours are bound by
+       ds-safe; what belongs to this page — which step we are on, and what has
+       been chosen — is decided here, from the value each control carries. */
+    this.onClick = (e) => {
+      const hit = (sel) => e.target.closest?.(sel);
+      if (hit('[data-demo="booking-open"]')) return this.setState({ open: true });
+      if (hit('[data-demo="ui-drawer-mask"], [data-demo="ui-drawer-close"], [data-demo="booking-close"]')) return this.setState({ open: false });
+      if (!hit("#booking-drawer")) return;
+
+      if (hit('[data-demo="booking-back"]')) return this.goBack();
+      if (hit('[data-demo="booking-next"]')) return this.goNext();
+
+      const segment = hit('[data-demo="ui-segmented-control"]');
+      if (segment) {
+        const kind = segment.dataset.segmentValue;
+        /* A trial is one lesson of the teacher's chosen length, so switching to
+           it settles both of the choices the other branch asks for. */
+        return this.setState(kind === "trial"
+          ? { kind, quantity: "1", duration: String(this.props.trialMinutes ?? 30) }
+          : { kind, quantity: "5", duration: "60" });
+      }
+
+      const course = hit("[data-lesson-course-card]");
+      const option = hit('[data-demo="ui-selection-card"]');
+      if (option) {
+        const value = option.dataset.selectionValue;
+        const step = Component.STEPS[this.stepId()];
+        if (step.id === "type") return this.setState({ course: course?.dataset.lessonCourseCard ?? this.state.course, duration: value });
+        if (step.id === "quantity") return this.setState({ quantity: value });
+        if (step.id === "platform") return this.setState({ platform: value });
+      }
+      if (course && !option) return this.setState({ course: course.dataset.lessonCourseCard });
+
+      const slot = hit("[data-booking-slot]");
+      if (slot && !slot.disabled) return this.setState({ day: slot.dataset.bookingDay, time: slot.dataset.bookingTime });
+      const day = hit("[data-booking-day-chip]");
+      if (day) return this.setState({ day: day.dataset.bookingDayChip, time: null });
+    };
+    document.addEventListener("click", this.onClick, true);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+    document.removeEventListener("click", this.onClick, true);
+  }
+
+  /* Steps are addressed by their place in STEPS; the quantity step simply is not
+     part of the sequence for a trial, so back and next both step over it and the
+     indicator never shows a step that cannot be reached. */
+  steps() {
+    return Component.STEPS.filter((s) => !(s.id === "quantity" && this.state.kind === "trial"));
+  }
+  stepId() { return Component.STEPS.indexOf(this.steps()[Math.min(this.state.step, this.steps().length - 1)]); }
+  current() { return this.steps()[Math.min(this.state.step, this.steps().length - 1)]; }
+  goNext() {
+    if (this.state.step >= this.steps().length - 1) return this.setState({ open: false, step: 0 });
+    this.setState((s) => ({ step: s.step + 1 }));
+  }
+  goBack() {
+    if (this.state.step === 0) return this.setState({ open: false });
+    this.setState((s) => ({ step: s.step - 1 }));
+  }
+
+  course() { return Component.COURSES.find((c) => c.value === this.state.course) ?? Component.COURSES[0]; }
+  pack() { return Component.PACKAGES.find((p) => p.value === this.state.quantity) ?? Component.PACKAGES[0]; }
+  minutes() { return this.state.kind === "trial" ? Number(this.props.trialMinutes ?? 30) : Number(this.state.duration); }
+  unitPrice() {
+    if (this.state.kind === "trial") return Number(String(this.props.trialPrice ?? "US$8.00").replace(/[^0-9.]/g, "")) || 8;
+    const option = this.course().options.find((o) => o.value === this.state.duration) ?? this.course().options[0];
+    const base = Number(option.price.replace(/[^0-9.]/g, ""));
+    const discount = 1 - ((Number(this.pack().discount.replace(/[^0-9.]/g, "")) || 0) / 100);
+    return base * discount;
+  }
+  lessonCount() { return this.state.kind === "trial" ? 1 : Number(this.state.quantity); }
+  total() { return this.unitPrice() * this.lessonCount(); }
+  money(value) { return `US$${value.toFixed(2)}`; }
+  when() {
+    if (!this.state.day || !this.state.time) return null;
+    const day = Component.DAYS.find((d) => d.value === this.state.day);
+    return `${day ? day.label : this.state.day}, ${this.state.time}`;
+  }
+
+  /* Every step's body is composed from the kit — no hand-written substitutes for
+     things the design system already ships. */
+  stepBody(UI) {
+    const step = this.current();
+    const head = `<div class="booking-step__head"><h4>${step.title}</h4><p>${step.caption}</p></div>`;
+    const indicator = UI.stepper({
+      variant: "progress-steps",
+      ariaLabel: "Booking progress",
+      /* currentIndex is zero-based inside the component, so the step we are on
+         is the step's own index — passing step + 1 drew the previous step as
+         finished and highlighted the next one. */
+      current: this.state.step,
+      /* The component derives complete / current / upcoming from `current`, so
+         the items only have to say what they are. */
+      items: this.steps().map((s) => ({ id: s.id, label: s.title })),
+    });
+    return `<div class="booking-step">${indicator}${head}${this[`step_${step.id}`](UI)}</div>`;
+  }
+
+  step_type(UI) {
+    const kind = UI.segmentedControl({
+      id: "booking-kind",
+      ariaLabel: "Lesson type",
+      shape: "pill",
+      size: 40,
+      selected: this.state.kind,
+      options: [{ label: "Trial lesson", value: "trial" }, { label: "Regular lesson", value: "normal" }],
+    });
+    if (this.state.kind === "trial") {
+      const minutes = this.minutes();
+      return `<div class="booking-card">${kind}
+        <p class="booking-caption">A trial lesson is a short first meeting to set goals and check your level. Its length is set by the teacher, so there is nothing to choose here.</p>
+        <div class="booking-fixed"><span>Trial lesson · <strong>${minutes} minutes</strong></span><strong>${this.money(this.unitPrice())}</strong></div>
+        ${UI.alert({ tone: "info", title: "One per teacher", description: "You can take one trial lesson with each teacher, and only before your first regular lesson." })}</div>`;
+    }
+    /* The lesson-options group is the kit's own composition for exactly this:
+       a course, its durations and their prices, with one course expanded. */
+    const group = UI.selectionGroup({
+      label: "Choose a lesson type and length",
+      contentType: "lesson-options",
+      selectionMode: "radio",
+      selected: this.state.course,
+      selectedDuration: this.state.duration,
+      courses: Component.COURSES.map((c) => ({ value: c.value, title: c.title, meta: c.meta, options: c.options })),
+    });
+    return `<div class="booking-card">${kind}<p class="booking-caption">Every lesson type offers 60 minutes; some offer shorter and longer lessons too.</p>${group}</div>`;
+  }
+
+  step_quantity(UI) {
+    const group = UI.selectionGroup({
+      label: "How many lessons",
+      contentType: "package-card",
+      selectionMode: "radio",
+      layout: "package-grid",
+      selected: this.state.quantity,
+      selectedMarker: true,
+      options: Component.PACKAGES.map((p) => ({
+        label: p.label, value: p.value, discount: p.discount, description: p.description,
+        price: this.money(p.unit), period: "per lesson", quantity: p.quantity, quantityLabel: "Lessons",
+        totalPrice: this.money(p.unit * Number(p.value)),
+        originalPrice: p.value === "1" ? "" : this.money(14 * Number(p.value)),
+      })),
+    });
+    return `<div class="booking-card">${group}<p class="booking-caption">Package lessons never expire while you keep booking with this teacher.</p></div>`;
+  }
+
+  step_time(UI) {
+    const days = Component.DAYS.map((d) => UI.chip({
+      label: d.label, size: 32, selected: this.state.day === d.value, demo: "ds-chip",
+    }).replace('data-demo="ds-chip"', `data-demo="ds-chip" data-booking-day-chip="${d.value}"`)).join("");
+    const day = this.state.day ?? Component.DAYS[0].value;
+    const taken = Component.TAKEN[day] ?? [];
+    const slots = Component.TIMES.map((time) => {
+      const unavailable = taken.includes(time);
+      return UI.timeSlot({
+        appearance: "option",
+        label: time,
+        state: unavailable ? "booked-by-others" : this.state.day === day && this.state.time === time ? "selected" : "available",
+        ariaLabel: `${time}${unavailable ? ", booked" : ""}`,
+      }).replace("<button", `<button data-booking-slot data-booking-day="${day}" data-booking-time="${time}"`);
+    }).join("");
+    const chosen = this.when();
+    return `<div class="booking-card"><h5>Pick a day</h5><div class="booking-slots">${days}</div>
+      <h5>Then a time</h5><p class="booking-caption">Shown in Asia/Shanghai · each lesson lasts ${this.minutes()} minutes.</p>
+      <div class="booking-slots">${slots}</div>
+      ${chosen ? UI.alert({ tone: "success", title: "Lesson time", description: `${chosen} · ${this.minutes()} minutes` }) : ""}</div>`;
+  }
+
+  step_platform(UI) {
+    const group = UI.selectionGroup({
+      label: "Video platform",
+      contentType: "icon-simple",
+      selectionMode: "radio",
+      selected: this.state.platform,
+      options: Component.PLATFORMS.map((p) => ({
+        label: p.label, value: p.value, description: p.description,
+        leading: `<img src="${p.icon}" alt="" />`,
+      })),
+    });
+    return `<div class="booking-card">${group}</div>`;
+  }
+
+  step_review(UI) {
+    const rows = this.summaryRows().map((r) => `<div class="booking-summary__row"><dt>${r.label}</dt><dd>${r.value}</dd></div>`).join("");
+    return `<div class="booking-card"><h5>Your lesson</h5>
+      <dl class="booking-summary">${rows}
+      <div class="booking-summary__row booking-summary__total"><dt>Total</dt><dd>${this.money(this.total())}</dd></div></dl></div>
+      <div class="booking-card"><h5>Payment</h5>
+      ${UI.selectionGroup({ label: "Payment method", contentType: "payment-icon", selectionMode: "radio", selected: "visa", options: [
+        { label: "Visa ending in 4242", value: "visa", description: "Expires 12/28", leading: '<img src="Assets/Icons/pay-visa.svg" alt="" />' },
+        { label: "italki Wallet", value: "wallet", description: "Balance US$293.45", leading: '<img src="Assets/Icons/wallet.svg" alt="" />' },
+      ] })}
+      <p class="booking-caption">You will not be charged until the teacher accepts the request. Free cancellation up to 24 hours before the lesson.</p></div>`;
+  }
+
+  summaryRows() {
+    const rows = [
+      { label: "Lesson type", value: this.state.kind === "trial" ? "Trial lesson" : this.course().title },
+      { label: "Length", value: `${this.minutes()} minutes` },
+      { label: "Lessons", value: this.state.kind === "trial" ? "1 (trial)" : `${this.lessonCount()} × ${this.money(this.unitPrice())}` },
+      { label: "When", value: this.when() ?? "Not chosen yet" },
+      { label: "Platform", value: (Component.PLATFORMS.find((p) => p.value === this.state.platform) ?? Component.PLATFORMS[0]).label },
+    ];
+    return rows;
+  }
+
+  stepFooter(UI) {
+    const last = this.state.step === this.steps().length - 1;
+    /* Next is refused rather than hidden while the step is unanswered: the only
+       step that can be incomplete is the schedule, and saying so is kinder than
+       a button that silently does nothing. */
+    const blocked = this.current().id === "time" && !this.when();
+    return `<div class="booking-footer">
+      <span class="booking-footer__spend">${last ? "Total" : "Running total"}<strong>${this.money(this.total())}</strong></span>
+      <span class="booking-footer__actions">
+        ${UI.button({ label: this.state.step === 0 ? "Cancel" : "Back", variant: "secondary", size: 40, shape: "default", demo: "booking-back" })}
+        ${UI.button({ label: last ? "Confirm and pay" : "Continue", variant: "red", size: 40, shape: "default", disabled: blocked, demo: "booking-next" })}
+      </span></div>`;
+  }
+
+  navVals() {
+    const shell = Component.kit()?.appShellNav?.() ?? { items: [], moreItems: [] };
+    return {
+      navItems: shell.items,
+      moreItems: shell.moreItems,
+      navSections: [
+        { id: "chats", label: "Chats", open: true, items: [
+          { id: "chat-lucia", label: "Lucía Fernández", secondary: "2m", avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
+        ] },
+        { id: "lessons", label: "Lessons", items: [
+          { id: "lesson-today", prefix: "12", divider: true, label: "Spanish B1", secondary: "Today 18:00" },
+        ] },
+      ],
+      navContextOptions: [
+        { id: "spanish", label: "Spanish teachers", flag: "Assets/Flags/es.svg" },
+        { id: "english", label: "English teachers", flag: "Assets/Flags/gb.svg" },
+      ],
+    };
+  }
+
+  renderVals() {
+    const UI = Component.kit();
+    /* First render can beat the bundle: componentDidMount polls for it and
+       forces an update once it lands, so an empty drawer for one frame is the
+       correct answer rather than a thrown error. */
+    const ready = typeof UI?.selectionGroup === "function";
+    return {
+      ...this.navVals(),
+      open: this.state.open,
+      drawerTitle: `Book a lesson · Step ${this.state.step + 1} of ${this.steps().length}`,
+      stepBody: ready ? this.stepBody(UI) : "",
+      stepFooter: ready ? this.stepFooter(UI) : "",
+      summaryRows: this.summaryRows(),
+      openFlow: () => this.setState({ open: true, step: 0 }),
+    };
+  }
+}
+</script>
+</body>
+</html>
