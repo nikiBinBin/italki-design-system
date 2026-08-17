@@ -272,7 +272,7 @@
        through the same data-demo hook every other interactive renderer uses. */
     const label = playLabel || (title ? `Play ${title}` : "Play video");
     return `<div class="ui-video${state === "hover" ? " is-hover" : ""}${disabled ? " is-disabled" : ""}" data-component="video"${id ? ` id="${escapeHTML(id)}"` : ""}>`
-      + `<img class="ui-video__poster" src="${escapeHTML(poster)}" alt="${escapeHTML(posterAlt)}" />`
+      + `<img class="ui-video__poster" src="${escapeHTML(withBase(poster))}" alt="${escapeHTML(posterAlt)}" />`
       + `<button class="ui-video__play" type="button" aria-label="${escapeHTML(label)}"${disabled ? " disabled" : ""}${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}>`
       + `<span class="ui-video__play-disc" aria-hidden="true"></span></button>`
       + (duration ? `<span class="ui-video__duration">${escapeHTML(duration)}</span>` : "")
@@ -579,7 +579,7 @@
     const content = variant === "logo"
       ? `<img class="ui-avatar__logo" src="${withBase("Assets/Icons/logo-italki-logomark-white.svg")}" alt="" />`
       : image
-      ? `<img class="ui-avatar__image" src="${escapeHTML(image)}" alt="" />`
+      ? `<img class="ui-avatar__image" src="${escapeHTML(withBase(image))}" alt="" />`
       : `<span class="ui-avatar__initials" aria-hidden="true">${escapeHTML(initials)}</span>`;
     const flagMarkup = variant === "with-flag"
       ? `<span class="ui-avatar__flag">${flag({ countryCode, countryLabel: flagLabel, size: size <= 56 ? 16 : 24, decorative: true })}</span>`
@@ -727,7 +727,7 @@
     const hasMedia = Boolean(media || mediaPlaceholder);
     const classes = ["ui-card", interactive ? "is-interactive" : "is-static", outlined && !interactive ? "is-outlined" : "", `ui-card--${density}`, hasMedia ? `ui-card--media-${mediaRatio.replace(":", "-")}` : ""].filter(Boolean).join(" ");
     const mediaMarkup = media
-      ? `<img class="ui-card__media" src="${escapeHTML(media)}" alt="${escapeHTML(mediaAlt)}" />`
+      ? `<img class="ui-card__media" src="${escapeHTML(withBase(media))}" alt="${escapeHTML(mediaAlt)}" />`
       : mediaPlaceholder ? `<span class="ui-card__media ui-media-placeholder" aria-hidden="true"><img src="${withBase("Assets/Icons/logo-italki-logomark-white.svg")}" alt="" /></span>` : "";
     const eyebrowMarkup = eyebrow ? `<span class="ui-card__eyebrow">${escapeHTML(eyebrow)}</span>` : "";
     const titleMarkup = title ? `<h3 class="ui-card__title">${escapeHTML(title)}</h3>` : "";
@@ -762,7 +762,7 @@
       const trailingMarkup = trailing ? `<span class="ui-list__trailing">${trailing}</span>` : "";
       const imageMarkup = imagePlaceholder
         ? `<span class="ui-list__image-placeholder ui-media-placeholder" aria-hidden="true"><img src="${withBase("Assets/Icons/logo-italki-logomark-white.svg")}" alt="" /></span>`
-        : image ? `<img class="ui-list__image" src="${escapeHTML(image)}" alt="${escapeHTML(imageAlt)}" />` : "";
+        : image ? `<img class="ui-list__image" src="${escapeHTML(withBase(image))}" alt="${escapeHTML(imageAlt)}" />` : "";
       const identityMarkup = `<span class="ui-list__copy"><span class="ui-list__label">${escapeHTML(label)}</span>${descriptionMarkup}</span>`;
       const rowContent = variant === "content"
         ? `${avatarMarkup}${identityMarkup}${imageMarkup}${contentMarkup}${metricsMarkup}${trailingMarkup}`
@@ -2966,7 +2966,7 @@
         : hint;
     const avatarAriaLabel = ariaLabel === "File upload" ? `${avatarAction}: ${label}` : ariaLabel;
     const content = variant === "avatar"
-      ? `<div class="ui-upload__avatar-field"><button class="ui-upload__avatar" type="button" data-demo="ui-upload-trigger" aria-controls="${escapeHTML(uploadId)}-input" aria-label="${escapeHTML(avatarAriaLabel)}"${avatarBusy ? ' aria-busy="true"' : ""}${disabled || avatarBusy ? " disabled" : ""}>${avatarHasImage ? `<img class="ui-upload__avatar-image" src="${escapeHTML(avatar)}" alt="${escapeHTML(avatarAlt || label)}" />` : icon("Assets/Icons/whiteboard-upload.svg", "ui-upload__avatar-icon")}<span class="ui-upload__avatar-overlay" aria-hidden="true">${escapeHTML(avatarAction)}</span>${avatarBusy ? `<span class="ui-upload__avatar-loading" aria-hidden="true"><i class="ui-upload__file-spinner"></i></span>` : ""}</button><span class="ui-upload__avatar-copy"><strong>${escapeHTML(label)}</strong>${avatarMessage ? `<small${state === "error" ? ' role="alert"' : state === "uploading" ? ' role="status"' : ""}>${escapeHTML(avatarMessage)}</small>` : ""}</span></div>`
+      ? `<div class="ui-upload__avatar-field"><button class="ui-upload__avatar" type="button" data-demo="ui-upload-trigger" aria-controls="${escapeHTML(uploadId)}-input" aria-label="${escapeHTML(avatarAriaLabel)}"${avatarBusy ? ' aria-busy="true"' : ""}${disabled || avatarBusy ? " disabled" : ""}>${avatarHasImage ? `<img class="ui-upload__avatar-image" src="${escapeHTML(withBase(avatar))}" alt="${escapeHTML(avatarAlt || label)}" />` : icon("Assets/Icons/whiteboard-upload.svg", "ui-upload__avatar-icon")}<span class="ui-upload__avatar-overlay" aria-hidden="true">${escapeHTML(avatarAction)}</span>${avatarBusy ? `<span class="ui-upload__avatar-loading" aria-hidden="true"><i class="ui-upload__file-spinner"></i></span>` : ""}</button><span class="ui-upload__avatar-copy"><strong>${escapeHTML(label)}</strong>${avatarMessage ? `<small${state === "error" ? ' role="alert"' : state === "uploading" ? ' role="status"' : ""}>${escapeHTML(avatarMessage)}</small>` : ""}</span></div>`
       : variant === "trigger"
       ? `<div class="ui-upload__trigger-row"><span class="ui-upload__trigger-copy"><strong>${escapeHTML(label)}</strong>${hint ? `<small>${escapeHTML(hint)}</small>` : ""}</span>${trigger}</div>`
       : `<button class="ui-upload__dropzone" type="button" data-demo="ui-upload-trigger" aria-controls="${escapeHTML(uploadId)}-input"${disabled ? " disabled" : ""}>${icon("Assets/Icons/whiteboard-upload.svg", "ui-upload__dropzone-icon")}<span><strong>${escapeHTML(label)}</strong>${hint ? `<small>${escapeHTML(hint)}</small>` : ""}</span><span class="ui-upload__action">${escapeHTML(actionLabel)}</span></button>`;
