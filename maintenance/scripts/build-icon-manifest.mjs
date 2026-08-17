@@ -35,12 +35,17 @@ const EXCLUDED = new Set([
 /* Directories that sit under Assets/Icons without being part of the library.
    The manifest is what `approvedAsset()` checks, so anything this walk reaches
    becomes an icon a component is allowed to render and an entry on the Icon
-   foundation card. A 1,171-file general-purpose set was dropped into
-   Assets/Icons/backup/ on 2026-08-17 and the count went 362 → 1,533 in one
-   build: every generic glyph in it silently became approved italki iconography,
-   and 15 of its files shadow an approved name with a different drawing
-   (arrow-down, check, plus, x-close…). Parking files here is fine; publishing
-   them is a decision, and it is not this script's to make by walking a folder. */
+   foundation card. A 1,171-file general-purpose set arrived in Assets/Icons/
+   backup/ on 2026-08-17 and the count went 362 → 1,533 in one build, which is
+   how the folder came to be skipped: publishing an icon set is a decision, and
+   walking a folder is not how it should get taken.
+
+   It was then taken — the set is adopted, and lives at Assets/Icons/ui/ rather
+   than in the library root because 20 of its files carry a name the library
+   already uses and 15 of those are a different drawing. Directory placement
+   alone does not settle which one a bare `icon: "check"` reaches; resolveIcon
+   in the runtime does, by preferring the library's own. `backup` stays listed
+   so the next set dropped there is parked rather than published. */
 const UNPUBLISHED_DIRS = new Set(["backup"]);
 
 const walk = (dir) =>

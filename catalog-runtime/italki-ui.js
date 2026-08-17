@@ -95,7 +95,16 @@
        to their real folder. Without it — a host that loaded the runtime alone —
        fall back to the library root rather than refusing to render. */
     if (!library) return `Assets/Icons/${value}.svg`;
-    const hit = library.find((entry) => String(entry).endsWith("/" + value + ".svg"));
+    /* Curated first, adopted second. A name is matched by its file name, so the
+       general-purpose set under Assets/Icons/ui/ can carry a name the library
+       already uses — 20 of them do, and 15 are a different drawing of it. Which
+       one a bare name reached used to fall out of the manifest's sort order:
+       `x-close` would have resolved to the adopted glyph and `check` to the
+       library's, for no reason either way. The library's own icon wins because
+       it is the library's, and only a name the library does not have reaches
+       the adopted set. */
+    const matches = library.filter((entry) => String(entry).endsWith("/" + value + ".svg"));
+    const hit = matches.find((entry) => !String(entry).includes("/ui/")) ?? matches[0];
     if (!hit) throw new Error(`Unknown icon: "${value}" is not in the icon library`);
     return hit;
   };
