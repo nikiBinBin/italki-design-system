@@ -20,6 +20,28 @@ No Node available, or a surface where you cannot run a command? Read `docs/intak
 
 Skip the intake only when the request is not a build: a question about the system, a rename, a typo, a file move.
 
+### This one is enforced, not advised
+
+Writing a page without its record does not work here, and the reason it is a
+gate rather than a paragraph is that this paragraph did not work: two agents
+were handed this system and neither ran the intake.
+
+- **Writing** into `maintenance/templates/<name>/` is blocked by a `PreToolUse`
+  hook (`.claude/settings.json` → `maintenance/scripts/intake-gate.mjs`) until
+  `docs/intakes/` holds a record naming that page with its answers filled in.
+  Claude Code only — no other agent has an equivalent hook.
+- **Committing** one is blocked by `maintenance/scripts/check-intake.mjs`,
+  which runs in `test:contract`. That one is agent-neutral: it reads the diff,
+  not who produced it.
+
+Codex, Cursor and anything else: the write side cannot be enforced from inside
+the repository, so it belongs to whatever hands you the task. Run
+`node maintenance/scripts/intake.mjs --json "<request>"` before the task starts
+and put the question block in front of the requester. The commit check catches
+what gets through.
+
+`docs/intakes/README.md` is the record's own documentation.
+
 ## Then read, in this order
 
 1. `docs/DESIGN.md` — product direction and the non-negotiable rules.
