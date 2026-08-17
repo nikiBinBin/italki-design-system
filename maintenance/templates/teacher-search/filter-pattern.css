@@ -4,7 +4,10 @@
 #teacher-filter-modal { width: 100%; margin: 0; }
 #teacher-filter-modal .ui-modal-stage { min-height: 780px; }
 #teacher-filter-modal .ui-modal__layer { padding: var(--ui-space-4); }
-#teacher-filter-modal .ui-modal { --ui-modal-width: 920px; max-height: calc(100% - var(--ui-space-8)); display: flex; flex-direction: column; }
+/* No width override: the filter dialog is the kit's wide modal (744px). It used
+   to force 920px, which is a width the design system does not have — every other
+   wide dialog in the product is narrower than this one was. */
+#teacher-filter-modal .ui-modal { max-height: calc(100% - var(--ui-space-8)); display: flex; flex-direction: column; }
 #teacher-filter-modal .ui-modal { background: var(--ui-color-divider); }
 #teacher-filter-modal .ui-modal__header,
 #teacher-filter-modal .ui-modal__footer { background: var(--ui-color-card); }
@@ -13,24 +16,38 @@
 .filter-pattern__body { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--ui-space-4); padding: var(--ui-space-6); background: var(--ui-color-divider); }
 .filter-pattern__card { min-width: 0; display: grid; align-content: start; gap: var(--ui-space-4); border-radius: var(--ui-radius-lg); padding: var(--ui-space-6); background: var(--ui-color-card); }
 .filter-pattern__card-head { min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: var(--ui-space-3); }
-.filter-pattern__card-head h3 { margin: 0; color: var(--ui-color-title); font-size: 16px; font-weight: 700; line-height: 24px; }
+.filter-pattern__card-head h3 { margin: 0; color: var(--ui-color-title); font-size: var(--ui-font-size-16); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-24); }
 .filter-pattern__card-head .ui-button { flex: 0 0 auto; margin: -4px; }
 .filter-pattern__cluster { display: grid; gap: var(--ui-space-3); }
-.filter-pattern__caption { margin: 0; color: var(--ui-color-placeholder); font-size: 12px; font-weight: 500; line-height: 18px; }
+.filter-pattern__caption { margin: 0; color: var(--ui-color-placeholder); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-medium); line-height: var(--ui-line-height-18); }
 .filter-pattern__chip-row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--ui-space-3); }
 .filter-pattern__chip-row .ui-chip { min-width: 0; }
-.filter-pattern__price-chart { height: 88px; display: flex; align-items: end; gap: 2px; border-bottom: 4px solid var(--ui-color-border); padding: 0 var(--ui-space-2); }
+.filter-pattern__price-chart { height: 88px; display: flex; align-items: end; gap: var(--ui-space-half); border-bottom: 4px solid var(--ui-color-border); padding: 0 var(--ui-space-2); }
 .filter-pattern__price-chart i { width: 100%; height: var(--filter-bar-height); display: block; background: var(--ui-color-border); }
 .filter-pattern__price-chart i.is-selected { background: var(--ui-color-text); }
 .filter-pattern__price-range { display: grid; gap: var(--ui-space-2); }
 .filter-pattern__price-range .ui-slider { width: 100%; }
 .filter-pattern__price-range .ui-slider__value { display: none; }
 .filter-pattern__range-values { display: flex; align-items: end; justify-content: space-between; gap: var(--ui-space-3); }
-.filter-pattern__range-values > span { display: grid; gap: var(--ui-space-1); color: var(--ui-color-secondary); font-size: 12px; line-height: 18px; }
+.filter-pattern__range-values > span { display: grid; gap: var(--ui-space-1); color: var(--ui-color-secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
 .filter-pattern__range-values > span:last-child { justify-items: end; text-align: right; }
-.filter-pattern__range-values output { min-width: 64px; display: grid; place-items: center; border-radius: var(--ui-radius-full); padding: var(--ui-space-2) var(--ui-space-3); color: var(--ui-color-text); background: var(--ui-color-divider); font-size: 12px; font-weight: 600; line-height: 18px; }
-.filter-pattern__availability .ui-tabs__panel { min-height: 0; padding-top: var(--ui-space-4); }
-.filter-pattern__availability .ui-tabs__trigger { min-height: 32px; padding: 0 var(--ui-space-2); font-size: 12px; line-height: 18px; }
+.filter-pattern__range-values output { min-width: var(--ui-space-10); display: grid; place-items: center; border-radius: var(--ui-radius-full); padding: var(--ui-space-2) var(--ui-space-3); color: var(--ui-color-text); background: var(--ui-color-divider); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-semibold); line-height: var(--ui-line-height-18); }
+/* The tabs sit beside the heading, not under it: the tab strip becomes a grid
+   item of the card via display: contents, and the panel takes the row below and
+   scrolls inside the card instead of growing it. */
+.filter-pattern__availability { grid-template-columns: auto minmax(0, 1fr); align-items: center; }
+.filter-pattern__availability > .ui-tabs { display: contents; }
+.filter-pattern__availability > .filter-pattern__card-head { grid-column: 1; grid-row: 1; }
+.filter-pattern__availability .ui-tabs__header { grid-column: 2; grid-row: 1; justify-self: end; }
+/* The header keeps a second, `auto` column for a trailing action and a gap in
+   front of it. There is no trailing action here, so that gap was all that stood
+   between the last tab and the card's edge. */
+.filter-pattern__availability .ui-tabs__header { gap: 0; }
+.filter-pattern__availability .ui-tabs__list { border-bottom: 0; }
+/* :not([hidden]) — the inactive panel is hidden by the attribute, and a plain
+   display rule would light it back up. */
+.filter-pattern__availability .ui-tabs__panel:not([hidden]) { grid-column: 1 / -1; min-height: 0; max-height: 320px; display: grid; gap: var(--ui-space-4); overflow-y: auto; padding-top: var(--ui-space-4); }
+.filter-pattern__availability .ui-tabs__trigger { min-height: 32px; padding: 0 var(--ui-space-2); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
 .filter-pattern__availability .ui-tabs__trigger::after { right: var(--ui-space-2); left: var(--ui-space-2); }
 .filter-pattern__day-row { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--ui-space-2); }
 .filter-pattern__day-row .ui-chip { min-width: 0; padding-inline: 0; }
@@ -40,7 +57,7 @@
 .filter-pattern__time-grid .ui-selection__body { gap: var(--ui-space-2); align-items: center; }
 .filter-pattern__time-grid .ui-selection__feature { width: 16px; height: 16px; flex-basis: 16px; border: 0; border-radius: 0; background: transparent; }
 .filter-pattern__time-grid .ui-selection__feature img { width: 16px; height: 16px; }
-.filter-pattern__time-grid .ui-selection__title { color: var(--ui-color-text); font-size: 12px; font-weight: 500; line-height: 18px; white-space: nowrap; }
+.filter-pattern__time-grid .ui-selection__title { color: var(--ui-color-text); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-medium); line-height: var(--ui-line-height-18); white-space: nowrap; }
 .filter-pattern__time-grid .ui-selection__indicator { display: none; }
 .filter-pattern__time-grid .ui-selection.is-selected .ui-selection__title { color: var(--ui-color-title); }
 .filter-pattern__check-list { display: grid; gap: var(--ui-space-3); }
@@ -50,7 +67,7 @@
 .filter-pattern__teacher-type { display: grid; gap: var(--ui-space-4); }
 .filter-pattern__teacher-type .ui-checkbox > span:last-child img { width: 38px; height: 16px; display: block; object-fit: contain; }
 .filter-pattern__teacher-type .ui-checkbox > span:last-child { display: inline-flex; align-items: center; gap: var(--ui-space-1); }
-.filter-pattern__teacher-option .ui-selection { min-height: 80px; border-radius: var(--ui-radius-lg); background: var(--ui-color-divider); }
+.filter-pattern__teacher-option .ui-selection { min-height: var(--ui-space-11); border-radius: var(--ui-radius-lg); background: var(--ui-color-divider); }
 .filter-pattern__teacher-option .ui-selection.is-selected { border-color: var(--ui-color-title); background: var(--ui-color-card); box-shadow: inset 0 0 0 1px var(--ui-color-title); }
 .filter-pattern__teacher-option .ui-selection:not(.is-selected):hover { border-color: var(--ui-color-border); background: var(--ui-color-hover); }
 .filter-pattern__teacher-option .ui-selection__body { align-items: center; gap: var(--ui-space-3); }
@@ -58,8 +75,8 @@
 .filter-pattern__teacher-option .ui-selection__feature { width: 24px; height: 24px; flex: 0 0 24px; order: 2; margin-left: auto; border: 0; border-radius: 0; background: transparent; }
 .filter-pattern__teacher-option .ui-selection__feature img { width: 24px; height: 24px; }
 .filter-pattern__teacher-option .ui-selection__copy { order: 1; }
-.filter-pattern__teacher-option .ui-selection__title { font-weight: 700; }
-.filter-pattern__teacher-option .ui-selection__description { color: var(--ui-color-placeholder); font-size: 12px; line-height: 18px; }
+.filter-pattern__teacher-option .ui-selection__title { font-weight: var(--ui-font-weight-bold); }
+.filter-pattern__teacher-option .ui-selection__description { color: var(--ui-color-placeholder); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
 @media (max-width: 900px) {
 .filter-pattern__body { grid-template-columns: 1fr; padding: var(--ui-space-4); }
 .filter-pattern__card { padding: var(--ui-space-4); }

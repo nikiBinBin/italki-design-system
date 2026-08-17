@@ -29,6 +29,105 @@
 #booking-drawer{position:fixed;inset:0;z-index:var(--ui-layer-overlay,60);min-height:0;overflow:visible;background:transparent;pointer-events:none}
 #booking-drawer.is-open{pointer-events:auto}
 #booking-drawer .ui-drawer__layer{position:fixed;inset:0}
+/* The kit's drawer stage is a card-sized demo box. A booking flow needs the
+   same drawer pinned to the viewport, so only the stage geometry is restated —
+   the drawer, mask, header, body and footer stay exactly as the kit draws them. */
+.bf-stage.ui-drawer-stage{position:fixed;inset:0;z-index:120;min-height:0;display:block;overflow:visible;border-radius:0;background:transparent;pointer-events:none}
+.bf-stage .ui-drawer__layer{position:fixed;inset:0;align-items:flex-end;justify-content:center}
+.bf-stage.is-open .ui-drawer__layer{pointer-events:auto}
+.bf-stage .ui-drawer--bottom{max-height:none}
+/* The open drawer's transform makes it the containing block for position:fixed,
+   so the calendar's tooltips — which the kit places in viewport coordinates —
+   landed offset from the slot being hovered. `none` still interpolates from
+   translateY(100%), so the slide-up is unaffected. */
+.bf-stage.ui-drawer-stage.is-open .ui-drawer{transform:none}
+/* In scrollable mode the tooltip is fixed and anchored to the slot's centre, so
+   the last column's edge placement — written for the absolute case — left it
+   running past the right edge. Shifting it a full width back re-aligns its right
+   edge with that centre. */
+.bf-stage .ui-calendar--scrollable .ui-calendar__slot:last-child .ui-tooltip{--ui-tooltip-x:-100%}
+.bf-stage .ui-calendar--scrollable .ui-calendar__slot:last-child .ui-tooltip::before{right:16px;left:auto}
+/* The timezone, Today and the week arrows are one line of controls, not a band:
+   the component's 48px floor and its padding go inside the flow. */
+.bf-stage .ui-calendar__controls{height:auto;padding:0}
+/* The week takes the room the removed header gave back: a definite height all
+   the way down, and the component's own 480px cap lifted for this host. */
+/* The reading width is a name, not a measurement passed in as data — the same
+   three cases React expresses with its own modifiers. */
+/* width, not just max-width: as a grid item it would otherwise shrink to its
+   content, which is what narrowed the week. */
+.bf-body{width:100%;max-width:760px;margin:0 auto;padding:24px;box-sizing:border-box}
+.bf-body--wide{max-width:1040px}
+.bf-body--full{max-width:none}
+.bf-stage{--ui-calendar-scroll-max:100%;--bf-top-nav:72px}
+/* The drawer takes the screen minus the top nav, the way the React flow has it.
+   The inline 90vh it carried before was both short of that and without a
+   ceiling of its own, so the week had less room to fill than it should. */
+.bf-stage .ui-drawer--bottom{height:calc(100vh - var(--bf-top-nav));max-height:calc(100vh - var(--bf-top-nav));border-radius:var(--ui-radius-xl) var(--ui-radius-xl) 0 0}
+.bf-stage .ui-drawer__body{display:grid;min-height:0}
+.bf-stage .bf-body{min-height:0}
+.bf-stage [data-screen-label="Step 3 schedule"]{min-height:0;height:100%;position:relative}
+/* The notice answers a click on the week; it should not push the week down to
+   say so. It floats at the top of the step, centred, and above everything the
+   calendar paints there: the sticky date header claims z-index 101 and the slot
+   tooltips 102, which is why a card at the default order came out half buried
+   under the date row. Only the card itself takes clicks. */
+.bf-stage .bf-notices{position:absolute;top:0;left:0;right:0;z-index:103;display:grid;gap:8px;pointer-events:none}
+/* The row stretches and the card centres itself. Centring the row instead put
+   the card 87px to the left: the row is a wrapper whose fit-content width is the
+   copy's natural width, wider than the card's own 400px ceiling, so centring the
+   wrapper left the card sitting at its left edge. */
+.bf-stage .bf-notices > *{pointer-events:auto}
+.bf-stage .bf-notices .ui-notification{margin-inline:auto}
+.bf-stage [data-screen-label="Step 3 schedule"]>div:last-child{min-height:0;display:grid}
+.bf-stage [data-screen-label="Step 3 schedule"] .ui-calendar{min-height:0;height:100%;display:grid;grid-template-rows:auto minmax(0,1fr)}
+
+.bf-stage .ui-drawer__body{padding:0}
+.bf-stage .ui-selection{width:100%}
+/* The ring counts scheduled lessons, so it carries the same colour the calendar
+   paints a chosen slot with, and scales down to sit beside the step heading. */
+.bf-stage .ui-progress--circle .ui-progress__ring-value{stroke:var(--ui-color-info)}
+.bf-stage .ui-progress--circle{--ui-progress-size:56px !important;--ui-progress-ring-stroke:9px !important}
+/* The list heading already says what is being counted, so the schedule meter
+   drops its own label and reads as one line: track, then the count. */
+.bf-stage .ui-stepper--schedule-progress{display:flex;align-items:center;gap:12px}
+.bf-stage .ui-stepper--schedule-progress .ui-stepper__schedule-track{order:1;flex:1}
+.bf-stage .ui-stepper--schedule-progress .ui-stepper__schedule-meta{order:2;flex:0 0 auto}
+.bf-stage .ui-stepper--schedule-progress .ui-stepper__schedule-meta > span{display:none}
+.bf-stage .ui-stepper--schedule-progress .ui-stepper__schedule-track i{background:var(--ui-color-text)}
+.bf-stage .ui-stepper--schedule-progress .ui-stepper__schedule-meta b{color:var(--ui-color-text)}
+.bf-stage .ui-selection-group{width:100%}
+/* A platform that needs an account holds the field inside its own card: the
+   wrapper takes over the selected card's outline so the two read as one. */
+/* Every wrapper carries the ring's geometry from the start — only its colour
+   changes — so switching options crossfades instead of jumping a pixel. */
+/* Two across, as the React step settles it — four in a row squeezed the copy. */
+.bf-stage .ui-selection-group--package-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.bf-stage .bf-platform{border-radius:var(--ui-radius-lg);border:1px solid transparent;box-shadow:0 0 0 1px transparent;transition:border-color 180ms ease,box-shadow 180ms ease,background-color 180ms ease}
+.bf-stage .bf-platform.has-field{border-color:var(--ui-color-text);box-shadow:0 0 0 1px var(--ui-color-text);background:var(--ui-color-card)}
+.bf-stage .bf-platform.has-field .ui-selection{border-color:transparent;box-shadow:none}
+.bf-stage .bf-platform [data-component="text-input"]{width:100%;max-width:none}
+/* The platform logos are the mark itself, not an icon in a tile: the kit's
+   feature box draws a 32px bordered square around a 16px image, which reads as a
+   small logo in a frame. Same override the React step carries — the frame goes
+   and the logo takes the whole 32px. */
+.bf-stage .ui-selection--icon-simple .ui-selection__feature{width:32px;height:32px;flex-basis:32px;border:0;border-radius:0;background:transparent}
+.bf-stage .ui-selection--icon-simple .ui-selection__feature img{width:32px;height:32px}
+/* FormField owns the label, the control and the note, and the gap between them —
+   this was a hand-built stack with a gap of its own, which is why its label read
+   14px where the kit's reads 12px. The wrapper keeps only the geometry that is
+   this flow's: the inset rule, the padding and the reveal. */
+.bf-stage .bf-handle{display:grid;overflow:hidden;margin:0 16px;border-top:1px solid var(--ui-color-divider);padding:12px 0 16px;animation:bf-field-in 200ms ease both}
+/* The animation was named but never defined, so the field appeared instantly. */
+@keyframes bf-field-in{from{max-height:0;opacity:0;transform:translateY(-6px)}to{max-height:200px;opacity:1;transform:none}}
+/* The payment options keep their own cards, as the React step has them: the
+   Panel holds them, it does not absorb them into rows. */
+.bf-stage .ui-stepper--progress-steps,.bf-stage .ui-stepper--top-indicator{width:100%}
+/* The Calendar narrows the Button's icon-to-label gap to 2px, which reads
+   cramped against the 8px leading padding — restore the Button component's own
+   8px so this button matches every other icon+label button in the kit. Delete
+   once the Calendar drops its override. */
+.bf-stage .ui-calendar__actions [data-calendar-action="today"]{gap:var(--ui-space-2);padding-left:var(--ui-space-3)}
 </style>
 </helmet>
 <div style="min-height:100vh;display:flex;align-items:flex-start">
@@ -161,16 +260,7 @@
 
 <section id="section-availability" data-screen-label="Availability" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px;display:flex;flex-direction:column;gap:16px">
 <h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">Availability</h2>
-<div style="display:flex;flex-direction:column;gap:8px">
-<h3 style="margin:0;color:var(--ui-color-title);font-size:14px;font-weight:600;line-height:20px">Next available</h3>
-<div style="display:flex;flex-wrap:wrap;gap:8px">
-<sc-for list="{{ nextSlots }}" as="slot" hint-placeholder-count="6">
-<div onClick="{{ slot.onPick }}" style="cursor:pointer">
-<x-import component-from-global-scope="SafeUI.TimeSlot" appearance="option" label="{{ slot.label }}" state="{{ slot.state }}" hint-size="110px,36px"></x-import>
-</div>
-</sc-for>
-</div>
-</div>
+
 <div style="display:flex;flex-direction:column;gap:8px">
 <x-import component-from-global-scope="SafeUI.Calendar" variant="availability" weekLabel="3 – 9 August 2026" dates="{{ weekDates }}" rows="{{ weekRows }}" timezone="Asia/Shanghai" ariaLabel="Teacher availability" hint-size="100%,440px"></x-import>
 </div>
@@ -181,7 +271,7 @@
 <div style="display:flex;gap:40px;align-items:center;flex-wrap:wrap">
 <div style="display:grid;gap:4px;justify-items:center">
 <strong style="color:var(--ui-color-title);font-size:44px;font-weight:700;line-height:52px">4.98</strong>
-<x-import component-from-global-scope="SafeUI.Rate" value="{{ 5 }}" disabled="{{ true }}" hint-size="120px,28px"></x-import>
+<div role="img" aria-label="Average rating 4.98 out of 5" style="display:flex;gap:2px"><img src="../../Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"><img src="../../Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"><img src="../../Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"><img src="../../Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"><img src="../../Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"></div>
 <span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">612 reviews</span>
 </div>
 <div style="flex:1;min-width:260px;display:grid;gap:4px">
@@ -274,7 +364,7 @@
 <div style="display:grid"><span onClick="{{ bookTrial }}" style="display:grid"><x-import component-from-global-scope="SafeUI.Button" label="{{ bookTrialLabel }}" variant="red" size="{{ 40 }}" shape="pill" hint-size="100%,40px"></x-import></span></div>
 <div style="display:grid"><x-import component-from-global-scope="SafeUI.Button" label="Contact teacher" variant="secondary" size="{{ 40 }}" shape="pill" leadingIcon="message" hint-size="100%,40px"></x-import></div>
 </div>
-<div style="height:1px;background:var(--ui-color-divider)"></div>
+
 <div style="display:flex;flex-direction:column;gap:10px">
 <sc-if value="{{ onlineNow }}" hint-placeholder-val="{{ true }}">
 <span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-success);font-size:14px;font-weight:600;line-height:18px"><span style="width:8px;height:8px;border-radius:9999px;background:var(--ui-color-success)"></span>Online now</span>
@@ -289,7 +379,258 @@
 </div>
 </div>
 
-<x-import component-from-global-scope="SafeUI.Drawer" id="booking-drawer" placement="bottom" size="wide" title="{{ drawerTitle }}" open="{{ bookingOpen }}" trigger="" body="{{ stepBody }}" footer="{{ stepFooter }}" hint-size="100%,640px"></x-import>
+<div class="{{ stageClass }}" data-screen-label="Booking drawer" onClick="{{ onStageClick }}">
+<div class="ui-drawer__layer">
+<button class="ui-drawer__mask" type="button" aria-label="Close booking" onClick="{{ closeDrawer }}"></button>
+<aside class="ui-drawer ui-drawer--bottom ui-drawer--default" role="dialog" aria-modal="true" aria-label="Book a lesson">
+<div class="ui-drawer__content">
+
+<header class="ui-drawer__header" style="min-height:72px;padding:0 24px">
+<div style="min-width:0;display:flex;align-items:center;gap:12px">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Avatar" image="https://randomuser.me/api/portraits/women/44.jpg" flag="es" size="{{ 40 }}" ariaLabel="Lucía Fernández" hint-size="40px,40px"></x-import>
+<div style="min-width:0;display:grid;gap:0">
+<h3 style="margin:0;color:var(--ui-color-title);font-size:16px;font-weight:700;line-height:24px">{{ drawerTitle }}</h3>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px;white-space:nowrap">{{ drawerSubtitle }}<sc-if value="{{ showRating }}" hint-placeholder-val="{{ true }}"><span style="white-space:nowrap"> · 4.98 <span style="color:var(--ui-color-warning)">★</span></span></sc-if></span>
+</div>
+</div>
+<button class="ui-drawer__close" type="button" aria-label="Close booking" onClick="{{ closeDrawer }}"><img class="ui-drawer__close-icon" src="../../Assets/Icons/cross.svg" alt=""></button>
+</header>
+
+<div class="ui-drawer__body">
+<div class="bf-body {{ bodyClass }}">
+
+<sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}">
+<section data-screen-label="Step 1 lesson type" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:grid;gap:2px">
+<h4 style="margin:0;color:var(--ui-color-title);font-size:24px;font-weight:700;line-height:32px">Choose a lesson type</h4>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:14px;line-height:20px">Pick a course, then the length that suits you. A trial lesson is a one-off first meeting.</p>
+</div>
+
+<div class="ui-selection__lesson-card {{ trialCardClass }}">
+<button class="ui-selection__lesson-toggle {{ trialToggleClass }}" type="button" role="radio" aria-checked="{{ isTrial }}" onClick="{{ pickTrial }}">
+<span class="ui-selection__lesson-summary-copy">
+<span class="ui-selection__lesson-summary-title">Trial Lesson</span>
+<span class="ui-selection__lesson-summary-meta">{{ trialMeta }}</span>
+</span>
+<span class="ui-selection__lesson-summary-price">{{ trialPriceLabel }}</span>
+</button>
+</div>
+
+<div style="display:flex;align-items:center;gap:12px;color:var(--ui-color-secondary);font-size:12px;line-height:18px">
+<span style="height:1px;flex:1;background:var(--ui-color-divider)"></span>or book a regular course<span style="height:1px;flex:1;background:var(--ui-color-divider)"></span>
+</div>
+
+<div class="ui-selection-group ui-selection-group--lesson-options-list" role="radiogroup" aria-label="Choose a course and lesson length">
+<sc-for list="{{ courses }}" as="c" hint-placeholder-count="4">
+<section class="ui-selection__lesson-card {{ c.cardClass }}">
+<button class="ui-selection__lesson-toggle {{ c.toggleClass }}" type="button" role="radio" aria-checked="{{ c.selected }}" aria-expanded="{{ c.selected }}" onClick="{{ c.onPick }}">
+<span class="ui-selection__lesson-summary-copy">
+<span class="ui-selection__lesson-summary-title">{{ c.title }}</span>
+<span class="ui-selection__lesson-summary-meta">{{ c.meta }}</span>
+</span>
+<span class="ui-selection__lesson-summary-price">{{ c.fromPrice }}</span>
+</button>
+<div class="ui-selection__lesson-options {{ c.optionsClass }}" role="radiogroup" aria-label="Lesson length">
+<div class="ui-selection__lesson-options-inner">
+<sc-for list="{{ c.options }}" as="o" hint-placeholder-count="3">
+<button class="ui-selection__lesson-option {{ o.cls }}" type="button" role="radio" aria-checked="{{ o.selected }}" onClick="{{ o.onPick }}">
+<span class="ui-selection__lesson-option-label">{{ o.label }}</span>
+<span class="ui-selection__lesson-option-price">{{ o.price }}</span>
+<span class="ui-selection__lesson-option-indicator" aria-hidden="true"></span>
+</button>
+</sc-for>
+</div>
+</div>
+</section>
+</sc-for>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Step 2 lesson count" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:grid;gap:2px">
+<h4 style="margin:0;color:var(--ui-color-title);font-size:24px;font-weight:700;line-height:32px">How many lessons?</h4>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:14px;line-height:20px">{{ packageIntro }}</p>
+</div>
+<div class="ui-selection-group ui-selection-group--radio ui-selection-group--package-grid" role="radiogroup" aria-label="Choose how many lessons">
+<sc-for list="{{ packages }}" as="p" hint-placeholder-count="4">
+<div onClick="{{ p.onPick }}" style="display:contents">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Selection" contentType="package-card" selectionMode="radio" demo="bf-selection" label="{{ p.aria }}" value="{{ p.value }}" selected="{{ p.selected }}" discount="{{ p.discount }}" price="{{ p.price }}" period="per lesson" description="{{ p.description }}" quantity="{{ p.quantity }}" quantityLabel="{{ p.quantityLabel }}" originalPrice="{{ p.originalPrice }}" totalPrice="{{ p.totalPrice }}" hint-size="100%,280px"></x-import>
+</div>
+</sc-for>
+</div>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:12px;line-height:18px">Package lessons stay valid for 6 months. Unused lessons can be refunded to your italki wallet.</p>
+</section>
+</sc-if>
+
+<sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Step 3 schedule" style="display:flex;flex-direction:column;gap:16px">
+
+
+<div class="bf-notices">
+<sc-if value="{{ showNotice }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ dismissNotice }}" style="cursor:pointer">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Notification" tone="warning" closable="{{ true }}" title="{{ noticeTitle }}" description="{{ noticeBody }}" hint-size="400px,76px"></x-import>
+</div>
+</sc-if>
+
+<sc-if value="{{ showConflict }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ dismissConflict }}" style="cursor:pointer">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Notification" tone="error" closable="{{ true }}" title="19:00 on Wed 12 Aug was just booked" description="Another student took that time while you were choosing. Pick a different slot to continue." hint-size="400px,96px"></x-import>
+</div>
+</sc-if>
+</div>
+
+<sc-if value="{{ dayHasSlots }}" hint-placeholder-val="{{ true }}">
+<div onClickCapture="{{ onCalendarClick }}">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Calendar" variant="availability" timezone="{{ timezone }}" weekLabel="{{ weekLabel }}" todayLabel="This week" dates="{{ calendarDates }}" rows="{{ calendarRows }}" ariaLabel="Lucía's weekly availability" hint-size="100%,560px"></x-import>
+</div>
+</sc-if>
+
+<sc-if value="{{ dayIsEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="display:grid;gap:12px;justify-items:center;border:1px dashed var(--ui-color-border);border-radius:12px;padding:32px 24px;text-align:center">
+<img src="../../Assets/Icons/calendar.svg" alt="" style="width:32px;height:32px;opacity:.5">
+<div style="display:grid;gap:4px">
+<strong style="color:var(--ui-color-title);font-size:16px;font-weight:700;line-height:24px">{{ emptyTitle }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:14px;line-height:20px">{{ emptyBody }}</span>
+</div>
+<span onClick="{{ nextWeek }}" style="display:inline-flex;cursor:pointer"><x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Button" label="See next week" variant="secondary" size="{{ 32 }}" shape="pill" trailingIcon="arrow-right-sm" hint-size="150px,32px"></x-import></span>
+</div>
+</sc-if>
+
+
+</section>
+</sc-if>
+
+<sc-if value="{{ isStep4 }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Step 4 platform" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:grid;gap:2px">
+<h4 style="margin:0;color:var(--ui-color-title);font-size:24px;font-weight:700;line-height:32px">Where will the lesson happen?</h4>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:14px;line-height:20px">The teacher will meet you here. You can change this later from the lesson page.</p>
+</div>
+<div class="ui-selection-group" role="radiogroup" aria-label="Choose a video platform">
+<sc-for list="{{ platforms }}" as="pf" hint-placeholder-count="5">
+<div class="bf-platform {{ pf.wrapClass }}">
+<div onClick="{{ pf.onPick }}" style="display:contents">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Selection" contentType="icon-simple" selectionMode="radio" demo="bf-selection" label="{{ pf.label }}" value="{{ pf.id }}" leading="{{ pf.leading }}" subtext="{{ pf.subtext }}" description="{{ pf.description }}" selected="{{ pf.selected }}" hint-size="100%,64px"></x-import>
+</div>
+<sc-if value="{{ pf.showField }}" hint-placeholder-val="{{ false }}">
+<div class="bf-handle" onInput="{{ onHandleInput }}">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.FormField" id="{{ pf.fieldId }}" label="{{ pf.fieldLabel }}" control="{{ pf.fieldControl }}" helper="{{ pf.fieldHelper }}" size="{{ 40 }}" hint-size="100%,86px"></x-import>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isStep5 }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Step 5 checkout" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:grid;gap:2px">
+<h4 style="margin:0;color:var(--ui-color-title);font-size:24px;font-weight:700;line-height:32px">Review and pay</h4>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:14px;line-height:20px">Nothing is charged until you confirm. Free cancellation up to 24 hours before each lesson.</p>
+</div>
+
+<div style="display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:16px;align-items:start">
+
+<div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+<div style="display:flex;flex-direction:column;gap:12px;border-radius:12px;padding:16px;background:var(--ui-color-card);box-shadow:var(--ui-shadow-md)">
+<div style="display:flex;align-items:center;gap:12px">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Avatar" image="https://randomuser.me/api/portraits/women/44.jpg" flag="es" size="{{ 40 }}" ariaLabel="Lucía Fernández" hint-size="40px,40px"></x-import>
+<div style="min-width:0;display:grid;gap:0">
+<strong style="color:var(--ui-color-title);font-size:14px;font-weight:700;line-height:20px">Lucía Fernández</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">Spanish · Professional Teacher</span>
+</div>
+</div>
+<div style="height:1px;background:var(--ui-color-divider)"></div>
+<div style="display:grid;gap:2px">
+<strong title="{{ summaryTitle }}" style="min-width:0;color:var(--ui-color-title);font-size:15px;font-weight:700;line-height:22px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ summaryTitle }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px;text-wrap:pretty">{{ summaryLine }}</span>
+</div>
+<div style="height:1px;background:var(--ui-color-divider)"></div>
+<div style="display:grid;gap:6px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+<span style="color:var(--ui-color-secondary);font-size:12px;font-weight:600;line-height:18px;text-transform:uppercase;letter-spacing:.4px">Schedule</span>
+<span style="color:var(--ui-color-title);font-size:12px;font-weight:600;line-height:18px;white-space:nowrap">{{ scheduleCount }}</span>
+</div>
+<sc-if value="{{ hasPicks }}" hint-placeholder-val="{{ true }}">
+<div style="display:grid;gap:2px">
+<sc-for list="{{ picks }}" as="p" hint-placeholder-count="2">
+<span style="color:var(--ui-color-text);font-size:13px;line-height:20px;text-wrap:pretty">{{ p.label }}</span>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ noPicks }}" hint-placeholder-val="{{ false }}">
+<span style="color:var(--ui-color-secondary);font-size:13px;line-height:20px">No times chosen — schedule later from your lesson page.</span>
+</sc-if>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:8px;border-radius:12px;padding:16px;background:var(--ui-color-card);box-shadow:var(--ui-shadow-md)">
+<div style="display:grid;gap:12px">
+<sc-for list="{{ priceRows }}" as="r" hint-placeholder-count="3">
+<div style="display:grid;gap:0">
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px;text-wrap:pretty">{{ r.label }}</span>
+<span style="color:{{ r.color }};font-size:14px;font-weight:600;line-height:22px">{{ r.value }}</span>
+</div>
+</sc-for>
+</div>
+<div style="height:1px;background:var(--ui-color-divider)"></div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+<strong style="color:var(--ui-color-title);font-size:16px;font-weight:700;line-height:24px">Total</strong>
+<strong style="color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">{{ totalLabel }}</strong>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+<div onClickCapture="{{ onPaymentClick }}">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Panel" title="Payment method" divider="{{ true }}" body="{{ paymentBody }}" hint-size="100%,320px"></x-import>
+</div>
+</div>
+
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Confirmation" onClick="{{ onDoneClick }}" style="display:flex;flex-direction:column;gap:24px;align-items:center;padding:24px 0">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Result" tone="success" title="{{ doneTitle }}" description="{{ doneBody }}" action="{{ doneAction }}" secondaryAction="{{ doneSecondaryAction }}" hint-size="100%,260px"></x-import>
+</section>
+</sc-if>
+
+</div>
+</div>
+
+<sc-if value="{{ showFooter }}" hint-placeholder-val="{{ true }}">
+<footer class="ui-drawer__footer" style="flex-direction:column;align-items:stretch;gap:0;padding:0">
+<div style="padding:12px 24px 10px">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Stepper" items="{{ stepItems }}" current="{{ stepIndex }}" currentComplete="{{ stepReady }}" variant="top-indicator" ariaLabel="Booking steps" hint-size="100%,8px"></x-import>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 24px 16px">
+<div style="min-width:0;display:grid;gap:2px">
+<span style="color:var(--ui-color-secondary);font-size:11px;font-weight:700;line-height:16px;letter-spacing:.5px;text-transform:uppercase">{{ stepCaption }}</span>
+<div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+<strong style="color:var(--ui-color-title);font-size:24px;font-weight:700;line-height:32px">{{ footerPrice }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ footerNote }}</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:12px">
+<sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}">
+<span onClick="{{ goBack }}" style="display:inline-flex;cursor:pointer"><x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Button" label="Back" variant="secondary" size="{{ 40 }}" shape="rounded" hint-size="80px,40px"></x-import></span>
+</sc-if>
+<span onClick="{{ goNext }}" style="display:inline-flex;cursor:pointer"><x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Button" label="{{ nextLabel }}" variant="red" size="{{ 40 }}" shape="rounded" disabled="{{ nextDisabled }}" hint-size="180px,40px"></x-import></span>
+</div>
+</div>
+</footer>
+</sc-if>
+
+</div>
+</aside>
+</div>
+</div>
 
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;superTutor&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Teacher status&quot;},&quot;onlineNow&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Teacher status&quot;},&quot;trialPrice&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;US$8.00&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Pricing&quot;}}">
@@ -328,63 +669,60 @@ class Component extends DCLogic {
      the length its teacher set, so its step states the length and the quantity
      step is not part of the sequence at all; and every regular lesson type
      offers 60 minutes, which is the length italki promises on every type. */
-  static BOOKING_COURSES = [
-    { value: "conversation", title: "Conversation Practice", meta: "A2 – C2 · 1,214 lessons taught",
-      options: [{ label: "30 mins", value: "30", price: "US$9.00" }, { label: "45 mins", value: "45", price: "US$12.00" }, { label: "60 mins", value: "60", price: "US$14.00" }, { label: "90 mins", value: "90", price: "US$20.00" }] },
-    { value: "dele", title: "DELE Exam Prep", meta: "A2 – C1 · 642 lessons taught",
-      options: [{ label: "60 mins", value: "60", price: "US$18.00" }, { label: "90 mins", value: "90", price: "US$26.00" }] },
-    { value: "business", title: "Business Spanish", meta: "B1 – C2 · 318 lessons taught",
-      options: [{ label: "60 mins", value: "60", price: "US$16.00" }] },
-    { value: "grammar", title: "Grammar Foundations", meta: "A1 – B1 · 257 lessons taught",
-      options: [{ label: "60 mins", value: "60", price: "US$12.00" }] },
+  static COURSES = [
+    { id: "conversation", title: "Real-life Conversation (Spanish)", meta: "A2–C2 · Language Essentials · 1,214 lessons completed",
+      durations: [{ m: 30, p: 9 }, { m: 45, p: 13 }, { m: 60, p: 17 }, { m: 90, p: 24 }] },
+    { id: "dele", title: "DELE Exam Prep", meta: "B1–C1 · Test Preparation · 642 lessons completed",
+      durations: [{ m: 45, p: 15 }, { m: 60, p: 19 }, { m: 90, p: 28 }] },
+    { id: "business", title: "Business Spanish", meta: "B1–C2 · Professional · 318 lessons completed",
+      durations: [{ m: 60, p: 18 }, { m: 90, p: 26 }] },
+    { id: "grammar", title: "Grammar Foundations", meta: "A1–B1 · Language Essentials · 257 lessons completed",
+      durations: [{ m: 30, p: 8 }, { m: 60, p: 14 }] },
   ];
-  static PACKAGES = [
-    { value: "1", label: "Single lesson", off: 0, description: "Try one lesson and decide afterwards." },
-    { value: "5", label: "5 lessons", off: 5, description: "A short package to build a routine." },
-    { value: "10", label: "10 lessons", off: 10, description: "The usual choice for a full term." },
-    { value: "20", label: "20 lessons", off: 15, description: "Set it and forget it for the next few months." },
-  ];
-  static BOOKING_DAYS = [
-    { value: "mon-10", label: "Mon 10" }, { value: "tue-11", label: "Tue 11" }, { value: "wed-12", label: "Wed 12" },
-    { value: "thu-13", label: "Thu 13" }, { value: "fri-14", label: "Fri 14" }, { value: "sat-15", label: "Sat 15" }, { value: "sun-16", label: "Sun 16" },
-  ];
-  static BOOKING_TIMES = ["08:00", "09:00", "10:30", "12:00", "14:30", "16:30", "18:00", "19:30"];
-  static BOOKING_TAKEN = { "mon-10": ["12:00", "16:30"], "tue-11": ["08:00"], "wed-12": ["18:00", "19:30"], "thu-13": ["09:00"], "fri-14": ["14:30"], "sat-15": ["10:30", "12:00"], "sun-16": ["08:00", "09:00"] };
+  static TRIAL = { m: 30, p: 8 };
+  static COUNTS = [{ n: 1, off: 0 }, { n: 5, off: 0.05 }, { n: 10, off: 0.1 }, { n: 20, off: 0.15 }];
+  static PACKAGE_COPY = {
+    1: "Pay as you go — book one lesson at a time.",
+    5: "A short package to settle into a weekly rhythm.",
+    10: "The most popular way to make steady progress.",
+    20: "Best value for a full term of study.",
+  };
+  /* One row per hour across the full day; each row cell carries two half-hour
+     units, which is the granularity a lesson can start on. Twenty-four rows put
+     the calendar past the component's 12-row threshold, so it scrolls with a
+     sticky day header — students in any timezone can reach a teacher's late or
+     early hours. */
+  static HOURS = Array.from({ length: 24 }, (_, i) => i);
+  static DAY_START_HOUR = 8;
   static PLATFORMS = [
-    { value: "italki-classroom", label: "italki Classroom", description: "No install — opens in the browser, with the whiteboard and lesson notes.", icon: "Assets/Icons/video-classroom.svg" },
-    { value: "zoom", label: "Zoom", description: "Share your Zoom link with the teacher after booking.", icon: "Assets/Icons/video-zoom.svg" },
-    { value: "google-meet", label: "Google Meet", description: "The teacher sends a Meet link before the lesson.", icon: "Assets/Icons/video-googleHangouts.svg" },
-    { value: "skype", label: "Skype", description: "The teacher will send an invitation before the lesson.", icon: "Assets/Icons/video-skype.svg" },
+    { id: "classroom", label: "italki Classroom", icon: "video-classroom", subtext: "Recommended", description: "Nothing to install — opens in the browser, with shared notes and recording." },
+    { id: "zoom", label: "Zoom", icon: "video-zoom", description: "The teacher sends a meeting link before the lesson." },
+    { id: "meet", label: "Google Meet", icon: "video-googleHangouts", description: "The teacher sends a meeting link before the lesson." },
+    { id: "skype", label: "Skype", icon: "video-skype", description: "Add each other before the first lesson." },
+    { id: "wechat", label: "WeChat", icon: "video-wechat", description: "Add each other before the first lesson." },
   ];
-  static BOOKING_STEPS = [
-    { id: "type", title: "Lesson type and length", caption: "Pick what you want to work on, and how long each lesson should be." },
-    { id: "quantity", title: "How many lessons", caption: "Buying several at once lowers the price per lesson." },
-    { id: "time", title: "Schedule the lesson", caption: "Times are shown in your own timezone." },
-    { id: "platform", title: "Video platform", caption: "Where the lesson will take place." },
-    { id: "review", title: "Review and confirm", caption: "Check the details before you pay." },
+  static HANDLES = {
+    zoom: { label: "Your email for the Zoom invite", placeholder: "name@example.com" },
+    meet: { label: "Your Google account", placeholder: "name@gmail.com" },
+    skype: { label: "Your Skype ID", placeholder: "live:.cid.xxxxx" },
+    wechat: { label: "Your WeChat ID", placeholder: "wxid_xxxxx" },
+  };
+  static PAYMENTS = [
+    { id: "credits", label: "italki Credits", subtext: "US$293.45 available", description: "" },
+    { id: "visa", label: "Visa ···· 4242", description: "Expires 09/28" },
+    { id: "paypal", label: "PayPal", description: "j.rivera@example.com" },
+    { id: "alipay", label: "Alipay", description: "Redirects to Alipay to confirm" },
   ];
+  static WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  static MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   state = {
-    activeTab: "about",
-    readMore: false,
-    favorite: false,
-    moreOpen: false,
-    videoPlaying: false,
-    reviewFilter: "All",
-    reviewPage: 0,
-    pickedSlot: null,
-    bookingOpen: false,
-    bookingStep: 0,
-    kind: "normal",
-    course: "conversation",
-    duration: "60",
-    quantity: "5",
-    /* Buying a package asks a question a single lesson does not: schedule the
-       first lesson now, or all of them. Both paths are real — "all" collects one
-       slot per lesson and will not continue until every one is placed. */
-    scope: "first",
-    slots: [],
-    platform: "italki-classroom",
+    activeTab: "about", readMore: false, favorite: false, moreOpen: false,
+    videoPlaying: false, reviewFilter: "All", reviewPage: 0, pickedSlot: null,
+    /* ── the booking flow's own state ── */
+    open: false, step: 1, typeId: null, duration: null, count: 5,
+    week: 0, dayIdx: 0, picks: [], platform: "classroom", payment: "credits",
+    conflictOpen: true, done: false, handles: {},
   };
 
   tabsAnchorRef = React.createRef();
@@ -413,9 +751,9 @@ class Component extends DCLogic {
 
   componentDidMount() {
     document.getElementById("ds-kit-missing")?.remove();
-    if (typeof Component.kit()?.avatar !== "function") {
+    if (typeof Component.kit?.()?.avatar !== "function") {
       this.timer = setInterval(() => {
-        if (typeof Component.kit()?.avatar !== "function") return;
+        if (typeof Component.kit?.()?.avatar !== "function") return;
         clearInterval(this.timer);
         this.forceUpdate();
       }, 50);
@@ -482,6 +820,9 @@ class Component extends DCLogic {
 
   componentWillUnmount() {
     clearInterval(this.timer);
+    clearInterval(this.scrollTimer);
+    clearTimeout(this.noticeTimer);
+    clearTimeout(this.conflictTimer);
     window.removeEventListener("scroll", this.syncTabsBar);
     window.removeEventListener("resize", this.syncTabsBar);
     document.removeEventListener("click", this.onDocClick, true);
@@ -501,175 +842,164 @@ class Component extends DCLogic {
   }
 
   /* ── the flow's own logic ───────────────────────────────────────────────── */
-  bookingSteps() { return Component.BOOKING_STEPS.filter((x) => !(x.id === "quantity" && this.state.kind === "trial")); }
-  bookingStep() { return this.bookingSteps()[Math.min(this.state.bookingStep, this.bookingSteps().length - 1)]; }
-  bookingCourse() { return Component.BOOKING_COURSES.find((c) => c.value === this.state.course) ?? Component.BOOKING_COURSES[0]; }
-  bookingPack() { return Component.PACKAGES.find((x) => x.value === this.state.quantity) ?? Component.PACKAGES[0]; }
-  bookingMinutes() { return this.state.kind === "trial" ? Number(this.props.trialMinutes ?? 30) : Number(this.state.duration); }
-  bookingCount() { return this.state.kind === "trial" ? 1 : Number(this.state.quantity); }
-  /* "all" only exists once there is more than one lesson to place. */
-  bookingScope() { return this.bookingCount() > 1 ? this.state.scope : "first"; }
-  bookingNeeded() { return this.bookingScope() === "all" ? this.bookingCount() : 1; }
-  bookingUnit() {
-    if (this.state.kind === "trial") return Number(String(this.props.trialPrice ?? "US$8.00").replace(/[^0-9.]/g, "")) || 8;
-    const course = this.bookingCourse();
-    const option = course.options.find((o) => o.value === this.state.duration) ?? course.options[0];
-    return Number(option.price.replace(/[^0-9.]/g, "")) * (1 - this.bookingPack().off / 100);
-  }
-  bookingTotal() { return this.bookingUnit() * this.bookingCount(); }
-  money(value) { return `US$${value.toFixed(2)}`; }
-  slotLabel(slot) {
-    const day = Component.BOOKING_DAYS.find((d) => d.value === slot.day);
-    return `${day ? day.label : slot.day}, ${slot.time}`;
-  }
-  openBooking(patch) {
-    this.setState({ bookingOpen: true, bookingStep: 0, slots: [], ...patch });
-  }
-  bookingNext() {
-    if (this.state.bookingStep >= this.bookingSteps().length - 1) return this.setState({ bookingOpen: false, bookingStep: 0 });
-    this.setState((st) => ({ bookingStep: st.bookingStep + 1 }));
-  }
-  bookingBack() {
-    if (this.state.bookingStep === 0) return this.setState({ bookingOpen: false });
-    this.setState((st) => ({ bookingStep: st.bookingStep - 1 }));
-  }
-
-  bookingBody(UI) {
-    const step = this.bookingStep();
-    const indicator = UI.stepper({
-      variant: "progress-steps", ariaLabel: "Booking progress", current: this.state.bookingStep,
-      items: this.bookingSteps().map((x) => ({ id: x.id, label: x.title })),
-    });
-    return `<div class="booking-step">${indicator}<div class="booking-step__head"><h4>${step.title}</h4><p>${step.caption}</p></div>${this[`booking_${step.id}`](UI)}</div>`;
-  }
-
-  booking_type(UI) {
-    const kind = UI.segmentedControl({
-      id: "booking-kind", ariaLabel: "Lesson type", shape: "pill", size: 40, selected: this.state.kind,
-      options: [{ label: "Trial lesson", value: "trial" }, { label: "Regular lesson", value: "normal" }],
-    });
-    if (this.state.kind === "trial") {
-      return `<div class="booking-card">${kind}
-        <p class="booking-caption">A trial lesson is a short first meeting to set goals and check your level. Its length is set by the teacher, so there is nothing to choose here.</p>
-        <div class="booking-fixed"><span>Trial lesson · <strong>${this.bookingMinutes()} minutes</strong></span><strong>${this.money(this.bookingUnit())}</strong></div>
-        ${UI.alert({ tone: "info", title: "One per teacher", description: "You can take one trial lesson with each teacher, and only before your first regular lesson." })}</div>`;
+  whyNotFit(day, start, span, coveredBy, rawState) {
+    const length = `${span}-minute`;
+    if (start + span > 24 * 60) return { title: `A ${length} lesson doesn't fit at ${Component.hhmm(start)}`, body: "It would run past the end of the day. Pick an earlier start time." };
+    for (let m = start; m < start + span; m += 15) {
+      const clash = coveredBy(day, m);
+      if (clash) return { title: `That would overlap your ${Component.hhmm(clash.minute)} lesson`, body: `A ${length} lesson starting at ${Component.hhmm(start)} runs into a time you already scheduled.` };
+      if (rawState(day, m) !== "available") return { title: `Not enough room for a ${length} lesson`, body: `Lucía is free at ${Component.hhmm(start)} but busy from ${Component.hhmm(m)}. Try a slot with a longer open run.` };
     }
-    return `<div class="booking-card">${kind}<p class="booking-caption">Every lesson type offers 60 minutes; some offer shorter and longer lessons too.</p>${UI.selectionGroup({
-      label: "Choose a lesson type and length", contentType: "lesson-options", selectionMode: "radio",
-      selected: this.state.course, selectedDuration: this.state.duration,
-      courses: Component.BOOKING_COURSES.map((c) => ({ value: c.value, title: c.title, meta: c.meta, options: c.options })),
-    })}</div>`;
+    return { title: "That time isn't available", body: "Pick another open slot." };
   }
 
-  booking_quantity(UI) {
-    const course = this.bookingCourse();
-    const option = course.options.find((o) => o.value === this.state.duration) ?? course.options[0];
-    const base = Number(option.price.replace(/[^0-9.]/g, ""));
-    return `<div class="booking-card">${UI.selectionGroup({
-      label: "How many lessons", contentType: "package-card", selectionMode: "radio", layout: "package-grid",
-      selected: this.state.quantity, selectedMarker: true,
-      options: Component.PACKAGES.map((x) => {
-        const unit = base * (1 - x.off / 100);
-        return {
-          label: x.label, value: x.value, description: x.description,
-          discount: x.off ? `${x.off}% off` : "No discount",
-          price: this.money(unit), period: "per lesson",
-          quantity: x.value, quantityLabel: "Lessons",
-          totalPrice: this.money(unit * Number(x.value)),
-          originalPrice: x.off ? this.money(base * Number(x.value)) : "",
-        };
-      }),
-    })}<p class="booking-caption">Package lessons never expire while you keep booking with this teacher.</p></div>`;
+  
+
+  /* The calendar re-renders its own markup on every pass, which wipes the
+     scroll offset. So the position is owned here: whatever the student scrolls
+     to is recorded on an instance field and re-applied after each render, with
+     the morning as the opening default. */
+  restCalendarScroll() {
+    /* Scoped to the drawer: this page has two scrollable weeks — the profile's
+       own Availability section comes first in the document, so an unscoped query
+       restored that one and left the booking week to fall back to the top of the
+       day on every render. Picking a time re-renders, so the week jumped back to
+       00:00 on every click. */
+    const scroll = document.querySelector(".bf-stage .ui-calendar__scroll");
+    const row = scroll && scroll.querySelector(".ui-calendar__row:not(.ui-calendar__row--header)");
+    const unit = row ? row.getBoundingClientRect().height : 0;
+    if (!scroll || !unit) {
+      if (!this.scrollTimer) this.scrollTimer = setInterval(() => this.restCalendarScroll(), 60);
+      return;
+    }
+    clearInterval(this.scrollTimer);
+    this.scrollTimer = null;
+    if (this.scrollTop == null) this.scrollTop = unit * Component.DAY_START_HOUR;
+    if (scroll !== this.scrollNode) {
+      this.scrollNode = scroll;
+      scroll.addEventListener("scroll", () => { this.scrollTop = scroll.scrollTop; }, { passive: true });
+    }
+    if (Math.abs(scroll.scrollTop - this.scrollTop) > 1) scroll.scrollTop = this.scrollTop;
   }
 
-  booking_time(UI) {
-    const needed = this.bookingNeeded();
-    const chosen = this.state.slots;
-    const scope = this.bookingCount() > 1 ? UI.segmentedControl({
-      id: "booking-scope", ariaLabel: "How much to schedule", shape: "pill", size: 32, selected: this.bookingScope(),
-      options: [{ label: "Schedule the first lesson", value: "first" }, { label: `Schedule all ${this.bookingCount()}`, value: "all" }],
-    }) : "";
-    const days = Component.BOOKING_DAYS.map((d) => UI.chip({ label: d.label, size: 32, selected: this.state.bookingDay === d.value, demo: "ds-chip" })
-      .replace('data-demo="ds-chip"', `data-demo="ds-chip" data-booking-day-chip="${d.value}"`)).join("");
-    const day = this.state.bookingDay ?? Component.BOOKING_DAYS[0].value;
-    const taken = Component.BOOKING_TAKEN[day] ?? [];
-    const slots = Component.BOOKING_TIMES.map((time) => {
-      const unavailable = taken.includes(time);
-      const picked = chosen.some((sl) => sl.day === day && sl.time === time);
-      return UI.timeSlot({
-        appearance: "option", label: time,
-        state: unavailable ? "booked-by-others" : picked ? "selected" : "available",
-        ariaLabel: `${time}${unavailable ? ", booked" : picked ? ", chosen" : ""}`,
-      }).replace("<button", `<button data-booking-slot data-booking-day="${day}" data-booking-time="${time}"`);
-    }).join("");
-    const done = chosen.length >= needed;
-    const progress = needed > 1
-      ? UI.alert({ tone: done ? "success" : "info", title: `${chosen.length} of ${needed} lessons scheduled`,
-          description: chosen.length ? chosen.map((sl) => this.slotLabel(sl)).join(" · ") : "Pick a time for each lesson in the package." })
-      : chosen.length ? UI.alert({ tone: "success", title: "Lesson time", description: `${this.slotLabel(chosen[0])} · ${this.bookingMinutes()} minutes` }) : "";
-    return `<div class="booking-card">${scope}<h5>Pick a day</h5><div class="booking-slots">${days}</div>
-      <h5>Then a time</h5><p class="booking-caption">Shown in Asia/Shanghai · each lesson lasts ${this.bookingMinutes()} minutes.</p>
-      <div class="booking-slots">${slots}</div>${progress}</div>`;
+  componentDidUpdate(prev) {
+    if (prev.startStep !== this.props.startStep && this.props.startStep) {
+      const step = this.props.startStep;
+      this.setState((s) => ({
+        step,
+        done: false,
+        typeId: s.typeId || (step > 1 ? "conversation" : null),
+        duration: s.duration || (step > 1 ? 60 : null),
+        picks: step >= 3 ? s.picks : [],
+      }));
+    }
+    if (prev.openOnLoad !== this.props.openOnLoad) this.setState({ open: Boolean(this.props.openOnLoad) });
+    if (this.state.step === 3 && this.state.open) this.restCalendarScroll();
+    /* The conflict card goes on the same five seconds as the refusal notice —
+       it shares the floating layer with it, and a card that never leaves is the
+       one thing that layer cannot hold. Armed once, not per render. */
+    const conflictUp = Boolean(this.props.conflict) && this.state.conflictOpen && this.state.week === 0;
+    if (conflictUp && !this.conflictTimer) {
+      this.conflictTimer = setTimeout(() => { this.conflictTimer = null; this.setState({ conflictOpen: false }); }, 5000);
+    }
   }
 
-  booking_platform(UI) {
-    return `<div class="booking-card">${UI.selectionGroup({
-      label: "Video platform", contentType: "icon-simple", selectionMode: "radio", selected: this.state.platform,
-      options: Component.PLATFORMS.map((x) => ({ label: x.label, value: x.value, description: x.description, leading: `<img src="${x.icon}" alt="" />` })),
-    })}</div>`;
+  /* Deterministic availability: the same teacher week renders identically on
+     every reload, so a screenshot of step 3 is stable. */
+  static slotState(week, day, minute) {
+    const key = `${week}|${day}|${minute}`;
+    let h = 2166136261;
+    for (let i = 0; i < key.length; i += 1) { h ^= key.charCodeAt(i); h = Math.imul(h, 16777619); }
+    const n = (h >>> 0) % 100;
+    if (n < 42) return "unavailable";
+    if (n < 52) return "booked-by-others";
+    return "available";
   }
 
-  booking_review(UI) {
-    const rows = this.bookingSummary().map((r) => `<div class="booking-summary__row"><dt>${r.label}</dt><dd>${r.value}</dd></div>`).join("");
-    return `<div class="booking-card"><h5>Your lesson</h5><dl class="booking-summary">${rows}
-      <div class="booking-summary__row booking-summary__total"><dt>Total</dt><dd>${this.money(this.bookingTotal())}</dd></div></dl></div>
-      <div class="booking-card"><h5>Payment</h5>${UI.selectionGroup({
-        label: "Payment method", contentType: "payment-icon", selectionMode: "radio", selected: "visa",
-        options: [
-          { label: "Visa ending in 4242", value: "visa", description: "Expires 12/28", leading: '<img src="Assets/Icons/pay-visa.svg" alt="" />' },
-          { label: "italki Wallet", value: "wallet", description: "Balance US$293.45", leading: '<img src="Assets/Icons/wallet.svg" alt="" />' },
-        ],
-      })}<p class="booking-caption">You will not be charged until the teacher accepts the request. Free cancellation up to 24 hours before the lesson.</p></div>`;
+  static hhmm(minute) {
+    const m = ((minute % 1440) + 1440) % 1440;
+    return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
   }
 
-  bookingSummary() {
-    const chosen = this.state.slots;
-    const when = !chosen.length ? "Not chosen yet"
-      : chosen.length === 1 ? this.slotLabel(chosen[0])
-      : `${this.slotLabel(chosen[0])} + ${chosen.length - 1} more`;
-    return [
-      { label: "Lesson type", value: this.state.kind === "trial" ? "Trial lesson" : this.bookingCourse().title },
-      { label: "Length", value: `${this.bookingMinutes()} minutes` },
-      { label: "Lessons", value: this.state.kind === "trial" ? "1 (trial)" : `${this.bookingCount()} × ${this.money(this.bookingUnit())}` },
-      { label: "Scheduled", value: this.bookingScope() === "all" && this.bookingCount() > 1 ? `${chosen.length} of ${this.bookingCount()} · ${when}` : when },
-      { label: "Platform", value: (Component.PLATFORMS.find((x) => x.value === this.state.platform) ?? Component.PLATFORMS[0]).label },
-    ];
+  dayDate(index) {
+    const d = new Date(Date.UTC(2026, 7, 12));
+    d.setUTCDate(d.getUTCDate() + index + this.state.week * 7);
+    return d;
   }
 
-  bookingFooter(UI) {
-    const last = this.state.bookingStep === this.bookingSteps().length - 1;
-    /* The schedule is the only step that can be left unanswered, so Continue is
-       refused there rather than doing nothing quietly. */
-    const blocked = this.bookingStep().id === "time" && this.state.slots.length < this.bookingNeeded();
-    return `<div class="booking-footer">
-      <span class="booking-footer__spend">${last ? "Total" : "Running total"}<strong>${this.money(this.bookingTotal())}</strong></span>
-      <span class="booking-footer__actions">
-        ${UI.button({ label: this.state.bookingStep === 0 ? "Cancel" : "Back", variant: "secondary", size: 40, shape: "default", demo: "booking-back" })}
-        ${UI.button({ label: last ? "Confirm and pay" : "Continue", variant: "red", size: 40, shape: "default", disabled: blocked, demo: "booking-next" })}
-      </span></div>`;
+  usd(n) { return "US$" + n.toFixed(2); }
+
+  unitPrice() {
+    const C = this.constructor;
+    if (this.state.typeId === "trial") return C.TRIAL.p;
+    const course = C.COURSES.find((c) => c.id === this.state.typeId);
+    const d = course && course.durations.find((x) => x.m === this.state.duration);
+    return d ? d.p : 0;
   }
 
-  /* Plain data only. An earlier version built nav content by calling a vanilla
-     string API (UI.avatar(), UI.button(), UI.topNavContext()) off a window
-     namespace this page never loads: the lookup returned null, the guard fired,
-     and the rail and top nav rendered empty. The components take data and build
-     their own markup — icons as bare names, resolved against the bundle's own
-     Assets/ folder; flags stay page-relative and are rewritten by ds-safe.js. */
+  lessonCount() { return this.state.typeId === "trial" ? 1 : this.state.count; }
+
+  offer() {
+    const C = this.constructor;
+    return (C.COUNTS.find((c) => c.n === this.lessonCount()) || { off: 0 }).off;
+  }
+
+  totals() {
+    const unit = this.unitPrice();
+    const n = this.lessonCount();
+    const subtotal = unit * n;
+    const discount = subtotal * this.offer();
+    return { unit, n, subtotal, discount, total: subtotal - discount };
+  }
+
+  slotLabel(pick, withDate) {
+    const C = this.constructor;
+    const d = new Date(Date.UTC(2026, 7, 12));
+    d.setUTCDate(d.getUTCDate() + pick.day + pick.week * 7);
+    const end = pick.minute + (this.state.typeId === "trial" ? C.TRIAL.m : this.state.duration || 60);
+    const date = `${C.WEEKDAYS[d.getUTCDay()]} ${d.getUTCDate()} ${C.MONTHS[d.getUTCMonth()]}`;
+    return withDate ? `${date} · ${C.hhmm(pick.minute)}–${C.hhmm(end)}` : `${C.hhmm(pick.minute)}–${C.hhmm(end)}`;
+  }
+
+  emptyWeekNow() { return Boolean(this.props.emptyWeek) && this.state.week === 0; }
+
+  openFlow = (trial) => {
+    this.setState({
+      open: true, done: false, step: 1, picks: [], week: 0, dayIdx: 0, conflictOpen: true,
+      typeId: trial ? "trial" : null,
+      duration: trial ? this.constructor.TRIAL.m : null,
+      count: 5,
+    });
+  };
+
+  steps() {
+    const trial = this.state.typeId === "trial";
+    return trial
+      ? [{ id: 1, label: "Lesson" }, { id: 3, label: "Time" }, { id: 4, label: "Platform" }, { id: 5, label: "Pay" }]
+      : [{ id: 1, label: "Lesson" }, { id: 2, label: "Package" }, { id: 3, label: "Time" }, { id: 4, label: "Platform" }, { id: 5, label: "Pay" }];
+  }
+
+  canContinue() {
+    const st = this.state;
+    if (st.step === 1) return Boolean(st.typeId && st.duration);
+    if (st.step === 2) return Boolean(st.count);
+    if (st.step === 3) return true;
+    return true;
+  }
+
+  go = (dir) => {
+    const order = this.steps().map((s) => s.id);
+    const at = order.indexOf(this.state.step);
+    const next = order[at + dir];
+    if (next === undefined) return;
+    this.setState({ step: next });
+  };
+
   navVals() {
     /* First render can beat the bundle: componentDidMount polls for the kit and
        forces an update once it lands, so an empty rail for one frame is the
        correct answer — throwing here would take the whole page down instead. */
-    const shell = Component.kit()?.appShellNav?.() ?? { items: [], moreItems: [] };
+    const shell = Component.kit?.()?.appShellNav?.() ?? { items: [], moreItems: [] };
     const contextOptions = [
       { id: "spanish", label: "Spanish teachers", flag: "Assets/Flags/es.svg" },
       { id: "english", label: "English teachers", flag: "Assets/Flags/gb.svg" },
@@ -737,6 +1067,320 @@ class Component extends DCLogic {
     };
   }
 
+bookingVals() {
+    const C = this.constructor;
+    const st = this.state;
+    const trial = st.typeId === "trial";
+    const t = this.totals();
+    const count = this.lessonCount();
+    const order = this.steps().map((s) => s.id);
+    const conflict = Boolean(this.props.conflict) && st.conflictOpen && st.week === 0;
+
+    const empty = this.emptyWeekNow();
+
+    const calendarDates = Array.from({ length: 7 }, (_, i) => {
+      const d = this.dayDate(i);
+      return { id: "d" + i, label: C.WEEKDAYS[d.getUTCDay()], date: String(d.getUTCDate()), current: st.week === 0 && i === 0 };
+    });
+
+    /* A lesson occupies its whole length, so both the paint and the click test
+       run over [start, start + duration): a 60-minute pick fills two units, and
+       a start whose span crosses a busy unit or another lesson is refused. */
+    const span = trial ? C.TRIAL.m : (st.duration || 60);
+    const full = st.picks.length >= (trial ? 1 : st.count);
+    const rawState = (day, minute) => {
+      const block = Math.floor(minute / 30) * 30;
+      if (conflict && day === 0 && block === 19 * 60) return "booked-by-others";
+      return C.slotState(st.week, day, block);
+    };
+    const coveredBy = (day, minute) => st.picks.find((p) => p.week === st.week && p.day === day && minute >= p.minute && minute < p.minute + span);
+    const fits = (day, start) => {
+      if (start + span > 24 * 60) return false;
+      for (let m = start; m < start + span; m += 15) {
+        if (rawState(day, m) !== "available") return false;
+        if (coveredBy(day, m)) return false;
+      }
+      return true;
+    };
+
+    const calendarRows = C.HOURS.map((hour) => ({
+      id: "r" + hour + "n" + (st.noticeSeq || 0),
+      label: C.hhmm(hour * 60),
+      slots: calendarDates.map((_, day) => [0, 15, 30, 45].map((off) => {
+        const minute = hour * 60 + off;
+        const pick = coveredBy(day, minute);
+        if (pick) return { state: "selected", tooltip: `Selected: ${this.slotLabel(pick, false)}` };
+        const state = rawState(day, minute);
+        /* Only the teacher's own calendar greys a slot out. A met quota or a
+           lesson that would not fit are facts about this booking, not about her
+           availability, so those slots keep their open look and answer with a
+           notice when clicked — greying them made her week appear to change
+           every time a time was picked. */
+        return { state, disabled: state !== "available" };
+      })),
+    }));
+
+    const picks = [...st.picks]
+      .sort((a, b) => (a.week - b.week) || (a.day - b.day) || (a.minute - b.minute))
+      .map((p, i) => ({
+        n: i + 1,
+        label: this.slotLabel(p, true),
+        onRemove: () => this.setState((s) => ({ picks: s.picks.filter((x) => !(x.week === p.week && x.day === p.day && x.minute === p.minute)), notice: null })),
+      }));
+
+    const remaining = count - picks.length;
+    const handle = C.HANDLES[st.platform];
+    const platformLabel = (C.PLATFORMS.find((p) => p.id === st.platform) || {}).label;
+    const paymentLabel = (C.PAYMENTS.find((m) => m.id === st.payment) || {}).label;
+    const courseTitle = trial ? "Trial Lesson" : (C.COURSES.find((c) => c.id === st.typeId) || {}).title;
+
+    const weekStart = this.dayDate(0);
+    const weekEnd = this.dayDate(6);
+
+    return {
+      profileLessons: [
+        { name: "Trial Lesson", tag: "New students only", meta: "30 min · one per student", price: this.usd(C.TRIAL.p), per: "30 min", divider: false, onBook: () => this.openFlow(true) },
+        ...C.COURSES.map((c) => ({
+          name: c.title, tag: "", meta: c.meta,
+          price: this.usd((c.durations.find((d) => d.m === 60) || c.durations[0]).p),
+          per: `${(c.durations.find((d) => d.m === 60) || c.durations[0]).m} min`, divider: true,
+          onBook: () => this.setState({ open: true, done: false, step: 1, typeId: c.id, duration: 60, picks: [], count: 5, week: 0, dayIdx: 0, conflictOpen: true }),
+        })),
+      ],
+      trialPriceLabel: this.usd(C.TRIAL.p),
+      bookTrialLabel: `Book trial · ${this.usd(C.TRIAL.p)}`,
+      openTrial: () => this.openFlow(true),
+      openBooking: () => this.openFlow(false),
+
+      stageClass: "ui-drawer-stage bf-stage" + (st.open ? " is-open" : ""),
+      onStageClick: (e) => { if (e.target.classList && e.target.classList.contains("ui-drawer__mask")) this.setState({ open: false }); },
+      closeDrawer: () => this.setState({ open: false }),
+      drawerTitle: st.done ? "Booking confirmed" : (trial ? "Book a trial lesson with Lucía" : "Book lessons with Lucía"),
+      drawerSubtitle: st.done ? `${count} ${count === 1 ? "lesson" : "lessons"} added to your calendar` : "Spanish · Professional Teacher",
+      showRating: !st.done,
+
+      /* The package grid is four 200px columns wide; every other step reads
+         better in a narrower measure. */
+      bodyClass: st.step === 5 ? "bf-body--wide" : (st.step === 3 ? "bf-body--full" : ""),
+      stepItems: this.steps(),
+      stepIndex: Math.max(0, order.indexOf(st.step)),
+      stepCaption: `Step ${Math.max(0, order.indexOf(st.step)) + 1} of ${order.length} · ${(this.steps()[Math.max(0, order.indexOf(st.step))] || {}).label}`,
+      isStep1: !st.done && st.step === 1,
+      isStep2: !st.done && st.step === 2,
+      isStep3: !st.done && st.step === 3,
+      isStep4: !st.done && st.step === 4,
+      isStep5: !st.done && st.step === 5,
+      isDone: st.done,
+      isTrial: trial,
+
+      trialMeta: `${C.TRIAL.m} min · fixed length set by the teacher · one per student`,
+      trialCardClass: trial ? "is-expanded" : "",
+      trialToggleClass: trial ? "is-selected" : "",
+      pickTrial: () => this.setState({ typeId: "trial", duration: C.TRIAL.m, count: 1, picks: [] }),
+      courses: C.COURSES.map((c) => {
+        const selected = st.typeId === c.id;
+        return {
+          title: c.title, meta: c.meta, selected,
+          fromPrice: `from ${this.usd(c.durations[0].p)}`,
+          cardClass: selected ? "is-expanded" : "",
+          toggleClass: selected ? "is-selected" : "",
+          optionsClass: selected ? "" : "is-collapsed",
+          onPick: () => this.setState((s) => ({ typeId: c.id, duration: s.typeId === c.id ? s.duration : 60, count: s.count === 1 ? 5 : s.count, picks: [] })),
+          options: c.durations.map((d) => ({
+            label: `${d.m} mins`,
+            price: this.usd(d.p),
+            selected: selected && st.duration === d.m,
+            cls: selected && st.duration === d.m ? "is-selected" : "",
+            onPick: () => this.setState({ typeId: c.id, duration: d.m, picks: [] }),
+          })),
+        };
+      }),
+
+      packageIntro: `${this.usd(t.unit)} per ${st.duration}-minute lesson. Buy more at once and the price per lesson drops.`,
+      packages: C.COUNTS.map((c) => {
+        const sub = t.unit * c.n;
+        const total = sub * (1 - c.off);
+        return {
+          value: String(c.n),
+          aria: `${c.n} ${c.n === 1 ? "lesson" : "lessons"}`,
+          selected: st.count === c.n,
+          discount: c.off ? `${Math.round(c.off * 100)}% off` : "No discount",
+          price: this.usd(total / c.n),
+          description: C.PACKAGE_COPY[c.n],
+          quantity: String(c.n),
+          quantityLabel: c.n === 1 ? "Lesson" : "Lessons",
+          originalPrice: c.off ? this.usd(sub) : "",
+          totalPrice: this.usd(total),
+          onPick: () => this.setState({ count: c.n, picks: [] }),
+        };
+      }),
+
+      scheduleTitle: count === 1 ? "Pick your lesson time" : `Schedule your ${count} lessons`,
+      scheduleHint: remaining > 0
+        ? (count === 1
+          ? "Pick a slot that works for you, or continue and schedule it later. Free rescheduling up to 24 hours before."
+          : `Book as many of the ${count} as you like now — you can leave the rest and schedule them later from your lesson page.`)
+        : "All set. Remove a time below if you want to change it.",
+      scheduledCount: picks.length,
+      lessonCount: count,
+      scheduleRatio: `${picks.length}/${count}`,
+      showConflict: conflict,
+      dismissConflict: (e) => { if (e.target.closest && e.target.closest(".ui-notification__close, [data-demo='ui-notification-close']")) this.setState({ conflictOpen: false }); },
+      weekLabel: `${weekStart.getUTCDate()} ${C.MONTHS[weekStart.getUTCMonth()]} – ${weekEnd.getUTCDate()} ${C.MONTHS[weekEnd.getUTCMonth()]} ${weekEnd.getUTCFullYear()}`,
+      nextWeek: () => { this.scrollTop = null; this.setState((s) => ({ week: s.week + 1 })); },
+      calendarDates,
+      calendarRows,
+      onCalendarClick: (e) => {
+        const action = e.target.closest && e.target.closest("[data-calendar-action]");
+        if (action) {
+          const a = action.dataset.calendarAction;
+          e.preventDefault();
+          e.stopPropagation();
+          this.scrollTop = null;
+          this.setState((s) => ({ week: a === "today" ? 0 : Math.max(0, s.week + (a === "previous-week" ? -1 : 1)) }));
+          return;
+        }
+        const slot = e.target.closest && e.target.closest(".ui-time-slot");
+        if (!slot) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const day = Number(String(slot.dataset.calendarDay || "").slice(1));
+        const minute = Number(slot.dataset.calendarMinute);
+        if (!Number.isFinite(day) || !Number.isFinite(minute)) return;
+        const covering = coveredBy(day, minute);
+        if (covering) {
+          this.setState((s) => ({ picks: s.picks.filter((p) => !(p.week === covering.week && p.day === covering.day && p.minute === covering.minute)) }));
+          return;
+        }
+        /* The notice takes itself away: a message about one click should not
+           still be on screen several clicks later, and closing it by hand to
+           carry on picking times is work the notice can do itself. Long enough
+           to read two lines; the close button is still there for anyone who
+           wants it gone sooner. Re-armed per refusal, so a second refusal gets
+           its own five seconds rather than inheriting what is left of the
+           first. */
+        const refuse = (notice) => {
+          clearTimeout(this.noticeTimer);
+          this.noticeTimer = setTimeout(() => this.setState({ notice: null }), 5000);
+          this.setState((s) => ({ notice, noticeSeq: (s.noticeSeq || 0) + 1 }));
+        };
+        if (full) {
+          refuse({
+            title: count === 1 ? "Your lesson is already scheduled" : `All ${count} lessons are already scheduled`,
+            body: "Remove one of the times below, then pick this slot instead.",
+          });
+          return;
+        }
+        if (!fits(day, minute)) {
+          refuse(this.whyNotFit(day, minute, span, coveredBy, rawState));
+          return;
+        }
+        this.setState((s) => ({ picks: [...s.picks, { week: s.week, day, minute }], notice: null }));
+      },
+      showNotice: !!st.notice,
+      noticeTitle: (st.notice || {}).title,
+      noticeBody: (st.notice || {}).body,
+      dismissNotice: () => this.setState({ notice: null }),
+      dayHasSlots: !empty,
+      dayIsEmpty: empty,
+      emptyTitle: "No open times this week",
+      emptyBody: "Lucía is fully booked from 12 to 18 August. Her calendar opens up again next week.",
+      hasPicks: picks.length > 0,
+      picks,
+      timezone: "Asia/Shanghai (UTC+8)",
+
+      /* leading is a raw HTML slot; ds-safe rewrites the page-relative Assets
+         path to this template's depth once the node lands. */
+      platforms: C.PLATFORMS.map((p) => {
+        const field = C.HANDLES[p.id];
+        const selected = st.platform === p.id;
+        return {
+          ...p,
+          subtext: p.subtext || "",
+          leading: `<img src="Assets/Icons/${p.icon}.svg" alt="">`,
+          selected,
+          showField: Boolean(field) && selected,
+          wrapClass: field && selected ? "has-field" : "",
+          /* FormField renders its control from markup, so the input is built by
+             the kit's own builder rather than nested as a second component —
+             that is what lets the field associate its label and note with it. */
+          fieldId: field ? `bf-handle-${p.id}` : "",
+          fieldLabel: field ? field.label : "",
+          fieldHelper: field ? "Only shared with Lucía, and only for these lessons." : "",
+          fieldControl: field
+            ? (C.kit?.()?.textInput?.({ id: `bf-handle-${p.id}`, placeholder: field.placeholder, size: 40 }) ?? "")
+            : "",
+          onPick: () => this.setState({ platform: p.id }),
+        };
+      }),
+      needsHandle: Boolean(handle),
+      handleLabel: handle ? handle.label : "",
+      handlePlaceholder: handle ? handle.placeholder : "",
+      onHandleInput: (e) => { this.handle = e.target.value; },
+
+      summaryTitle: courseTitle,
+      summaryLine: `${trial ? C.TRIAL.m : st.duration} min · ${count} ${count === 1 ? "lesson" : "lessons"} · ${platformLabel}`,
+      scheduleCount: `${picks.length} of ${count}`,
+      noPicks: picks.length === 0,
+      /* Panel + SelectionGroup — the same two components the React step composes,
+         instead of four cards stripped of their borders and re-drawn as rows of a
+         hand-built block. The group renders as markup, so the choice comes back
+         from the card's own data-selection-value rather than a handler per row. */
+      /* `C.kit?.()`, not `C.kit()`: ds-safe installs the static on the base class
+         while the first render may already be running, and calling it a moment
+         too early throws through React and takes the page down. */
+      paymentBody: C.kit?.()?.selectionGroup?.({
+        label: "How you are paying",
+        contentType: "standard",
+        selectionMode: "radio",
+        selected: st.payment,
+        /* Credits say their balance beside the name; the rest explain themselves
+           on a second line. */
+        options: C.PAYMENTS.map((m) => ({ value: m.id, label: m.label, subtext: m.subtext || "", description: m.subtext ? "" : m.description })),
+      }) ?? "",
+      onPaymentClick: (e) => {
+        const card = e.target.closest?.("[data-selection-value]");
+        if (card) this.setState({ payment: card.dataset.selectionValue });
+      },
+      priceRows: [
+        { label: `${this.usd(t.unit)} × ${count} ${count === 1 ? "lesson" : "lessons"}`, value: this.usd(t.subtotal), color: "var(--ui-color-secondary)" },
+        ...(t.discount > 0 ? [{ label: `Package discount (${Math.round(this.offer() * 100)}%)`, value: `− ${this.usd(t.discount)}`, color: "var(--ui-color-success)" }] : []),
+      ],
+      totalLabel: this.usd(t.total),
+
+      /* The confirmation the React step settles on: what was bought, what it
+         cost and what paid for it — one line, with the way on inside Result's
+         own action slots rather than a row of buttons built under it. */
+      doneTitle: "Booking confirmed",
+      doneBody: `${count} ${count === 1 ? "lesson" : "lessons"} with Lucía Fernández · ${this.usd(t.total)} paid with ${paymentLabel}.`,
+      /* Both slots take markup, so the buttons come from the kit's own builder
+         and the click is read back off the shared demo hook. */
+      doneAction: C.kit?.()?.button?.({ label: "Open my calendar", size: 40, shape: "pill", demo: "bf-done" }) ?? "",
+      doneSecondaryAction: C.kit?.()?.button?.({ label: "Back to profile", variant: "secondary", size: 40, shape: "pill", demo: "bf-done" }) ?? "",
+      onDoneClick: (e) => { if (e.target.closest?.("[data-demo='bf-done']")) this.setState({ open: false }); },
+
+      showFooter: !st.done,
+      footerPrice: st.typeId && st.duration ? this.usd(t.total) : "—",
+      footerNote: st.typeId && st.duration
+        ? (count > 1 ? `${count} lessons · ${this.usd(t.total / count)} per lesson` : `${trial ? C.TRIAL.m : st.duration} min lesson`)
+        : "Choose a lesson type to see the price",
+      showBack: order.indexOf(st.step) > 0,
+      goBack: () => this.go(-1),
+      nextLabel: st.step === 5 ? `Confirm and pay ${this.usd(t.total)}` : "Continue",
+      nextDisabled: !this.canContinue(),
+      /* Chosen, not just reached: the bar fills the current step as soon as it
+         has an answer, and stays pale while it is still waiting for one. Same
+         prop the React step passes — this template was leaving it at its
+         default, so the current step never filled. */
+      stepReady: this.canContinue(),
+      goNext: () => {
+        if (!this.canContinue()) return;
+        if (st.step === 5) { this.setState({ done: true }); return; }
+        this.go(1);
+      },
+    };
+  }
+
   renderVals() {
     const C = this.constructor;
     const trialPrice = this.props.trialPrice ?? "US$8.00";
@@ -747,15 +1391,12 @@ class Component extends DCLogic {
     return {
       ...this.navVals(),
       ...this.reviewVals(),
+      ...this.bookingVals(),
       superTutor: this.props.superTutor ?? true,
       onlineNow: this.props.onlineNow ?? true,
       trialPrice,
       bookTrialLabel: `Book trial · ${trialPrice}`,
-      bookingOpen: this.state.bookingOpen,
-      drawerTitle: `Book a lesson · Step ${this.state.bookingStep + 1} of ${this.bookingSteps().length}`,
-      stepBody: typeof Component.kit()?.selectionGroup === "function" ? this.bookingBody(Component.kit()) : "",
-      stepFooter: typeof Component.kit()?.selectionGroup === "function" ? this.bookingFooter(Component.kit()) : "",
-      bookTrial: () => this.openBooking({ kind: "trial", quantity: "1", duration: String(this.props.trialMinutes ?? 30) }),
+      bookTrial: () => this.openFlow(true),
       speaksTags: [
         { text: "Spanish · Native", tone: "info" },
         { text: "English · C2", tone: "neutral" },
@@ -805,9 +1446,7 @@ class Component extends DCLogic {
         { name: "DELE Exam Prep", tag: "", desc: "Mock exams, marking criteria and technique from a DELE examiner.", meta: "A2 – C1 · 642 lessons taught", price: "US$18.00", per: "60 min", divider: true, course: "dele" },
         { name: "Business Spanish", tag: "", desc: "Meetings, emails and calls — rehearsed with your real agenda.", meta: "B1 – C2 · 318 lessons taught", price: "US$16.00", per: "60 min", divider: true, course: "business" },
         { name: "Grammar Foundations", tag: "", desc: "From sounds to sentences, built in the right order.", meta: "A1 – B1 · 257 lessons taught", price: "US$12.00", per: "60 min", divider: true, course: "grammar" },
-      ].map((l) => ({ ...l, onBook: () => this.openBooking(l.name === "Trial Lesson"
-        ? { kind: "trial", quantity: "1", duration: String(this.props.trialMinutes ?? 30) }
-        : { kind: "normal", course: l.course, duration: "60", quantity: "5" }) })),
+      ].map((l) => ({ ...l, onBook: () => this.openFlow(l.name === "Trial Lesson") })),
       weekDates: C.DAYS.map((d) => d.label + " " + d.date),
       weekRows: C.availability(),
       nextSlots: [

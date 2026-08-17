@@ -1,0 +1,49 @@
+<section data-screen-label="Step 1 lesson type" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:grid;gap:2px">
+<h4 style="margin:0;color:var(--ui-color-title);font-size:18px;font-weight:700;line-height:26px">Choose a lesson type</h4>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:14px;line-height:20px">Pick a course, then the length that suits you. A trial lesson is a one-off first meeting.</p>
+</div>
+
+<div class="ui-selection__lesson-card {{ trialCardClass }}">
+<button class="ui-selection__lesson-toggle {{ trialToggleClass }}" type="button" role="radio" aria-checked="{{ isTrial }}" onClick="{{ pickTrial }}">
+<span class="ui-selection__lesson-summary-copy">
+<span class="ui-selection__lesson-summary-title">Trial Lesson</span>
+<span class="ui-selection__lesson-summary-meta">{{ trialMeta }}</span>
+</span>
+<span class="ui-selection__lesson-summary-price">{{ trialPriceLabel }}</span>
+</button>
+</div>
+
+<div style="display:flex;align-items:center;gap:12px;color:var(--ui-color-secondary);font-size:12px;line-height:18px">
+<span style="height:1px;flex:1;background:var(--ui-color-divider)"></span>or book a regular course<span style="height:1px;flex:1;background:var(--ui-color-divider)"></span>
+</div>
+
+<div class="ui-selection-group ui-selection-group--lesson-options-list" role="radiogroup" aria-label="Choose a course and lesson length">
+<sc-for list="{{ courses }}" as="c" hint-placeholder-count="4">
+<section class="ui-selection__lesson-card {{ c.cardClass }}">
+<button class="ui-selection__lesson-toggle {{ c.toggleClass }}" type="button" role="radio" aria-checked="{{ c.selected }}" aria-expanded="{{ c.selected }}" onClick="{{ c.onPick }}">
+<span class="ui-selection__lesson-summary-copy">
+<span class="ui-selection__lesson-summary-title">{{ c.title }}</span>
+<span class="ui-selection__lesson-summary-meta">{{ c.meta }}</span>
+</span>
+<span class="ui-selection__lesson-summary-price">{{ c.fromPrice }}</span>
+</button>
+<div class="ui-selection__lesson-options {{ c.optionsClass }}" role="radiogroup" aria-label="Lesson length">
+<div class="ui-selection__lesson-options-inner">
+<sc-for list="{{ c.options }}" as="o" hint-placeholder-count="3">
+<button class="ui-selection__lesson-option {{ o.cls }}" type="button" role="radio" aria-checked="{{ o.selected }}" onClick="{{ o.onPick }}">
+<span class="ui-selection__lesson-option-label">{{ o.label }}</span>
+<span class="ui-selection__lesson-option-price">{{ o.price }}</span>
+<span class="ui-selection__lesson-option-indicator" aria-hidden="true"></span>
+</button>
+</sc-for>
+</div>
+</div>
+</section>
+</sc-for>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+<section 

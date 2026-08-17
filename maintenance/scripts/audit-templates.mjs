@@ -203,6 +203,49 @@ for (const template of templates) {
     await page.waitForTimeout(300);
   }
 
+  /* Shape belongs to the action row, not to the button. `default` resolves by
+     size — 32 is a pill, 40 and 48 are rounded — so a single override, or a
+     single mixed size, leaves one button on the system's answer and its
+     neighbour on someone's: a pill CTA beside a rounded secondary, both legal
+     on their own, in the same bar. Nothing in the contract can catch that,
+     because nothing is wrong with either button; it is only visible once two of
+     them are standing next to each other, which is what this asks. */
+  const shapeSplits = await page.evaluate(() => {
+    const shapeOf = (b) => b.classList.contains('ui-button--pill') ? 'pill'
+      : b.classList.contains('ui-button--rounded') ? 'rounded' : 'default';
+    const sizeOf = (b) => ['32', '40', '48'].find((s) => b.classList.contains(`ui-button--${s}`)) ?? '?';
+    const onScreen = [...document.querySelectorAll('.ui-button')]
+      .filter((b) => b.getBoundingClientRect().width > 0);
+    /* The row is the nearest ancestor holding more than one button. */
+    const rows = new Map();
+    for (const button of onScreen) {
+      let parent = button.parentElement;
+      while (parent && parent !== document.body) {
+        if (parent.querySelectorAll('.ui-button').length > 1) break;
+        parent = parent.parentElement;
+      }
+      if (!parent || parent === document.body) continue;
+      if (!rows.has(parent)) rows.set(parent, []);
+      rows.get(parent).push(button);
+    }
+    const findings = [];
+    for (const [row, list] of rows) {
+      if (list.length < 2) continue;
+      /* Side by side, not stacked: a column of buttons is not an action row. */
+      const tops = new Set(list.map((b) => Math.round(b.getBoundingClientRect().top / 8)));
+      if (tops.size > 1) continue;
+      if (new Set(list.map(shapeOf)).size < 2) continue;
+      findings.push({
+        row: (row.className || row.tagName).toString().trim().split(/\s+/)[0],
+        buttons: list.map((b) => `${(b.textContent || '').trim().slice(0, 22) || '(icon)'} ${sizeOf(b)}/${shapeOf(b)}`),
+      });
+    }
+    return findings;
+  });
+  for (const split of shapeSplits) {
+    say(`one action row, two shapes — ${split.buttons.join(' vs ')} (in .${split.row}). Shape is the row's, not the button's`);
+  }
+
   /* Two faults that only show up once the window is narrower than whoever
      wrote the page was: the page scrolls sideways, and the app frame stops
      covering the content it is supposed to cover.

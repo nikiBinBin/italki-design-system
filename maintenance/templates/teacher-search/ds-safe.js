@@ -21,16 +21,27 @@
   const alreadyListening = window.__dsSafeBound;
   window.__dsSafeBound = true;
 
-  const BASE = "../../";
+  /* Where Assets/ is depends on how the page was served — two folders up from a
+     template, at the root of a design project. ds-base.js resolves it by asking;
+     until it answers, the historical guess stands and every path rewritten in
+     the meantime is swept again below. */
+  let BASE = "../../";
   /* Two shapes of the same mistake. A page-relative "Assets/…" path is right
      for the kit and wrong two folders down, and a bare icon name — "share",
      "favorite-outline" — is what the components accept but a plain <img> does
      not, so it renders as a broken image. Both are resolved here, where the
      depth is known. */
   const NAMED = /^[a-z0-9][a-z0-9-]*$/i;
+  /* From "Assets/" onwards rather than only at the start, so a path this
+     function has already rewritten resolves again against whichever base is
+     current — that is what makes the re-sweep possible. */
   const resolve = (src) => {
     if (!src) return null;
-    if (src.startsWith("Assets/")) return BASE + src;
+    const at = src.indexOf("Assets/");
+    if (at >= 0) {
+      const next = BASE + src.slice(at);
+      return next === src ? null : next;
+    }
     if (NAMED.test(src)) return BASE + "Assets/Icons/" + src + ".svg";
     return null;
   };
@@ -44,6 +55,15 @@
     }
   };
   rewrite(document.body);
+  /* One sweep when the real base lands. Cheap, and it is the only thing that
+     repairs the images already on screen. */
+  if (window.__dsAssetBase && typeof window.__dsAssetBase.then === "function") {
+    window.__dsAssetBase.then((resolved) => {
+      if (!resolved || resolved === BASE) return;
+      BASE = resolved;
+      rewrite(document.body);
+    });
+  }
   if (!alreadyListening) {
     new MutationObserver((records) => {
       for (const record of records) {

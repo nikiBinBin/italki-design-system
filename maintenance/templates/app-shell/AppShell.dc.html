@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="App Shell" description="The empty italki frame — sidebar, top nav and footer, with the page body left for you to fill in." -->
+<helmet>
+<script src="./ds-base.js"></script>
+<script src="./ds-safe.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:var(--ui-color-divider);color:var(--ui-color-text);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;font-weight:500;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:var(--ui-color-link);text-decoration:none}
+a:hover{color:var(--ui-color-link-hover);text-decoration:underline}
+/* Duplicates the kit default on purpose — same reasoning as the other two
+   templates: whichever copy wins, wins the same values, so a bundle one
+   version behind cannot leave the shell unpositioned. */
+.ui-sidebar.ui-sidebar{height:100dvh;position:sticky;top:0;z-index:var(--ui-layer-sidebar,41);align-self:flex-start}
+.ui-top-nav.ui-top-nav{position:sticky;top:0;z-index:var(--ui-layer-top-nav,40)}
+
+/* The three rules the page body needs, and nothing else. Width and rhythm are
+   set here so what you add inherits them instead of each block inventing its
+   own gutter. */
+.shell-main{flex:1;width:100%;max-width:1216px;margin:0 auto;padding:var(--ui-space-7) var(--ui-space-6) var(--ui-space-10)}
+
+.shell-placeholder{border:1px dashed var(--ui-color-border);border-radius:var(--ui-radius-xl);background:var(--ui-color-card);padding:var(--ui-space-10) var(--ui-space-6);text-align:center}
+.shell-placeholder__title{margin:0;color:var(--ui-color-title);font-size:20px;font-weight:600}
+.shell-placeholder__note{margin:var(--ui-space-2) auto 0;max-width:52ch;color:var(--ui-color-secondary);font-weight:400;line-height:1.6}
+.shell-placeholder code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--ui-color-text);background:var(--ui-color-divider);border-radius:var(--ui-radius-xs);padding:1px 5px}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;align-items:flex-start">
+<x-import component-from-global-scope="SafeUI.Sidebar" variant="plus" items="{{ navItems }}" sections="{{ navSections }}" more-items="{{ moreItems }}" footer="{{ sidebarFooter }}" hint-size="324px,100vh"></x-import>
+<div style="flex:1;min-width:0;min-height:100vh;display:flex;flex-direction:column">
+<!-- global-default, not teacher-search: the two differ by the Filter button in
+     the search field, and a shell with nothing to filter would be shipping a
+     button that does nothing. Switch to teacher-search once the page below has
+     a result list and something on the page opens the drawer. -->
+<x-import component-from-global-scope="SafeUI.TopNav" variant="global-default" context-options="{{ navContextOptions }}" search-placeholder="Search topics" action-label="Book lessons" hint-size="100%,72px"></x-import>
+
+<!-- ─────────────────────────────────────────────────────────────────────
+     Your page goes here.
+
+     Delete the placeholder below and build inside <main>. The sidebar, the
+     top nav and the footer are the parts you keep; they are the same three
+     components every italki page carries, wired to the same roster the rest
+     of the design system uses, so they stay in step on their own.
+     ───────────────────────────────────────────────────────────────────── -->
+<main class="shell-main">
+  <div class="shell-placeholder">
+    <p class="shell-placeholder__title">Your page goes here</p>
+    <p class="shell-placeholder__note">Replace this block with your own content inside <code>&lt;main class="shell-main"&gt;</code>. It already carries the page width and the top and bottom spacing, so a section you drop in lines up with the shell without any layout of its own.</p>
+  </div>
+</main>
+
+<x-import component-from-global-scope="SafeUI.Footer" id="app-shell-footer" columns="{{ footerColumns }}" utilities="{{ footerUtilities }}" copyright="© 2026 italki HK Limited." legal-links="{{ footerLegalLinks }}" social-links="{{ footerSocialLinks }}" aria-label="italki footer" hint-size="100%,560px"></x-import>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    ready: !!Component.kit?.(),
+  };
+
+  componentDidMount() {
+    if (this.state.ready) return;
+    // ds-base.js loads the kit asynchronously; re-render once it is available.
+    this.timer = setInterval(() => {
+      if (!Component.kit?.()) return;
+      clearInterval(this.timer);
+      this.setState({ ready: true });
+    }, 50);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
+  /* The kit is reachable under two names and they are the same object:
+     window.ITalkiUI is the vanilla runtime, and the React bundle re-exports it
+     as window.ItalkiUI.raw. Reading only one makes the shell depend on which
+     the host happens to install. */
+  static kit() { return window.ITalkiUI || (window.ItalkiUI || {}).raw || null; }
+
+  navVals() {
+    /* First render can beat the bundle: componentDidMount polls for the kit and
+       forces an update once it lands, so an empty rail for one frame is the
+       correct answer — throwing here would take the whole page down instead. */
+    const UI = Component.kit?.();
+    const shell = UI?.appShellNav?.() ?? { items: [], moreItems: [] };
+
+    /* The roster comes from the kit, so this page cannot disagree with
+       teacher-search or teacher-profile about what italki's shell contains.
+       Nothing is marked current: a blank page is not one of the destinations. */
+    return {
+      navItems: shell.items,
+      moreItems: shell.moreItems,
+      /* The collapsible groups under the roster. Left as two short examples of
+         the shape rather than removed — an empty rail reads as a broken
+         sidebar, and swapping the contents is a smaller edit than inventing
+         the structure. */
+      navSections: [
+        { id: "chats", label: "Chats", open: true, items: [
+          { id: "chat-lucia", label: "Lucía Fernández", secondary: "2m", avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
+          { id: "chat-mateo", label: "Mateo Rojas", secondary: "1h", avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
+        ] },
+        { id: "lessons", label: "Lessons", items: [
+          { id: "lesson-today", prefix: "12", divider: true, label: "Spanish B1", secondary: "Today 18:00" },
+          { id: "lesson-thu", prefix: "13", divider: true, label: "Spanish B1", secondary: "Thu 18:00" },
+        ] },
+      ],
+      sidebarFooter: UI
+        ? '<button class="ui-sidebar__item" type="button" style="width:auto">'
+          + '<img class="ui-sidebar__item-icon" src="../../Assets/Icons/wallet.svg" alt="" />'
+          + "<span>$293.45 USD</span></button>"
+          + UI.avatar({ initials: "NI", size: 32, tone: "primary", interactive: true, ariaLabel: "Your profile" })
+        : "",
+      /* TopNav builds its own context picker, search field and action from
+         these — it is a named variant, not three slots of hand-made markup. */
+      navContextOptions: [
+        { id: "spanish", label: "Spanish teachers", flag: "Assets/Flags/es.svg" },
+        { id: "english", label: "English teachers", flag: "Assets/Flags/gb.svg" },
+        { id: "japanese", label: "Japanese teachers", flag: "Assets/Flags/jp.svg" },
+        { id: "french", label: "French teachers", flag: "Assets/Flags/fr.svg" },
+      ],
+    };
+  }
+
+  footerVals() {
+    const UI = Component.kit?.();
+    return {
+      footerColumns: [
+        { groups: [{ heading: "Language teachers", links: ["English teachers", "Spanish teachers", "French teachers", "Japanese teachers", "German teachers", "Chinese teachers", "Korean teachers", "Italian teachers", "Russian teachers", "Portuguese teachers", "Arabic teachers", "Hindi teachers", "All teachers"] }] },
+        { groups: [{ heading: "Learn a language", links: ["Learn English", "Learn Spanish", "Learn Japanese", "Learn French", "Learn German", "Learn Chinese", "Learn Korean", "Learn Italian", "Learn Russian", "Learn Portuguese", "Learn Arabic", "Learn Hindi"] }] },
+        { groups: [
+          { heading: "Lessons", links: ["1-on-1 Lessons", "Group Class"] },
+          { heading: "Teaching", links: ["Become a teacher", "Teaching Code of Conduct"] },
+          { heading: "Learning resources", links: ["italki Language Test", "italki Language Challenge", "italki Podcasts", "italki Quiz", "italki Community"] },
+        ] },
+        { groups: [
+          { heading: "Promotions", links: ["Refer a Friend", "Buy a Gift Card", "italki Business", "Affiliate Program", "Partnership Program"] },
+          { heading: "More", links: ["FAQ", "italki Blog", "Download App"] },
+        ] },
+      ],
+      /* Markup, not elements — the utilities strip is a container prop, so the
+         two pickers are built with the same components and concatenated.
+         `shape` is left off: 40 resolves to rounded on its own. */
+      footerUtilities: UI
+        ? UI.select({ id: "footer-language", label: "Language", options: ["English", "Spanish", "French"], selected: "English", size: 40 })
+          + UI.select({ id: "footer-currency", label: "Currency", options: ["CNY ¥", "USD $", "EUR €"], selected: "CNY ¥", size: 40 })
+        : "",
+      footerLegalLinks: ["About us", "Careers", "Press", "Support", "Legal", "Privacy", "Contact"],
+      /* One mark, as the Footer card shows it. A second was here briefly and
+         had to come out: social-linkedin.svg is a filled blue disc where
+         youtube.svg is an outline, so the pair read as two different sets. */
+      footerSocialLinks: [{ label: "YouTube", icon: "Assets/Icons/youtube.svg" }],
+    };
+  }
+
+  renderVals() {
+    return {
+      ...this.navVals(),
+      ...this.footerVals(),
+    };
+  }
+}
+</script>
+</body>
+</html>

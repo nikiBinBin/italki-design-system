@@ -140,7 +140,7 @@
      kit renders markup, not React nodes, so there is nothing here to bind a
      handler to — and the trigger is empty because this one opens from the
      top nav. -->
-<x-import component-from-global-scope="SafeUI.Modal" id="teacher-filter-modal" title="Filter" size="wide" open="{{ filterOpen }}" trigger="" body="{{ filterBody }}" footer="{{ filterFooter }}" hint-size="920px,780px"></x-import>
+<x-import component-from-global-scope="SafeUI.Modal" id="teacher-filter-modal" title="Filter" size="wide" open="{{ filterOpen }}" trigger="" body="{{ filterBody }}" footer="{{ filterFooter }}" hint-size="744px,780px"></x-import>
 
 </div>
 </div>
@@ -213,7 +213,7 @@ class Component extends DCLogic {
   static BAND_HOURS = [1, 1.5, 2, 2.5, 3, 3.5, 4];
 
   state = {
-    ready: !!Component.kit(),
+    ready: !!Component.kit?.(),
     filterOpen: false,
     preview: "Lucía Fernández",
     previewOffset: 0,
@@ -275,7 +275,7 @@ class Component extends DCLogic {
     };
     document.addEventListener("click", this.onNavClick, true);
 
-    const loaded = () => Component.kit();
+    const loaded = () => Component.kit?.();
     const start = () => {};
     if (this.state.ready) { start(); return; }
     // ds-base.js loads the kit asynchronously; re-render once it is available.
@@ -451,7 +451,7 @@ class Component extends DCLogic {
     // step: its icons were bare names the asset contract rejects. A path that
     // runs only when something else has already gone wrong is a path nobody
     // tests.
-    const UI = Component.kit();
+    const UI = Component.kit?.();
     if (!UI) return {};
 
     /* italki's shell roster comes from the kit, not from here. Three pages
