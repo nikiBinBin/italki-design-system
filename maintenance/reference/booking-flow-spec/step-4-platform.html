@@ -1,0 +1,28 @@
+<section data-screen-label="Step 4 platform" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:grid;gap:2px">
+<h4 style="margin:0;color:var(--ui-color-title);font-size:18px;font-weight:700;line-height:26px">Where will the lesson happen?</h4>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:14px;line-height:20px">The teacher will meet you here. You can change this later from the lesson page.</p>
+</div>
+<div class="ui-selection-group" role="radiogroup" aria-label="Choose a video platform">
+<sc-for list="{{ platforms }}" as="pf" hint-placeholder-count="5">
+<div class="bf-platform {{ pf.wrapClass }}">
+<div onClick="{{ pf.onPick }}" style="display:contents">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Selection" contentType="icon-simple" selectionMode="radio" demo="bf-selection" label="{{ pf.label }}" value="{{ pf.id }}" leading="{{ pf.leading }}" subtext="{{ pf.subtext }}" description="{{ pf.description }}" selected="{{ pf.selected }}" hint-size="100%,64px"></x-import>
+</div>
+<sc-if value="{{ pf.showField }}" hint-placeholder-val="{{ false }}">
+<div style="display:grid;gap:6px;margin:0 16px;border-top:1px solid var(--ui-color-divider);padding:12px 0 16px;overflow:hidden;animation:bf-field-in 200ms ease both">
+<label style="color:var(--ui-color-title);font-size:14px;font-weight:600;line-height:20px">{{ pf.fieldLabel }}</label>
+<div onInput="{{ onHandleInput }}">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.TextInput" placeholder="{{ pf.fieldPlaceholder }}" size="{{ 40 }}" ariaLabel="{{ pf.fieldLabel }}" hint-size="100%,40px"></x-import>
+</div>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">Only shared with Lucía, and only for these lessons.</span>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isStep5 }}" hint-placeholder-val="{{ false }}">
+<section 

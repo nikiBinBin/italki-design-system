@@ -1,0 +1,54 @@
+<section data-screen-label="Step 3 schedule" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap">
+<div style="display:grid;gap:2px;min-width:240px;flex:1">
+<h4 style="margin:0;color:var(--ui-color-title);font-size:18px;font-weight:700;line-height:26px">{{ scheduleTitle }}</h4>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:14px;line-height:20px">{{ scheduleHint }}</p>
+</div>
+
+</div>
+
+<sc-if value="{{ showConflict }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ dismissConflict }}" style="cursor:pointer">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Alert" tone="error" closable="{{ true }}" title="19:00 on Wed 12 Aug was just booked" description="Another student took that time while you were choosing. Pick a different slot to continue." hint-size="100%,72px"></x-import>
+</div>
+</sc-if>
+
+<sc-if value="{{ dayHasSlots }}" hint-placeholder-val="{{ true }}">
+<div onClickCapture="{{ onCalendarClick }}">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Calendar" variant="availability" timezone="{{ timezone }}" weekLabel="{{ weekLabel }}" todayLabel="This week" dates="{{ calendarDates }}" rows="{{ calendarRows }}" ariaLabel="Lucía's weekly availability" hint-size="100%,560px"></x-import>
+</div>
+</sc-if>
+
+<sc-if value="{{ dayIsEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="display:grid;gap:12px;justify-items:center;border:1px dashed var(--ui-color-border);border-radius:12px;padding:32px 24px;text-align:center">
+<img src="../../Assets/Icons/calendar.svg" alt="" style="width:32px;height:32px;opacity:.5">
+<div style="display:grid;gap:4px">
+<strong style="color:var(--ui-color-title);font-size:16px;font-weight:700;line-height:24px">{{ emptyTitle }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:14px;line-height:20px">{{ emptyBody }}</span>
+</div>
+<span onClick="{{ nextWeek }}" style="display:inline-flex;cursor:pointer"><x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Button" label="See next week" variant="secondary" size="{{ 32 }}" shape="pill" trailingIcon="arrow-right-sm" hint-size="150px,32px"></x-import></span>
+</div>
+</sc-if>
+
+<sc-if value="{{ hasPicks }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--ui-color-divider);padding-top:16px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap">
+<span style="color:var(--ui-color-title);font-size:14px;font-weight:600;line-height:20px">Your lesson times</span>
+<div style="flex:0 1 240px;min-width:180px">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Stepper" variant="schedule-progress" value="{{ scheduledCount }}" max="{{ lessonCount }}" label="Scheduled" hint-size="100%,28px"></x-import>
+</div>
+</div>
+<sc-for list="{{ picks }}" as="p" hint-placeholder-count="2">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--ui-color-border);border-radius:8px;padding:10px 12px">
+<span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-title);font-size:14px;font-weight:600;line-height:20px"><span style="display:grid;place-items:center;width:20px;height:20px;border-radius:9999px;background:var(--ui-color-divider);font-size:11px;font-weight:700">{{ p.n }}</span>{{ p.label }}</span>
+<span onClick="{{ p.onRemove }}" style="display:inline-flex;cursor:pointer"><x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Button" variant="text" size="{{ 32 }}" shape="pill" iconOnly="{{ true }}" leadingIcon="cross" ariaLabel="Remove this lesson time" hint-size="32px,32px"></x-import></span>
+</div>
+</sc-for>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">Times shown in {{ timezone }} · the teacher is in Europe/Madrid</span>
+</div>
+</sc-if>
+</section>
+</sc-if>
+
+<sc-if value="{{ isStep4 }}" hint-placeholder-val="{{ false }}">
+<section 

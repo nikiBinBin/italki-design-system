@@ -1,0 +1,18 @@
+<section data-screen-label="Step 2 lesson count" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:grid;gap:2px">
+<h4 style="margin:0;color:var(--ui-color-title);font-size:18px;font-weight:700;line-height:26px">How many lessons?</h4>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:14px;line-height:20px">{{ packageIntro }}</p>
+</div>
+<div class="ui-selection-group ui-selection-group--radio ui-selection-group--package-grid" role="radiogroup" aria-label="Choose how many lessons">
+<sc-for list="{{ packages }}" as="p" hint-placeholder-count="4">
+<div onClick="{{ p.onPick }}" style="display:contents">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Selection" contentType="package-card" selectionMode="radio" demo="bf-selection" label="{{ p.aria }}" value="{{ p.value }}" selected="{{ p.selected }}" discount="{{ p.discount }}" price="{{ p.price }}" period="per lesson" description="{{ p.description }}" quantity="{{ p.quantity }}" quantityLabel="{{ p.quantityLabel }}" originalPrice="{{ p.originalPrice }}" totalPrice="{{ p.totalPrice }}" hint-size="100%,280px"></x-import>
+</div>
+</sc-for>
+</div>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:12px;line-height:18px">Package lessons stay valid for 6 months. Unused lessons can be refunded to your italki wallet.</p>
+</section>
+</sc-if>
+
+<sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+<section 

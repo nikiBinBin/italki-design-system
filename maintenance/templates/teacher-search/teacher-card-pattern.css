@@ -2,26 +2,26 @@
    renders the shipped composition. Tokens rewritten to the bundle's --ui-* namespace. */
 .teacher-pattern-card { width: min(100%, 754px); display: grid; grid-template-columns: 120px minmax(0, 1fr); align-items: start; gap: var(--ui-space-7); border: 1px solid var(--ui-color-border); border-radius: var(--ui-radius-lg); padding: var(--ui-space-6); background: var(--ui-color-card); }
 .teacher-pattern-side { display: grid; justify-items: center; gap: var(--ui-space-3); }
-.teacher-pattern-avatar { width: 120px; height: 120px; position: relative; }
-.teacher-pattern-avatar > img:first-child { width: 120px; height: 120px; display: block; border-radius: var(--ui-radius-full); object-fit: cover; }
-.teacher-pattern-avatar .avatar-flag { width: 24px; height: 24px; position: absolute; right: -2px; bottom: -2px; border: 0; border-radius: var(--ui-radius-full); box-shadow: 0 0 0 1px var(--ui-color-border); }
-.teacher-pattern-evidence { display: grid; justify-items: center; gap: var(--ui-space-1); color: var(--ui-color-secondary); font-size: 12px; font-weight: 500; line-height: 18px; text-align: center; }
-.teacher-pattern-evidence strong { display: inline-flex; align-items: center; gap: 2px; color: var(--ui-color-text); font-weight: 600; }
+/* No avatar rules here: the card renders the kit's Avatar, which owns its size
+   and where the flag sits. The three rules that used to live here styled a
+   hand-rolled avatar this template stopped using. */
+.teacher-pattern-evidence { display: grid; justify-items: center; gap: var(--ui-space-1); color: var(--ui-color-secondary); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-medium); line-height: var(--ui-line-height-18); text-align: center; }
+.teacher-pattern-evidence strong { display: inline-flex; align-items: center; gap: var(--ui-space-half); color: var(--ui-color-text); font-weight: var(--ui-font-weight-semibold); }
 .teacher-pattern-evidence strong img { width: 12px; height: 12px; }
 .teacher-pattern-main { min-width: 0; min-height: 206px; display: flex; flex-direction: column; gap: var(--ui-space-3); }
 .teacher-pattern-head { display: flex; align-items: center; justify-content: space-between; gap: var(--ui-space-3); }
 .teacher-pattern-copy { min-width: 0; flex: 1; display: grid; gap: var(--ui-space-1); }
 .teacher-pattern-copy h3, .teacher-pattern-copy p { margin: 0; }
-.teacher-pattern-copy h3 { overflow: hidden; color: var(--ui-color-title); font-size: 16px; font-weight: 700; line-height: 24px; text-overflow: ellipsis; white-space: nowrap; }
-.teacher-pattern-copy p { color: var(--ui-color-secondary); font-size: 12px; line-height: 18px; }
-.teacher-pattern-role { min-width: 0; display: inline-flex; align-items: center; gap: var(--ui-space-1); color: var(--ui-color-text); font-size: 14px; font-weight: 500; line-height: 22px; white-space: nowrap; }
+.teacher-pattern-copy h3 { overflow: hidden; color: var(--ui-color-title); font-size: var(--ui-font-size-16); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-24); text-overflow: ellipsis; white-space: nowrap; }
+.teacher-pattern-copy p { color: var(--ui-color-secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
+.teacher-pattern-role { min-width: 0; display: inline-flex; align-items: center; gap: var(--ui-space-1); color: var(--ui-color-text); font-size: var(--ui-font-size-14); font-weight: var(--ui-font-weight-medium); line-height: var(--ui-line-height-22); white-space: nowrap; }
 .teacher-pattern-role img { width: 24px; height: 24px; flex: 0 0 24px; }
-.teacher-pattern-summary { display: -webkit-box; max-height: 44px; overflow: hidden; margin: 0; color: var(--ui-color-text); font-size: 14px; line-height: 22px; text-overflow: ellipsis; overflow-wrap: anywhere; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.teacher-pattern-summary { display: -webkit-box; max-height: 44px; overflow: hidden; margin: 0; color: var(--ui-color-text); font-size: var(--ui-font-size-14); line-height: var(--ui-line-height-22); text-overflow: ellipsis; overflow-wrap: anywhere; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .teacher-pattern-summary-wrap { min-width: 0; border-radius: var(--ui-radius-md); padding: var(--ui-space-3); background: var(--ui-color-divider); }
-.teacher-pattern-language { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ui-space-1); color: var(--ui-color-text); font-size: 12px; font-weight: 500; line-height: 18px; }
-.teacher-pattern-language > strong { color: var(--ui-color-secondary); font-size: 10px; font-weight: 600; letter-spacing: .4px; text-transform: uppercase; }
+.teacher-pattern-language { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ui-space-1); color: var(--ui-color-text); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-medium); line-height: var(--ui-line-height-18); }
+.teacher-pattern-language > strong { color: var(--ui-color-secondary); font-size: var(--ui-font-size-10); font-weight: var(--ui-font-weight-semibold); letter-spacing: .4px; text-transform: uppercase; }
 .teacher-pattern-tags, .teacher-pattern-metrics { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ui-space-1); }
-.teacher-pattern-metrics { color: var(--ui-color-secondary); font-size: 12px; line-height: 18px; }
+.teacher-pattern-metrics { color: var(--ui-color-secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
 /* The beginner link is the Link component now, so its appearance comes from the
    kit. What stays here is layout the kit cannot know: .ui-link is inline-flex,
    and this column stretches its children, which would otherwise run the hover
@@ -29,9 +29,9 @@
 .teacher-pattern-main .ui-link { align-self: start; }
 .teacher-pattern-offer { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--ui-space-4); margin-top: auto; padding-top: var(--ui-space-2); }
 .teacher-pattern-price { display: grid; gap: var(--ui-space-1); }
-.teacher-pattern-price strong { color: var(--ui-color-title); font-size: 16px; line-height: 24px; }
-.teacher-pattern-price strong span:not(.sc-interp) { color: var(--ui-color-secondary); font-size: 12px; font-weight: 500; }
-.teacher-pattern-price > span:not(.sc-interp) { color: var(--ui-color-secondary); font-size: 12px; line-height: 18px; }
+.teacher-pattern-price strong { color: var(--ui-color-title); font-size: var(--ui-font-size-16); line-height: var(--ui-line-height-24); }
+.teacher-pattern-price strong span:not(.sc-interp) { color: var(--ui-color-secondary); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-medium); }
+.teacher-pattern-price > span:not(.sc-interp) { color: var(--ui-color-secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
 .teacher-pattern-price .teacher-pattern-availability, .teacher-pattern-price .teacher-pattern-availability span { color: var(--ui-color-info); }
 .teacher-pattern-actions { display: flex; align-items: center; gap: var(--ui-space-2); }
 /* Hover reads as elevation, not as an outline: the border stays put and the card
@@ -40,7 +40,6 @@
 .teacher-pattern-card:hover { box-shadow: var(--ui-shadow-card-hover); }
 @media (max-width: 1180px) {
 .teacher-pattern-card { grid-template-columns: 100px minmax(0, 1fr); gap: var(--ui-space-6); }
-.teacher-pattern-avatar, .teacher-pattern-avatar > img:first-child { width: 100px; height: 100px; }
-.teacher-pattern-avatar .avatar-flag { width: 24px; height: 24px; }
+.teacher-pattern-side .ui-avatar { --ui-avatar-size: 96px; }
 .teacher-pattern-side { justify-items: start; }
 }

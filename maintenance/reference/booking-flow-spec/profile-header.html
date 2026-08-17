@@ -1,0 +1,272 @@
+<section id="profile-top" data-screen-label="Profile header" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px">
+<div style="display:flex;gap:24px;align-items:flex-start">
+<div style="position:relative;flex:0 0 auto">
+<x-import component-from-global-scope="SafeUI.Avatar" image="https://randomuser.me/api/portraits/women/44.jpg" flag="es" size="{{ 120 }}" ariaLabel="Lucía Fernández, Spain" hint-size="120px,120px"></x-import>
+</div>
+<div style="min-width:0;flex:1;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+<h1 style="margin:0;color:var(--ui-color-title);font-size:28px;font-weight:700;line-height:36px">Lucía Fernández</h1>
+<img src="../../Assets/Icons/verified-badge.svg" alt="ID verified" style="width:20px;height:20px">
+<sc-if value="{{ superTutor }}" hint-placeholder-val="{{ true }}">
+<img src="../../Assets/Icons/Plustag.svg" alt="italki Plus" style="height:20px">
+</sc-if>
+<div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+<span onClick="{{ toggleFavorite }}" style="display:inline-flex;cursor:pointer"><x-import component-from-global-scope="SafeUI.Button" variant="text" size="{{ 32 }}" shape="pill" iconOnly="{{ true }}" leadingIcon="{{ favIcon }}" ariaLabel="{{ favAria }}" hint-size="32px,32px"></x-import></span>
+<x-import component-from-global-scope="SafeUI.Button" variant="text" size="{{ 32 }}" shape="pill" iconOnly="{{ true }}" leadingIcon="share" ariaLabel="Share profile" hint-size="32px,32px"></x-import>
+<div data-more-menu style="position:relative">
+<span onClick="{{ toggleMore }}" style="display:inline-flex;cursor:pointer"><x-import component-from-global-scope="SafeUI.Button" variant="text" size="{{ 32 }}" shape="pill" iconOnly="{{ true }}" leadingIcon="more" ariaLabel="More actions" ariaExpanded="{{ moreOpen }}" hint-size="32px,32px"></x-import></span>
+<sc-if value="{{ moreOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;right:0;top:calc(100% + 8px);z-index:60;min-width:208px;display:flex;flex-direction:column;background:var(--ui-color-card);border:1px solid var(--ui-color-border);border-radius:12px;box-shadow:var(--ui-shadow-lg);padding:8px">
+<sc-for list="{{ railMoreItems }}" as="mi" hint-placeholder-count="4">
+<button onClick="{{ mi.onPick }}" type="button" style="display:flex;align-items:center;gap:12px;border:0;border-radius:8px;padding:10px 12px;background:transparent;color:var(--ui-color-text);font-family:inherit;font-size:14px;font-weight:500;line-height:20px;text-align:left;cursor:pointer" style-hover="background:var(--ui-color-divider)">
+<span aria-hidden="true" style="width:20px;height:20px;flex:0 0 20px;background-image:{{ mi.icon }};background-size:contain;background-repeat:no-repeat;background-position:center"></span>{{ mi.label }}
+</button>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;color:var(--ui-color-text);font-size:14px;line-height:20px">
+<span style="display:inline-flex;align-items:center;gap:4px"><img src="../../Assets/Icons/teacher-professional.svg" alt="" style="width:20px;height:20px">Professional Teacher</span>
+<span style="display:inline-flex;align-items:center;gap:4px"><img src="../../Assets/Icons/location.svg" alt="" style="width:16px;height:16px">Madrid, Spain</span>
+<span style="display:inline-flex;align-items:center;gap:4px"><img src="../../Assets/Icons/earth.svg" alt="" style="width:16px;height:16px">On italki since 2018</span>
+</div>
+<div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:4px">
+<span style="color:var(--ui-color-secondary);font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-right:2px">Speaks</span>
+<sc-for list="{{ speaksTags }}" as="s" hint-placeholder-count="3">
+<x-import component-from-global-scope="SafeUI.Tag" label="{{ s.text }}" size="{{ 24 }}" tone="{{ s.tone }}" hint-size="120px,24px"></x-import>
+</sc-for>
+</div>
+<div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
+<span style="color:var(--ui-color-secondary);font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-right:2px">Interests</span>
+<sc-for list="{{ interests }}" as="tag" hint-placeholder-count="5">
+<x-import component-from-global-scope="SafeUI.Tag" label="{{ tag }}" size="{{ 24 }}" hint-size="72px,24px"></x-import>
+</sc-for>
+</div>
+</div>
+</div>
+<div style="display:flex;gap:48px;margin-top:20px;padding-top:16px;border-top:1px solid var(--ui-color-divider)">
+<sc-for list="{{ stats }}" as="st" hint-placeholder-count="4">
+<div style="display:grid;gap:2px">
+<strong style="display:inline-flex;align-items:center;gap:4px;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">{{ st.value }}<sc-if value="{{ st.star }}" hint-placeholder-val="{{ false }}"><img src="../../Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"></sc-if></strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ st.label }}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<div ref="{{ tabsAnchorRef }}" style="margin-top:-16px"></div>
+<div id="profile-tabs" ref="{{ tabsBarRef }}" onClick="{{ onTabClick }}" style="position:sticky;top:72px;z-index:var(--ui-layer-content,30);background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:0 16px">
+<x-import component-from-global-scope="SafeUI.Tabs" items="{{ tabItems }}" activeId="{{ activeTab }}" activation="manual" ariaLabel="Profile sections" hint-size="100%,48px"></x-import>
+</div>
+
+<section id="section-about" data-screen-label="About" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px;display:flex;flex-direction:column;gap:16px">
+<h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">About me</h2>
+<p style="margin:0;color:var(--ui-color-text);font-size:14px;line-height:22px;text-wrap:pretty">¡Hola! I'm Lucía, a DELE examiner with 8 years of classroom experience in Madrid and 6 years teaching online. Every lesson is built around what you need to say next week — a job interview, a trip, a conversation with your in-laws — not around a textbook chapter.</p>
+<sc-if value="{{ readMore }}" hint-placeholder-val="{{ false }}">
+<p style="margin:0;color:var(--ui-color-text);font-size:14px;line-height:22px;text-wrap:pretty">I hold a degree in Hispanic Philology from Universidad Complutense and a DELE examiner accreditation (A1–C1). My students range from complete beginners to diplomats preparing for postings in Latin America. Outside class you'll find me cooking my grandmother's recipes, hiking the Sierra de Guadarrama, or arguing about football. Classes are relaxed but never improvised — you'll always leave with notes, corrections and homework you can actually finish.</p>
+</sc-if>
+<button onClick="{{ toggleReadMore }}" style="display:inline-flex;align-items:center;gap:4px;width:max-content;border:0;padding:0;background:transparent;color:var(--ui-color-title);font-family:inherit;font-size:14px;font-weight:600;line-height:20px;cursor:pointer">{{ readMoreLabel }}<span aria-hidden="true" style="width:16px;height:16px;background-image:{{ readMoreIcon }};background-size:contain;background-repeat:no-repeat;background-position:center"></span></button>
+<div style="height:1px;background:var(--ui-color-divider)"></div>
+<div style="display:flex;flex-direction:column;gap:4px">
+<h3 style="margin:0;color:var(--ui-color-title);font-size:16px;font-weight:700;line-height:24px">italki insights</h3>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:12px;line-height:18px">Based on lesson data and student reviews from the last 12 months.</p>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<sc-for list="{{ insights }}" as="ins" hint-placeholder-count="6">
+<div style="display:flex;align-items:flex-start;gap:12px;border:1px solid var(--ui-color-border);border-radius:8px;padding:12px">
+<span aria-hidden="true" style="width:28px;height:28px;flex:0 0 28px;background-image:{{ ins.icon }};background-size:contain;background-repeat:no-repeat;background-position:center"></span>
+<div style="min-width:0;display:grid;gap:2px">
+<strong style="color:var(--ui-color-title);font-size:14px;font-weight:600;line-height:20px">{{ ins.title }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ ins.caption }}</span>
+</div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section id="section-lessons" data-screen-label="Lessons" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px;display:flex;flex-direction:column;gap:4px">
+<h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">Lessons</h2>
+<p style="margin:0 0 8px;color:var(--ui-color-secondary);font-size:12px;line-height:18px">All lessons are 1-on-1 in the italki Classroom. Cancel free up to 24 hours before.</p>
+<sc-for list="{{ lessons }}" as="l" hint-placeholder-count="5">
+<div style="display:contents">
+<sc-if value="{{ l.divider }}" hint-placeholder-val="{{ false }}"><div style="height:1px;background:var(--ui-color-divider)"></div></sc-if>
+<article style="display:flex;align-items:center;justify-content:space-between;gap:24px;padding:16px 0">
+<div style="min-width:0;display:grid;gap:4px">
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+<h3 style="margin:0;color:var(--ui-color-title);font-size:16px;font-weight:600;line-height:24px">{{ l.name }}</h3>
+<sc-if value="{{ l.tag }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="SafeUI.Tag" label="{{ l.tag }}" size="{{ 24 }}" tone="info" hint-size="130px,24px"></x-import></sc-if>
+</div>
+<p style="margin:0;color:var(--ui-color-text);font-size:14px;line-height:20px">{{ l.desc }}</p>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ l.meta }}</span>
+</div>
+<div style="display:flex;align-items:center;gap:16px;flex:0 0 auto">
+<div style="display:grid;gap:2px;text-align:right">
+<strong style="color:var(--ui-color-title);font-size:16px;line-height:24px">{{ l.price }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ l.per }}</span>
+</div>
+<span onClick="{{ l.onBook }}" style="display:inline-flex"><x-import component-from-global-scope="SafeUI.Button" label="Book" variant="secondary" size="{{ 32 }}" shape="pill" hint-size="64px,32px"></x-import></span>
+</div>
+</article>
+</div>
+</sc-for>
+</section>
+
+<section id="section-availability" data-screen-label="Availability" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px;display:flex;flex-direction:column;gap:16px">
+<h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">Availability</h2>
+<div style="display:flex;flex-direction:column;gap:8px">
+<h3 style="margin:0;color:var(--ui-color-title);font-size:14px;font-weight:600;line-height:20px">Next available</h3>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<sc-for list="{{ nextSlots }}" as="slot" hint-placeholder-count="6">
+<div onClick="{{ slot.onPick }}" style="cursor:pointer">
+<x-import component-from-global-scope="SafeUI.TimeSlot" appearance="option" label="{{ slot.label }}" state="{{ slot.state }}" hint-size="110px,36px"></x-import>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<x-import component-from-global-scope="SafeUI.Calendar" variant="availability" weekLabel="3 – 9 August 2026" dates="{{ weekDates }}" rows="{{ weekRows }}" timezone="Asia/Shanghai" ariaLabel="Teacher availability" hint-size="100%,440px"></x-import>
+</div>
+</section>
+
+<section id="section-reviews" data-screen-label="Reviews" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px;display:flex;flex-direction:column;gap:16px">
+<h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">Student reviews</h2>
+<div style="display:flex;gap:40px;align-items:center;flex-wrap:wrap">
+<div style="display:grid;gap:4px;justify-items:center">
+<strong style="color:var(--ui-color-title);font-size:44px;font-weight:700;line-height:52px">4.98</strong>
+<x-import component-from-global-scope="SafeUI.Rate" value="{{ 5 }}" disabled="{{ true }}" hint-size="120px,28px"></x-import>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">612 reviews</span>
+</div>
+<div style="flex:1;min-width:260px;display:grid;gap:4px">
+<sc-for list="{{ breakdown }}" as="b" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="display:inline-flex;align-items:center;gap:4px;width:28px;color:var(--ui-color-text);font-size:12px;font-weight:600">{{ b.star }}<img src="../../Assets/Icons/star-solid.svg" alt="" style="width:12px;height:12px"></span>
+<div style="flex:1"><x-import component-from-global-scope="SafeUI.Progress" value="{{ b.pct }}" max="{{ 100 }}" ariaLabel="{{ b.aria }}" hint-size="100%,8px"></x-import></div>
+<span style="width:36px;color:var(--ui-color-secondary);font-size:12px;text-align:right">{{ b.count }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<sc-for list="{{ reviewFilters }}" as="f" hint-placeholder-count="5">
+<button onClick="{{ f.onPick }}" class="{{ f.cls }}" type="button" data-component="chip" aria-pressed="{{ f.pressed }}">{{ f.label }}</button>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px">
+<sc-for list="{{ visibleReviews }}" as="r" hint-placeholder-count="4">
+<div style="display:contents">
+<sc-if value="{{ r.divider }}" hint-placeholder-val="{{ false }}"><div style="height:1px;background:var(--ui-color-divider)"></div></sc-if>
+<article style="display:flex;flex-direction:column;gap:8px;padding:16px 0">
+<header style="display:flex;align-items:center;gap:12px">
+<x-import component-from-global-scope="SafeUI.Avatar" image="{{ r.photo }}" flag="{{ r.flag }}" size="{{ 40 }}" ariaLabel="{{ r.name }}" hint-size="40px,40px"></x-import>
+<div style="min-width:0;flex:1;display:grid;gap:0">
+<strong style="color:var(--ui-color-title);font-size:14px;font-weight:600;line-height:20px">{{ r.name }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ r.meta }}</span>
+</div>
+<x-import component-from-global-scope="SafeUI.Tag" label="{{ r.lessonType }}" size="{{ 24 }}" hint-size="140px,24px"></x-import>
+</header>
+<div style="display:flex;gap:2px">
+<sc-for list="{{ r.stars }}" as="s" hint-placeholder-count="5"><span aria-hidden="true" style="width:14px;height:14px;background-image:{{ s.css }};background-size:contain;background-repeat:no-repeat;background-position:center"></span></sc-for>
+</div>
+<p style="margin:0;color:var(--ui-color-text);font-size:14px;line-height:22px;text-wrap:pretty">{{ r.text }}</p>
+</article>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{ showPagination }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;justify-content:center"><x-import component-from-global-scope="SafeUI.Pagination" pages="{{ reviewPageNumbers }}" current="{{ reviewPage }}" ariaLabel="Review pages" hint-size="200px,32px"></x-import></div>
+</sc-if>
+</section>
+
+<section id="section-similar" data-screen-label="Similar teachers" style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px">
+<h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">Similar teachers</h2>
+<x-import component-from-global-scope="SafeUI.Button" label="See more Spanish teachers" variant="text" size="{{ 32 }}" shape="pill" trailingIcon="arrow-right-sm" hint-size="220px,32px"></x-import>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">
+<sc-for list="{{ similar }}" as="t" hint-placeholder-count="3">
+<article style="display:flex;flex-direction:column;gap:12px;background:var(--ui-color-card);border:1px solid transparent;border-radius:12px;box-shadow:var(--ui-shadow-card);padding:16px;cursor:pointer;transition:border-color 120ms ease,box-shadow 120ms ease" style-hover="border-color:var(--ui-color-title);box-shadow:var(--ui-shadow-md)">
+<div style="display:flex;align-items:center;gap:12px">
+<x-import component-from-global-scope="SafeUI.Avatar" image="{{ t.photo }}" flag="{{ t.flag }}" size="{{ 56 }}" ariaLabel="{{ t.aria }}" hint-size="56px,56px"></x-import>
+<div style="min-width:0;display:grid;gap:0">
+<strong style="overflow:hidden;color:var(--ui-color-title);font-size:14px;font-weight:700;line-height:20px;text-overflow:ellipsis;white-space:nowrap">{{ t.name }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ t.role }}</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:4px;color:var(--ui-color-secondary);font-size:12px;line-height:18px">
+<strong style="display:inline-flex;align-items:center;gap:2px;color:var(--ui-color-title);font-weight:600">{{ t.rating }}<img src="../../Assets/Icons/star-solid.svg" alt="" style="width:12px;height:12px"></strong>
+<span>{{ t.lessons }}</span>
+</div>
+<span style="color:var(--ui-color-text);font-size:12px;line-height:18px">{{ t.speaks }}</span>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;padding-top:4px;border-top:1px solid var(--ui-color-divider)">
+<strong style="color:var(--ui-color-title);font-size:14px;line-height:20px">{{ t.price }}<span style="color:var(--ui-color-secondary);font-size:12px;font-weight:500"> / hour</span></strong>
+<x-import component-from-global-scope="SafeUI.Button" label="View profile" variant="text" size="{{ 32 }}" shape="pill" hint-size="100px,32px"></x-import>
+</div>
+</article>
+</sc-for>
+</div>
+</section>
+
+</main>
+
+<aside ref="{{ railRef }}" data-screen-label="Booking rail" style="grid-column:2;position:sticky;top:96px;transition:top .18s ease;display:flex;flex-direction:column;gap:16px;background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:16px" aria-label="Book Lucía Fernández">
+<div onClick="{{ toggleVideo }}" style="position:relative">
+<x-import component-from-global-scope="SafeUI.Video" poster="Assets/Images/covers/teacher-intro.jpg" poster-alt="Lucía's introduction video" title="Meet Lucía" duration="1:24" play-label="{{ videoAria }}" hint-size="100%,196px"></x-import>
+<sc-if value="{{ videoPlaying }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;right:0;bottom:0;left:0;height:3px;overflow:hidden;border-radius:0 0 8px 8px;background:var(--ui-color-on-primary-muted)"><div style="height:100%;background:var(--ui-color-link);animation:video-progress 84s linear forwards"></div></div>
+</sc-if>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<div style="display:flex;align-items:baseline;gap:4px">
+<strong style="color:var(--ui-color-title);font-size:24px;font-weight:700;line-height:32px">US$12.00+</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">per lesson</span>
+</div>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">Trial · {{ trialPrice }}</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="display:grid"><span onClick="{{ bookTrial }}" style="display:grid"><x-import component-from-global-scope="SafeUI.Button" label="{{ bookTrialLabel }}" variant="red" size="{{ 40 }}" shape="pill" hint-size="100%,40px"></x-import></span></div>
+<div style="display:grid"><span onClick="{{ openBooking }}" style="display:grid;cursor:pointer"><x-import component-from-global-scope="SafeUI.Button" label="Book lessons" variant="secondary" size="{{ 40 }}" shape="pill" hint-size="100%,40px"></x-import></span></div>
+<div style="display:grid"><x-import component-from-global-scope="SafeUI.Button" label="Contact teacher" variant="text" size="{{ 40 }}" shape="pill" leadingIcon="message" hint-size="100%,40px"></x-import></div>
+</div>
+<div style="height:1px;background:var(--ui-color-divider)"></div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<sc-if value="{{ onlineNow }}" hint-placeholder-val="{{ true }}">
+<span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-success);font-size:14px;font-weight:600;line-height:18px"><span style="width:8px;height:8px;border-radius:9999px;background:var(--ui-color-success)"></span>Online now</span>
+</sc-if>
+<span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-secondary);font-size:14px;line-height:18px"><img src="../../Assets/Icons/message.svg" alt="" style="width:18px;height:18px">Usually responds within 1 hour</span>
+<span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-secondary);font-size:14px;line-height:18px"><img src="../../Assets/Icons/calendar.svg" alt="" style="width:18px;height:18px">23 lessons booked in the last 48 hours</span>
+</div>
+</aside>
+
+</div>
+</div>
+</div>
+</div>
+<div class="{{ stageClass }}" data-screen-label="Booking drawer" onClick="{{ onStageClick }}">
+<sc-if value="{{ showNotice }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ dismissNotice }}" style="position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:200;pointer-events:auto;cursor:pointer;animation:bf-toast-in 180ms ease both">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Toast" tone="warning" open="{{ true }}" closable="{{ true }}" title="{{ noticeTitle }}" description="{{ noticeBody }}" ariaLabel="{{ noticeTitle }}" hint-size="380px,72px"></x-import>
+</div>
+</sc-if>
+<div class="ui-drawer__layer">
+<button class="ui-drawer__mask" type="button" aria-label="Close booking" onClick="{{ closeDrawer }}"></button>
+<aside class="ui-drawer ui-drawer--bottom ui-drawer--default" role="dialog" aria-modal="true" aria-label="Book a lesson" style="height:90vh;border-radius:24px 24px 0 0">
+<div class="ui-drawer__content">
+
+<header class="ui-drawer__header" style="min-height:72px;padding:0 24px">
+<div style="min-width:0;display:flex;align-items:center;gap:12px">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Avatar" image="https://randomuser.me/api/portraits/women/44.jpg" flag="es" size="{{ 40 }}" ariaLabel="Lucía Fernández" hint-size="40px,40px"></x-import>
+<div style="min-width:0;display:grid;gap:0">
+<h3 style="margin:0;color:var(--ui-color-title);font-size:16px;font-weight:700;line-height:24px">{{ drawerTitle }}</h3>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px;white-space:nowrap">{{ drawerSubtitle }}<sc-if value="{{ showRating }}" hint-placeholder-val="{{ true }}"><span style="white-space:nowrap"> · 4.98&nbsp;<span style="color:var(--ui-color-warning)">★</span></span></sc-if></span>
+</div>
+</div>
+<button class="ui-drawer__close" type="button" aria-label="Close booking" onClick="{{ closeDrawer }}"><img class="ui-drawer__close-icon" src="../../Assets/Icons/cross.svg" alt=""></button>
+</header>
+
+<div class="ui-drawer__body">
+<div style="max-width:{{ bodyWidth }};margin:0 auto;padding:24px">
+
+<sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}">
+<section 

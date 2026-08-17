@@ -1,0 +1,131 @@
+<section data-screen-label="Step 5 checkout" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:grid;gap:2px">
+<h4 style="margin:0;color:var(--ui-color-title);font-size:18px;font-weight:700;line-height:26px">Review and pay</h4>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:14px;line-height:20px">Nothing is charged until you confirm. Free cancellation up to 24 hours before each lesson.</p>
+</div>
+
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start">
+
+<div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+<div style="display:flex;flex-direction:column;gap:12px;border:1px solid var(--ui-color-border);border-radius:12px;padding:16px">
+<div style="display:flex;align-items:center;gap:12px">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Avatar" image="https://randomuser.me/api/portraits/women/44.jpg" flag="es" size="{{ 40 }}" ariaLabel="Lucía Fernández" hint-size="40px,40px"></x-import>
+<div style="min-width:0;display:grid;gap:0">
+<strong style="color:var(--ui-color-title);font-size:14px;font-weight:700;line-height:20px">Lucía Fernández</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">Spanish · Professional Teacher</span>
+</div>
+</div>
+<div style="height:1px;background:var(--ui-color-divider)"></div>
+<div style="display:grid;gap:2px">
+<strong title="{{ summaryTitle }}" style="min-width:0;color:var(--ui-color-title);font-size:15px;font-weight:700;line-height:22px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ summaryTitle }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px;text-wrap:pretty">{{ summaryLine }}</span>
+</div>
+<div style="height:1px;background:var(--ui-color-divider)"></div>
+<div style="display:grid;gap:6px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+<span style="color:var(--ui-color-secondary);font-size:12px;font-weight:600;line-height:18px;text-transform:uppercase;letter-spacing:.4px">Schedule</span>
+<span style="color:var(--ui-color-title);font-size:12px;font-weight:600;line-height:18px;white-space:nowrap">{{ scheduleCount }}</span>
+</div>
+<sc-if value="{{ hasPicks }}" hint-placeholder-val="{{ true }}">
+<div style="display:grid;gap:2px">
+<sc-for list="{{ picks }}" as="p" hint-placeholder-count="2">
+<span style="color:var(--ui-color-text);font-size:13px;line-height:20px;text-wrap:pretty">{{ p.label }}</span>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ noPicks }}" hint-placeholder-val="{{ false }}">
+<span style="color:var(--ui-color-secondary);font-size:13px;line-height:20px">No times chosen — schedule later from your lesson page.</span>
+</sc-if>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:8px;border:1px solid var(--ui-color-border);border-radius:12px;padding:16px">
+<div style="display:grid;gap:12px">
+<sc-for list="{{ priceRows }}" as="r" hint-placeholder-count="3">
+<div style="display:grid;gap:0">
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px;text-wrap:pretty">{{ r.label }}</span>
+<span style="color:{{ r.color }};font-size:14px;font-weight:600;line-height:22px">{{ r.value }}</span>
+</div>
+</sc-for>
+</div>
+<div style="height:1px;background:var(--ui-color-divider)"></div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+<strong style="color:var(--ui-color-title);font-size:16px;font-weight:700;line-height:24px">Total</strong>
+<strong style="color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">{{ totalLabel }}</strong>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+<div style="display:grid;gap:8px">
+<div onClickCapture="{{ onPaymentClick }}">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Panel" title="Payment method" divider="{{ true }}" body="{{ paymentBody }}" hint-size="100%,300px"></x-import>
+</div>
+</div>
+</div>
+
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Confirmation" style="display:flex;flex-direction:column;gap:24px;align-items:center;padding:24px 0">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Result" tone="success" title="{{ doneTitle }}" description="{{ doneBody }}" hint-size="100%,220px"></x-import>
+<div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+<span onClick="{{ closeDrawer }}" style="display:inline-flex;cursor:pointer"><x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Button" label="Go to my lessons" variant="red" size="{{ 40 }}" shape="pill" hint-size="170px,40px"></x-import></span>
+<span onClick="{{ closeDrawer }}" style="display:inline-flex;cursor:pointer"><x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Button" label="Back to profile" variant="secondary" size="{{ 40 }}" shape="pill" hint-size="150px,40px"></x-import></span>
+</div>
+</section>
+</sc-if>
+
+</div>
+</div>
+
+<sc-if value="{{ showFooter }}" hint-placeholder-val="{{ true }}">
+<footer class="ui-drawer__footer" style="flex-direction:column;align-items:stretch;gap:0;padding:0">
+<div style="padding:12px 24px 10px">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Stepper" items="{{ stepItems }}" current="{{ stepIndex }}" variant="top-indicator" ariaLabel="Booking steps" hint-size="100%,8px"></x-import>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 24px 16px">
+<div style="min-width:0;display:grid;gap:2px">
+<span style="color:var(--ui-color-secondary);font-size:11px;font-weight:700;line-height:16px;letter-spacing:.5px;text-transform:uppercase">{{ stepCaption }}</span>
+<div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+<strong style="color:var(--ui-color-title);font-size:18px;font-weight:700;line-height:26px">{{ footerPrice }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ footerNote }}</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:12px">
+<sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}">
+<span onClick="{{ goBack }}" style="display:inline-flex;cursor:pointer"><x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Button" label="Back" variant="secondary" size="{{ 40 }}" shape="pill" hint-size="80px,40px"></x-import></span>
+</sc-if>
+<span onClick="{{ goNext }}" style="display:inline-flex;cursor:pointer"><x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Button" label="{{ nextLabel }}" variant="red" size="{{ 40 }}" shape="pill" disabled="{{ nextDisabled }}" hint-size="180px,40px"></x-import></span>
+</div>
+</div>
+</footer>
+</sc-if>
+
+</div>
+</aside>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;openOnLoad&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Prototype state&quot;},&quot;startStep&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:1,&quot;min&quot;:1,&quot;max&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Prototype state&quot;},&quot;superTutor&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Teacher status&quot;},&quot;onlineNow&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Teacher status&quot;},&quot;conflict&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Edge states&quot;},&quot;emptyWeek&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Edge states&quot;}}">
+const DS = "../../";
+
+class Component extends DCLogic {
+  static COURSES = [
+    { id: "conversation", title: "Real-life Conversation (Spanish)", meta: "A2–C2 · Language Essentials · 1,214 lessons completed",
+      durations: [{ m: 30, p: 9 }, { m: 45, p: 13 }, { m: 60, p: 17 }, { m: 90, p: 24 }] },
+    { id: "dele", title: "DELE Exam Prep", meta: "B1–C1 · Test Preparation · 642 lessons completed",
+      durations: [{ m: 45, p: 15 }, { m: 60, p: 19 }, { m: 90, p: 28 }] },
+    { id: "business", title: "Business Spanish", meta: "B1–C2 · Professional · 318 lessons completed",
+      durations: [{ m: 60, p: 18 }, { m: 90, p: 26 }] },
+    { id: "grammar", title: "Grammar Foundations", meta: "A1–B1 · Language Essentials · 257 lessons completed",
+      durations: [{ m: 30, p: 8 }, { m: 60, p: 14 }] },
+  ];
+  static TRIAL = { m: 30, p: 8 };
+  static COUNTS = [{ n: 1, off: 0 }, { n: 5, off: 0.05 }, { n: 10, off: 0.1 }, { n: 20, off: 0.15 }];
+  static PACKAGE_COPY = {
+    1: "Pay as you go — book one lesson at a time.",
+    5: "A sho
