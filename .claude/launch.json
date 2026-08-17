@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "agent-kit",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4711", "--directory", "../italki-ui-kit"],
+      "port": 4711
+    },
+    {
+      "name": "catalog",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["maintenance/scripts/serve-catalog.mjs"],
+      "port": 4173
+    }
+  ]
+}
