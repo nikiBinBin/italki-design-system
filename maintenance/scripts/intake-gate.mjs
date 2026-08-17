@@ -21,6 +21,28 @@ import { resolve, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = resolve(fileURLToPath(import.meta.url), '../../..');
+/* Where pages live and where their records go. Hardcoding maintenance/templates
+   was right for this repository and wrong for every project that vendors the
+   kit — the message told them to look in a directory they do not have. A
+   consumer drops an intake.config.json at their project root; without one the
+   defaults are this repository's own layout. */
+const CONFIG = (() => {
+  const defaults = { pages: 'maintenance/templates', records: 'docs/intakes', intake: 'maintenance/scripts/intake.mjs' };
+  for (let dir = process.cwd(); ; dir = resolve(dir, '..')) {
+    const candidate = resolve(dir, 'intake.config.json');
+    if (existsSync(candidate)) {
+      try { return { ...defaults, ...JSON.parse(readFileSync(candidate, 'utf8')), root: dir }; }
+      catch { break; }
+    }
+    if (dir === resolve(dir, '..')) break;
+  }
+  return { ...defaults, root: null };
+})();
+const PAGES = process.env.INTAKE_PAGES || CONFIG.pages;
+const RECORDS = process.env.INTAKE_RECORDS || CONFIG.records;
+const PROJECT = CONFIG.root ? resolve(CONFIG.root) : HERE;
+const INTAKE = process.env.INTAKE_SCRIPT || CONFIG.intake;
+
 const allow = () => process.exit(0);
 
 let payload = '';
@@ -37,14 +59,14 @@ try { input = JSON.parse(payload); } catch { allow(); }
 const file = input?.tool_input?.file_path ?? input?.tool_input?.path ?? input?.tool_input?.notebook_path;
 if (!file) allow();
 
-const rel = relative(HERE, resolve(String(file)));
-const target = rel.match(/^maintenance\/templates\/([^/]+)\//)?.[1];
+const rel = relative(PROJECT, resolve(String(file)));
+const target = rel.match(new RegExp(`^${PAGES}/([^/]+)/`))?.[1];
 if (!target) allow();
 
 /* README.md in that directory documents the templates rather than being one. */
-if (/^maintenance\/templates\/[^/]+\/?$/.test(rel)) allow();
+if (new RegExp(`^${PAGES.replace(/\/$/, '')}/[^/]+/?$`).test(rel)) allow();
 
-const dir = resolve(HERE, 'docs/intakes');
+const dir = resolve(PROJECT, RECORDS);
 const records = existsSync(dir)
   ? readdirSync(dir).filter((f) => f.endsWith('.md') && f !== 'README.md')
       .map((f) => ({ file: f, body: readFileSync(resolve(dir, f), 'utf8') }))
@@ -56,11 +78,11 @@ const usable = named.filter((r) => !r.body.includes('<!-- TODO:'));
 if (usable.length) allow();
 
 const reason = named.length
-  ? `docs/intakes/${named[0].file} exists for ${target}, but the TODO where the requester's answers go is still in it. `
+  ? `${RECORDS}/${named[0].file} exists for ${target}, but the TODO where the requester's answers go is still in it. `
     + `Send the question block, write what comes back under ## Answered, delete the TODO — then this write goes through.`
   : `No intake record names ${target}. A page is built from a request, and the request is a decision record.\n\n`
-    + `  node maintenance/scripts/intake.mjs --record ${target} "<the request, verbatim>"\n\n`
-    + `That writes docs/intakes/<date>-${target}.md with Confirmed and Assumed already filled in. `
+    + `  node ${INTAKE} --record ${target} "<the request, verbatim>"\n\n`
+    + `That writes ${RECORDS}/<date>-${target}.md with Confirmed and Assumed already filled in. `
     + `Send the questions it prints, put the answers under ## Answered, then write the page.`;
 
 process.stdout.write(JSON.stringify({

@@ -153,7 +153,91 @@ for (const dir of ASSET_DIRS) {
   });
 }
 
-// ── 3. the Catalog, so the reference is readable without a network ────────
+// ── 3. the enforcement, or the rules are only a suggestion again ──────────
+/* The kit shipped INTAKE.md and intake.mjs and nothing that makes either
+   binding, while intake.mjs's own messages named maintenance/templates/ — a
+   directory no consuming project has. A reviewer checking whether the gate was
+   real found the rules clearer and the gate absent, which was the correct
+   reading of what was in the folder.
+   Both gates travel now, reading intake.config.json for where this project
+   keeps its pages and its records. */
+mkdirSync(join(OUT, 'enforcement'), { recursive: true });
+for (const f of ['check-intake.mjs', 'intake-gate.mjs']) {
+  cpSync(join(HERE, 'maintenance/scripts', f), join(OUT, 'enforcement', f));
+}
+writeFileSync(join(OUT, 'enforcement/intake.config.example.json'), `{
+  "pages": "src/app",
+  "records": "docs/intakes",
+  "intake": "italki-ui-kit/intake.mjs"
+}
+`);
+writeFileSync(join(OUT, 'enforcement/settings.example.json'), `{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node italki-ui-kit/enforcement/intake-gate.mjs",
+            "timeout": 10,
+            "statusMessage": "Checking the intake record"
+          }
+        ]
+      }
+    ]
+  }
+}
+`);
+writeFileSync(join(OUT, 'enforcement/README.md'), `# Enforcement
+
+\`../guidelines/INTAKE.md\` says a page starts with the intake. Nothing in a
+document makes that true. These two make it true, and they are the reason the
+rule survives an agent that did not read the document — which is the normal
+case, not the exceptional one.
+
+Both need one file at your project root saying where your pages and your records
+live. Copy \`intake.config.example.json\` to \`intake.config.json\` and set them:
+
+\`\`\`json
+{ "pages": "src/app", "records": "docs/intakes" }
+\`\`\`
+
+\`pages\` is the directory whose immediate subdirectories are the things a
+requester asks for. \`records\` is where the intake record for each one is kept.
+Environment variables \`INTAKE_PAGES\` and \`INTAKE_RECORDS\` override both.
+
+## The write gate — Claude Code only
+
+\`\`\`bash
+cp enforcement/settings.example.json .claude/settings.json   # merge if you have one
+\`\`\`
+
+A \`PreToolUse\` hook refuses a write under \`pages/<name>/\` until a record names
+that page and its answers are filled in. Claude Code is the only agent with an
+equivalent hook; Codex and Cursor have none, which is why the second one exists.
+
+## The commit check — every agent
+
+\`\`\`bash
+node italki-ui-kit/enforcement/check-intake.mjs            # committed vs origin/main
+node italki-ui-kit/enforcement/check-intake.mjs --working  # include uncommitted
+\`\`\`
+
+Non-zero exit when a changed page has no record, or has one with the generated
+TODO still where the answers belong. Put it in CI and in your test script. It
+reads the diff, not who produced it, so it covers Claude, Codex, Cursor and a
+person equally.
+
+## What neither can do
+
+Catch a record whose TODO was deleted by an agent that never asked. Nothing
+short of watching the conversation can. The record is a claim; these two make
+the claim mandatory and legible, and a reviewer can read \`## Answered\` and see
+whether anyone was actually asked.
+`);
+
+// ── 4. the Catalog, so the reference is readable without a network ────────
 /* README.md and AGENTS.md point at design.italkiux.com for "what does this
    component look like", which is a dependency on that site being up and on the
    reader being online — and on it still describing the revision they were
@@ -166,7 +250,7 @@ cpSync(join(HERE, 'catalog-runtime'), join(OUT, 'catalog-runtime'), {
   filter: (src) => !src.endsWith('.DS_Store'),
 });
 
-// ── 4. a page that proves the kit loads ───────────────────────────────────
+// ── 5. a page that proves the kit loads ───────────────────────────────────
 /* Opened in a browser, this is the whole acceptance test for "did I wire the
    kit in correctly": if the button is red and the icon is not a broken image,
    the stylesheet, the bundle and the asset paths are all resolving. */
@@ -198,7 +282,7 @@ writeFileSync(join(OUT, 'example.html'), `<!doctype html>
 </body>
 `);
 
-// ── 5. stamp what this copy is ────────────────────────────────────────────
+// ── 6. stamp what this copy is ────────────────────────────────────────────
 /* A kit is read months after it was handed over, in a repository that has no
    connection to this one. Without this file the only way to answer "is what I
    have current" is to ask the person who sent it, and they will not remember
@@ -242,7 +326,7 @@ Rebuild a current copy from the source repository:
 Everything in this folder is generated. Edit the design system, not this.
 `);
 
-// ── 6. package, when asked ────────────────────────────────────────────────
+// ── 7. package, when asked ────────────────────────────────────────────────
 if (argv.includes('--zip')) {
   const zip = `${OUT}-${built}.zip`;
   rmSync(zip, { force: true });
@@ -251,7 +335,7 @@ if (argv.includes('--zip')) {
   console.log(`✓ ${zip}  (${execFileSync('du', ['-sh', zip]).toString().split('\t')[0].trim()})`);
 }
 
-// ── 7. report, and refuse to look healthy while incomplete ────────────────
+// ── 8. report, and refuse to look healthy while incomplete ────────────────
 rmSync(scratch, { recursive: true, force: true });
 const size = (p) => execFileSync('du', ['-sh', p]).toString().split('\t')[0].trim();
 const icons = readdirSync(join(OUT, 'Assets/Icons')).filter((f) => f.endsWith('.svg')).length;
