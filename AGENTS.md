@@ -7,12 +7,20 @@ Instructions for any agent working in this repository or building product UI wit
 A request to design or build something does not start with code. It starts with the gap scan in `docs/INTAKE.md`:
 
 ```bash
-node maintenance/scripts/intake.mjs "<the request, verbatim>"
+node maintenance/scripts/intake.mjs --brief "<the request, verbatim>"
 ```
 
-Send the block it prints, wait for whatever the requester chooses to answer, then proceed. Rules that matter more than the mechanism:
+It prints a brief, not a question block. **You write the questions** — the scan
+knows which decisions are open; only you, reading this request, know how to ask
+about them. A slot asks "whose view is this"; on a profile page the real question
+is whether someone is evaluating this person or looking at their own page. Draw
+the options from the object's contract in `PATTERNS.md` when it has one.
+
+Then send your block, wait for whatever the requester answers, and proceed.
+Rules that matter more than the mechanism:
 
 - Ask only what the request left open. The scan already discards decisions the request settled and decisions that do not apply to it.
+- The brief is a floor. Rewrite the wording, replace the options, merge two decisions into one question, add up to two of your own — but do not drop an open decision, and do not invent a default.
 - Never block **once the questions are out**. Every question carries a default, so silence is an answer — but only silence that follows the block being sent. Taking the defaults without asking is not the fast path, it is the failure this exists to prevent.
 - State `Confirmed / Answered / Assumed` before building, and keep `Assumed` in the delivery record.
 
@@ -36,8 +44,8 @@ were handed this system and neither ran the intake.
 
 Codex, Cursor and anything else: the write side cannot be enforced from inside
 the repository, so it belongs to whatever hands you the task. Run
-`node maintenance/scripts/intake.mjs --json "<request>"` before the task starts
-and put the question block in front of the requester. The commit check catches
+`node maintenance/scripts/intake.mjs --brief "<request>"` before the task starts,
+have the agent turn it into questions, and put those in front of the requester. The commit check catches
 what gets through.
 
 `docs/intakes/README.md` is the record's own documentation.

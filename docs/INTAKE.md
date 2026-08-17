@@ -49,13 +49,25 @@ Add a slot when a delivery has gone wrong for want of an answer nobody thought t
 
 ## 3. Running The Scan
 
-### 3.1 With The Reference Implementation
+### 3.1 The Scan Is The Floor; The Questions Are Yours
 
 ```bash
-node maintenance/scripts/intake.mjs "<the request, verbatim>"
+node maintenance/scripts/intake.mjs --brief "<the request, verbatim>"
 ```
 
-It prints the question block, ready to send. `--json` returns the same result as data, `--defaults` skips asking and prints the assumption block, `--catalog` prints every slot, `--selftest` runs the detection cases. Plain Node, no dependencies, no network, no model — which is the point: an agent that cannot reason about the catalog still runs the same intake as one that can.
+This prints a brief, not a question block. It names every decision this request leaves open, the default each one takes, what consumes it, and whether the object has a documented contract. Then you write the questions.
+
+Write them as this request's problem. A catalog slot asks "whose view is this"; on a profile page the real question is whether someone is evaluating this person or looking at their own page, and only the agent reading the request knows which framing fits. Draw the options from the object's contract in `PATTERNS.md` when it has one. Use the requester's language.
+
+You may rewrite any question, replace the catalog's options with the ones this request actually has, merge two decisions into one where they are one decision here, and add up to two questions the catalog does not cover.
+
+You may not drop an open decision without asking it or stating its default, invent a default other than the one the catalog gives, or ask about something the request already settled — echo those instead, so a misreading is corrected before it costs anything.
+
+That division is the whole design. The scan cannot write a good question; it can guarantee that no decision is silently skipped, including the one you would not have thought of. The model cannot guarantee coverage; it is the only thing that can ask well.
+
+### 3.1A When There Is No Model
+
+`intake.mjs` without `--brief` prints a serviceable question block straight from the catalog — generic wording, generic options. It is the fallback for a pipeline with no model in it, and it is worse than what a model writes. `--json` returns the same result as data, `--defaults` skips asking and prints the assumption block, `--catalog` prints every slot, `--selftest` runs the detection cases.
 
 ### 3.2 Without It
 

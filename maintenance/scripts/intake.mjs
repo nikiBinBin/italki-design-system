@@ -16,6 +16,7 @@
 // agent that cannot reason about the catalog can still run the intake.
 //
 //   node maintenance/scripts/intake.mjs "a lesson detail page"
+//   node maintenance/scripts/intake.mjs --brief "..."    the floor; you write the questions
 //   node maintenance/scripts/intake.mjs --json "..."      machine-readable
 //   node maintenance/scripts/intake.mjs --defaults "..."  skip asking, list the assumptions
 //   node maintenance/scripts/intake.mjs --catalog         the whole slot catalog
@@ -285,6 +286,75 @@ const readPrompt = () => {
   try { return readFileSync(0, 'utf8'); } catch { return ''; }
 };
 
+// ── the brief a model turns into questions ────────────────────────────────
+/* The rendered block below this is a fallback, not the goal. A regex knows
+   which decisions are open; it does not know that "whose view" on a profile
+   page means "someone evaluating this person, or this person looking at their
+   own page", and it will never know that for an object nobody has catalogued.
+   The agent reading a request is a model, and writing the question in the
+   requester's own terms is the part it is good at.
+   So the scan hands over a floor — every open decision, its default, what
+   consumes it — and the model writes the questions. The floor is what stops
+   the model quietly skipping the decision it did not think of. */
+const renderBrief = (prompt, result, lang) => {
+  const line = (s) => [
+    `### ${s.id} — ${pick(s, 'title', lang)}`,
+    `- decides: ${pick(s, 'why', lang)}`,
+    `- default if unanswered: ${pick(s, 'default', lang)}`,
+    s.options?.length ? `- options the catalog knows: ${s.options.join(' · ')}` : `- open-ended; no fixed options`,
+    `- consumed by: ${s.feeds}`,
+  ].join('\n');
+
+  return `# Intake brief — you write the questions
+
+Request, verbatim:
+
+> ${prompt.replace(/\n/g, '\n> ')}
+
+This is a floor, not a script. Turn it into a question block in the requester's
+own language and in this request's own terms.
+
+**You may** rewrite any question so it reads as this problem rather than a
+generic one; replace the catalog's options with the ones this request actually
+has; merge two decisions into one question where they are one decision here;
+and add up to two questions the catalog does not cover.
+
+**You may not** drop an open decision — ask it or state its default; invent a
+default other than the one given; or ask about something already settled below.
+Sending the block is the point: a default may only be taken for a question the
+requester saw.
+
+## Already settled — echo these for correction, do not ask
+
+${result.settled.length ? result.settled.map((s) => `- ${pick(s.slot, 'title', lang)} — the request says “${s.evidence}”`).join('\n') : '- nothing; the request settles none of them'}
+
+## The object
+
+${result.object
+    ? result.object.pattern
+      ? `\`${result.object.id}\` — documented: ${result.object.pattern}. Draw options from that contract rather than from what a page like this usually has.`
+      : `\`${result.object.id}\` — **this system documents no pattern for it.** ${result.object.closest}. Say so in the question block: the requester is deciding whether to define a new object, and that is a bigger decision than any question below.`
+    : 'Not one of the catalogued objects. Check PATTERNS.md for the closest documented composition before inventing sections.'}
+
+## Open — ask these ${result.ask.length}
+
+${result.ask.map(line).join('\n\n')}
+
+${result.deferred.length ? `## Below the cap — take these defaults and say so in one line
+
+${result.deferred.map((s) => `- ${pick(s, 'title', lang)} → ${pick(s, 'default', lang)}`).join('\n')}` : ''}
+
+## After the answers come back
+
+State \`Confirmed / Answered / Assumed\`, then write the record:
+
+    node maintenance/scripts/intake.mjs --record <target> "<the request, verbatim>"
+
+Writing a page under maintenance/templates/ is blocked until that record exists
+with the answers in it.
+`;
+};
+
 // ── the record a delivery has to carry ────────────────────────────────────
 /* Prose in AGENTS.md cannot make an agent ask; a check on the commit can. This
    writes the record that check looks for, prefilled with everything already
@@ -345,6 +415,8 @@ else {
       freeform: CATALOG.freeform,
       escape: CATALOG.escape,
     }, null, 2));
+  } else if (has('brief')) {
+    console.log(renderBrief(prompt, result, lang));
   } else if (has('record')) {
     const target = flag('record', null);
     if (!target || target.startsWith('--')) {
