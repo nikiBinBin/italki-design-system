@@ -2,6 +2,52 @@
   "version": 1,
   "maxQuestions": 5,
   "note": "Decision slots the italki design system needs filled before it can execute a request. An agent asks only about the slots a prompt leaves open — see docs/INTAKE.md for the protocol and maintenance/scripts/intake.mjs for the reference implementation. `applies` decides whether a slot is relevant to this request at all; `answered` decides whether the prompt already settles it. Patterns are JavaScript regular expressions, matched case-insensitively against the raw prompt.",
+  "objectsNote": "A slot asks the same question of every request; an object decides what its answers can be. `must-have-data` asked of a teacher profile should offer the sections PATTERNS.md gives that page, not a blank line — and asked of an object this system has never documented, it should say so rather than invent a plausible list. `pattern: null` is that case, and it is the more useful answer: it tells the requester the thing they asked for has no contract yet.",
+  "objects": [
+    {
+      "id": "teacher-detail",
+      "match": ["老师(主页|详情页|资料页|个人页)", "教师(主页|详情页)", "\\bteacher (profile|detail)( page)?\\b"],
+      "pattern": "teacher-detail — PATTERNS.md § Teacher Detail",
+      "overrides": {
+        "actor": ["a student evaluating this teacher", "the teacher previewing their own page", "logged-out visitor"],
+        "must-have-data": ["detail-hero: identity, location, teaching focus, introduction", "trust evidence: rating, lessons taught, response time", "local section navigation (tabs)", "about / teaching fit", "lesson offerings — lesson-option group + pricing-row", "availability — calendar + time-slot", "student reviews — review-card", "similar teachers", "booking rail — booking-panel"]
+      }
+    },
+    {
+      "id": "lesson",
+      "match": ["课程(详情|卡片)?", "课时", "\\blesson (detail|card|page)\\b"],
+      "pattern": "lesson-card — PATTERNS.md § lesson-card",
+      "overrides": {
+        "actor": ["the student who booked it", "the teacher teaching it", "both, switchable"],
+        "must-have-data": ["status strip and its supplied copy", "teacher identity — 48px avatar and name", "lesson label and course", "localized date, time and timezone", "duration", "countdown or expiry copy", "package lesson count"]
+      }
+    },
+    {
+      "id": "booking",
+      "match": ["预订|预约|下单|结算", "\\bbooking|checkout|payment\\b"],
+      "pattern": "booking-panel, order-summary, payment-method — PATTERNS.md § Booking And Payment",
+      "overrides": {
+        "must-have-data": ["lesson choice and duration", "date, time and timezone", "price and any discount or credit", "final amount due", "payment route — payment-method", "the single next action"]
+      }
+    },
+    {
+      "id": "teacher-discovery",
+      "match": ["找老师|老师列表|搜索老师|筛选", "\\bteacher (search|discovery|list|results)\\b"],
+      "pattern": "teacher-discovery + filter — PATTERNS.md § Discovery And Teacher Evaluation",
+      "overrides": {
+        "must-have-data": ["search context and active filters", "result count and ordering", "teacher-card result rows", "pagination", "preview rail"]
+      }
+    },
+    {
+      "id": "student-profile",
+      "match": ["学生(主页|详情页|资料页|个人页)", "学员(主页|资料页)", "\\bstudent profile( page)?\\b", "\\blearner profile\\b"],
+      "pattern": null,
+      "closest": "teacher-detail — PATTERNS.md § Teacher Detail — is the documented profile composition; teacher-card covers the compact form",
+      "overrides": {
+        "actor": ["a teacher viewing a student", "the student viewing their own profile", "both, switchable"]
+      }
+    }
+  ],
   "escape": {
     "label": "Decide for me",
     "label_zh": "你来决定",
