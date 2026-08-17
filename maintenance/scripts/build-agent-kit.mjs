@@ -121,7 +121,51 @@ writeFileSync(join(OUT, 'example.html'), `<!doctype html>
 </body>
 `);
 
-// ── 4. report, and refuse to look healthy while incomplete ────────────────
+// ── 4. stamp what this copy is ────────────────────────────────────────────
+/* A kit is read months after it was handed over, in a repository that has no
+   connection to this one. Without this file the only way to answer "is what I
+   have current" is to ask the person who sent it, and they will not remember
+   either. `dirty` matters as much as the commit: a kit built over uncommitted
+   edits corresponds to no revision anyone else can check out. */
+const git = (...args) => { try { return execFileSync('git', args, { cwd: HERE }).toString().trim(); } catch { return ''; } };
+const commit = git('rev-parse', '--short', 'HEAD') || 'unknown';
+/* Only the paths this kit is actually assembled from. A template or a test
+   being mid-edit says nothing about whether this copy matches its revision,
+   and a stamp that cries dirty over unrelated work is a stamp people learn to
+   ignore. */
+const SOURCES = ['catalog-runtime', 'docs', 'Assets', 'maintenance/prompt-notes',
+  'maintenance/catalog-cards.json', 'maintenance/fixtures', 'maintenance/scripts'];
+const dirty = git('status', '--porcelain', '--', ...SOURCES) !== '';
+const built = new Date().toISOString().slice(0, 10);
+const componentCount = readdirSync(join(OUT, 'components'), { recursive: true }).filter((f) => String(f).endsWith('.d.ts')).length;
+const iconCount = execFileSync('find', [join(OUT, 'Assets/Icons'), '-name', '*.svg']).toString().trim().split('\n').length;
+
+writeFileSync(join(OUT, 'VERSION'), `italki UI Kit
+built       ${built}
+commit      ${commit}${dirty ? '  (+ uncommitted changes — this copy matches no revision)' : ''}
+source      github.com/nikiBinBin/italki-design-system
+catalog     https://design.italkiux.com/
+
+components  ${componentCount}
+icons       ${iconCount}
+guidelines  ${readdirSync(join(OUT, 'guidelines')).length} files, including INTAKE.md and its slot catalog
+
+Rebuild a current copy from the source repository:
+  node maintenance/scripts/build-agent-kit.mjs --zip
+
+Everything in this folder is generated. Edit the design system, not this.
+`);
+
+// ── 5. package, when asked ────────────────────────────────────────────────
+if (argv.includes('--zip')) {
+  const zip = `${OUT}-${built}.zip`;
+  rmSync(zip, { force: true });
+  execFileSync('find', [OUT, '-name', '.DS_Store', '-delete']);
+  execFileSync('zip', ['-rq', zip, relative(dirname(OUT), OUT), '-x', '*.DS_Store'], { cwd: dirname(OUT) });
+  console.log(`✓ ${zip}  (${execFileSync('du', ['-sh', zip]).toString().split('\t')[0].trim()})`);
+}
+
+// ── 6. report, and refuse to look healthy while incomplete ────────────────
 rmSync(scratch, { recursive: true, force: true });
 const size = (p) => execFileSync('du', ['-sh', p]).toString().split('\t')[0].trim();
 const icons = readdirSync(join(OUT, 'Assets/Icons')).filter((f) => f.endsWith('.svg')).length;
