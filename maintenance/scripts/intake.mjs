@@ -23,8 +23,8 @@
 //
 // Reads stdin when no prompt argument is given, so it composes with a pipe.
 
-import { existsSync, readFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = resolve(fileURLToPath(import.meta.url), '../../..');
@@ -208,11 +208,22 @@ const CASES = [
   {
     /* A modification, stated in Chinese and without an English verb in it: the
        fence around the existing page has to be asked for in both languages or
-       it is only ever asked for in one. */
+       it is only ever asked for in one. Also the counter-example to the case
+       below — a teacher's profile is the page students read, so naming a
+       teacher here says nothing about whose view is being built. */
     prompt: '把老师主页的价格区块改成课程包，桌面端',
     settled: ['object-kind', 'viewport'],
-    asks: ['unchanged-scope'],
+    asks: ['unchanged-scope', 'actor'],
     notAsks: ['viewport'],
+  },
+  {
+    /* A settings surface belongs to whoever it configures, and so does the act
+       of uploading something. Both were missed while the rule only accepted
+       explicit "老师视角" phrasing — strict enough to keep 老师主页 out, strict
+       enough to ask a question the request had already answered twice. */
+    prompt: '老师设置里加个上传视频的区块，桌面端',
+    settled: ['actor', 'object-kind', 'viewport', 'primary-action'],
+    notAsks: ['actor', 'primary-action'],
   },
 ];
 
@@ -245,9 +256,45 @@ const selftest = () => {
 const readPrompt = () => {
   const file = flag('file', null);
   if (file) return readFileSync(resolve(file), 'utf8');
-  const positional = argv.filter((a, i) => !a.startsWith('--') && !['file', 'max', 'lang'].includes((argv[i - 1] ?? '').replace(/^--/, '')));
+  const positional = argv.filter((a, i) => !a.startsWith('--') && !['file', 'max', 'lang', 'record'].includes((argv[i - 1] ?? '').replace(/^--/, '')));
   if (positional.length) return positional.join(' ');
   try { return readFileSync(0, 'utf8'); } catch { return ''; }
+};
+
+// ── the record a delivery has to carry ────────────────────────────────────
+/* Prose in AGENTS.md cannot make an agent ask; a check on the commit can. This
+   writes the record that check looks for, prefilled with everything already
+   known — what the request settled, and what every unanswered slot will default
+   to — leaving exactly one thing to fill in: what the requester actually said.
+   The TODO marker is the teeth. An agent that generated the record without ever
+   sending the questions leaves it in place, and the check fails on it. */
+const TODO = '<!-- TODO: 把 intake 问题块发给需求方，把回答填在这里；对方明确说"你来决定"就写 Decide for me -->';
+const renderRecord = (prompt, result, lang, target) => {
+  const t = T[lang];
+  const line = (s) => `- **${pick(s.slot ?? s, 'title', lang)}** — ${s.evidence ? `${t.fromPrompt}: “${s.evidence}”` : pick(s, 'default', lang)}`;
+  return `---
+target: ${target}
+date: ${new Date().toISOString().slice(0, 10)}
+---
+
+# Intake — ${target}
+
+## Request
+
+> ${prompt.replace(/\n/g, '\n> ')}
+
+## Confirmed
+${result.settled.length ? result.settled.map(line).join('\n') : '- （提示词没有确定任何一项）'}
+
+## Answered
+
+${TODO}
+
+${result.ask.map((s, i) => `${i + 1}. ${pick(s, 'question', lang)}\n   - 回答：`).join('\n')}
+
+## Assumed
+${[...result.ask, ...result.deferred].map(line).join('\n')}
+`;
 };
 
 if (has('selftest')) { selftest(); }
@@ -274,6 +321,18 @@ else {
       freeform: CATALOG.freeform,
       escape: CATALOG.escape,
     }, null, 2));
+  } else if (has('record')) {
+    const target = flag('record', null);
+    if (!target || target.startsWith('--')) {
+      console.error('--record needs the thing being built: --record teacher-profile "<the request>"');
+      process.exit(2);
+    }
+    const dir = join(HERE, 'docs/intakes');
+    mkdirSync(dir, { recursive: true });
+    const path = join(dir, `${new Date().toISOString().slice(0, 10)}-${target}.md`);
+    writeFileSync(path, renderRecord(prompt, result, lang, target));
+    console.log(`✓ ${relative(HERE, path)}`);
+    console.log('  Confirmed 和 Assumed 已填好。把上面的问题块发给需求方，回答写进 Answered，删掉 TODO。');
   } else if (has('defaults')) {
     console.log(renderDefaults(result, lang));
   } else {

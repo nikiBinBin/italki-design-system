@@ -9,7 +9,7 @@
     "serve:catalog": "node scripts/serve-catalog.mjs",
     "intake": "node scripts/intake.mjs",
     "test:intake": "node scripts/intake.mjs --selftest",
-    "test:contract": "npm run build:contracts && npm run build:api && npm run build:icons && node scripts/validate-contracts.mjs && npm run lint:foundation && npm run lint:type && npm run test:intake",
+    "test:contract": "npm run build:contracts && npm run build:api && npm run build:icons && node scripts/validate-contracts.mjs && npm run lint:foundation && npm run lint:type && npm run test:intake && npm run check:intake",
     "pretest:visual": "npm run build:contracts",
     "test:visual": "playwright test",
     "test": "npm run test:contract && npm run audit:coverage && npm run test:visual",
@@ -25,7 +25,8 @@
     "audit:templates": "node scripts/audit-templates.mjs",
     "serve:templates": "node scripts/serve-templates.mjs",
     "audit:adherence": "node scripts/audit-adherence.mjs",
-    "audit:coverage": "node scripts/audit-coverage.mjs"
+    "audit:coverage": "node scripts/audit-coverage.mjs",
+    "check:intake": "node scripts/check-intake.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",
