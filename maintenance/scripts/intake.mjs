@@ -63,16 +63,29 @@ const firstHit = (prompt, patterns) => {
 const applies = (slot, prompt) =>
   slot.applies === 'always' ? true : Boolean(firstHit(prompt, slot.applies?.any));
 
+/* The object the request names, when this system documents one. A slot asks the
+   same question every time; the object decides what its answers can be — asked
+   of a teacher profile, "what must be visible" should offer the sections
+   PATTERNS.md gives that page rather than an empty line. Where the object is
+   one this system has never documented, saying so is the more useful answer
+   than a plausible invented list: it tells the requester the thing they asked
+   for has no contract yet, which is the decision they actually face. */
+const objectOf = (prompt) => (CATALOG.objects ?? []).find((o) => firstHit(prompt, o.match)) ?? null;
+
 const scan = (prompt, { max = CATALOG.maxQuestions } = {}) => {
   const settled = [];
   const gaps = [];
   const skipped = [];
+  const object = objectOf(prompt);
 
   for (const slot of CATALOG.slots) {
     if (!applies(slot, prompt)) { skipped.push(slot.id); continue; }
     const evidence = firstHit(prompt, slot.answered?.any);
-    if (evidence) settled.push({ id: slot.id, slot, evidence });
-    else gaps.push(slot);
+    if (evidence) { settled.push({ id: slot.id, slot, evidence }); continue; }
+    /* A copy, never the catalog entry — the same process may render several
+       prompts and must not carry one request's object into the next. */
+    const override = object?.overrides?.[slot.id];
+    gaps.push(override ? { ...slot, options: override } : slot);
   }
 
   /* Impact first, catalog order as the tie-break — the catalog is authored in
@@ -81,6 +94,7 @@ const scan = (prompt, { max = CATALOG.maxQuestions } = {}) => {
   gaps.sort((a, b) => b.impact - a.impact || CATALOG.slots.indexOf(a) - CATALOG.slots.indexOf(b));
 
   return {
+    object,
     settled,
     ask: gaps.slice(0, max),
     /* Below the cap, not resolved: they take their defaults like anything else,
@@ -106,6 +120,8 @@ const T = {
     deferred: (n) => `${n} lower-impact decision${n === 1 ? '' : 's'} also went unanswered and will take the default: `,
     escape: (label) => `Say “${label}” and I apply every default above and start now.`,
     fromPrompt: 'from the prompt',
+    objectKnown: 'Read as the documented object: ',
+    objectUnknown: '**This system documents no pattern for**',
     assumed: '## Proceeding on these assumptions',
     assumedTail: 'Each line is a default from the intake catalog, not something the prompt said. Correct any of them and I rebuild that decision only.',
   },
@@ -120,6 +136,8 @@ const T = {
     deferred: (n) => `另有 ${n} 项影响较小的决策也未回答，将取默认值：`,
     escape: (label) => `回一句「${label}」，我就按上面全部默认值开始。`,
     fromPrompt: '提示词已说明',
+    objectKnown: '按已记录的对象处理：',
+    objectUnknown: '**本系统没有记录过这个对象的模式**：',
     assumed: '## 将按以下假设执行',
     assumedTail: '每一行都是澄清目录里的默认值，不是提示词说过的内容。任何一条不对，我只重做那一项决策。',
   },
@@ -135,6 +153,12 @@ const renderQuestions = (result, lang) => {
     out.push(`**${t.settled}**`, '');
     for (const s of result.settled) out.push(`- ${pick(s.slot, 'title', lang)} — “${s.evidence}”`);
     out.push('');
+  }
+
+  if (result.object) {
+    out.push(result.object.pattern
+      ? `${t.objectKnown}${result.object.pattern}`
+      : `${t.objectUnknown} \`${result.object.id}\`。${result.object.closest}`, '');
   }
 
   out.push(`**${t.open}**`, '');
