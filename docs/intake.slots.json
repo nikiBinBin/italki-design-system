@@ -1,0 +1,369 @@
+{
+  "version": 1,
+  "maxQuestions": 5,
+  "note": "Decision slots the italki design system needs filled before it can execute a request. An agent asks only about the slots a prompt leaves open — see docs/INTAKE.md for the protocol and maintenance/scripts/intake.mjs for the reference implementation. `applies` decides whether a slot is relevant to this request at all; `answered` decides whether the prompt already settles it. Patterns are JavaScript regular expressions, matched case-insensitively against the raw prompt.",
+  "escape": {
+    "label": "Decide for me",
+    "label_zh": "你来决定",
+    "effect": "Apply every default below without asking, and list them in the Assumed section of the interpretation block."
+  },
+  "freeform": {
+    "question": "Anything specific about content, copy or constraints I should honour?",
+    "question_zh": "关于内容、文案或约束，有什么需要遵守的？",
+    "always_offer": true
+  },
+  "slots": [
+    {
+      "id": "object-kind",
+      "title": "What are we building",
+      "title_zh": "交付物是什么",
+      "question": "What is the deliverable — a whole page, a section inside an existing page, a repeated unit, an invoked surface, a flow step, or an enhancement to something that already exists?",
+      "question_zh": "要交付的是什么——整页、现有页面里的一个区块、可复用的重复单元、唤起式浮层、流程中的一步，还是对现有内容的改进？",
+      "why": "It selects the row in the Scope Selection Matrix, and with it the whole assembly strategy.",
+      "why_zh": "它决定走 Scope Selection Matrix 的哪一行，也就决定了整个组装策略。",
+      "feeds": "EXECUTION.md §3.6A Scope Selection Matrix",
+      "impact": 5,
+      "applies": "always",
+      "options": [
+        "new page",
+        "section in an existing page",
+        "repeated unit (card, row, list item)",
+        "invoked surface (modal, drawer, popover, sheet)",
+        "flow step",
+        "enhancement to an existing page"
+      ],
+      "default": "new page",
+      "default_zh": "新页面",
+      "answered": {
+        "any": [
+          "\\b(page|screen|view)\\b",
+          "页面|详情页|列表页",
+          "\\b(section|module|block|widget|panel)\\b",
+          "模块|区块|板块",
+          "\\b(card|row|list item|tile)\\b",
+          "卡片",
+          "\\b(modal|dialog|drawer|popover|sheet|popup)\\b",
+          "弹窗|抽屉|浮层|弹层",
+          "\\b(flow|step|wizard|checkout)\\b",
+          "流程|步骤",
+          "\\b(improve|enhance|redesign|revamp|refactor)\\b",
+          "优化|改进|重做"
+        ]
+      }
+    },
+    {
+      "id": "actor",
+      "title": "Whose view",
+      "title_zh": "谁的视角",
+      "question": "Whose view is this — the student's, the teacher's, both (switchable), or a logged-out visitor's?",
+      "question_zh": "这是谁的视角——学生、老师、两者（可切换），还是未登录访客？",
+      "why": "Role decides the shell, the primary action, the permitted states and most of the copy. Naming a teacher as the subject of a page is not the same as building the teacher's view of it.",
+      "why_zh": "角色决定外壳、主动作、允许出现的状态，以及大部分文案。页面讲的是老师，不等于做的是老师看到的那一版。",
+      "feeds": "EXECUTION.md §3.1 Task Interpretation",
+      "impact": 5,
+      "applies": "always",
+      "options": ["student", "teacher", "both, switchable", "logged-out visitor"],
+      "default": "student",
+      "default_zh": "学生",
+      "answered": {
+        "any": [
+          "\\bas a\\s+(student|learner|teacher|tutor|visitor|guest)",
+          "\\bfor (a|the)\\s+(student|learner|teacher|tutor)\\b",
+          "(student|learner|teacher|tutor)('s)?\\s+(view|side|perspective|version|dashboard)",
+          "学生(端|视角|侧|的视角)|学员(端|视角|侧)",
+          "老师(端|视角|侧|的视角)|教师(端|视角|侧)",
+          "\\b(logged.out|signed.out|anonymous|unauthenticated)\\b",
+          "未登录|访客视角",
+          "作为(一个)?(学生|学员|老师|教师)"
+        ]
+      }
+    },
+    {
+      "id": "primary-action",
+      "title": "Primary action",
+      "title_zh": "主动作",
+      "question": "What is the one action this surface must make possible?",
+      "question_zh": "这个界面必须让用户完成的那一个动作是什么？",
+      "why": "The action hierarchy, the single red CTA and the success condition are all derived from it. A surface without a named primary action becomes a catalogue of information.",
+      "why_zh": "动作层级、页面上唯一那个红色 CTA、以及成功条件，都是从它推出来的。没有指明主动作的界面，最后会变成一份信息目录。",
+      "feeds": "EXECUTION.md §2.4 Primary Action, §3.1",
+      "impact": 5,
+      "applies": "always",
+      "options": [],
+      "default": "the action the object's page recipe already carries; stated explicitly in the interpretation block before anything is built",
+      "default_zh": "沿用该对象在页面配方里已有的主动作，并在解读区块里写明",
+      "answered": {
+        "any": [
+          "\\bso that\\b",
+          "\\b(book|reserve|schedule|pay|checkout|purchase|search|filter|sort|reschedule|cancel|rate|review|join|submit|apply|send|message|contact|edit|update|upload|register|sign up|compare|select|choose|confirm|report|refund|renew|rebook)\\b",
+          "预订|预约|支付|付款|搜索|筛选|排序|改期|取消|评价|评分|进入教室|提交|发送|联系|修改|上传|注册|选择|确认|举报|退款|续费|再约"
+        ]
+      }
+    },
+    {
+      "id": "unchanged-scope",
+      "title": "What must not change",
+      "title_zh": "不能动的部分",
+      "question": "What must stay exactly as it is? Name the regions I should not touch.",
+      "question_zh": "哪些部分必须保持原样？请指明我不应该改动的区域。",
+      "why": "An enhancement request that does not fence its scope is the most common way a working page regresses.",
+      "why_zh": "改进类需求不划边界，是本来好用的页面出现回退的最常见原因。",
+      "feeds": "EXECUTION.md §15.2 Scope, §3.6A existing-page enhancement row",
+      "impact": 5,
+      "applies": {
+        "any": [
+          "\\b(improve|enhance|redesign|revamp|adjust|tweak|fix|extend|rework|change|modify)\\b",
+          "\\badd\\b.{0,40}\\b(to|into|on)\\b",
+          "优化|改进|调整|重做|修改|改成|改为|换成|替换|去掉|删掉|新增|增加|加(一?个|上).{0,12}(到|进)"
+        ]
+      },
+      "options": [],
+      "default": "everything outside the named region stays byte-identical, and the delivery record lists the unchanged regions",
+      "default_zh": "指定区域之外的一切保持不变，并在交付记录里列出未改动的区域",
+      "answered": {
+        "any": [
+          "\\b(don'?t (change|touch)|do not (change|touch)|keep .{0,24}(as is|unchanged|intact)|leave .{0,24}alone|only change|only touch|unchanged)\\b",
+          "不要(改|动|调整)|保持不变|只改|仅改|其余不变|别动"
+        ]
+      }
+    },
+    {
+      "id": "status-set",
+      "title": "Object status set",
+      "title_zh": "对象业务状态",
+      "question": "Which statuses of this object should the surface handle? One becomes the live state and the rest stay switchable.",
+      "question_zh": "这个对象的哪些状态需要覆盖？其中一个作为默认展示状态，其余做成可切换。",
+      "why": "A status-bearing object read in one status only ships a page that breaks on the second-most-common row in the list.",
+      "why_zh": "只按一种状态理解带生命周期的对象，交付的页面会在列表里第二常见的那一行上垮掉。",
+      "feeds": "EXECUTION.md §15.4 Scenario Coverage Matrix; PATTERNS.md lesson-card status set",
+      "impact": 4,
+      "applies": {
+        "any": [
+          "\\b(lesson|class|session|book(ing|ed)|order|package|request|payment|refund|application|dispute)s?\\b",
+          "课程|课时|上课|预订|预约|订单|课程包|申请|支付|退款"
+        ]
+      },
+      "options": [
+        "upcoming / confirmed",
+        "awaiting confirmation",
+        "in progress",
+        "completed",
+        "cancelled",
+        "expired / no-show",
+        "reschedule requested"
+      ],
+      "default": "the live state plus the two statuses either side of it in the object's lifecycle",
+      "default_zh": "默认状态，加上生命周期里紧邻它前后的两个状态",
+      "answered": {
+        "any": [
+          "\\b(upcoming|confirmed|pending|awaiting|in progress|ongoing|completed|finished|cancell?ed|expired|no.show|rescheduled|refunded|unpaid|paid)\\b",
+          "待确认|待上课|进行中|已完成|已取消|已过期|已退款|未支付|已支付|爽约"
+        ]
+      }
+    },
+    {
+      "id": "must-have-data",
+      "title": "Must-have information",
+      "title_zh": "必须出现的信息",
+      "question": "What must be visible here for the task to work?",
+      "question_zh": "为了完成这个任务，界面上必须出现哪些信息？",
+      "why": "Required data is what separates a real surface from a plausible one, and it decides which components are even eligible.",
+      "why_zh": "必需数据是「真界面」和「看起来像那么回事」的分界线，也决定了哪些组件才有资格被选。",
+      "feeds": "EXECUTION.md §2.4 Must-Have Information, §3.6 Required Data",
+      "impact": 4,
+      "applies": "always",
+      "options": [],
+      "default": "the object's identity, the decision data its primary action needs, and the trust evidence PATTERNS.md already assigns to that object",
+      "default_zh": "对象身份、主动作所需的决策信息，以及 PATTERNS.md 已为该对象规定的信任证据",
+      "answered": {
+        "any": [
+          "\\b(show|display|include|contain|surface|list|with)\\b.{0,60}\\b(and|,)\\b",
+          "显示|展示|包含|要有|需要有|字段",
+          "\\n\\s*[-*•]",
+          "\\n\\s*\\d+[.)]\\s"
+        ]
+      }
+    },
+    {
+      "id": "viewport",
+      "title": "Layout target",
+      "title_zh": "布局目标",
+      "question": "Which layout is the deliverable — desktop web, mobile web, or both?",
+      "question_zh": "交付哪个布局——桌面 Web、移动 Web，还是两个都要？",
+      "why": "Task order, invoked-surface choice and the action bar differ per viewport; building both when one was wanted doubles the review surface.",
+      "why_zh": "任务顺序、唤起式浮层的选择、动作栏的处理都随视口不同；只需要一个却做了两个，评审量也翻倍。",
+      "feeds": "EXECUTION.md §13 Responsive And Implementation Execution Rules",
+      "impact": 4,
+      "applies": "always",
+      "options": ["desktop web", "mobile web", "both"],
+      "default": "desktop web",
+      "default_zh": "桌面 Web",
+      "answered": {
+        "any": [
+          "\\b(desktop|pc)\\b",
+          "桌面|电脑端|大屏",
+          "\\b(mobile|phone|handset|h5|ios|android|responsive|adaptive|breakpoint)\\b",
+          "手机|移动端|响应式|自适应|小屏"
+        ]
+      }
+    },
+    {
+      "id": "states",
+      "title": "Loading, empty and error states",
+      "title_zh": "加载／空／错误态",
+      "question": "Beyond the default state, which states must the surface cover — loading, empty, error, unavailable, success?",
+      "question_zh": "除默认态外，还需要覆盖哪些状态——加载、空、错误、不可用、成功？",
+      "why": "The scenario coverage matrix is validated at handoff; states decided at the end get bolted on rather than designed.",
+      "why_zh": "交付时要按场景覆盖矩阵验收；状态留到最后再定，就只能往上硬贴，而不是设计出来的。",
+      "feeds": "EXECUTION.md §15.4 Scenario Coverage Matrix",
+      "impact": 4,
+      "applies": "always",
+      "options": ["default only", "default + loading + empty", "default + loading + empty + error", "every state in §15.4 that applies"],
+      "default": "default, loading, empty and error",
+      "default_zh": "默认态、加载、空态、错误",
+      "answered": {
+        "any": [
+          "\\b(state|states|loading|empty|error|failure|failed|success|skeleton|offline|disabled|unavailable)\\b",
+          "状态|加载中|空态|空状态|错误|失败|成功|骨架屏|不可用"
+        ]
+      }
+    },
+    {
+      "id": "commitment",
+      "title": "Money and commitment",
+      "title_zh": "金额与承诺",
+      "question": "What are the commitment rules — where do amounts come from, which currency, and what cancellation or refund terms apply?",
+      "question_zh": "涉及承诺的规则是什么——金额从哪来、什么货币、取消与退款条款如何？",
+      "why": "Commitment logic is business meaning, not visual choice. A surface that invents a price or a refund window is wrong in a way the layout cannot show.",
+      "why_zh": "承诺逻辑属于业务含义，不是视觉选择。界面自己编出一个价格或退款窗口，这种错误在版式上是看不出来的。",
+      "feeds": "PATTERNS.md Booking And Payment; EXECUTION.md §3.5 escalation",
+      "impact": 4,
+      "applies": {
+        "any": [
+          "\\b(pay|payment|price|pricing|refund|credit|coupon|discount|invoice|wallet|balance|charge|checkout|package|subscription|cancel)\\b",
+          "支付|付款|价格|定价|退款|余额|优惠|折扣|钱包|账单|订单|课程包|取消"
+        ]
+      },
+      "options": [],
+      "default": "every amount and policy line is a supplied, preformatted display value — the surface calculates nothing and submits nothing",
+      "default_zh": "所有金额与政策文案都是外部传入的、已格式化的展示值——界面不做任何计算，也不提交",
+      "answered": {
+        "any": [
+          "\\b(refund policy|cancellation (policy|window)|\\d+.?hour|non.refundable|currency|usd|eur|cny|jpy|italki credits?)\\b",
+          "退款政策|取消政策|\\d+\\s*小时|不可退|货币|美元|人民币|余额支付"
+        ]
+      }
+    },
+    {
+      "id": "reuse-reference",
+      "title": "Reference or reuse",
+      "title_zh": "参考还是复用",
+      "question": "Should this match an existing italki page or pattern, or a reference you will supply?",
+      "question_zh": "这个界面要对齐现有的 italki 页面／模式，还是你会提供参考稿？",
+      "why": "Reference-fidelity mode and rule-derived mode are validated against different things; guessing the mode invalidates the review.",
+      "why_zh": "「对齐参考稿」和「按规则推导」验收的是不同的东西；模式猜错，这次评审就白做了。",
+      "feeds": "EXECUTION.md §3.6F Reference Fidelity, §10 Existing Page Recipes",
+      "impact": 3,
+      "applies": "always",
+      "options": ["reuse the closest existing recipe", "match a reference I will supply", "rule-derived, no reference"],
+      "default": "reuse the closest EXECUTION.md §10 page recipe, and name which one",
+      "default_zh": "沿用 EXECUTION.md §10 里最接近的页面配方，并写明是哪一个",
+      "answered": {
+        "any": [
+          "\\b(like the|same as|match(es|ing)? the|based on|reference|screenshot|figma|mock ?up|existing page)\\b",
+          "参考|类似|按照|沿用|现有页面|截图|设计稿"
+        ]
+      }
+    },
+    {
+      "id": "interactivity",
+      "title": "How interactive",
+      "title_zh": "交互程度",
+      "question": "How interactive should the deliverable be — a static visual, a state switcher, or working interactions?",
+      "question_zh": "交付物的交互程度——静态视觉、状态切换器，还是可用的真实交互？",
+      "why": "It decides how much of the behaviour contract is demonstrated versus described.",
+      "why_zh": "它决定行为契约里有多少是演示出来的，多少只是写出来的。",
+      "feeds": "EXECUTION.md §15.2 Required Delivery Record",
+      "impact": 3,
+      "applies": "always",
+      "options": ["static visual", "state switcher only", "switcher plus working overlays and validation"],
+      "default": "a state switcher, with the overlays on the primary path actually working",
+      "default_zh": "状态切换器，且主路径上的浮层是真正可用的",
+      "answered": {
+        "any": [
+          "\\b(static|clickable|interactive|prototype|working|functional|switcher|switchable|toggle)\\b",
+          "静态|可交互|原型|能点|可点击|切换"
+        ]
+      }
+    },
+    {
+      "id": "entry-context",
+      "title": "Entry and exit",
+      "title_zh": "入口与去向",
+      "question": "Where does the user arrive from, and where do they land after the primary action succeeds?",
+      "question_zh": "用户从哪里进入这个界面，主动作成功之后又去哪里？",
+      "why": "Entry decides what context is already known and need not be repeated; exit decides the success state.",
+      "why_zh": "入口决定哪些上下文用户已经知道、不必重复；去向决定成功态长什么样。",
+      "feeds": "EXECUTION.md §2.4 Current Context, §15.2 Primary Task Path",
+      "impact": 3,
+      "applies": "always",
+      "options": [],
+      "default": "reached from the object's own list, and the primary action returns there with the new state visible",
+      "default_zh": "从该对象的列表页进入，主动作完成后返回列表并展示新状态",
+      "answered": {
+        "any": [
+          "\\b(entry point|comes from|arrives? from|navigates? from|after (they|the user|clicking|clicked)|back to|returns? to|next step|lands? on)\\b",
+          "\\bfrom (my|the|a|an)\\b[^.\\n]{0,40}\\b(list|page|screen|email|notification|calendar|dashboard|results?)\\b",
+          "入口|来自|从.{0,10}(进入|点击)|点击(后|进入)|跳转|返回到|上一步|下一步"
+        ]
+      }
+    },
+    {
+      "id": "content-source",
+      "title": "Content source",
+      "title_zh": "内容来源",
+      "question": "Real copy and data, or representative placeholders?",
+      "question_zh": "用真实文案与数据，还是有代表性的占位内容？",
+      "why": "Placeholder content that reads as real is how a demo gets mistaken for an approved decision.",
+      "why_zh": "看起来像真的占位内容，正是 demo 被当成已定方案的原因。",
+      "feeds": "EXECUTION.md §12 Data And Content Rules",
+      "impact": 2,
+      "applies": "always",
+      "options": ["real copy I will supply", "representative placeholders"],
+      "default": "representative italki-plausible content — real language and course names, no lorem ipsum, no invented policy text",
+      "default_zh": "符合 italki 语境的示例内容——真实的语言与课程名，不用 lorem，不编造政策文案",
+      "answered": {
+        "any": [
+          "\\b(real copy|actual copy|placeholder|lorem|dummy data|sample data|microcopy|wording)\\b",
+          "真实(文案|数据)|占位|假数据|示例数据|文案(用|按)"
+        ]
+      }
+    },
+    {
+      "id": "locale",
+      "title": "Locale rules",
+      "title_zh": "本地化规则",
+      "question": "Which timezone, currency and language rules apply?",
+      "question_zh": "适用哪些时区、货币和语言规则？",
+      "why": "Time and money are the two values a global marketplace cannot render without a stated frame.",
+      "why_zh": "时间和金额是全球化市场里两个必须先说清参照系、否则没法展示的值。",
+      "feeds": "EXECUTION.md §12 Data And Content Rules, §15.2 Localization Coverage",
+      "impact": 2,
+      "applies": {
+        "any": [
+          "\\b(time|timezone|schedule|calendar|date|slot|currency|price|language|locale|translat\\w+|i18n)\\b",
+          "时间|时区|日历|日期|时段|货币|价格|语言|翻译|本地化"
+        ]
+      },
+      "options": [],
+      "default": "learner-local timezone shown with its label, supplied currency rendered as given, English UI copy",
+      "default_zh": "按学生本地时区展示并标注时区名，货币按传入值原样展示，界面文案用英文",
+      "answered": {
+        "any": [
+          "\\b(utc|gmt[+-]?\\d*|learner.local|their local time|usd|eur|cny|jpy|english|chinese|spanish|japanese)\\b",
+          "时区(是|为|按|用)|北京时间|本地时间|英文|中文|双语"
+        ]
+      }
+    }
+  ]
+}
