@@ -1,3 +1,24 @@
+> **结案（2026-08-17 当日）。** 下面每一节都保留原样，包括后来被推翻的判断 —— 这份文件的
+> 用处一半在于记录当时怎么想错的。读之前先看这三条：
+>
+> 1. **云端已经修好了。** `_ds_bundle.js` 和 `components/_kit/Kit.jsx` 都重推过，带着 slot
+>    运行时。下面第二、三节里"云端那份是坏的 / 被我覆盖了"是**当时**的状态，现在不成立。
+> 2. **按旧名字 grep 会得到 0，那不代表实现不在。** 重写时改了命名空间：
+>    `var SLOTS` → `var ITALKI_SLOTS`，`splitSlots()` → `italkiSplitSlots()`，另有新增的
+>    `italkiMount()`。`createPortal` / `data-ui-slot` / `takes text, not an element` 没改名。
+>    全文下面出现的旧名字都是**当时的原文**，不要照着它去验现在的产物。
+> 3. **`_ds_bundle.js`（389KB）和 `Kit.jsx`（382KB）推完读不回来** —— `get_file` 上限
+>    256 KiB。所以"覆盖远端前先 get_file"这条在这两个文件上做不到；替代做法是**推前验本地、
+>    并记下 sha**。今天两次事故都发生在跳过这一步的时候。
+>
+> 4. **`.d.ts` 也已经解决了**，文末那节记的是当时的状态。兜底恢复成 `string`，markup 判定
+>    改用 `isHtmlSlot` 的探针结果而不是重推静态分析。产物实测：`289 string / 102 枚举 /
+>    79 boolean / 38 unknown[] / 31 true|false / 30 React.ReactNode | string` —— 那 30 个
+>    正好等于 `htmlSlots` 的槽位数，Button 从 13 个 `ReactNode` 变 0，Modal 的
+>    body/footer/trigger 仍是 `ReactNode | string`。
+>
+> 至此本文件记录的问题全部关闭。
+
 # 丢失：component usage notes 的生成器
 
 **日期**：2026-08-17 · **文件**：`maintenance/scripts/build-ds-project.mjs`
