@@ -157,9 +157,15 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   await expect(
     page.locator(".time-slot-weekly-preview .ui-time-slot--availability").first(),
   ).toBeVisible();
-  const pickerOptions = page.locator('.catalog-time-slot-grid .ui-time-slot');
+  /* Two grids now: the single-line options, and the ones that carry a day under
+     the time. They are different heights on purpose, so each is counted and
+     measured against its own row rather than both together. */
+  const pickerOptions = page.locator('.catalog-time-slot-grid:not(.catalog-time-slot-grid--two-line) .ui-time-slot');
   await expect(pickerOptions).toHaveCount(8);
   expect(await pickerOptions.evaluateAll((slots) => slots.every((slot) => Math.round(slot.getBoundingClientRect().height) === 40))).toBe(true);
+  const twoLineOptions = page.locator('.catalog-time-slot-grid--two-line .ui-time-slot');
+  await expect(twoLineOptions).toHaveCount(4);
+  expect(await twoLineOptions.evaluateAll((slots) => slots.every((slot) => slot.classList.contains("has-secondary") && slot.querySelector("small")))).toBe(true);
 
   await page.goto(`${catalog}#chip`);
   const chip = page.locator('[data-demo="ds-chip"]').first();
@@ -442,7 +448,13 @@ test("Catalog consumes the shared UI-kit implementation", async ({ page }) => {
   const teacherAvailabilityCalendar = page.locator("#teacher-availability-calendar");
   await expect(teacherAvailabilityModal).toHaveCSS("min-height", "720px");
   await expect(teacherAvailabilityCalendar).toHaveAttribute("data-calendar-variant", "teacher-availability");
-  await expect(teacherAvailabilityCalendar.locator(".ui-calendar__teacher-scroll")).toHaveCSS("max-height", "432px");
+  /* Inside the dialog the grid takes the height the dialog has to give: its own
+     432px cap would have made a second scrollbar inside the dialog's, and the
+     dates would leave the top of the screen whichever one you used. */
+  await expect(teacherAvailabilityCalendar.locator(".ui-calendar__teacher-scroll")).toHaveCSS("max-height", "none");
+  await expect(teacherAvailabilityCalendar.locator(".ui-modal__body")).toHaveCount(0);
+  const dialogBody = teacherAvailabilityCalendar.locator("xpath=ancestor::*[contains(@class,'ui-modal__body')]");
+  await expect(dialogBody).toHaveCSS("overflow", "hidden");
   await expect(teacherAvailabilityCalendar.locator(".ui-calendar__teacher-scroll")).toHaveCSS("overflow-y", "auto");
   await expect(teacherAvailabilityCalendar.locator(".ui-calendar__teacher-date")).toHaveCount(7);
   await expect(teacherAvailabilityCalendar.locator(".ui-calendar__teacher-date.is-current")).toHaveCSS("background-color", "rgb(231, 252, 245)");
