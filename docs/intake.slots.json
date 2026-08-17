@@ -52,6 +52,38 @@
       }
     },
     {
+      "id": "shell",
+      "title": "Inside the product, or standalone",
+      "title_zh": "产品内还是独立页",
+      "question": "Does this sit inside the signed-in product, or is it a standalone page? Inside means it carries the authenticated shell — the workspace header and the sidebar; standalone means it does not.",
+      "question_zh": "这是加在登录后的产品里，还是一个独立页面？产品内要带工作区外壳（顶部导航 + 侧边栏），独立页不带。",
+      "why": "It decides whether a shell is drawn at all, and a page delivered without one cannot be dropped into the product — the navigation, the account cluster and the whole left rail are missing. Drawn when it should not be, it fights the page that already provides them.",
+      "why_zh": "它决定要不要画外壳。少画了，页面放不进产品——导航、账户区、整条左栏都没有；多画了，又跟已经提供这些的宿主页打架。",
+      "feeds": "PATTERNS.md Authenticated Workspace Shell; EXECUTION.md §9 Page Assembly Rules",
+      "impact": 5,
+      "applies": {
+        "any": [
+          "\\b(page|screen|view|flow|step|section|module)s?\\b",
+          "页面|详情页|列表页|区块|模块|板块|流程|步骤|页"
+        ]
+      },
+      "options": [
+        "inside the product — workspace header and sidebar",
+        "standalone page — no shell",
+        "a fragment dropped into an existing page — the host supplies the shell"
+      ],
+      "default": "inside the signed-in product, composing workspace-header and sidebar-navigation",
+      "default_zh": "登录后的产品内，沿用 workspace-header 和 sidebar-navigation",
+      "answered": {
+        "any": [
+          "\\b(shell|sidebar|side nav|top nav|workspace|signed.in|logged.in|authenticated|dashboard)\\b",
+          "外壳|工作区|侧边栏|顶部导航|导航栏|登录后|已登录",
+          "\\b(standalone|landing page|marketing|full.screen|no chrome|embed(ded)?)\\b",
+          "独立页|落地页|营销页|全屏|内嵌|嵌进|嵌在"
+        ]
+      }
+    },
+    {
       "id": "actor",
       "title": "Whose view",
       "title_zh": "谁的视角",
@@ -74,7 +106,11 @@
           "老师(端|视角|侧|的视角)|教师(端|视角|侧)",
           "\\b(logged.out|signed.out|anonymous|unauthenticated)\\b",
           "未登录|访客视角",
-          "作为(一个)?(学生|学员|老师|教师)"
+          "作为(一个)?(学生|学员|老师|教师)",
+          "(老师|教师|讲师|学生|学员)(的)?(设置|账户|账号|后台|工作台|控制台|个人中心|面板|仪表盘)",
+          "\\b(teacher|tutor|instructor|student|learner)('?s)?\\s+(settings|account|dashboard|console|workspace|inbox)\\b",
+          "(老师|教师|讲师|学生|学员)(自己)?(来)?(上传|编辑|修改|管理|设置|填写|录入|提交|回复)",
+          "\\b(teacher|tutor|instructor|student|learner)s?\\s+\\w*\\s*(edits?|manages?|updates?|uploads?|configures?|writes?|replies)\\b"
         ]
       }
     },
