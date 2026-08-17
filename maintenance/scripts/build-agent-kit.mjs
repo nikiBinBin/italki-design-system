@@ -87,14 +87,36 @@ const walk = (dir) => {
 };
 walk(join(scratch, 'components'));
 
-/* Assets the runtime resolves by name. Images/ is left out: nothing in
-   italki-ui.js or italki-ui.css references it — those are demo avatars and
-   covers belonging to the Catalog's fixtures, not to the kit. */
-for (const dir of ['Icons', 'Flags']) {
-  cpSync(join(HERE, 'Assets', dir), join(OUT, 'Assets', dir), { recursive: true });
+/* All three approved asset roots. Icons and Flags are vocabulary — components
+   name them and the manifest decides which exist. Images are content, and were
+   left out of the first build of this kit on the grounds that no rule
+   references them: true, and beside the point. An agent asked for a teacher
+   card with nothing to put in the avatar renders initials, and the intake's own
+   default asks for content that looks like italki. Shipping the reference
+   photography is what makes that possible; --no-images drops it for a handover
+   that has to stay small. */
+const ASSET_DIRS = argv.includes('--no-images') ? ['Icons', 'Flags'] : ['Icons', 'Flags', 'Images'];
+for (const dir of ASSET_DIRS) {
+  cpSync(join(HERE, 'Assets', dir), join(OUT, 'Assets', dir), {
+    recursive: true,
+    filter: (src) => !src.endsWith('.DS_Store'),
+  });
 }
 
-// ── 3. a page that proves the kit loads ───────────────────────────────────
+// ── 3. the Catalog, so the reference is readable without a network ────────
+/* README.md and AGENTS.md point at design.italkiux.com for "what does this
+   component look like", which is a dependency on that site being up and on the
+   reader being online — and on it still describing the revision they were
+   handed. The Catalog is three files plus the runtime it already loads by
+   relative path, so it travels. It is the same source these contracts were
+   generated from, so it cannot describe a different version of them. */
+for (const f of ['index.html', 'catalog.css']) cpSync(join(HERE, f), join(OUT, f));
+cpSync(join(HERE, 'catalog-runtime'), join(OUT, 'catalog-runtime'), {
+  recursive: true,
+  filter: (src) => !src.endsWith('.DS_Store'),
+});
+
+// ── 4. a page that proves the kit loads ───────────────────────────────────
 /* Opened in a browser, this is the whole acceptance test for "did I wire the
    kit in correctly": if the button is red and the icon is not a broken image,
    the stylesheet, the bundle and the asset paths are all resolving. */
@@ -116,12 +138,17 @@ writeFileSync(join(OUT, 'example.html'), `<!doctype html>
       ui.button({ label: 'Book trial', variant: 'red', leadingIcon: 'Assets/Icons/calendar.svg' }) +
       ui.button({ label: 'Message', variant: 'secondary' }) +
       ui.tag({ label: 'Professional Teacher', tone: 'info', leadingIcon: 'Assets/Icons/teacher-professional.svg' }) +
+    '</div>' +
+    /* The third asset root. "image" takes a path like the icons do; "flag" is
+       the exception — an ISO 3166-1 alpha-2 code, not a file. */
+    '<div style="margin-top:var(--ui-space-6)">' +
+      ui.avatar({ image: 'Assets/Images/avatars/teacher-lucia.png', size: 96, name: 'Lucia', flag: 'es', variant: 'with-flag' }) +
     '</div>';
 </script>
 </body>
 `);
 
-// ── 4. stamp what this copy is ────────────────────────────────────────────
+// ── 5. stamp what this copy is ────────────────────────────────────────────
 /* A kit is read months after it was handed over, in a repository that has no
    connection to this one. Without this file the only way to answer "is what I
    have current" is to ask the person who sent it, and they will not remember
@@ -144,11 +171,20 @@ writeFileSync(join(OUT, 'VERSION'), `italki UI Kit
 built       ${built}
 commit      ${commit}${dirty ? '  (+ uncommitted changes — this copy matches no revision)' : ''}
 source      github.com/nikiBinBin/italki-design-system
-catalog     https://design.italkiux.com/
+catalog     index.html — open it from a local server, not file://
+            (the hosted copy is https://design.italkiux.com/, which tracks
+             the source and may be ahead of this folder)
 
 components  ${componentCount}
 icons       ${iconCount}
 guidelines  ${readdirSync(join(OUT, 'guidelines')).length} files, including INTAKE.md and its slot catalog
+assets      ${ASSET_DIRS.join(', ')} under Assets/
+
+Assets/Icons and Assets/Flags are vocabulary: a component names one and the
+runtime resolves it, so a name that is not there throws. Assets/Images is
+reference photography — the avatars and covers the Catalog uses to show a
+teacher card as it really reads. Use them to compose and review; replace them
+with the product's own imagery before anything ships.
 
 Rebuild a current copy from the source repository:
   node maintenance/scripts/build-agent-kit.mjs --zip
@@ -156,7 +192,7 @@ Rebuild a current copy from the source repository:
 Everything in this folder is generated. Edit the design system, not this.
 `);
 
-// ── 5. package, when asked ────────────────────────────────────────────────
+// ── 6. package, when asked ────────────────────────────────────────────────
 if (argv.includes('--zip')) {
   const zip = `${OUT}-${built}.zip`;
   rmSync(zip, { force: true });
@@ -165,7 +201,7 @@ if (argv.includes('--zip')) {
   console.log(`✓ ${zip}  (${execFileSync('du', ['-sh', zip]).toString().split('\t')[0].trim()})`);
 }
 
-// ── 6. report, and refuse to look healthy while incomplete ────────────────
+// ── 7. report, and refuse to look healthy while incomplete ────────────────
 rmSync(scratch, { recursive: true, force: true });
 const size = (p) => execFileSync('du', ['-sh', p]).toString().split('\t')[0].trim();
 const icons = readdirSync(join(OUT, 'Assets/Icons')).filter((f) => f.endsWith('.svg')).length;
