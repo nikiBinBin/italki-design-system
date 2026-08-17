@@ -7,7 +7,7 @@ test("documented component states remain visually stable", async ({ page }) => {
   /* Tracks the fixture: it goes up when a documented state is added — List, Section intro and
      the segmented control's icon and role types brought the last eleven — and a drop means states stopped
      rendering. Each pair is unique, so this counts states, not duplicates. */
-  await expect(page.locator("[data-contract-state]")).toHaveCount(334);
+  await expect(page.locator("[data-contract-state]")).toHaveCount(341);
   await expect(page.locator('[data-contract-component="button"][data-contract-state="loading"] .ui-button')).toHaveAttribute("disabled", "");
   await expect(page.locator('[data-contract-component="checkbox"][data-contract-state="mixed"] [role="checkbox"]')).toHaveAttribute("aria-checked", "mixed");
   await expect(page.locator('[data-contract-component="checkbox-group"][data-contract-state="select-all"] [data-demo="ui-checkbox-group-all"]')).toHaveAttribute("aria-checked", "mixed");
