@@ -1,0 +1,22 @@
+name: intake
+
+# The write gate is a Claude Code hook and covers only Claude Code. This covers
+# everyone else — Codex, Cursor, a person in an editor — because it reads the
+# diff rather than who produced it. Without it the enforcement was half a rule:
+# real on one machine, absent on every pull request.
+on: [pull_request]
+
+jobs:
+  records:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # check-intake compares against the base branch; a shallow clone has
+          # nothing to compare with and would pass by having seen no changes.
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Every changed page carries its intake record
+        run: node maintenance/scripts/check-intake.mjs --since origin/${{ github.base_ref }}

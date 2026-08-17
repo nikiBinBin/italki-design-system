@@ -50,6 +50,29 @@ if (!CATALOG_PATH) {
 }
 const CATALOG = JSON.parse(readFileSync(CATALOG_PATH, 'utf8'));
 
+/* Where a record gets written. HERE is this file three directories up, which is
+   the repository root only because the script lives in maintenance/scripts/.
+   Vendored into a kit the script sits at that kit's root, so the same
+   arithmetic walked out of the project entirely and --record wrote to the
+   user's home directory, reporting success. Resolved the way the gates resolve
+   it instead: the project that has an intake.config.json, else the repository
+   this catalog belongs to, else wherever the command was run. */
+const PROJECT = (() => {
+  for (let dir = process.cwd(); ; dir = resolve(dir, '..')) {
+    if (existsSync(join(dir, 'intake.config.json'))) return dir;
+    if (dir === resolve(dir, '..')) break;
+  }
+  if (CATALOG_PATH.endsWith(join('docs', 'intake.slots.json'))) return resolve(CATALOG_PATH, '../..');
+  return process.cwd();
+})();
+const RECORDS = (() => {
+  const cfg = join(PROJECT, 'intake.config.json');
+  if (existsSync(cfg)) {
+    try { return JSON.parse(readFileSync(cfg, 'utf8')).records || 'docs/intakes'; } catch { /* fall through */ }
+  }
+  return 'docs/intakes';
+})();
+
 // ── matching ──────────────────────────────────────────────────────────────
 /* Patterns are authored in the catalog, not here: adding a decision the system
    needs is a JSON edit, and stays readable to an agent that only reads files. */
@@ -423,11 +446,11 @@ else {
       console.error('--record needs the thing being built: --record teacher-profile "<the request>"');
       process.exit(2);
     }
-    const dir = join(HERE, 'docs/intakes');
+    const dir = join(PROJECT, RECORDS);
     mkdirSync(dir, { recursive: true });
     const path = join(dir, `${new Date().toISOString().slice(0, 10)}-${target}.md`);
     writeFileSync(path, renderRecord(prompt, result, lang, target));
-    console.log(`✓ ${relative(HERE, path)}`);
+    console.log(`✓ ${relative(process.cwd(), path)}`);
     console.log('  Confirmed 和 Assumed 已填好。把上面的问题块发给需求方，回答写进 Answered，删掉 TODO。');
   } else if (has('defaults')) {
     console.log(renderDefaults(result, lang));
