@@ -37,6 +37,12 @@
   --ui-color-on-primary-muted: rgb(255 255 255 / 45%);
   --ui-gradient-pro: linear-gradient(88deg, #FF4338 0%, #1C07FF 100%);
   --ui-gradient-pro-motion: linear-gradient(88deg, #1C07FF 4.74%, #FF4338 49.715%, #FF4338 54.74%, #1C07FF 99.715%);
+  /* A light wash for the BETA badge, and light at both ends: the two light blues
+     the system already declares — the info surface and accessory 2 — at the same
+     88deg as the other gradients. The word on it takes the info colour, which is
+     the step darker that keeps it readable. Deepen the end stop with
+     color-mix(in srgb, var(--ui-color-info) 12%, var(--ui-color-card)) if it wants
+     more separation. */
   --ui-gradient-skeleton: linear-gradient(90deg, #EBEDF1 25%, #F5F6F9 37%, #EBEDF1 63%);
   --ui-color-on-emphasis-muted: rgb(255 255 255 / 55%);
   --ui-color-emphasis-weak: #C7CBD3;
@@ -63,6 +69,9 @@
   --ui-layer-top-nav: 40;
   --ui-layer-sidebar: 41;
   --ui-layer-overlay: 60;
+  /* Above what a page can stick: a scrollable calendar's header sits at 101 so
+     hovering a slot cannot paint over it, and a drawer has to clear that. */
+  --ui-layer-drawer: 120;
   --ui-radius-xs: 4px;
   --ui-radius-md: 8px;
   --ui-radius-lg: 12px;
