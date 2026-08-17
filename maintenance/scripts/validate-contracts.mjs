@@ -372,9 +372,15 @@ for (const [sourcePath, assets] of [["index.html", catalogRenderedAssets], ["mai
   const manifestSource = read("catalog-runtime/icon-manifest.js");
   const listed = new Set(Array.from(manifestSource.matchAll(/"(Assets\/Icons\/[^"]+)"/g), (match) => match[1]));
   const excluded = new Set(["Assets/Icons/back.svg", "Assets/Icons/arrow-right-1.svg", "Assets/Icons/arrow-up-1.svg"]);
+  /* Same skip as build-icon-manifest.mjs: a folder under Assets/Icons is not
+     automatically part of the library. Without it this check reads a parked
+     backup set as icons the manifest forgot, and the honest fix looks like
+     publishing 1,171 generic glyphs. */
+  const unpublishedDirs = new Set(["backup"]);
   const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const full = path.join(dir, entry.name);
-    return entry.isDirectory() ? walk(full) : entry.name.endsWith(".svg") ? [path.relative(root, full)] : [];
+    if (entry.isDirectory()) return unpublishedDirs.has(entry.name) ? [] : walk(full);
+    return entry.name.endsWith(".svg") ? [path.relative(root, full)] : [];
   });
   for (const asset of walk(path.join(root, "Assets", "Icons"))) {
     if (excluded.has(asset)) continue;
@@ -471,15 +477,27 @@ assert.match(ui.alert({ tone: "info", title: "New message", closable: true }), /
 assert.match(ui.toast({ title: "Saved", closable: true }), /Assets\/Icons\/cross\.svg/, "Closable Toast must use the approved close icon inside its surface-matched dismissal control");
 assert.match(ui.notification({ title: "New message", closable: true }), /Assets\/Icons\/cross\.svg/, "Closable Notification must use the approved close icon inside its surface-matched dismissal control");
 assert(componentCSS.includes("top: -6px; right: -6px; border: 1px solid var(--ui-color-border);"), "Closable feedback surfaces must keep their dismissal control close to the corner with a subtle visible boundary");
-assert(componentCSS.includes(".ui-alert.is-banner { grid-template-columns: 24px minmax(0, 1fr); align-items: start;"), "Alert Banner must align its icon with the first line of content");
+/* Alert fills its container and stops where the container stops. It used to cap
+   at 680px, which read as a fixed width: on a wider content column the Alert
+   ended short of the card above it and nothing on the page explained the ragged
+   edge. It is page content, so it aligns with page content — a narrower Alert is
+   a narrower container, never a width on the component. (Niki, 2026-08-17.) */
+assert(/\.ui-alert \{[^}]*width: 100%;/.test(componentCSS) && !/\.ui-alert \{[^}]*max-width/.test(componentCSS),
+  "Alert takes the width of what holds it — no cap of its own");
+assert(componentCSS.includes(".ui-alert.is-banner { width: 100%; max-width: none; grid-template-columns: 24px minmax(0, calc(var(--ui-layout-content-max-width) - 24px - var(--ui-space-2))); justify-content: center;"), "Alert Banner is a full-bleed surface with its content held to the page measure and centred");
+/* One shape for an alert's action, decided by the component. */
+assert.match(ui.alert({ tone: "info", title: "T", action: "Add introduction" }), /ui-button ui-button--white ui-button--32 ui-button--pill/, "An Alert's action is a 32 pill White button");
+assert.throws(() => ui.alert({ tone: "info", title: "T", action: '<button>x</button>' }), /alert\.action takes a label/, "An Alert's action takes a label, not markup");
 assert(componentCSS.includes(".ui-tabs__header { min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--ui-space-3); }"), "Tabs extra action must align with tab labels along the horizontal center line");
 assert.match(ui.timePicker({ id: "time-picker-multiple", slots: ["09:00", "10:30"], selected: ["09:00", "10:30"], selectionMode: "multiple", open: true }), /ui-time-picker--multiple[\s\S]*aria-multiselectable="true"/, "Time picker multiple selection must preserve its supplied selected times and multiselect semantics");
 assert.match(ui.timePicker({ id: "time-picker-empty", slots: ["09:00"] }), /class="ui-time-picker__icon is-placeholder" src="Assets\/Icons\/16px\/time-sm\.svg"/, "An unselected Time picker must retain its visible clock SVG");
 assert.match(ui.timePicker({ id: "time-picker-selected", slots: ["09:00"], selected: "09:00" }), /class="ui-time-picker__icon" src="Assets\/Icons\/16px\/time-sm\.svg"/, "A selected Time picker must render the full-intensity clock SVG");
 assert(componentCSS.includes(".ui-time-picker__icon.is-placeholder { opacity: .45; }") && componentCSS.includes(".ui-time-picker.is-disabled .ui-time-picker__icon { opacity: .25; }"), "Time picker icon intensity must match placeholder and disabled text states without replacing the approved SVG");
 assert(runtimeSource.includes('root.querySelector(".ui-time-picker__icon")?.classList.toggle("is-placeholder", selectedLabels.length === 0);'), "Time picker interaction must restore the selected icon intensity after choosing a time");
-assert(componentCSS.includes(".ui-time-slot--option { min-width: 0; min-height: 32px; border-radius: var(--ui-radius-md);") && componentCSS.includes(".ui-time-slot--option.is-selected { color: var(--ui-color-card); border-color: var(--ui-color-text); background: var(--ui-color-text); }"), "Time picker options must use the 8px radius token and Foreground/Primary-text when selected");
-assert.match(ui.selection({ contentType: "package-card", selectionMode: "radio", discount: "7% off" }), /<span class="ui-selection__package-offer-icon" aria-hidden="true"><\/span>/, "Lesson package discounts must render the category icon element with their offer text");
+/* The selected slot was a solid dark block; it is now outlined over a light fill,
+   the way a selected Chip reads. The radius is still the 8px token. */
+assert(componentCSS.includes(".ui-time-slot--option { min-width: 0; min-height: 32px; border-radius: var(--ui-radius-md);"), "Time picker options use the 8px radius token");
+assert.match(ui.selection({ contentType: "package-card", selectionMode: "radio", discount: "7% off" }), /<span class="ui-selection__package-offer-icon" style="-webkit-mask-image:url\(Assets\/Icons\/16px\/category-sm\.svg\);mask-image:url\(Assets\/Icons\/16px\/category-sm\.svg\)" aria-hidden="true"><\/span>/, "Lesson package discounts must render the category icon element with their offer text, naming the asset on the element");
 /* The offer icon is painted, not shipped coloured: it used to be an <img> tinted
    by a hand-tuned filter chain, which meant the colour could not follow the
    token it was imitating. currentColor makes it follow the offer's own text
@@ -487,12 +505,20 @@ assert.match(ui.selection({ contentType: "package-card", selectionMode: "radio",
    needs no icon rule of its own. */
 {
   const offerIcon = componentCSS.match(/\.ui-selection__package-offer-icon \{[^}]*\}/)?.[0] ?? "";
-  assert(/background: currentColor;/.test(offerIcon) && /mask: url\("\.\.\/Assets\/Icons\/16px\/category-sm\.svg"\) center \/ contain no-repeat;/.test(offerIcon),
-    "Lesson package discount icons must take their colour from the offer text, not from a filter");
+  assert(/background: currentColor;/.test(offerIcon) && /mask-size: contain;/.test(offerIcon) && !/url\(/.test(offerIcon),
+    "Lesson package discount icons must take their colour from the offer text, and name their asset on the element rather than in this rule");
   assert(!/\.ui-selection__package-offer\.is-neutral \.ui-selection__package-offer-icon/.test(componentCSS),
     "A neutral offer needs no icon rule of its own — currentColor already follows the label");
 }
 assert(!/filter:\s*invert\(/.test(componentCSS), "Icons must be tinted through a mask and a token, never by a hand-tuned filter chain");
+/* No asset may be named in this stylesheet at all. A url() here resolves against
+   the stylesheet, and the stylesheet lives in three different places — catalog-runtime/
+   in the repo, the project root once published, _ds/<kit>/ in a project that adds the
+   kit as a library — so at most one of them can be right. Every other asset already
+   goes through withBase(); the two mask icons that did not (the package offer's
+   category mark, the calendar's timezone pin) are why a published design showed
+   broken images that nothing on screen explained. */
+assert(!/url\(/.test(componentCSS), "The kit stylesheet must name no assets — emit the mask url on the element, through withBase()");
 /* A mask url in a custom property is resolved against whichever stylesheet reads
    the property, so a caller-supplied path cannot be right for every consumer —
    which is why Divider's icon is an ordinary kit <img> again, and why the two
@@ -505,15 +531,360 @@ for (const [, cssUrl] of componentCSS.matchAll(/url\("([^"]+)"\)/g)) {
   assert(cssUrl.startsWith("../Assets/"), `Component CSS url() must be stylesheet-relative from catalog-runtime: ${cssUrl}`);
   assert(fs.existsSync(path.join(root, "catalog-runtime", cssUrl)), `Component CSS references a missing asset: ${cssUrl}`);
 }
+/* An icon is drawn for one box. The library keeps the 16px set in its own
+   folder because those glyphs carry a heavier stroke — scale the 24px drawing
+   down to 16 instead and it comes out thin and wispy next to everything around
+   it, which is how Pagination's arrows shipped looking nothing like the rest of
+   the set. So: a slot sized 16 takes a 16px/ asset, and a 24px drawing is drawn
+   at 24. The pairs are read from the renderer and the size from the stylesheet,
+   rather than kept as a list for someone to remember to update. */
+const ICON_SLOT_EXEMPTIONS = new Map([
+  /* No 16px star exists yet. Until the library has one, the summary star is a
+     24px drawing held at 16 — remove this line when the asset lands. */
+  ["Assets/Icons/star-solid.svg|ui-rate__summary-star", "the 16px star is not in the library yet"],
+  /* 16px/cross-sm.svg is NOT the small cross: it is the filled-circle dismiss
+     glyph, white on grey. Swapping these three to it turned a thin ✕ inside the
+     control's own white circle into a grey pill — a different mark, not a
+     sharper one. The library has no plain 16px cross; until it does, these keep
+     the 24px drawing. */
+  ["Assets/Icons/cross.svg|ui-alert__close-icon", "the library has no plain 16px cross; cross-sm is the filled-circle glyph"],
+  ["Assets/Icons/cross.svg|ui-toast__close-icon", "the library has no plain 16px cross; cross-sm is the filled-circle glyph"],
+  ["Assets/Icons/cross.svg|ui-notification__close-icon", "the library has no plain 16px cross; cross-sm is the filled-circle glyph"],
+]);
+const cssIconWidths = new Map();
+for (const [, selector, body] of componentCSS.matchAll(/\.([a-z0-9_-]+)[^{]*\{([^}]*)\}/g)) {
+  const width = /(?:^|;|\s)width:\s*(\d+)px/.exec(body);
+  if (width) cssIconWidths.set(selector, Number(width[1]));
+}
+for (const [, assetPath, className] of runtimeSource.matchAll(/icon\(\s*"(Assets\/Icons\/[^"]+)"\s*,\s*"([a-z0-9_-]+)"/g)) {
+  const width = cssIconWidths.get(className);
+  if (width === undefined || ICON_SLOT_EXEMPTIONS.has(`${assetPath}|${className}`)) continue;
+  const small = assetPath.includes("/16px/");
+  assert(!(width === 16 && !small), `.${className} renders a 24px drawing (${assetPath}) at 16px — use the 16px/ asset or give the slot 24px`);
+  assert(!(width === 24 && small), `.${className} stretches a 16px drawing (${assetPath}) to 24px — use the 24px asset`);
+}
+/* A button label names an action: one to three words, 24 characters at most. A
+   sentence in a button wraps and breaks its row, and the catalog is where the
+   rule is demonstrated — so the catalog has to keep it. */
+for (const [, label] of catalog.matchAll(/buttonComponent\(\{\s*label:\s*"([^"]{25,})"/g)) {
+  assert.fail(`Button label is ${label.length} characters, over the 24-character limit: "${label}"`);
+}
+assert(componentsDoc.includes("at most 24\ncharacters"), "COMPONENTS.md must state the button label length rule");
+assert(componentsDoc.includes("Never on a white or near-white"), "COMPONENTS.md must state that the White button needs a coloured background");
+/* The same two rules travel to the design project as the Button card's usage
+   notes. Both copies are asserted so a rule cannot be relaxed in one of them. */
+const dsProjectBuild = read("maintenance/scripts/build-ds-project.mjs");
+/* The usage notes moved out of the build script into maintenance/prompt-notes/,
+   one file per component, after a git checkout took every one of them at once.
+   The rules below are asserted against what actually ships — the generated
+   .prompt.md — so they hold wherever the text is kept. */
+const promptNotes = fs.readdirSync(path.join(root, "maintenance/prompt-notes"))
+  .filter((f) => f.endsWith(".md") && f !== "README.md")
+  .map((f) => read(`maintenance/prompt-notes/${f}`)).join("\n");
+assert(promptNotes.includes("at most 24 characters**"), "The Button card's usage notes must carry the label length rule");
+assert(promptNotes.includes("The White button needs a coloured background"), "The Button card's usage notes must carry the White button rule");
+assert(promptNotes.includes("Which variant, when you are not sure"), "The Button card's usage notes must name the variant to default to");
+assert(componentsDoc.includes("**Default to Primary (`emphasis`)**"), "COMPONENTS.md must name the variant to default to");
+assert(componentsDoc.includes("**Do not pass `shape`.**"), "COMPONENTS.md must say not to pass shape");
+assert(promptNotes.includes("Do not pass `shape`"), "The Button card's usage notes must say not to pass shape");
+/* The shape rule had a carve-out — "the booking CTA is a pill at 40" — and it
+   outlived the decision that removed it from COMPONENTS.md, because nothing
+   asserted its absence. The product override is real but it lives inside TopNav
+   and Sidebar, so the two copies say that instead, and the old wording is
+   pinned shut. */
+/* Both files wrap their prose, and the two copies wrap it at different points,
+   so a phrase that spans a line break has to be compared with the wrapping
+   taken out — otherwise the assertion passes or fails on where the line ended. */
+const unwrapped = (text) => text.replace(/\s+/g, " ");
+for (const [label, doc] of [["COMPONENTS.md", componentsDoc], ["The Button card's usage notes", promptNotes]]) {
+  const flat = unwrapped(doc);
+  assert(!flat.includes("booking CTA is a pill at 40"),
+    `${label} must not carry the retired pill-at-40 carve-out`);
+  assert(flat.includes("An override is an instruction, never an initiative"),
+    `${label} must say that an override is an instruction, never an initiative`);
+  assert(flat.includes("Shape belongs to the action row, not to the button"),
+    `${label} must say that shape belongs to the action row`);
+}
+/* The default the whole rule rests on. A base prop set that spells out a shape
+   states the wrong default in the file every other component's demo is read
+   against — and the Button entry did, unnoticed for as long as it took someone
+   to ask why the generated pages were full of pills. It went unnoticed because
+   the Button card is sliced from the Catalog and never rendered from BASE at
+   all, so nothing downstream could show the mistake. */
+const baseBlock = dsProjectBuild.slice(dsProjectBuild.indexOf("\nconst BASE = {"));
+assert(baseBlock.startsWith("\nconst BASE = {"), "build-ds-project must declare a BASE prop set");
+const baseProps = baseBlock.slice(0, baseBlock.indexOf("\n};")).replace(/\/\/[^\n]*/g, "");
+assert(!/\bshape:/.test(baseProps),
+  "No card's base props may spell out a shape — `default` resolves it from the size");
+
+/* Eleven components a prop list cannot choose between: seven overlays that all
+   float above the page, and four feedback surfaces that all take a tone, a
+   title and an action. The choice is decided in COMPONENTS.md and has to travel
+   to the card, because a model reading Popover's props alone has no way to
+   learn that what it wants is a Popconfirm. Both copies are asserted, the same
+   way Button's are. */
+for (const name of ["Modal", "Drawer", "Popconfirm", "Popup", "Popover", "DropdownMenu", "Tooltip",
+  "Alert", "Toast", "Notification", "Result"]) {
+  assert(fs.existsSync(path.join(root, `maintenance/prompt-notes/${name}.md`)),
+    `${name}'s card must carry usage notes — a prop list cannot say which surface this is`);
+}
+assert(promptNotes.includes("## Which overlay") && promptNotes.includes("## Which one of the four"),
+  "The overlay and feedback cards must each carry the ladder that chooses between them");
+assert(componentsDoc.includes("Only one modal-level surface may be active at once"),
+  "COMPONENTS.md must state that only one focused-task surface is open at a time");
+assert(promptNotes.includes("**Only one focused-task surface may be open at a time.**"),
+  "The overlay cards must carry the one-at-a-time rule");
+assert(componentsDoc.includes("must not contain actions, links, forms"),
+  "COMPONENTS.md must state that a Tooltip holds no actions");
+assert(promptNotes.includes("A tooltip is a label, not a container"),
+  "The Tooltip card must say a tooltip holds no actions");
+assert(componentsDoc.includes("a success Result must never be shown before the underlying operation completes"),
+  "COMPONENTS.md must forbid a success Result before the operation succeeds");
+assert(promptNotes.includes("**A success Result must never\nbe shown before the operation has succeeded.**"),
+  "The Result card must forbid a success Result before the operation succeeds");
+/* The complaint these answer: a hand-written dialog, because the content would
+   not nest. Ten of the eleven say what to do instead, on their own card. Alert
+   is the exception and needs the opposite warning — its `action` is a label,
+   and the renderer throws on markup. */
+assert(["Modal", "Drawer", "Popconfirm", "Popup", "Popover", "DropdownMenu", "Tooltip",
+  "Toast", "Notification", "Result"].every((name) =>
+    read(`maintenance/prompt-notes/${name}.md`).includes("## Do not hand-write this")),
+  "Every card with a markup slot must carry the do-not-hand-write note");
+assert(promptNotes.includes("`action` is a label, not markup"),
+  "The Alert card must say its action takes a label, not a rendered button");
+/* The slots take JSX now — the wrapper portals an element into a placeholder
+   rather than interpolating it. Every copy that still says an element
+   stringifies to [object Object] is a copy telling people to work around
+   something that no longer exists, which is how the hand-written dialogs
+   started. Pinned shut in the generator and in COMPONENTS.md alike. */
+for (const [label, doc] of [["COMPONENTS.md", componentsDoc], ["The generated cards and README", dsProjectBuild]]) {
+  assert(!unwrapped(doc).includes("stringifies to `[object Object]`"),
+    `${label} must not still say a React element in a slot stringifies`);
+}
+assert(promptNotes.includes("slots: pass JSX straight in"),
+  "The slot-bearing cards must say the slot takes JSX");
+/* A lesson status has one tone, and the mapping lived only inside the Catalog's
+   own demo markup — nowhere a model reads. `tone` documents itself as five
+   values and says nothing about which status is which, so "Action required"
+   came out `warning` (it reads like one) and landed on Waiting's amber surface.
+   The mapping is written in the Tag card's notes now, and this compares the two
+   by parsing the Catalog's real statusTag() calls: change one side and the other
+   goes red, rather than the note quietly describing a mapping that moved. */
+const catalogStatusTones = new Map(
+  [...catalog.matchAll(/statusTag\("([^"]+)",\s*"([^"]+)"/g)].map(([, label, tone]) => [label, tone]));
+assert(catalogStatusTones.size >= 9,
+  `The Catalog must still document the lesson status tags — found ${catalogStatusTones.size}`);
+assert(catalogStatusTones.get("Action required") === "error",
+  "Action required is the error tone — the whole mapping exists so it is not confused with Waiting");
+assert(catalogStatusTones.get("Waiting") === "warning", "Waiting is the warning tone");
+const tagNotes = read("maintenance/prompt-notes/Tag.md");
+for (const [label, tone] of catalogStatusTones) {
+  /* The upcoming status is a time, so the note names it by example rather than
+     by that one literal date. */
+  const row = new RegExp(`\\|\\s*\`${label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\`[^|]*\\|\\s*\`${tone}\``);
+  assert(row.test(tagNotes),
+    `The Tag card's notes must map "${label}" to \`${tone}\`, the tone the Catalog gives it`);
+}
+/* The pair that gets confused are opposites — whose turn it is — and the note has
+   to say that in words. It used to lead with "Action required is error", which
+   states a colour token as if it were the meaning: nothing has failed when
+   someone simply has to act, and the design system's own rule is that
+   --ui-color-error is what actually means an error. */
+assert(unwrapped(tagNotes).includes("It is a call to act, **not an error**"),
+  "The Tag card's notes must say Action required is a call to act, not a failure");
+assert(unwrapped(tagNotes).includes("whose turn it is"),
+  "The Tag card's notes must say what separates Action required from Waiting");
+assert(unwrapped(tagNotes).includes("The tone column is a colour role, not a description of the status"),
+  "The Tag card's notes must not let a tone name be read as the status's meaning");
+/* The two surfaces the status tags actually land on, reached under two names.
+   Asserted so the note's claim that they are the same hex stays true. */
+for (const [accessory, status] of [["accessory-3", "error-surface"], ["accessory-1", "warning-surface"]]) {
+  const hex = (name) => (new RegExp(`--ui-color-${name}:\\s*(#[0-9A-Fa-f]{6})`).exec(tokensCSS) ?? [])[1];
+  assert(hex(accessory) && hex(accessory) === hex(status),
+    `--ui-color-${accessory} and --ui-color-${status} are one colour under two names; the Tag notes say so`);
+}
+/* Re-enabled 2026-08-17: the slot runtime was written back from the original,
+   which had survived only in a session transcript. It was lost once because the
+   prose describing it lives in maintenance/prompt-notes/ while the code lives in
+   the generator — recovering the notes from the published cards recovered the
+   documentation and left the implementation missing, which is worse than having
+   neither. So the two are asserted together from here on. */
+assert(dsProjectBuild.includes("var ITALKI_SLOTS = ${JSON.stringify"),
+  "The bundle must carry the probed slot map — it is what decides where an element is allowed");
+assert(unwrapped(dsProjectBuild).includes("takes text, not an element"),
+  "A React element on a non-slot prop must be refused by name, not escaped into the page");
+/* The built artefacts, not just the generator. Two separate failures to catch:
+   a generator that keeps the code but stops emitting it, and — the one that
+   actually happened — an implementation that reaches only the bundle we upload.
+   The app recompiles _ds_bundle.js from components/**\/*.jsx whenever anything
+   under components/ is written, so the bundle alone is not a place code can
+   live. Kit.jsx is compiled; asserting both is what makes the runtime durable. */
+const builtSources = [
+  ["the built bundle", "maintenance/ds-project/_ds_bundle.js"],
+  ["Kit.jsx, the source the app compiles", "maintenance/ds-project/components/_kit/Kit.jsx"],
+];
+for (const [label, rel] of builtSources) {
+  /* Absent is a legitimate skip — the project may not have been built in this
+     checkout. Present-but-empty is not, and an earlier version of this check
+     treated the two the same: a truncated Kit.jsx passed silently, which is the
+     precise failure the check exists to catch. */
+  if (!fs.existsSync(path.join(root, rel))) continue;
+  const built = read(rel);
+  assert(built.trim(), `${label} is present but empty`);
+  for (const marker of ["createPortal", "italkiSplitSlots", "data-ui-slot", "ITALKI_SLOTS = {"]) {
+    assert(built.includes(marker),
+      `${label} must carry the slot runtime — \`${marker}\` is missing, so JSX in a slot would stringify`);
+  }
+  assert(/"modal":\["body","footer","trigger"\]/.test(built),
+    `${label} must still name Modal's three slots in its slot map`);
+}
+/* And the wrappers have to route through it. Each per-component .jsx used to
+   build its own embed, which is how the bundle could be recompiled into a
+   runtime with no slot handling while every card went on documenting it. */
+const modalWrapper = (() => {
+  try { return read("maintenance/ds-project/components/overlays/Modal/Modal.jsx"); } catch { return null; }
+})();
+if (modalWrapper) {
+  assert(modalWrapper.includes("window.ITalkiUIMount"),
+    "A per-component wrapper must mount through window.ITalkiUIMount, or the app's rebuild loses slot handling");
+}
+/* Both halves of the trade the portal makes. Documented because neither is
+   discoverable: the remount only shows up when a sibling prop changes, and the
+   dropped handler only shows up when nothing happens on click. */
+assert(unwrapped(promptNotes).includes("A slot remounts when this component's other props change"),
+  "The slot cards must say a slot remounts when the host's other props change");
+assert(unwrapped(promptNotes).includes("A kit component takes no React handlers"),
+  "The slot cards must say a kit component drops onClick");
+assert.throws(() => ui.alert({ tone: "info", title: "T", action: "<button>Add</button>" }),
+  /takes a label/, "Alert must refuse markup in its action rather than nest a button in a button");
+/* The White button on a white surface is invisible but for its border, so the
+   catalog demonstrates it on a colour. The card that documents it says so; this
+   keeps the catalog's own usage honest. */
+for (const [match] of catalog.matchAll(/variant: "white"[^}]*\}/g)) {
+  assert(!/background: var\(--ui-color-(card|page)\)/.test(match), `A White button must not sit on a white surface: ${match.slice(0, 80)}`);
+}
+/* The icon side steps with the size rather than sitting at a flat 8px. */
+assert(componentCSS.includes(".ui-button--32.has-leading-icon:not(.is-icon-only) { padding-left: var(--ui-space-2); }")
+  && componentCSS.includes(".ui-button--40.has-leading-icon:not(.is-icon-only) { padding-left: var(--ui-space-3); }")
+  && componentCSS.includes(".ui-button--48.has-leading-icon:not(.is-icon-only) { padding-left: var(--ui-space-4); }")
+  && componentCSS.includes(".ui-button--32.has-trailing-icon:not(.is-icon-only) { padding-right: var(--ui-space-2); }")
+  && componentCSS.includes(".ui-button--40.has-trailing-icon:not(.is-icon-only) { padding-right: var(--ui-space-3); }")
+  && componentCSS.includes(".ui-button--48.has-trailing-icon:not(.is-icon-only) { padding-right: var(--ui-space-4); }"),
+  "A Button's icon side steps with its size: 8 at 32, 12 at 40, 16 at 48");
+assert(componentCSS.includes(".ui-result { width: min(100%, 560px); margin-inline: auto;"), "A Result centres itself in its module");
+/* The note is a note: it reads at the body weight, where the two uppercase marks
+   are bold because they are marks. */
+/* Both dialogs answer "was a trigger passed?" the same way: absent asks for the
+   default button, empty says the page opens it from somewhere else. */
+for (const dialog of ["modal", "drawer"]) {
+  assert(/ui-button/.test(ui[dialog]({ title: "T" })), `${dialog} with no trigger renders the default button`);
+  assert(!/ui-button/.test(ui[dialog]({ title: "T", trigger: "" })), `${dialog} with an empty trigger renders none`);
+}
+/* The stars preview under the pointer, not only when a page sets the class. */
+assert(/\.ui-rate__item:hover \.ui-rate__star-fill/.test(componentCSS), "Rate previews the rating the pointer is over");
+
+/* An anchored surface keeps its title and body together and breaks before the
+   actions, rather than spacing all three the same. */
+for (const surface of [".ui-popup__surface {", ".ui-popconfirm__surface {"]) {
+  const declaration = componentCSS.slice(componentCSS.indexOf(surface)).split("}")[0];
+  assert(/gap: var\(--ui-space-1\)/.test(declaration), `${surface.trim()} keeps its title and body one block`);
+}
+
+/* Red is the promoted action in this system, so the confirm that destroys
+   something uses the danger variant instead — quieter than the "Keep lesson"
+   beside it, which is the order a destructive question deserves. */
+assert(/ui-button--danger/.test(ui.popconfirm({ title: "Cancel this lesson?" })), "A popconfirm confirms with the danger button, not the promoted red one");
+assert(!/ui-button--red/.test(ui.popconfirm({ title: "Cancel this lesson?" })), "Nothing in a popconfirm may wear the promoted red");
+
+/* A dialog cannot be taller than the stage it is shown in. */
+assert(/\.ui-modal-stage--demo \.ui-modal \{[^}]*max-height/.test(componentCSS), "A modal on the demo stage is capped by the stage and scrolls its body");
+
+/* A closed tooltip inside the grid takes no room: hidden-but-laid-out boxes are
+   what put an empty row under the last hour. */
+assert(componentCSS.includes(".ui-calendar__grid .ui-tooltip { display: none; }"), "A closed calendar tooltip is display:none, so it cannot pad the scroll area");
+
+/* A sticky header carries its own separation, or it loses it the moment the
+   content scrolls under it. */
+/* One rule under the dates, drawn by the first hour like every other hour, so
+   it runs under the tinted current-day cell too. An inset shadow on the header
+   row paints beneath the cells and broke exactly there. */
+/* One scroll inside the dialog, and the dates stay with it. */
+assert(componentCSS.includes(".ui-calendar__teacher-header { position: sticky;"), "The teacher-availability dates must stay put while its hours scroll");
+assert(componentCSS.includes(".ui-modal__body:has(.ui-calendar--teacher-availability) { display: grid; min-height: 0; overflow: hidden; }"), "A dialog holding the availability grid must not scroll behind it as well");
+assert(/\.ui-calendar--scrollable \.ui-calendar__row--header \{[^}]*z-index: 101;/.test(componentCSS), "The sticky dates must outrank the hover lifts below them, or hovering a slot paints over the header");
+assert(!/\.ui-calendar--scrollable \.ui-calendar__row--header \{[^}]*box-shadow/.test(componentCSS), "The date row must not draw its own rule with a shadow — the current day's cell hides it");
+/* The line under the dates belongs to the date cells, not to the row holding
+   them, and it travels with the sticky header while the hours scroll. The first
+   row of slots must not draw a second one on top of it, or the two stack into a
+   rule twice as thick.
+   On the row it is invisible under one column: the row is border-box at 40px,
+   so its border occupies the last pixel of that band, each 40px cell occupies
+   the same pixel, and a child's background paints after its parent's border.
+   Today's cell is the only one with a fill, so the rule broke under exactly one
+   day — twice, once as a shadow and once as a border. A cell's own border
+   paints above its own background and cannot be covered. */
+assert(/\.ui-calendar--scrollable \.ui-calendar__row--header > \* \{ border-bottom: 1px solid var\(--ui-color-border\)/.test(componentCSS), "The date cells carry the line under them");
+assert(!/\.ui-calendar--scrollable \.ui-calendar__row--header \{[^}]*border-bottom/.test(componentCSS), "The date row must not draw the line itself — the current day's cell covers it");
+/* :first-child, and the label beside it — the two cells that actually sit under
+   the header. The rule used to cover every segment in that row, which took the
+   half-hour line inside the first hour with it, and left the hour label stacking
+   its own border under the header one column over. */
+assert(/\.ui-calendar--scrollable \.ui-calendar__row--header \+ \.ui-calendar__row \.ui-calendar__slot-segment:first-child \{ border-top: 0/.test(componentCSS), "The first time row's first half-hour must drop its top border, or it doubles the header's");
+assert(/\.ui-calendar--scrollable \.ui-calendar__row--header \+ \.ui-calendar__row \.ui-calendar__time \{ border-top: 0/.test(componentCSS), "The first hour label must drop its top border too, or the time column doubles the header's");
+assert(!/\.ui-calendar--scrollable \.ui-calendar__row--header \+ \.ui-calendar__row \.ui-calendar__slot-segment \{ border-top: 0/.test(componentCSS), "Dropping the top border on every segment of the first row takes its half-hour line with it — scope it to :first-child");
+
+/* A component that uses a Button does not restyle it: the calendar's Today control
+   had its gap crushed to 2px, which is exactly the drift the component exists to
+   prevent. */
+assert(!/\[data-calendar-action="today"\][^}]*gap:/.test(componentCSS), "The calendar's Today button keeps the Button's own spacing");
+/* The one exception, and it restores a Button rule rather than replacing it.
+   Button tightens the icon side by a step because a 24px icon canvas carries
+   that much margin of its own; the calendar's Today icon is from the 16px set,
+   which carries none, so the tightening left it 8px on the left against 12px on
+   the right. Shrinking the icon is what owes the padding back. */
+assert(/\[data-calendar-action="today"\]\.has-leading-icon:not\(\.is-icon-only\) \{ padding-left: var\(--ui-space-3\)/.test(componentCSS), "A 16px Today icon must return the padding the leading-icon rule tightened for a 24px one");
+
+/* A combobox is a select with search on, and its display is updated through the
+   same hook — the marker rides along with it rather than replacing it. */
+{
+  const comboboxMarkup = ui.combobox({ options: ["English"], selected: "English" });
+  assert(comboboxMarkup.includes('data-component="combobox"'), "The combobox names itself");
+  assert(comboboxMarkup.includes("data-ui-select-single"), "A combobox keeps the display hook the runtime updates");
+  assert(comboboxMarkup.includes("data-ui-combobox-single"), "A combobox is marked as one");
+}
+/* Width is the container's business. A component that stops at a fixed measure
+   leaves a gap in a wider column, and the person who put it there cannot fix it
+   from outside. */
+for (const rule of [".ui-list {", ".ui-panel {", ".ui-progress--line {", ".ui-drawer-stage {", ".ui-modal-stage {", ".ui-top-nav {", ".ui-slider {", ".ui-search {", ".ui-upload {"]) {
+  const declaration = componentCSS.slice(componentCSS.indexOf(rule)).split("}")[0];
+  assert(/width: 100%/.test(declaration), `${rule.trim()} takes the width of what holds it`);
+}
+assert(/\.ui-time-slot--option\.is-selected \{[^}]*background: var\(--ui-color-divider\)/.test(componentCSS), "A selected time slot is outlined over a light fill, like a selected Chip");
+assert(componentCSS.includes(".ui-divider--horizontal.ui-divider--border:not(.has-label) { border-color: var(--ui-color-hover); }"), "A border-tone Divider is a step up from the divider tone, not the input border");
+assert(componentCSS.includes(".ui-badge__note { display: inline-flex; align-items: center; height: 20px; border-radius: var(--ui-radius-xs); padding: 0 var(--ui-space-2); color: var(--ui-color-info); background: var(--ui-color-info-surface); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-medium);"), "The Previous lesson badge reads at the body weight, not bold");
+assert(componentCSS.includes(".ui-badge--beta .ui-badge__word { color: var(--ui-color-info); background: var(--ui-color-info-surface); }"), "The BETA badge is a light blue wash with the info colour on it, which is what separates it from NEW");
+assert(!componentCSS.includes("--ui-gradient-beta") && !read("catalog-runtime/tokens.css").includes("--ui-gradient-beta"), "The Beta badge uses the info surface; its own gradient token had one caller and is gone");
+assert(componentCSS.includes(".ui-rate--48 .ui-rate__output { display: none; }"), "The large Rate answers in words, not in a score");
+assert(componentCSS.includes(".ui-divider--horizontal.has-label { display: flex; align-items: center; color: var(--ui-color-secondary); font-size: var(--ui-font-size-12);"), "A Divider label reads at the caption size, not the body size");
+assert(componentCSS.includes(".ui-checkbox-group { width: 100%;") && componentCSS.includes(".ui-text-input { width: 100%;") && componentCSS.includes(".ui-form-field { width: 100%;"), "Fields take the width of what holds them rather than a control width of their own");
+assert(componentCSS.includes(".ui-skeleton--text { width: var(--ui-skeleton-width, 100%); max-width: 100%;"), "A Skeleton stands in for content at the width of what will hold it");
 assert(componentCSS.includes(".ui-notification { --ui-dismiss-surface: var(--ui-color-card); width: min(100%, 400px); display: none; align-items: flex-start; gap: var(--ui-space-3); position: relative; overflow: visible; border: 1px solid var(--ui-color-divider);"), "Notification outer card border must use the subtle divider token");
-assert(catalog.includes('const action = buttonComponent({ label: "View lesson", variant: "secondary", size: 32, shape: "pill", demo: "button" });'), "Notification With action must use a 32px Secondary Pill button");
+/* No explicit shape: at 32 the default already resolves to a pill, and writing it
+   out taught every reader — and every model reading the generated card notes —
+   to pass shape on 40 buttons too, where the default is rounded. */
+assert(catalog.includes('const action = buttonComponent({ label: "View lesson", variant: "secondary", size: 32, demo: "button" });'), "Notification With action must use a 32px Secondary button");
 assert(catalog.includes('statusTag("Decline", "neutral", "Assets/Icons/16px/lesson-canceled-sm.svg")'), "Lesson status tags must include Decline with the same neutral canceled icon treatment");
 assert(componentCSS.includes(".ui-progress--semicircle output { position: absolute; right: 0; bottom: var(--ui-space-3); left: 0;"), "Semicircle Progress label must sit within the arc rather than against the lower edge");
 assert(catalogStyle.includes(".component-section {\n        margin: 0 0 var(--space-7);\n        background: transparent;"), "Overview sections must keep the page surface while individual catalog cards own the card background");
 assert(catalogStyle.includes(".catalog-toast-stack { width: min(100%, 812px); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }"), "Toast and Notification semantic variants must support two-column presentation");
 assert(catalogStyle.includes(".shadow-detail { display: grid; gap: var(--space-7); background: var(--card); }"), "Shadow documentation module must use the card surface");
 assert(catalogStyle.includes(".shadow-token-preview { min-width: 0; display: flex; align-items: center; border-left: 1px solid var(--divider); padding: var(--space-3) var(--space-4); background: var(--card); }") && catalogStyle.includes(".shadow-token-preview i.stroke-card { box-sizing: border-box; border: 1px solid var(--border); box-shadow: none; }"), "Shadow Card documentation must keep its module surface white and distinguish a Color/Border outlined card");
-assert(catalog.includes('buttonComponent({ label: "When To Use", variant: "white", size: 32, shape: "pill", demo: "open-button-usage" })'), "Button variants When To Use must use the White button");
+assert(catalog.includes('buttonComponent({ label: "When To Use", variant: "white", size: 32, demo: "open-button-usage" })'), "Button variants When To Use must use the White button");
+/* The habit itself, guarded: a 32 button never needs shape spelled out. */
+for (const [call] of catalog.matchAll(/(?:buttonComponent|ui\.button)\(\{[^{}]*\}/g)) {
+  assert(!(call.includes("size: 32") && call.includes('shape: "pill"')),
+    `A 32 button resolves to a pill on its own — drop the shape: ${call.slice(0, 90)}`);
+}
 assert.match(ui.tabs({ id: "tabs-accessibility", ariaLabel: "Lesson details", items: [{ id: "overview", label: "Overview", panel: "Content" }] }), /role="tablist"[^>]*aria-label="Lesson details"/, "Tabs must expose a named tablist");
 assert.match(ui.tabs({ id: "tabs-accessibility", ariaLabel: "Lesson details", items: [{ id: "overview", label: "Overview", panel: "Content" }] }), /role="tabpanel"/, "Tabs must expose a related tabpanel");
 assert(componentCSS.includes(".ui-tabs--red-line .ui-tabs__trigger { min-height: 48px; border-radius: 0; color: var(--ui-color-secondary); }") && !componentCSS.includes(".ui-tabs--red-line .ui-tabs__trigger { min-height: 48px; border-radius: 0; color: var(--ui-color-secondary); font-size:"), "Red-line Tabs must inherit the standard tab type scale");
@@ -536,6 +907,22 @@ assert.match(ui.timeline({ id: "timeline-accessibility", items: [{ id: "booked",
 assert.match(ui.topNav({ id: "top-nav-accessibility", leading: "Context" }), /<header[^>]*data-component="top-nav"[^>]*aria-label="Top navigation"/, "Top nav must expose a named navigation banner");
 assert.match(ui.topNavContext({ id: "top-nav-context-accessibility", selected: { id: "english", label: "English Teachers", flag: "Assets/Flags/us.svg" }, options: [{ id: "english", label: "English Teachers", flag: "Assets/Flags/us.svg" }], ariaLabel: "Teacher language" }), /aria-haspopup="menu"[^>]*aria-controls="top-nav-context-accessibility-menu"/, "Top nav context must expose its menu relationship");
 assert.match(ui.topNavSearch({ id: "top-nav-search-accessibility", placeholder: "Search teachers", ariaLabel: "Search teachers" }), /role="search"/, "Top nav search must expose a search region");
+/* A collapsed rail's control expands it, and says so from the first render —
+   the runtime kept the label honest after a toggle and the markup did not. */
+assert.match(ui.sidebar({ id: "sidebar-collapsed-name", collapsed: true, items: [{ id: "home", label: "Home", icon: "dashboard", fixed: true }] }), /data-demo="ui-sidebar-collapse" aria-label="Show sidebar"/, "A collapsed Sidebar's collapse control must offer to show it");
+assert.match(ui.sidebar({ id: "sidebar-expanded-name", items: [{ id: "home", label: "Home", icon: "dashboard", fixed: true }] }), /data-demo="ui-sidebar-collapse" aria-label="Hide sidebar"/, "An expanded Sidebar's collapse control must offer to hide it");
+/* Too narrow for a written action: the label goes, the icon stays, and the name
+   the button answers to is on the element rather than in the hidden text. */
+const composedNav = ui.topNav({ id: "top-nav-collapse", contextLabel: "English Teachers", contextFlag: "Assets/Flags/us.svg", actionLabel: "Book lessons" });
+assert.match(composedNav, /class="ui-button[^"]*"[^>]*aria-label="Book lessons"/, "The composed Top nav action must carry its name on the button, since the label can be hidden");
+assert(componentCSS.includes(".ui-top-nav { container-type: inline-size;"), "Top nav must answer to its own width, not the window's");
+/* The bar stacks by its own width too. A viewport breakpoint put the search on
+   its own line inside a card that had room for it on one. */
+assert(componentCSS.includes("@container (max-width: 620px) { .ui-top-nav {"), "Top nav must decide to stack from its own width, not the window's");
+assert(!/@media \(max-width: 760px\) \{ \.ui-top-nav \{/.test(componentCSS), "The old viewport breakpoint must not stack the bar as well");
+const navQuery = componentCSS.slice(componentCSS.indexOf("@container (max-width: 880px)"), componentCSS.indexOf("@container (max-width: 880px)") + 900);
+assert(navQuery.includes(".ui-top-nav__trailing .ui-button__label { display: none; }"), "A Top nav with no room for the words must drop them");
+assert(navQuery.includes(".ui-top-nav__trailing .ui-button.has-leading-icon"), "The collapsed action must beat the button's own icon padding to reach an icon-only box");
 assert.match(ui.chip({ label: "Default" }), /ui-chip--default/, "Chip must expose its default content-fill surface");
 assert.match(ui.chip({ label: "White", surface: "white" }), /ui-chip--white/, "Chip must retain a distinct white surface");
 assert.match(ui.chip({ label: "Checked", checked: true }), /is-selected[^>]*aria-pressed="true"/, "Chip checked state must remain controlled and announced");
@@ -592,16 +979,49 @@ assert(catalog.includes('ui.search({ id: "icon-search"'), "Icon library search m
 assert.match(ui.stepper({ id: "stepper-accessibility", items: ["Course", "Time"], current: 1 }), /aria-current="step"/, "Stepper must expose the current step");
 assert.match(ui.stepper({ id: "stepper-connectors", items: ["Course", "Time", "Payment"], current: 1 }), /ui-stepper__item[\s\S]*ui-stepper__connector is-complete[\s\S]*ui-stepper__item[\s\S]*ui-stepper__connector[\s\S]*ui-stepper__item/, "Horizontal Stepper must render independent progress connectors between its step groups");
 assert(componentCSS.includes(".ui-stepper__complete-icon { width: 24px; height: 24px; display: block; filter: brightness(0) invert(1); }"), "Stepper completion marks must preserve their source icon dimensions");
-assert(componentCSS.includes(".ui-stepper--horizontal ol { align-items: center; gap: var(--ui-space-3); }") && componentCSS.includes(".ui-stepper--horizontal .ui-stepper__connector { height: 1px; min-width: 24px; flex: 1 1 32px; background: var(--ui-color-border); }"), "Horizontal Stepper must use auto-layout gaps around independent 1px connectors");
+assert(componentCSS.includes(".ui-stepper--horizontal ol { align-items: center; gap: var(--ui-space-3); }") && componentCSS.includes(".ui-stepper--horizontal .ui-stepper__connector { height: 1px; flex: 0 0 var(--ui-stepper-connector-length); background: var(--ui-color-border); }"), "Horizontal Stepper must use auto-layout gaps around independent 1px connectors of a fixed length");
 assert.match(ui.stepper({ id: "flow-progress-accessibility", items: ["Course", "Time"], current: 1, variant: "flow-progress" }), /aria-current="step"/, "Flow progress Stepper must expose the current step");
 assert.match(ui.stepper({ id: "flow-progress-connectors", items: ["Course", "Time", "Payment"], current: 1, variant: "flow-progress" }), /ui-stepper__item[\s\S]*ui-stepper__connector is-complete[\s\S]*ui-stepper__item[\s\S]*ui-stepper__connector[\s\S]*ui-stepper__item/, "Flow progress Stepper must render independent progress connectors between its step groups");
-assert(componentCSS.includes("grid-template-rows: var(--ui-stepper-flow-marker-size) auto") && componentCSS.includes(".ui-stepper--flow-progress .ui-stepper__connector { height: var(--ui-stepper-flow-connector-size); min-width: 24px; flex: 1 1 32px; align-self: start; margin-top: calc((var(--ui-stepper-flow-marker-size) - var(--ui-stepper-flow-connector-size)) / 2); background: var(--ui-color-border); }"), "Flow progress Stepper connectors must align independently from the marker centre without depending on label height");
+assert(componentCSS.includes("grid-template-rows: var(--ui-stepper-flow-marker-size) auto") && componentCSS.includes(".ui-stepper--flow-progress .ui-stepper__connector { height: var(--ui-stepper-flow-connector-size); flex: 0 0 var(--ui-stepper-connector-length); align-self: start; margin-top: calc((var(--ui-stepper-flow-marker-size) - var(--ui-stepper-flow-connector-size)) / 2); background: var(--ui-color-border); }"), "Flow progress Stepper connectors must align independently from the marker centre without depending on label height");
 assert(componentCSS.includes(".ui-stepper--flow-progress { --ui-stepper-flow-marker-size: 24px; --ui-stepper-flow-connector-size: 1px;") && componentCSS.includes("margin: 0;"), "Flow progress Stepper must remain left-aligned with a 1px connector");
 assert(componentCSS.includes(".ui-stepper--flow-progress .ui-stepper__item.is-current .ui-stepper__marker { border-color: var(--ui-color-text); color: var(--ui-color-text); background: var(--ui-color-card); }"), "Flow progress current Stepper must expose a stroked current marker");
 assert.match(ui.stepper({ id: "stepper-dots", items: ["One", "Two", "Three"], current: 1, variant: "dots" }), /ui-stepper--dots[\s\S]*ui-stepper__dot is-current/, "Stepper must support a named dotted pagination indicator");
 assert.match(ui.stepper({ id: "stepper-top-indicator", items: ["One", "Two", "Three"], current: 1, variant: "top-indicator" }), /ui-stepper--top-indicator[\s\S]*ui-stepper__segment is-complete[\s\S]*ui-stepper__segment is-current/, "Stepper must support a segmented top indicator");
 assert.match(ui.stepper({ id: "stepper-schedule", variant: "schedule-progress", value: 18, max: 20, label: "Scheduled lessons" }), /role="progressbar"[^>]*aria-valuemax="20"[^>]*aria-valuenow="18"/, "Stepper must support the scheduled-lesson progress format");
 assert.match(ui.stepper({ id: "stepper-progress-steps", items: ["One", "Two"], current: 0, variant: "progress-steps" }), /ui-stepper--progress-steps[\s\S]*ui-stepper__connector/, "Stepper must support horizontal progress steps with independent connectors");
+/* The connector is a fixed short join in every variant that draws one, and the
+   rows size to their steps instead of stretching a hairline across the card. */
+/* A tooltip waits before it appears and goes the moment the pointer leaves —
+   with the delay on both ends, the next slot's tooltip covered the last one. */
+assert(/\.ui-tooltip \{[^}]*transition: opacity 0s, transform 0s, visibility 0s;/.test(componentCSS), "A tooltip must hide without a delay, or the next one lands on top of it");
+assert(/\.ui-tooltip-wrap:hover > \.ui-tooltip[^{]*\{[^}]*transition: opacity 120ms ease 100ms/.test(componentCSS), "A tooltip must still wait before appearing");
+assert(componentCSS.includes(".ui-stepper { --ui-stepper-connector-length: var(--ui-space-6);"), "Stepper must define one connector length for every variant to share");
+/* Every variant that draws its own connector elements must silence the
+   pseudo-element one, or it shows up beside the real line. */
+for (const variant of ["horizontal", "flow-progress", "progress-steps"]) {
+  assert(componentCSS.includes(`.ui-stepper--${variant} .ui-stepper__item::after { display: none; }`), `${variant} Stepper must not draw the default variant's pseudo connector as well`);
+}
+for (const rule of [".ui-stepper--horizontal .ui-stepper__connector", ".ui-stepper--flow-progress .ui-stepper__connector", ".ui-stepper--progress-steps .ui-stepper__connector"]) {
+  const declaration = componentCSS.slice(componentCSS.indexOf(rule)).split("}")[0];
+  assert(declaration.includes("flex: 0 0 var(--ui-stepper-connector-length)"), `${rule} must take the shared connector length rather than growing to fill the row`);
+}
+for (const variant of [".ui-stepper--flow-progress {", ".ui-stepper--progress-steps {"]) {
+  assert(componentCSS.slice(componentCSS.indexOf(variant)).split("}")[0].includes("width: fit-content; max-width: 100%;"), `${variant} must size to its steps now that the connector no longer stretches`);
+}
+/* A step named by an icon keeps that icon at every stage, and the glyph is
+   painted through a mask so it takes the marker's colour in each state. */
+const iconSteps = ui.stepper({ id: "stepper-icon-steps", items: [{ id: "find", label: "Find", icon: "search" }, { id: "pay", label: "Pay", icon: "payment" }], current: 1 });
+assert.match(iconSteps, /ui-stepper__marker"><i class="ui-stepper__step-icon" style="-webkit-mask-image:url\([^)"]*search\.svg\);mask-image:url\([^)"]*search\.svg\)"/, "An icon step must render its icon in place of the number");
+/* A relative url() handed to a custom property is resolved against the
+   stylesheet that reads it — this runtime's own folder — so every icon came out
+   missing. The declaration belongs on the element, where it resolves against
+   the page the assets are served from. */
+assert(!componentCSS.includes("--ui-mask-icon"), "The step glyph must not take its url through a custom property, which resolves it against the wrong folder");
+assert(!iconSteps.includes("'"), "The mask url must stay unquoted, so the kit and the React library spell the same declaration the same way");
+assert(!iconSteps.includes("confirm-sm.svg"), "A completed icon step must keep its icon rather than swapping in the tick");
+assert.match(iconSteps, /ui-stepper__step-icon[^>]*aria-hidden="true"/, "The step glyph must stay out of the accessible name, which the label already carries");
+assert.throws(() => ui.stepper({ id: "stepper-icon-unapproved", items: [{ id: "x", label: "X", icon: "https://example.com/step.svg" }] }), /Unapproved asset/, "An icon step must go through the same approval as every other icon");
+assert(componentCSS.includes(".ui-stepper__step-icon { width: 16px; height: 16px; display: block; background: currentColor;"), "The step glyph must take currentColor so it follows the marker through its states");
 assert(catalog.includes('const filterModal = filterPattern({') && !catalog.includes('teacher-discovery-filter__options'), "Teacher discovery must reuse the Filter Pattern instead of recreating a local filter panel");
 assert.match(ui.progress({ value: 62, ariaLabel: "Profile progress" }), /role="progressbar"[^>]*aria-label="Profile progress"/, "Progress must expose a named progressbar");
 assert.match(ui.progress({ value: 62, type: "circle" }), /--ui-progress-ring-stroke:12px/, "Circle Progress must compensate for its SVG scale with a 12px source stroke");

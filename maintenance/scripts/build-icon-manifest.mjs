@@ -32,10 +32,21 @@ const EXCLUDED = new Set([
   "Assets/Icons/arrow-up-1.svg",
 ]);
 
+/* Directories that sit under Assets/Icons without being part of the library.
+   The manifest is what `approvedAsset()` checks, so anything this walk reaches
+   becomes an icon a component is allowed to render and an entry on the Icon
+   foundation card. A 1,171-file general-purpose set was dropped into
+   Assets/Icons/backup/ on 2026-08-17 and the count went 362 → 1,533 in one
+   build: every generic glyph in it silently became approved italki iconography,
+   and 15 of its files shadow an approved name with a different drawing
+   (arrow-down, check, plus, x-close…). Parking files here is fine; publishing
+   them is a decision, and it is not this script's to make by walking a folder. */
+const UNPUBLISHED_DIRS = new Set(["backup"]);
+
 const walk = (dir) =>
   fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) return walk(full);
+    if (entry.isDirectory()) return UNPUBLISHED_DIRS.has(entry.name) ? [] : walk(full);
     return entry.name.endsWith(".svg") ? [path.relative(root, full)] : [];
   });
 
