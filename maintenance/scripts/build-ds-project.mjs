@@ -1038,9 +1038,51 @@ const ASSET_BASE_PRELUDE = `// Where Assets/ live, worked out from this file's o
     }
   }
   if (!self) return;                              // nothing to go on: page-relative, as before
+
+  /* Two layouts, and no way to tell them apart synchronously. The bundle may
+     sit beside its own Assets/ (a mirrored design project, where the whole
+     thing is copied under _ds/<kit>/ including its assets), or beside a page
+     whose Assets/ is at the project root. This used to strip _ds/<kit>/ and
+     commit to the second; the first is the one that ships, and it broke every
+     icon in a generated page.
+
+     So: assume the bundle's own directory — the assumption that holds whenever
+     the kit was copied whole — then check, and correct. Purely async would be
+     worse than either guess: the probe resolves after the first paint, which is
+     the frame the person is looking at. */
+  var here, root;
   try {
-    window.ITalkiUIAssetBase = new URL('.', self).href.replace(/_ds\\/[^/]+\\/$/, '');
-  } catch (e) { /* opaque URL — leave it page-relative */ }
+    here = new URL('.', self).href;
+    root = here.replace(/_ds\\/[^/]+\\/$/, '');
+  } catch (e) { return; }                         // opaque URL — page-relative
+  window.ITalkiUIAssetBase = here;
+  if (root === here) return;                      // not a mirrored layout; nothing to check
+
+  var PROBE = 'Assets/Icons/logo-italki-logomark.svg';
+  var img = new Image();
+  img.onerror = function () {
+    /* here/ has no assets. Before moving the base, confirm the other candidate
+       actually has them — a broken probe under both means something else is
+       wrong, and flipping would only change which URL 404s. */
+    var alt = new Image();
+    alt.onload = function () {
+      window.ITalkiUIAssetBase = root;
+      /* Everything already painted still points at the wrong base. The runtime
+         does not re-render on its own, so rewrite what is on the page: img
+         sources it emitted, and the mask-image URLs it sets inline. */
+      var n, k;
+      var imgs = document.querySelectorAll('img[src^="' + here + 'Assets/"]');
+      for (n = 0; n < imgs.length; n++) {
+        imgs[n].src = root + imgs[n].getAttribute('src').slice(here.length);
+      }
+      var masked = document.querySelectorAll('[style*="' + here + 'Assets/"]');
+      for (k = 0; k < masked.length; k++) {
+        masked[k].setAttribute('style', masked[k].getAttribute('style').split(here + 'Assets/').join(root + 'Assets/'));
+      }
+    };
+    alt.src = root + PROBE;
+  };
+  img.src = here + PROBE;
 })();
 `;
 
@@ -1475,7 +1517,7 @@ is the machine-readable contract the assertions come from.
     const w = fixed ? Math.round(h * ratio(asset)) : h;
     return `    <figure class="icon-tile"><img src="../../../${asset}" alt="" width="${w}" height="${h}" loading="lazy"><figcaption>${escape(label(asset))}</figcaption></figure>`;
   };
-  const sheet = (name, title, group, entries, size, note) => {
+  const sheet = (name, title, group, entries, size, note, blurb) => {
     const dir = `components/foundations/${name}`;
     write(`${dir}/${name}.html`, `<!-- @dsCard group="${group}" -->
 <!doctype html>
@@ -1486,12 +1528,14 @@ is the machine-readable contract the assertions come from.
 <style>
   *{box-sizing:border-box}
   body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page);font-family:var(--ui-font-family);color:var(--ui-color-text)}
+  .icon-note{margin:0 0 var(--ui-space-5,20px);color:var(--ui-color-secondary);font-size:14px;line-height:20px}
+  .icon-note code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--ui-color-text)}
   .icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:var(--ui-space-3,12px)}
   .icon-tile{display:grid;justify-items:center;gap:var(--ui-space-2,8px);margin:0;padding:var(--ui-space-4,16px) var(--ui-space-2,8px);border-radius:var(--ui-radius-lg,12px);background:var(--ui-color-divider)}
   .icon-tile figcaption{color:var(--ui-color-secondary);font-size:12px;line-height:16px;text-align:center;overflow-wrap:anywhere}
 </style>
 </head><body>
-<div class="icon-grid">
+${blurb ? `<p class="icon-note">${blurb}</p>\n` : ''}<div class="icon-grid">
 ${entries.map((a) => tile(a, size)).join('\n')}
 </div>
 </body></html>
@@ -1512,12 +1556,22 @@ Generated from \`catalog-runtime/icon-manifest.js\`; run
   };
 
   const logos = icons.filter(isLogo);
-  const glyphs = icons.filter((a) => !isLogo(a));
+  /* `Assets/Icons/ui/` is the general-purpose set the kit vendors — 1171 glyphs
+     that dwarf italki's own drawings. Tiling it made the card a wall the eye
+     could not use and buried the icons this product actually owns, so the card
+     shows only italki's own and says in one line that the general set exists
+     and how to reach it. Both remain equally approved in `contracts.js`. */
+  const isGeneral = (a) => a.includes('/ui/');
+  const general = icons.filter((a) => isGeneral(a) && !isLogo(a));
+  const glyphs = icons.filter((a) => !isLogo(a) && !isGeneral(a));
   const logoCount = sheet('Logo', 'Logo', 'Foundation', logos, 40,
     'Brand marks. Use the wordmark where the brand is being asserted and the logomark where space is constrained; the -white variants are for dark surfaces.');
   const iconCount = sheet('Icon', 'Icon', 'Foundation', glyphs, null,
-    'Icons live at two sizes: `Assets/Icons/<name>.svg` is the 24px set and `Assets/Icons/16px/<name>-sm.svg` the 16px set. Match the icon size to the control, never scale one to the other.');
-  report.foundations = `Icon ${iconCount} · Logo ${logoCount}`;
+    `Icons live at two sizes: \`Assets/Icons/<name>.svg\` is the 24px set and \`Assets/Icons/16px/<name>-sm.svg\` the 16px set. Match the icon size to the control, never scale one to the other.
+
+Tiled above are italki's own ${glyphs.length} glyphs — **search these first**. A vendored general-purpose set of ${general.length} more sits at \`Assets/Icons/ui/<name>.svg\`, same 24px canvas, referenced the same way; it is the backup, not a peer. Take from it only when no italki glyph carries the meaning, because a screen built from the italki set reads as one hand and every borrowed glyph breaks that. It is not tiled here because it is too large to scan — list it with \`ls Assets/Icons/ui\`. If neither set fits, say so and ask for the icon rather than settling for a near-miss that says the wrong thing.`,
+    `Below are italki's own <strong>${glyphs.length}</strong> glyphs — <strong>search these first</strong>. A vendored general-purpose set of <strong>${general.length}</strong> more lives at <code>Assets/Icons/ui/&lt;name&gt;.svg</code>: same 24px canvas, referenced the same way, but it is the backup — take from it only when no italki glyph fits. Not tiled here; browse it with <code>ls Assets/Icons/ui</code>.`);
+  report.foundations = `Icon ${iconCount} (+${general.length} general) · Logo ${logoCount}`;
 }
 
 // ── guidelines — the docs the design agent reads before it writes ─────────
