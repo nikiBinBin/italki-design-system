@@ -610,9 +610,20 @@ function localizeAssets(html) {
    the sweep below. */
 const CATALOG_CARDS = (() => {
   const path = join(HERE, 'maintenance/catalog-cards.json');
-  if (!existsSync(path)) return {};
+  /* Loudly, not `return {}`. Missing this file does not stop the build: every
+     component with a Catalog route quietly falls back to the contract sweep, so
+     Button loses its six blocks, SideNav has no cells at all — and the build
+     prints ✓. That is the shape of every failure this project had on
+     2026-08-17: the thing was gone and nothing said so. The file is also not
+     tracked by git, so a fresh clone is exactly this case. */
+  if (!existsSync(path)) {
+    throw new Error(`maintenance/catalog-cards.json is missing, so every card would silently fall back to a contract sweep.
+    Build it first:  node maintenance/scripts/catalog-cards.mjs`);
+  }
   try { return JSON.parse(readFileSync(path, 'utf8')); }
-  catch { return {}; }
+  catch (e) {
+    throw new Error(`maintenance/catalog-cards.json will not parse (${e.message}). Rebuild it: node maintenance/scripts/catalog-cards.mjs`);
+  }
 })();
 const catalogBlocks = (c) => {
   const slug = c.name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
@@ -1622,4 +1633,8 @@ if (report.foundations) console.log(`  foundations: ${report.foundations}`);
 if (report.failed.length) {
   console.log(`  issues (${report.failed.length}):`);
   for (const f of report.failed) console.log(`    ! ${f}`);
+  /* Non-zero, because these were printed under a ✓ and read as cosmetic. A
+     component whose every cell threw ships a blank card; a run that says so and
+     then exits 0 lets the next script in the chain push it. */
+  process.exitCode = 1;
 }
