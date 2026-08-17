@@ -168,6 +168,11 @@ const COMPONENTS = [
   ['Footer', 'footer', 'footer', 'navigation'],
   ['Pagination', 'pagination', 'pagination', 'navigation'],
   ['Sidebar', 'sidebar', 'sidebar', 'navigation'],
+  /* Went missing in the same reverted change the slot runtime did, and nothing
+     caught it: the renderer, the React port and the Catalog's own `side-nav`
+     route all still had it, so the only symptom was a README that stopped
+     saying 57 components and four orphaned files in the published project. */
+  ['SideNav', 'sideNav', 'side-nav', 'navigation'],
   ['Tabs', 'tabs', 'tabs', 'navigation'],
   ['TopNav', 'topNav', 'top-nav', 'navigation'],
   ['Drawer', 'drawer', 'drawer', 'overlays'],
@@ -291,7 +296,10 @@ const ICON_TILE = '<span style="display:inline-flex;width:40px;height:40px;borde
 // Only what the renderer needs to look real; the axis sweep below supplies
 // the varying prop. Anything not listed renders from its own defaults.
 const BASE = {
-  button: { label: 'Book trial', shape: 'pill' },
+  /* No shape. This is the props every Button demo on the card is rendered from,
+     so a shape spelled out here is the wrong default stated in the one place
+     other pages copy — and they did copy it. `default` resolves per size. */
+  button: { label: 'Book trial' },
   chip: { label: 'English' },
   dropdownMenu: { triggerLabel: 'Lesson actions', open: true, items: [
     { id: 'reschedule', label: 'Reschedule lesson' },
@@ -559,6 +567,19 @@ function axisFor(key) {
   return [null, []];
 }
 
+/* A component's usage notes — the part of its .prompt.md that answers what the
+   props cannot: which of these four to reach for, why not to pass this one, when
+   the component is the wrong choice. They live one file per component under
+   maintenance/prompt-notes/ rather than as literals in here, because as literals
+   a single `git checkout` took all of them at once (see PROMPT-NOTES-LOST.md) and
+   restoring them had to be all-or-nothing. As files they come back one at a time.
+   A component without a file simply has no notes yet. */
+const NOTES = join(REPO, 'maintenance/prompt-notes');
+function usageNotes(name) {
+  const file = join(NOTES, `${name}.md`);
+  return existsSync(file) ? `\n${readFileSync(file, 'utf8').trim()}\n` : '';
+}
+
 // ── render one component's cells ──────────────────────────────────────────
 const escape = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
@@ -579,8 +600,39 @@ function localizeAssets(html) {
   return out;
 }
 
+/* Each component's cells come from the Catalog route that documents it, when
+   there is one. Sweeping the contract instead is exhaustive and is not
+   documentation — Badge got nine cells for its types while Breadcrumb got one,
+   because a breadcrumb's shapes are not an enum. The Catalog already groups
+   every component the way a person reads it ("With an icon", "Long trail"), and
+   maintenance/scripts/catalog-cards.mjs scrapes those groups into this file.
+   Anything the Catalog does not document as a route of its own falls through to
+   the sweep below. */
+const CATALOG_CARDS = (() => {
+  const path = join(HERE, 'maintenance/catalog-cards.json');
+  if (!existsSync(path)) return {};
+  try { return JSON.parse(readFileSync(path, 'utf8')); }
+  catch { return {}; }
+})();
+const catalogBlocks = (c) => {
+  const slug = c.name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+  for (const route of [c.key, slug, `${c.key}-variants`, c.fn.toLowerCase()]) {
+    if (route && CATALOG_CARDS[route]?.length) return CATALOG_CARDS[route];
+  }
+  return null;
+};
+
 function cellsFor(c) {
   const base = BASE[c.fn] ?? {};
+  const fromCatalog = catalogBlocks(c);
+  /* Page-level slices of the Catalog's own rendered markup, taken as they are
+     and given a full row each. */
+  if (fromCatalog) {
+    return {
+      cells: fromCatalog.map((b) => ({ label: b.label, html: b.html, props: null, width: 'full' })),
+      axis: null,
+    };
+  }
   const explicit = CELLS[c.fn];
   const [axis, values] = explicit ? [null, []] : axisFor(c.key);
   const cells = [];
@@ -625,6 +677,77 @@ mkdirSync(OUT, { recursive: true });
 const write = (rel, body) => { const p = join(OUT, rel); mkdirSync(dirname(p), { recursive: true }); writeFileSync(p, body); };
 
 const report = { ok: [], failed: [] };
+
+/* Which props are slots — asked of the runtime rather than inferred from the
+   source. Two earlier attempts read the renderer's text and both were wrong:
+   parsing produced false positives (ariaExpanded) and false negatives (control).
+   So the marker is rendered and looked for: if it survives with its tag intact
+   the prop was interpolated as markup, and if it comes back escaped it was not.
+   Attribute values are blanked first, since a prop echoed into an attribute is
+   escaped there and would otherwise read as a slot. */
+/* The renderer a slot is most often filled from, so the example on each prop is
+   the one a caller actually wants. Anything not listed falls back to a button,
+   which is what most slots hold. */
+const SLOT_EXAMPLE = {
+  control: 'textInput', body: 'panel', extra: 'tag', content: 'panel',
+  leading: 'avatar', anchor: 'avatar', trigger: 'button', footer: 'button',
+  action: 'button', secondaryAction: 'button', actions: 'button',
+  confirm: 'button', cancel: 'button', trailingAction: 'button',
+  leading_: 'button', center: 'topNavSearch', trailing: 'button',
+};
+/* The published types used to call every prop React.ReactNode unless it was an
+   enum or one of a dozen hard-coded names. That reads as "pass JSX here" for
+   props the runtime interpolates as a raw HTML string — so a page would write
+   `body={<div><Button/></div>}`, get `[object Object]`, conclude the component
+   cannot hold content, and hand-write the dialog instead. The real type is in the
+   renderer's own source, so it is read from there rather than listed here: the
+   destructuring gives each prop its default, and a default says what the value
+   is. Whether a prop takes markup is the probe's answer, below.
+
+   Recovered from maintenance/PROMPT-NOTES-LOST.md after a git checkout took the
+   original. The archive is truncated where the markup branch began; that branch
+   is not reconstructed, because isHtmlSlot answers the same question by asking
+   the runtime instead of by parsing it. */
+const rendererSource = (fn) => {
+  const start = runtimeSrc.indexOf(`\n  function ${fn}(props`);
+  if (start < 0) return '';
+  const next = runtimeSrc.indexOf('\n  function ', start + 1);
+  return runtimeSrc.slice(start, next < 0 ? undefined : next);
+};
+const defaultOf = (fn, prop) => {
+  const body = rendererSource(fn);
+  const destructured = body.match(/const\s*\{([\s\S]*?)\}\s*=\s*props;/);
+  if (!destructured) return null;
+  const hit = destructured[1].match(new RegExp(`\\b${prop}\\s*=\\s*([^,\\n]+)`));
+  return hit ? hit[1].trim() : null;
+};
+const propType = (fn, prop) => {
+  const value = defaultOf(fn, prop);
+  /* No default to read: fall back on the shape the name implies, and to `string`
+     otherwise. `string` and not `React.ReactNode`, because the two ways of being
+     wrong do not cost the same — under-reporting a slot as text costs one line of
+     information that the README's slot table supplies, while over-reporting every
+     prop as a node actively invites the JSX that used to stringify. */
+  if (value === null) {
+    return /^(items|options|rows|columns|members|pages)$/.test(prop) ? 'unknown[]'
+      : /^(disabled|loading|open|closable|banner|removable|interactive|iconOnly|decorative|current)$/.test(prop) ? 'boolean'
+      : 'string';
+  }
+  if (/^(true|false)$/.test(value)) return 'boolean';
+  if (/^-?\d+(\.\d+)?$/.test(value)) return 'number';
+  if (value.startsWith('[')) return 'unknown[]';
+  if (value.startsWith('{')) return 'Record<string, unknown>';
+  return 'string';
+};
+const SLOT_PROBE = '<i>__SLOT_PROBE__</i>';
+const isHtmlSlot = (fn, prop) => {
+  try {
+    return UI[fn]({ [prop]: SLOT_PROBE }).replace(/="[^"]*"/g, '=""').includes(SLOT_PROBE);
+  } catch { return false; }
+};
+/* Collected as the types are written, so the bundle's SLOTS map and the
+   README's table are the same answer the probe gave and cannot drift from it. */
+const htmlSlots = [];
 
 for (const c of COMPONENTS) {
   if (typeof UI[c.fn] !== 'function') { report.failed.push(`${c.name}: no renderer ${c.fn}`); continue; }
@@ -687,9 +810,16 @@ ${cells.filter((x) => !x.error).map((x) => {
      nav and no calendar. The window assignment stays for anything reaching the
      bare global; the export is what the compiler reads. */
   write(`${dir}/${c.name}.jsx`, `// ${c.name} — italki UI Kit. Markup comes from the runtime in components/_kit/Kit.jsx.
+// Mounting goes through window.ITalkiUIMount, installed by Kit.jsx, so the slot
+// runtime — the part that lets body/footer/trigger hold a React element — is
+// carried by a source the app compiles. This file used to build the embed
+// itself, which meant the app's rebuild produced a bundle with no slot handling
+// at all while the published cards went on documenting it.
 export function ${c.name}(props) {
   var React = window.React;
-  if (!React || typeof window.ITalkiUIRender !== 'function') return null;
+  if (!React) return null;
+  if (typeof window.ITalkiUIMount === 'function') return window.ITalkiUIMount('${c.fn}', props);
+  if (typeof window.ITalkiUIRender !== 'function') return null;
   return React.createElement('div', {
     className: 'italki-ui-embed',
     style: { display: 'contents' },
@@ -702,12 +832,37 @@ Object.assign(window, { ${c.name}: ${c.name} });
   // Contract — straight from contracts.js, which the runtime itself asserts.
   const propLines = accepted.map((p) => {
     const values = enums[p];
+    /* An enum is never a slot: its values are the whole vocabulary, and they are
+       interpolated bare only because they are class-name and attribute
+       fragments. Recorded here because this is the one pass that walks every
+       accepted prop of every component. */
+    const isSlot = !Array.isArray(values) && isHtmlSlot(c.fn, p);
+    if (isSlot) {
+      const entry = htmlSlots.find((x) => x.component === c.name)
+        ?? (htmlSlots.push({ component: c.name, fn: c.fn, props: [] }), htmlSlots[htmlSlots.length - 1]);
+      entry.props.push(p);
+    }
+    /* An enum states its own values. A slot is the one place React.ReactNode is
+       the truth rather than a guess — the wrapper portals an element into it, so
+       it really does take one. Everything else gets the type the renderer's own
+       default implies. */
     const type = Array.isArray(values)
       ? values.map((v) => (typeof v === 'string' ? JSON.stringify(v) : String(v))).join(' | ')
-      : /^(items|options|rows|columns|members|pages)$/.test(p) ? 'unknown[]'
-      : /^(disabled|loading|open|closable|banner|removable|interactive|iconOnly|decorative|current)$/.test(p) ? 'boolean'
-      : 'React.ReactNode';
-    return `  ${p}?: ${type};`;
+      : isSlot ? 'React.ReactNode | string'
+      : propType(c.fn, p);
+    /* Which props are slots is not visible in the type, and the type is what a
+       model reads first. So it is said on the prop itself — the shape of the
+       value, and the one consequence of how the portal works that a caller can
+       be caught by. */
+    const slotNote = isSlot
+      ? [`  /** Slot. Takes a React element or an HTML string.`,
+         `   *  An element is portalled into place, so it keeps its own state and`,
+         `   *  handlers — but it remounts whenever this component's other props`,
+         `   *  change, so hold state the slot must not lose in the parent.`,
+         `   *  A string is interpolated as markup; build it with the runtime's own`,
+         `   *  renderers: \`${p}: window.ITalkiUI.${SLOT_EXAMPLE[p] ?? 'button'}({ … })\`. */`].join('\n') + '\n'
+      : '';
+    return `${slotNote}  ${p}?: ${type};`;
   });
   write(`${dir}/${c.name}.d.ts`, `import * as React from 'react';
 
@@ -769,9 +924,19 @@ ${exampleNote}
 ## Cells shown on the card
 
 ${cells.filter((x) => !x.error).map((x) => `- ${x.label}`).join('\n')}
-`);
+${usageNotes(c.name)}`);
 
   report.ok.push(c.name);
+}
+
+/* Notes are what the design pane's agent reads before it composes anything, so a
+   build that has lost most of them should say so rather than look finished. */
+{
+  const have = existsSync(NOTES) ? readdirSync(NOTES).filter((f) => f.endsWith('.md') && f !== 'README.md').length : 0;
+  console.log(`  usage notes: ${have} 个组件有`);
+  if (have < 20) {
+    console.log('     其余仍是薄版 —— 云端那份更全，补完前不要推 components/**/*.prompt.md（见 maintenance/PROMPT-NOTES-LOST.md）。');
+  }
 }
 
 // ── bundle: React wrappers over the vanilla renderers ─────────────────────
@@ -784,8 +949,29 @@ const wrappers = COMPONENTS.filter((c) => typeof UI[c.fn] === 'function').map((c
 // silent — the cards still render, but the agent sees an empty design system.
 const bundleHeader = {
   namespace: 'ItalkiUI',
+  /* Readable from the first bytes of the file, which is the point. `get_file`
+     truncates at 256 KiB and the bundle is larger, so the wrapper code at the
+     end of it cannot be read back from the published project at all — during
+     the 2026-08-17 recovery no session could answer "what is actually in the
+     cloud", and one of them pushed over a good copy for want of that answer.
+     What this does answer: the app recompiles the bundle from
+     components/**\/*.jsx, which keeps whatever Kit.jsx compiles to and drops
+     this hand-written header. So a published bundle with no `@ds-bundle` line
+     has been recompiled — and, because the slot runtime now lives in Kit.jsx,
+     recompiled is no longer the same as broken. Header absent plus slots
+     working is the healthy state; header absent is not by itself a fault.
+     It cannot tell you whether the runtime is present: that is what the
+     assertions over Kit.jsx and the wrappers are for. */
+  slotRuntime: 'portal-v1',
+  slots: Object.fromEntries(htmlSlots.map((s) => [s.fn, s.props.length])),
+  componentCount: report.ok.length,
+  builtBy: 'maintenance/scripts/build-ds-project.mjs',
+  source: 'catalog-runtime/italki-ui.js',
+  /* Last on purpose: it is four kilobytes, and everything above it is the part
+     a person or a truncated read is looking for. Key order is nothing to a
+     parser and everything to whoever is reading the first screen of the file. */
   components: [
-    /* Listed first so a manifest-driven rebuild cannot leave the runtime out:
+    /* Kit first so a manifest-driven rebuild cannot leave the runtime out:
        every other entry renders through it. */
     { name: 'Kit', sourcePath: 'components/_kit/Kit.jsx' },
     ...COMPONENTS.filter((c) => report.ok.includes(c.name)).map((c) => ({
@@ -793,8 +979,6 @@ const bundleHeader = {
       sourcePath: `components/${c.slug}/${c.name}/${c.name}.jsx`,
     })),
   ],
-  builtBy: 'maintenance/scripts/build-ds-project.mjs',
-  source: 'catalog-runtime/italki-ui.js',
 };
 
 /* The app rebuilds _ds_bundle.js from components/**\/*.jsx whenever anything
@@ -807,9 +991,161 @@ const bundleHeader = {
    contain the thing. This one carries the runtime; the per-component files
    below resolve it at render time, so the order they are concatenated in does
    not matter. */
+/* Both artefacts carry this: the app recompiles _ds_bundle.js from the .jsx
+   sources, and pages also load the copy we publish. One of the two having it
+   is the same as neither. */
+const ASSET_BASE_PRELUDE = `// Where Assets/ live, worked out from this file's own URL instead of the
+// page's. Every icon the runtime emits is a page-relative "Assets/Icons/x.svg",
+// which is right only for a page sitting at the project root — and a page
+// generated into a folder got a screenful of broken images with nothing on
+// screen to explain why. The escape hatch (ITalkiUIAssetBase) existed the whole
+// time; nobody could be expected to know it, so the bundle sets it itself.
+//
+// Two layouts, one rule: in this project the bundle is at the root, so its own
+// directory is the answer; in a project consuming the kit it is vendored under
+// _ds/<kit>/ while Assets/ stays at the project root, so that segment comes off.
+// Synchronous on purpose — a probe would resolve after the first render, which
+// is the paint the person is looking at.
+(function () {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return;
+  if (window.ITalkiUIAssetBase) return;          // a host that already decided wins
+  var self = document.currentScript && document.currentScript.src;
+  if (!self) {                                    // deferred, async, or re-executed
+    var scripts = document.getElementsByTagName('script');
+    for (var i = scripts.length - 1; i >= 0 && !self; i--) {
+      if (/_ds_bundle\\.js(\\?|$)/.test(scripts[i].src)) self = scripts[i].src;
+    }
+  }
+  if (!self) {
+    // Inlined bundle, no URL to read. The stylesheet is published beside it and
+    // arrives as a <link>, so it answers the same question.
+    var links = document.getElementsByTagName('link');
+    for (var j = links.length - 1; j >= 0 && !self; j--) {
+      if (/(_ds_bundle\\.css|styles\\.css|tokens\\/tokens\\.css)(\\?|$)/.test(links[j].href)) {
+        self = links[j].href.replace(/tokens\\/[^/]+$/, '');
+      }
+    }
+  }
+  if (!self) return;                              // nothing to go on: page-relative, as before
+  try {
+    window.ITalkiUIAssetBase = new URL('.', self).href.replace(/_ds\\/[^/]+\\/$/, '');
+  } catch (e) { /* opaque URL — leave it page-relative */ }
+})();
+`;
+
+/* The slot runtime: what lets a markup prop hold a React element.
+
+   It lives in a shared string for the same reason the renderers do. The app
+   recompiles _ds_bundle.js from components/**\/*.jsx whenever anything under
+   components/ is written — the comment below the Kit.jsx write records the
+   incident that established this — so an implementation that exists only in the
+   bundle we upload is erased by the next write to a component file. That is
+   exactly what happened to this code: it was written into the bundle template
+   alone, and the published cards kept documenting a slot behaviour the runtime
+   no longer had. So both artefacts get it from here, and the per-component
+   wrappers reach it through window.ITalkiUIMount rather than mounting the html
+   themselves.
+
+   Why a placeholder and a portal: the renderers build strings, so a React
+   element in a slot used to stringify to "[object Object]". That single fact is
+   why generated pages hand-wrote their own dialogs instead of using Modal — the
+   content would not nest, and a hand-written surface has none of the layering,
+   focus handling or dismiss behaviour the component carries. So the element does
+   not go into the string. An empty display:contents span holds its place, and
+   the element is portalled into that span once the html is in the DOM. Strings
+   still work exactly as before, and window.ITalkiUI.raw is untouched. */
+const slotRuntimeSrc = `/* Which props each renderer interpolates as raw markup, probed at build time.
+   Only these may hold a React element: every other string prop goes through
+   escapeHTML, so an element handed to one would print as escaped text rather
+   than render. Passing JSX to a non-slot prop is a mistake worth naming. */
+var ITALKI_SLOTS = ${JSON.stringify(Object.fromEntries(htmlSlots.map((s) => [s.fn, s.props])))};
+var italkiSlotSeq = 0;
+
+function italkiSplitSlots(fn, props, instanceId, React) {
+  var accepted = ITALKI_SLOTS[fn] || [];
+  var clean = {};
+  var slots = [];
+  for (var name in props) {
+    if (REACT_ONLY.test(name)) continue;
+    var value = props[name];
+    if (value === undefined) continue;
+    var isElement = React.isValidElement(value)
+      || (Array.isArray(value) && value.length > 0 && value.every(React.isValidElement));
+    if (!isElement) { clean[name] = value; continue; }
+    if (accepted.indexOf(name) === -1) {
+      throw new Error(fn + '.' + name + ' takes text, not an element'
+        + (accepted.length ? ' — the slots that take one are ' + accepted.join(', ') : ''));
+    }
+    var id = 'ui-slot-' + instanceId + '-' + name;
+    clean[name] = '<span data-ui-slot="' + id + '" style="display:contents"></span>';
+    slots.push({ id: id, node: value });
+  }
+  return { props: clean, slots: slots };
+}
+
+/* The one place a kit component is mounted. Every per-component wrapper and the
+   bundle's own React namespace go through this, so there is a single answer to
+   "how does a slot render". */
+function italkiMount(fn, props) {
+  var React = window.React;
+  var ReactDOM = window.ReactDOM;
+  if (!React) return null;
+
+  /* Stable for the life of the mount, so the placeholder ids — and with them the
+     html string — do not change on every render. If they did, React would reset
+     innerHTML each time and the portals would thrash. */
+  var idRef = React.useRef(0);
+  if (!idRef.current) idRef.current = ++italkiSlotSeq;
+  var hostRef = React.useRef(null);
+
+  var html = '';
+  var slots = [];
+  try {
+    var split = italkiSplitSlots(fn, props, idRef.current, React);
+    slots = split.slots;
+    var render = window.ITalkiUIRender;
+    html = typeof render === 'function'
+      ? render(fn, split.props)
+      : (window.ITalkiUI && typeof window.ITalkiUI[fn] === 'function' ? window.ITalkiUI[fn](split.props) : '');
+  } catch (e) { html = '<div style="color:var(--ui-color-error);font:12px system-ui">' + (e && e.message || e) + '</div>'; }
+
+  /* The placeholder spans only exist after the html has been committed, so the
+     portals need one more render to find them. Keyed on the html: when props
+     change React replaces the spans, and the portals must re-query rather than
+     keep pointing at nodes no longer in the document. */
+  var tick = React.useState(0);
+  var bump = tick[1];
+  React.useEffect(function () {
+    if (slots.length) bump(function (n) { return n + 1; });
+  }, [html]);
+
+  /* display:contents so the wrapper generates no box. dangerouslySetInnerHTML
+     needs a host element, but a real box becomes the containing block for
+     everything inside it, and position:sticky can only travel within its
+     containing block — so a consumer that stuck a sidebar or a top nav to the
+     viewport got an element that scrolled away with its own wrapper. */
+  var embed = React.createElement('div', {
+    ref: hostRef,
+    className: 'italki-ui-embed',
+    style: { display: 'contents' },
+    dangerouslySetInnerHTML: { __html: html },
+  });
+  if (!slots.length || !ReactDOM || !ReactDOM.createPortal || !hostRef.current) return embed;
+
+  var portals = [];
+  for (var i = 0; i < slots.length; i++) {
+    var target = hostRef.current.querySelector('[data-ui-slot="' + slots[i].id + '"]');
+    if (target) portals.push(ReactDOM.createPortal(slots[i].node, target, slots[i].id));
+  }
+  return React.createElement(React.Fragment, null, embed, portals);
+}
+window.ITalkiUIMount = italkiMount;
+`;
+
 write('components/_kit/Kit.jsx', `// The italki UI Kit runtime. Installs window.ITalkiUI and the render bridge
 // the per-component files call. Compiled into _ds_bundle.js with them.
-${contractsSrc}
+
+${ASSET_BASE_PRELUDE}${contractsSrc}
 ${iconManifestSrc}
 ${runtimeSrc}
 window.ITalkiUIRender = function (fn, props) {
@@ -824,6 +1160,8 @@ window.ITalkiUIRender = function (fn, props) {
   catch (e) { return '<div style="color:var(--ui-color-error);font:12px system-ui">' + (e && e.message || e) + '</div>'; }
 };
 var REACT_ONLY = /^(children|key|ref|className|style|dangerouslySetInnerHTML)$|^(data-|aria-|on[A-Z])/;
+
+${slotRuntimeSrc}
 /* Exported for the same reason the components are: the compiler includes a
    source because of what it exports, and this file's whole job is the side
    effects above. Without an export it is dropped, and every wrapper then finds
@@ -834,7 +1172,7 @@ export function Kit() { return null; }
 write('_ds_bundle.js', `/* @ds-bundle: ${JSON.stringify(bundleHeader)} */
 (function (global) {
   "use strict";
-  // The vanilla catalog runtime, inlined verbatim.
+${ASSET_BASE_PRELUDE}  // The vanilla catalog runtime, inlined verbatim.
 ${contractsSrc.replace(/^window\./m, 'global.')}
 ${iconManifestSrc.replace(/^window\./m, 'global.')}
 ${runtimeSrc.replace(/\}\)\(window\);\s*$/, '})(global);')}
@@ -857,33 +1195,12 @@ ${runtimeSrc.replace(/\}\)\(window\);\s*$/, '})(global);')}
      only what the component accepts. Without this the teacher-search template
      rendered "sidebar does not accept prop children" in place of its shell. */
   var REACT_ONLY = /^(children|key|ref|className|style|dangerouslySetInnerHTML)$|^(data-|aria-|on[A-Z])/;
-  function contractProps(props) {
-    var clean = {};
-    for (var name in props) {
-      if (REACT_ONLY.test(name)) continue;
-      if (props[name] === undefined) continue;
-      clean[name] = props[name];
-    }
-    return clean;
-  }
+  /* The slot runtime, from the same string Kit.jsx gets it from — the two
+     artefacts cannot disagree about how a slot renders. See the constant's own
+     comment for why it is shared rather than written here. */
+${slotRuntimeSrc}
   function wrap(fn) {
-    function Component(props) {
-      var React = global.React;
-      if (!React) return null;
-      var html = '';
-      try { html = UI[fn](contractProps(props)); }
-      catch (e) { html = '<div style="color:var(--ui-color-error);font:12px system-ui">' + (e && e.message || e) + '</div>'; }
-      // display:contents so the wrapper generates no box. dangerouslySetInnerHTML
-      // needs a host element, but a real box becomes the containing block for
-      // everything inside it, and position:sticky can only travel within its
-      // containing block — so a consumer that stuck a sidebar or a top nav to
-      // the viewport got an element that scrolled away with its own wrapper.
-      return React.createElement('div', {
-        className: 'italki-ui-embed',
-        style: { display: 'contents' },
-        dangerouslySetInnerHTML: { __html: html },
-      });
-    }
+    function Component(props) { return italkiMount(fn, props); }
     Component.displayName = fn;
     return Component;
   }
@@ -925,6 +1242,17 @@ write('README.md', `# italki UI Kit
 The italki design system, published from the framework-neutral catalog runtime
 (\`catalog-runtime/italki-ui.js\`). ${report.ok.length} components.
 
+## Before you build: run the intake
+
+A request to design a page does not start with components. It starts with the
+gap scan in \`guidelines/INTAKE.md\`: read \`guidelines/intake.slots.json\`, drop
+every decision the request does not touch, drop every decision the request
+already settles, and ask about at most the five most consequential of what is
+left. Each question carries a default, so a requester who answers nothing still
+gets built work — on assumptions you then state.
+
+State \`Confirmed / Answered / Assumed\` before the first component goes down.
+
 ## Using a component
 
 Every component is on \`window.ItalkiUI\`. **No provider or wrapper is needed** —
@@ -937,8 +1265,80 @@ const { Button, FormField, TextInput, Table } = window.ItalkiUI;
 <FormField label="Email address" helper="We only use this to send lesson updates.">
   <TextInput placeholder="name@example.com" />
 </FormField>
-<Button label="Book trial" variant="red" shape="pill" />
+<Button label="Book trial" variant="red" />
 \`\`\`
+
+### Do not pass \`shape\`
+
+\`shape\` resolves from \`size\` on its own — a 32 control is a pill, 40 and 48 are
+rounded — so leaving it off is what makes a button match the ones beside it. Pass
+it only when a design decision has explicitly asked for that button to differ.
+
+This example used to read \`shape="pill"\`, and pages copied it: a pill 40 CTA
+standing next to a secondary that had (correctly) left the prop off, so the pair
+came out with two different corner radii. Shape belongs to the action row, not to
+the button — if one button in a row is given an explicit shape, every button in
+that row takes the same one.
+
+## Putting components inside components
+
+Container props — \`body\`, \`footer\`, \`trigger\`, \`control\`, \`action\` — are slots,
+and a slot takes **either JSX or a markup string**.
+
+\`\`\`jsx
+const { Modal } = window.ItalkiUI;
+
+<Modal
+  title="Reschedule this lesson"
+  open={open}
+  body={<RescheduleForm lessonId={id} />}
+  footer={<DialogActions onCancel={close} onSubmit={submit} />}
+/>
+\`\`\`
+
+An element is portalled into the slot, so it keeps its own state, its handlers
+and its children. Two things follow from how that works:
+
+- **A slot remounts when the host component's other props change.** State the
+  slot must not lose belongs in the parent.
+- **Handlers go on your own elements.** A kit component takes no React handlers —
+  \`onClick\` on \`<Button>\` is dropped, because the runtime binds behaviour
+  through its own delegated listeners. Inside a slot your elements are real
+  React, so put the handler there.
+
+When the slot content is itself kit components, a string is the better answer.
+\`window.ItalkiUI.raw\` is the identical set returning strings:
+
+\`\`\`jsx
+const ui = window.ItalkiUI.raw;
+
+<Modal
+  title="Reschedule this lesson"
+  body={ui.formField({ label: 'New time', control: ui.timePicker({ slots: ['17:30', '18:00', '18:30'], selected: '18:00' }) })}
+  footer={
+    ui.button({ label: 'Keep current time', variant: 'secondary' }) +
+    ui.button({ label: 'Reschedule', variant: 'red' })
+  }
+/>
+\`\`\`
+
+Concatenate for siblings, nest calls for depth. \`ui.button\` asserts the same
+contract \`<Button>\` does, so a wrong prop throws either way.
+
+Only these props are slots. A React element handed to any other prop throws by
+name rather than printing as escaped text — \`title\` takes words.
+
+| Component | Slots |
+|---|---|
+${htmlSlots.map((s) => `| \`${s.component}\` | ${s.props.map((p) => `\`${p}\``).join(', ')} |`).join('\n')}
+
+The table is the same answer the bundle's own slot map is built from — both come
+from probing the runtime at build time, so neither can drift from what the code
+actually accepts.
+
+**Do not hand-write a dialog, a popover or a panel.** There is nothing left to
+work around, and a hand-written one has none of the layering, focus handling or
+dismiss behaviour the component carries.
 
 Note that content is passed as **props, not children** — \`label\`, \`title\`,
 \`body\`, \`items\`, \`options\`, \`columns\`/\`rows\`. Check the component's
@@ -997,12 +1397,29 @@ lettering reads as an error, and \`--ui-color-error\` is what actually means one
 
 ## Assets
 
-Icons and flags are referenced **page-relative**, which resolves correctly for a
-design rendered at the project root:
+Icons and flags live at the project root and are referenced without a leading
+slash:
 
 \`\`\`
 Assets/Icons/<name>.svg      Assets/Flags/<iso-2>.svg
 \`\`\`
+
+The runtime resolves these against **its own location**, not the page's, so a
+design in a folder gets the same icons as one at the root — you do not have to
+compute a \`../\` prefix, and you should not write one.
+
+If a page loads the bundle in some way that hides its URL — inlined, or copied
+somewhere the runtime cannot see — every icon falls back to page-relative and
+turns into a broken image. Set the base once, before anything renders, and they
+all come back:
+
+\`\`\`html
+<script>window.ITalkiUIAssetBase = "/";</script>
+\`\`\`
+
+Any absolute URL works; it is prefixed to every \`Assets/…\` path the runtime
+emits. Paths you write by hand in your own markup are yours to resolve — prefer
+letting a component render the icon so this stays handled in one place.
 
 ## Components
 
@@ -1091,6 +1508,91 @@ Generated from \`catalog-runtime/icon-manifest.js\`; run
     'Icons live at two sizes: `Assets/Icons/<name>.svg` is the 24px set and `Assets/Icons/16px/<name>-sm.svg` the 16px set. Match the icon size to the control, never scale one to the other.');
   report.foundations = `Icon ${iconCount} · Logo ${logoCount}`;
 }
+
+// ── guidelines — the docs the design agent reads before it writes ─────────
+// These used to reach the project by hand, which meant the rules the agent read
+// there were whatever was uploaded last: docs/COMPONENTS.md moved on and nothing
+// carried it across. A page generated against a stale copy is wrong in a way
+// nobody can see from the page. Copied here so the build is the only path.
+//
+// INTAKE.md and its catalog travel with them: the design surface has no shell to
+// run maintenance/scripts/intake.mjs in, so the slots have to arrive as data the
+// agent can read and the protocol as prose it can follow.
+for (const doc of ['INTAKE.md', 'COMPONENTS.md', 'DESIGN.md', 'EXECUTION.md', 'PATTERNS.md', 'intake.slots.json']) {
+  const source = join(REPO, 'docs', doc);
+  if (!existsSync(source)) throw new Error(`docs/${doc} is missing — the project's guidelines would ship stale`);
+  write(`guidelines/${doc}`, readFileSync(source));
+}
+
+// ── AGENTS.md + a runnable intake — so the payload describes itself ───────
+/* This directory is what leaves the repository: it is handed to a design
+   surface, or vendored into a product project that has none of this repo around
+   it. README.md covers that for an agent that reads READMEs as instructions;
+   every editor agent that does not (Cursor, Codex, Aider, Zed…) looks for
+   AGENTS.md and would otherwise find no rules at all — including the intake.
+   The repository's own AGENTS.md is the wrong file to copy: it talks about
+   rebuilding indexes and where index.html lives, which is not this reader's job. */
+write('intake.mjs', readFileSync(join(REPO, 'maintenance/scripts/intake.mjs')));
+write('AGENTS.md', `# AGENTS.md
+
+The italki UI Kit, vendored. ${report.ok.length} components, their contracts, and
+the rules that govern using them. Instructions for any agent building product UI
+with this kit — vendor-neutral: nothing here depends on which assistant reads it.
+
+## Before you build: run the intake
+
+A request to design a page does not start with components. It starts with the
+gap scan in \`guidelines/INTAKE.md\`:
+
+\`\`\`bash
+node intake.mjs "<the request, verbatim>"
+\`\`\`
+
+It reads \`guidelines/intake.slots.json\`, drops every decision the request does
+not touch, drops every decision the request already settles, and prints the few
+that are left — at most five, each with a default. Send that block, take
+whatever the requester chooses to answer, then build.
+
+- **Never block.** Silence means the default is taken and named.
+- **State \`Confirmed / Answered / Assumed\`** before the first component goes
+  down. \`Assumed\` is the list of decisions the requester never made.
+
+No Node here? Read \`guidelines/intake.slots.json\` and do the same four steps by
+hand — \`guidelines/INTAKE.md §3.2\`.
+
+Skip the intake only when the request is not a build: a question about the kit,
+a rename, a typo.
+
+## Then read, in this order
+
+1. \`guidelines/DESIGN.md\` — product direction and the non-negotiable rules.
+2. \`guidelines/COMPONENTS.md\` — foundations, content style, component contracts.
+3. \`guidelines/PATTERNS.md\` — italki product compositions and object relationships.
+4. \`guidelines/EXECUTION.md\` — how a request becomes a page: hierarchy, states,
+   responsive behaviour, validation.
+
+On conflict, the owning document wins — \`EXECUTION.md §1.5\`.
+
+## Non-negotiables
+
+- **Compose from the kit.** Every component is on \`window.ItalkiUI\`; no provider
+  or wrapper is needed. Do not hand-write a dialog, popover, drawer or panel —
+  the layering, focus handling and dismiss behaviour live in the component.
+- **Props are asserted at runtime.** An unknown prop throws. Each
+  \`components/<group>/<Name>/<Name>.d.ts\` is exhaustive, not indicative; do not
+  carry prop names over from another design system.
+- **Content is passed as props, not children.** Slots take JSX or a markup
+  string — README.md lists which props are slots.
+- **Tokens, never hex.** Style your own containers with the custom properties in
+  \`tokens/tokens.css\`. \`--ui-color-primary\` fills surfaces and is never a text
+  colour; a clickable word is \`Link\` or \`Button variant="link"\`.
+- **One \`variant="red"\` action per page or task step.** It is the booking /
+  conversion action.
+- **Never expose component names or internal rule names in a product screen.**
+
+\`README.md\` has the prop vocabulary, the slot table, the token list and the
+asset rules.
+`);
 
 // ── styling ───────────────────────────────────────────────────────────────
 /* Component CSS normally resolves assets one directory above catalog-runtime.
