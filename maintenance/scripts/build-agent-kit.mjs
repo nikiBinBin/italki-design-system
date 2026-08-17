@@ -21,7 +21,7 @@
 // reading something nobody rebuilt — is the shape of most of what went wrong in
 // this repository on 2026-08-17.
 
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, resolve } from 'node:path';
@@ -66,6 +66,56 @@ for (const f of FILES) {
 
 // guidelines/ entire: the four documents, INTAKE.md, and the slot catalog.
 cpSync(join(scratch, 'guidelines'), join(OUT, 'guidelines'), { recursive: true });
+
+/* AGENTS.md is only picked up as instructions when it sits at the root of the
+   agent's working directory. Hand this folder to an agent working somewhere
+   else and it is just a file — the agent opens README.md for the API and never
+   reads the rules. Two observed consequences, both from the same cause: a page
+   built without running the intake, and a screenful of broken icons.
+
+   So the two things that cannot be missed are prepended to README.md, which is
+   the file that does get opened. */
+const readmePath = join(OUT, 'README.md');
+writeFileSync(readmePath, `# italki UI Kit
+
+> **Read AGENTS.md before building anything.** If your agent did not load it —
+> it is only picked up automatically when it sits at the root of the working
+> directory — paste this line into the request: *"follow AGENTS.md in the kit
+> folder."* The two things it gets wrong without it are below.
+
+## 1. A design request starts with the intake, not with components
+
+\`\`\`bash
+node intake.mjs "<the request, verbatim>"
+\`\`\`
+
+It prints the few decisions the request left open — at most five, each with a
+default — and nothing else. Send that block, take whatever is answered, then
+build, stating \`Confirmed / Answered / Assumed\`. Skipping it is how a page gets
+built for the wrong role, in the wrong viewport, covering one state out of six.
+
+## 2. Every icon broken means the asset base was not found
+
+The runtime emits \`Assets/Icons/x.svg\` and resolves it against **the bundle's
+own URL**, worked out from the \`<script src>\` that loaded it. Inline the bundle
+into a single-file page and there is no URL to read, so the paths fall back to
+page-relative — and \`Assets/\` is in this folder, not beside your page.
+
+Set the base yourself, before anything renders. This always works:
+
+\`\`\`html
+<script>window.ITalkiUIAssetBase = "/italki-ui-kit/";</script>  <!-- wherever this folder sits -->
+<script src="/italki-ui-kit/_ds_bundle.js"></script>
+\`\`\`
+
+Or keep \`Assets/\` next to the page. Either is fine; guessing is not.
+
+\`open example.html\` from a local server is the check: two buttons, a tag, an
+avatar with a flag. If those icons render, your wiring is right.
+
+---
+
+${readFileSync(readmePath, 'utf8').replace(/^# italki UI Kit\n/, '').trimStart()}`);
 
 /* Contracts and variant notes only. The .jsx files are per-component re-exports
    of window.ItalkiUI.X, which the bundle already installs, and the .html files
