@@ -73,6 +73,12 @@ const REGISTERED_EXCEPTIONS = [
     reason:
       "Tip softening on an 8px rotated square; the radius scale governs surfaces, and 4px would round it almost circular",
   },
+  {
+    match: /^code$/,
+    prop: "font-family",
+    reason:
+      "Catalog typography, not a product surface: a prop name set in running text needs a monospace stack, and the Foundation has one family because the product has one. Registered rather than tokenised — a mono token would appear in the published token list and read as a face components may use, which is a larger claim than an inline <code> in this catalog's own prose",
+  },
 ];
 
 const SPACE_PROP = /^(padding|margin|gap|row-gap|column-gap)(-(top|right|bottom|left|inline|block)(-start|-end)?)?$/;
@@ -166,12 +172,17 @@ function lintStylesheet(relativePath) {
         push(line, "line-height", `${prop}: ${value}`);
       }
     } else if (prop === "font-family" && !value.includes("inherit")) {
-      /* No exemption any more: --ui-font-family exists, so every declaration
-         can reference it. The root rule used to be exempt because the
-         Foundation had no font token and some stylesheet had to state the
-         stack — that is no longer true, and a literal stack anywhere is drift.
+      /* --ui-font-family exists, so every declaration can reference it. The
+         root rule used to be blanket-exempt because the Foundation had no font
+         token and some stylesheet had to state the stack; that is no longer
+         true, and a literal stack is drift unless it is registered.
+         The registry is consulted here for the same reason it is consulted for
+         spacing and radius: a documented decision is not an oversight. It used
+         to be skipped on this branch alone, so the only way to keep a
+         legitimate stack was to add a Foundation token for it — which publishes
+         a face to the whole system to satisfy one rule in this catalog's prose.
          (Values containing var() never reach here.) */
-      push(line, "font-family", `${prop}: ${value.slice(0, 40)}`);
+      if (!isRegistered(selector, prop, [])) push(line, "font-family", `${prop}: ${value.slice(0, 40)}`);
     } else if ((prop === "box-shadow" || prop === "text-shadow")
         && !["none", ""].includes(value.replace("!important", "").trim())) {
       push(line, "shadow", `${prop}: ${value.slice(0, 50)}`);
