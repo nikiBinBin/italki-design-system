@@ -229,6 +229,9 @@
         fixture("badge", "overflow", ui.badge({ type: "count", anchor: '<span class="fixture-badge-anchor"><img src="Assets/Icons/logo-italki-logomark.svg" alt="" /></span>', count: 120, overflowCount: 99, ariaLabel: "99 or more updates" })),
         fixture("badge", "dot", ui.badge({ type: "dot", anchor: '<span class="fixture-badge-anchor"><img src="Assets/Icons/logo-italki-logomark.svg" alt="" /></span>', ariaLabel: "Mira has new activity" })),
         fixture("badge", "status", ui.badge({ type: "status", tone: "success", label: "Available" })),
+        fixture("badge", "new", ui.badge({ type: "new" })),
+        fixture("badge", "beta", ui.badge({ type: "beta" })),
+        fixture("badge", "previous", ui.badge({ type: "previous" })),
         fixture("badge", "hidden", ui.badge({ type: "count", anchor: '<span class="fixture-badge-anchor"><img src="Assets/Icons/logo-italki-logomark.svg" alt="" /></span>', count: 0, hidden: true, ariaLabel: "No unread archived messages" }))
       ],
       breadcrumb: [
@@ -262,7 +265,7 @@
         fixture("alert", "warning", ui.alert({ tone: "warning", title: "Time zone needs attention", description: "Confirm the time before you book." })),
         fixture("alert", "error", ui.alert({ tone: "error", title: "Payment unsuccessful", description: "Choose another payment method to continue." })),
         fixture("alert", "closable", ui.alert({ tone: "info", title: "New message", description: "You have an unread message.", closable: true })),
-        fixture("alert", "with-action", ui.alert({ tone: "info", title: "Profile incomplete", description: "Add a short introduction before publishing.", action: ui.button({ label: "Complete", variant: "text", size: 32, shape: "pill" }) })),
+        fixture("alert", "with-action", ui.alert({ tone: "info", title: "Profile incomplete", description: "Add a short introduction before publishing.", action: "Complete" })),
         fixture("alert", "banner", ui.alert({ tone: "warning", title: "Availability changes regularly.", banner: true }))
       ],
       tabs: [
@@ -279,6 +282,7 @@
       ],
       rate: [
         fixture("rate", "basic", ui.rate({ value: 2.5, allowHalf: true, label: "Rate this lesson" })),
+        fixture("rate", "large", ui.rate({ value: 4, size: 48 })),
         fixture("rate", "summary", ui.rate({ value: 4.98, variant: "summary", label: "Teacher rating" })),
         fixture("rate", "labels", ui.rate({ value: 3, labels: ["Terrible", "Poor", "Okay", "Good", "Excellent"], showText: true, label: "Rate lesson quality" })),
         fixture("rate", "clearable", ui.rate({ value: 3, allowClear: true, label: "Clearable rating" })),
@@ -440,7 +444,12 @@
         fixture("stepper", "dots", ui.stepper({ id: "fixture-steps-dots", items: ["Course", "Time", "Payment"], current: 1, variant: "dots", ariaLabel: "Booking progress" })),
         fixture("stepper", "top-indicator", ui.stepper({ id: "fixture-steps-top", items: ["Course", "Time", "Payment"], current: 1, variant: "top-indicator", ariaLabel: "Booking progress" })),
         fixture("stepper", "schedule-progress", ui.stepper({ id: "fixture-steps-schedule", items: ["Course", "Time", "Payment"], current: 1, variant: "schedule-progress", ariaLabel: "Schedule progress" })),
-        fixture("stepper", "progress-steps", ui.stepper({ id: "fixture-steps-progress", items: ["Course", "Time", "Payment"], current: 1, variant: "progress-steps", ariaLabel: "Lesson progress" }))
+        fixture("stepper", "progress-steps", ui.stepper({ id: "fixture-steps-progress", items: ["Course", "Time", "Payment"], current: 1, variant: "progress-steps", ariaLabel: "Lesson progress" })),
+        /* Steps named by an icon rather than a number, in both the state where
+           the marker is filled and the state where it is not — the glyph takes
+           the marker's colour, so the two are what a change would show up in. */
+        fixture("stepper", "icon-steps", ui.stepper({ id: "fixture-steps-icons", items: [{ id: "find", label: "Find", icon: "search" }, { id: "time", label: "Time", icon: "calendar" }, { id: "pay", label: "Pay", icon: "payment" }], current: 1, ariaLabel: "Booking steps" })),
+        fixture("stepper", "icon-steps-progress", ui.stepper({ id: "fixture-steps-icons-progress", items: [{ id: "find", label: "Find", icon: "search" }, { id: "time", label: "Time", icon: "calendar" }, { id: "pay", label: "Pay", icon: "payment" }], current: 2, variant: "progress-steps", ariaLabel: "Booking steps" }))
       ],
       progress: [
         fixture("progress", "default", ui.progress({ value: 62 })),
@@ -506,6 +515,7 @@
       ],
       "time-slot": [
         fixture("time-slot", "available", ui.timeSlot({ label: "09:00", state: "available" })),
+        fixture("time-slot", "scheduled", ui.timeSlot({ appearance: "scheduled", month: "Sep", day: "29", weekday: "Tuesday", time: "07:15 - 08:15" })),
         fixture("time-slot", "selected", ui.timeSlot({ label: "10:30", state: "selected" })),
         fixture("time-slot", "unavailable", ui.timeSlot({ label: "13:00", state: "unavailable" })),
         fixture("time-slot", "booked-by-others", ui.timeSlot({ label: "16:30", state: "booked-by-others" })),
@@ -528,6 +538,11 @@
         fixture("calendar", "teacher-availability", ui.calendar({ id: "fixture-calendar-teacher-availability", variant: "teacher-availability", availabilityLabel: "Available 14:15PM Today", teacherAvailability: teacherAvailabilityDays, ariaLabel: "Teacher availability" })),
         fixture("calendar", "compact-availability", ui.calendar({ id: "fixture-calendar-compact", variant: "compact-availability", timezone: "Asia/Shanghai (UTC +08:00)", dates: compactCalendarDates, rows: compactCalendarRows, ariaLabel: "Compact weekly availability" })),
         fixture("calendar", "lesson-record", ui.calendar({ id: "fixture-calendar-lesson-record", variant: "lesson-record", recordTitle: "My lessons", recordStats: [{ label: "Total lesson count", value: "421", tone: "info" }, { label: "Total practice hours", value: "562", tone: "success" }], recordMonths: lessonRecordMonths, ariaLabel: "Lesson record" }))
+      ],
+      "side-nav": [
+        fixture("side-nav", "default", ui.sideNav({ id: "fixture-side-nav", items: [{ id: "general", label: "General" }, { id: "privacy", label: "Privacy" }], ariaLabel: "Settings sections" })),
+        fixture("side-nav", "active", ui.sideNav({ id: "fixture-side-nav-active", items: [{ id: "general", label: "General" }, { id: "privacy", label: "Privacy" }], activeId: "privacy", ariaLabel: "Settings sections" })),
+        fixture("side-nav", "disabled", ui.sideNav({ id: "fixture-side-nav-disabled", items: [{ id: "general", label: "General" }, { id: "payment", label: "Payment", disabled: true }], activeId: "general", ariaLabel: "Settings sections" })),
       ],
       footer: [
         fixture("footer", "standard", ui.footer({ id: "fixture-footer-standard", columns: [{ heading: "Explore", links: ["Teachers", "Lessons"] }] })),

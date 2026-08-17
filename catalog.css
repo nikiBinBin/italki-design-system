@@ -84,6 +84,19 @@
       }
       button, input, select, textarea { font: inherit; }
       button { cursor: pointer; }
+      /* A prop name written inside a sentence — `shape` in the Button page's
+         Sizes legend, the entry names on a Pattern page. Unstyled it fell back
+         to the browser's monospace default, which renders visibly smaller than
+         the text around it; 0.9em holds the line rather than fixing a size, so
+         it stays proportional wherever it is used. */
+      code {
+        padding: 1px var(--space-1);
+        border-radius: var(--radius-xs);
+        background: var(--divider);
+        color: var(--title);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.9em;
+      }
       input[type="search"]::-webkit-search-cancel-button,
       input[type="search"]::-webkit-search-decoration,
       input[type="search"]::-webkit-search-results-button,
@@ -560,6 +573,10 @@
       @media (max-width: 640px) { .catalog-toast-stack { grid-template-columns: 1fr; } }
       .catalog-time-slot-grid { width: min(100%, var(--ui-width-control-default)); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 40px; gap: var(--space-2); }
       .catalog-time-slot-grid .ui-time-slot { width: 100%; min-width: 0; min-height: 40px; height: 40px; box-sizing: border-box; }
+      /* Two lines — the time and the day it falls on — need the taller row, and
+         columns wide enough to keep the day on one line. */
+      .catalog-time-slot-grid--two-line { grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); grid-auto-rows: 48px; }
+      .catalog-time-slot-grid--two-line .ui-time-slot { min-height: 48px; height: 48px; }
       .stepper-detail .component-doc-content, .flow-progress-detail .component-doc-content { align-items: center; }
       .panel-detail .component-doc-block { background: var(--divider); }
       .panel-detail .component-doc-header { background: var(--card); }
@@ -581,12 +598,13 @@
       .top-nav-frame { width: 100%; }
       .search-detail .component-doc-content { min-height: 120px; }
       .search-detail .component-doc-block.full .component-doc-content { min-height: 136px; }
-      .search-detail .component-doc-block.full .search-demo { width: 100%; }
       .search-global-controls { width: max-content; max-width: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-lg); margin: 0 0 var(--space-6); padding: var(--space-2) var(--space-3); background: var(--card); }
       .search-control-group { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
       .search-control-group + .search-control-group { border-left: 1px solid var(--divider); padding-left: var(--space-4); }
       .search-control-label { color: var(--secondary); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-semibold); line-height: var(--ui-line-height-18); }
-      .search-demo { width: min(100%, 440px); }
+      /* The field takes the width it is given — a search box has no natural
+         width, and the 440px cap here was the card's, not the component's. */
+      .search-demo { width: 100%; }
       .search-state-list { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4); }
       .search-state { min-width: 0; display: grid; gap: var(--space-2); }
       .search-state > span { color: var(--secondary); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-semibold); line-height: var(--ui-line-height-18); }
@@ -703,7 +721,7 @@
       .radius-nested-copy { min-width: 0; display: grid; gap: 2px; }
       .radius-nested-copy strong { color: var(--title); font-size: var(--ui-font-size-14); line-height: var(--ui-line-height-20); }
       .radius-nested-copy span { color: var(--secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
-      .radius-nested-notes { display: grid; align-content: center; gap: var(--space-3); border-top: 1px solid var(--divider); border-bottom: 1px solid var(--divider); }
+      .radius-nested-notes { display: grid; align-content: center; gap: var(--space-3); border-top: 1px solid var(--divider); border-bottom: 1px solid var(--divider); padding-block: var(--space-4); }
       .radius-nested-note { display: grid; gap: 2px; }
       .radius-nested-note span { color: var(--secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
       .radius-nested-note strong { color: var(--title); font-size: var(--ui-font-size-14); line-height: var(--ui-line-height-20); }
@@ -917,7 +935,7 @@
       .teacher-card-pattern-variant { display: grid; justify-items: start; gap: var(--space-3); }
       .teacher-card-pattern-variant > h2 { margin: 0; color: var(--secondary); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-semibold); line-height: var(--ui-line-height-18); }
       .teacher-card-pattern-detail .component-doc-content { min-height: 0; justify-content: flex-start; padding: var(--space-6); }
-      .teacher-pattern-card { width: min(100%, 754px); display: grid; grid-template-columns: 120px minmax(0, 1fr); align-items: start; gap: var(--space-7); border: 1px solid var(--border); border-radius: var(--radius-card); padding: var(--space-6); background: var(--card); }
+      .teacher-pattern-card { width: min(100%, 754px); display: grid; grid-template-columns: 120px minmax(0, 1fr); align-items: start; gap: var(--space-9); border: 1px solid var(--border); border-radius: var(--radius-card); padding: var(--space-6); background: var(--card); }
       /* The whole card is the destination — the teacher profile — so it carries
          the affordance. Buttons inside it stay separate targets and must stop
          their own clicks from reaching the card. */
@@ -1029,7 +1047,12 @@
       .filter-pattern__range-values > span { display: grid; gap: var(--space-1); color: var(--secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
       .filter-pattern__range-values > span:last-child { justify-items: end; text-align: right; }
       .filter-pattern__range-values output { min-width: 64px; display: grid; place-items: center; border-radius: var(--radius-full); padding: var(--space-2) var(--space-3); color: var(--text); background: var(--divider); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-semibold); line-height: var(--ui-line-height-18); }
-      .filter-pattern__availability .ui-tabs__panel { min-height: 0; padding-top: var(--space-4); }
+      .filter-pattern__availability { grid-template-columns: auto minmax(0, 1fr); align-items: center; }
+      .filter-pattern__availability > .ui-tabs { display: contents; }
+      .filter-pattern__availability > .filter-pattern__card-head { grid-column: 1; grid-row: 1; }
+      .filter-pattern__availability .ui-tabs__header { grid-column: 2; grid-row: 1; justify-self: end; gap: 0; }
+      .filter-pattern__availability .ui-tabs__list { border-bottom: 0; }
+      .filter-pattern__availability .ui-tabs__panel:not([hidden]) { grid-column: 1 / -1; min-height: 0; max-height: 320px; display: grid; gap: var(--space-4); overflow-y: auto; padding-top: var(--space-4); }
       .filter-pattern__availability .ui-tabs__trigger { min-height: 32px; padding: 0 var(--space-2); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
       .filter-pattern__availability .ui-tabs__trigger::after { right: var(--space-2); left: var(--space-2); }
       .filter-pattern__day-row { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--space-2); }
