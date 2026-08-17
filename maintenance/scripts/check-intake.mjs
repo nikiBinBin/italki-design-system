@@ -30,6 +30,28 @@ const HERE = resolve(fileURLToPath(import.meta.url), '../../..');
 const argv = process.argv.slice(2);
 const flag = (n, d) => { const i = argv.indexOf(`--${n}`); return i < 0 ? d : argv[i + 1]; };
 
+/* Where pages live and where their records go. Hardcoding maintenance/templates
+   was right for this repository and wrong for every project that vendors the
+   kit — the message told them to look in a directory they do not have. A
+   consumer drops an intake.config.json at their project root; without one the
+   defaults are this repository's own layout. */
+const CONFIG = (() => {
+  const defaults = { pages: 'maintenance/templates', records: 'docs/intakes', intake: 'maintenance/scripts/intake.mjs' };
+  for (let dir = process.cwd(); ; dir = resolve(dir, '..')) {
+    const candidate = resolve(dir, 'intake.config.json');
+    if (existsSync(candidate)) {
+      try { return { ...defaults, ...JSON.parse(readFileSync(candidate, 'utf8')), root: dir }; }
+      catch { break; }
+    }
+    if (dir === resolve(dir, '..')) break;
+  }
+  return { ...defaults, root: null };
+})();
+const PAGES = process.env.INTAKE_PAGES || CONFIG.pages;
+const RECORDS = process.env.INTAKE_RECORDS || CONFIG.records;
+const PROJECT = CONFIG.root ? resolve(CONFIG.root) : HERE;
+const INTAKE = process.env.INTAKE_SCRIPT || CONFIG.intake;
+
 const git = (...args) => {
   try { return execFileSync('git', args, { cwd: HERE }).toString().trim(); }
   catch { return ''; }
@@ -42,7 +64,7 @@ const ranges = [git('diff', '--name-only', `${since}...HEAD`)];
 if (argv.includes('--working')) ranges.push(git('diff', '--name-only', 'HEAD'), git('diff', '--name-only', '--cached'));
 
 const changed = [...new Set(ranges.join('\n').split('\n').filter(Boolean))];
-const PAGE = /^maintenance\/templates\/([^/]+)\//;
+const PAGE = new RegExp(`^${PAGES.replace(/\/$/, '')}/([^/]+)/`);
 const targets = [...new Set(changed.map((f) => f.match(PAGE)?.[1]).filter(Boolean))];
 
 if (!targets.length) {
@@ -51,7 +73,7 @@ if (!targets.length) {
 }
 
 // ── the records on hand ───────────────────────────────────────────────────
-const dir = join(HERE, 'docs/intakes');
+const dir = join(PROJECT, RECORDS);
 const records = existsSync(dir)
   ? readdirSync(dir).filter((f) => f.endsWith('.md') && f !== 'README.md')
       .map((f) => ({ file: f, body: readFileSync(join(dir, f), 'utf8') }))
@@ -61,8 +83,8 @@ const problems = [];
 for (const target of targets) {
   const hit = records.filter((r) => new RegExp(`^target:\\s*${target}\\s*$`, 'm').test(r.body));
   if (!hit.length) {
-    problems.push([target, `no record in docs/intakes/ names it`,
-      `node maintenance/scripts/intake.mjs --record ${target} "<the request, verbatim>"`]);
+    problems.push([target, `no record in ${RECORDS}/ names it`,
+      `node ${INTAKE} --record ${target} "<the request, verbatim>"`]);
     continue;
   }
   /* A record can exist and still prove nothing. The generator leaves a TODO
@@ -93,5 +115,5 @@ for (const [target, why, fix] of problems) {
   console.error(`    ${why}`);
   console.error(`    → ${fix}\n`);
 }
-console.error(`Checked against ${since}. docs/intakes/README.md explains the record.\n`);
+console.error(`Checked against ${since}. ${RECORDS}/README.md explains the record.\n`);
 process.exit(1);
