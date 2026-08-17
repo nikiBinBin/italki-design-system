@@ -171,6 +171,104 @@ writeFileSync(join(OUT, 'enforcement/intake.config.example.json'), `{
   "intake": "italki-ui-kit/intake.mjs"
 }
 `);
+
+/* Three files have to exist in the consuming project before any of this is
+   live: the config, the hook registration, and a CI step. Shipping three
+   examples and a paragraph explaining where each goes produced exactly what it
+   deserved — a reviewer finding the implementation present and the enforcement
+   off. One command writes all three, and says what it wrote. */
+writeFileSync(join(OUT, 'enforcement/install.mjs'), `#!/usr/bin/env node
+// Turn the gates on in the project this is run from.
+//
+//   node italki-ui-kit/enforcement/install.mjs --pages src/app
+//
+// Writes intake.config.json, merges the PreToolUse hook into .claude/settings.json,
+// and adds a GitHub Actions step. Existing files are merged, never replaced;
+// anything already correct is left alone and reported as such.
+
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const argv = process.argv.slice(2);
+const flag = (n, d) => { const i = argv.indexOf(\`--\${n}\`); return i < 0 ? d : argv[i + 1]; };
+const ROOT = resolve(flag('root', process.cwd()));
+const KIT = relative(ROOT, resolve(fileURLToPath(import.meta.url), '../..')) || '.';
+const pages = flag('pages', null);
+const records = flag('records', 'docs/intakes');
+const done = [];
+
+if (!pages) {
+  console.error(\`--pages is required: the directory whose immediate subdirectories are the
+things a requester asks for. In a Next.js app that is usually src/app; in this
+design system's own repository it is maintenance/templates.
+
+  node \${KIT}/enforcement/install.mjs --pages src/app\`);
+  process.exit(2);
+}
+
+// 1. the config both gates read
+const cfgPath = join(ROOT, 'intake.config.json');
+const cfg = { pages, records, intake: join(KIT, 'intake.mjs') };
+if (existsSync(cfgPath) && readFileSync(cfgPath, 'utf8').includes('"pages"')) {
+  done.push(['intake.config.json', 'already there — left as it is']);
+} else {
+  writeFileSync(cfgPath, JSON.stringify(cfg, null, 2) + '\\n');
+  done.push(['intake.config.json', \`pages=\${pages} records=\${records}\`]);
+}
+
+// 2. the write gate, for Claude Code
+const settingsPath = join(ROOT, '.claude/settings.json');
+const hook = {
+  matcher: 'Write|Edit|NotebookEdit',
+  hooks: [{ type: 'command', command: \`node \${join(KIT, 'enforcement/intake-gate.mjs')}\`, timeout: 10, statusMessage: 'Checking the intake record' }],
+};
+let settings = {};
+if (existsSync(settingsPath)) {
+  try { settings = JSON.parse(readFileSync(settingsPath, 'utf8')); }
+  catch { console.error(\`.claude/settings.json will not parse — fix it first, nothing was written there.\`); process.exit(1); }
+}
+settings.hooks ??= {};
+settings.hooks.PreToolUse ??= [];
+const already = settings.hooks.PreToolUse.some((e) => JSON.stringify(e).includes('intake-gate.mjs'));
+if (already) {
+  done.push(['.claude/settings.json', 'the hook is already registered']);
+} else {
+  settings.hooks.PreToolUse.push(hook);
+  mkdirSync(dirname(settingsPath), { recursive: true });
+  writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\\n');
+  done.push(['.claude/settings.json', 'PreToolUse hook added, existing settings kept']);
+}
+
+// 3. the commit check, for every agent and every person
+const wfPath = join(ROOT, '.github/workflows/intake.yml');
+if (existsSync(wfPath)) {
+  done.push(['.github/workflows/intake.yml', 'already there — left as it is']);
+} else {
+  mkdirSync(dirname(wfPath), { recursive: true });
+  writeFileSync(wfPath, \`name: intake
+on: [pull_request]
+jobs:
+  records:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: node \${join(KIT, 'enforcement/check-intake.mjs')} --since origin/\\\${{ github.base_ref }}
+\`);
+  done.push(['.github/workflows/intake.yml', 'runs the check on every pull request']);
+}
+
+console.log(\`Intake enforcement installed in \${ROOT}\\n\`);
+for (const [f, what] of done) console.log(\`  \${f.padEnd(32)} \${what}\`);
+console.log(\`
+Claude Code reads .claude/settings.json at startup — restart it, or open /hooks
+once, before the write gate is live in an already-running session.
+
+Check it works: try writing into \${pages}/anything/ and it should refuse.\`);
+`);
 writeFileSync(join(OUT, 'enforcement/settings.example.json'), `{
   "hooks": {
     "PreToolUse": [
