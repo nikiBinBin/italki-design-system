@@ -13,7 +13,7 @@ node maintenance/scripts/intake.mjs "<the request, verbatim>"
 Send the block it prints, wait for whatever the requester chooses to answer, then proceed. Rules that matter more than the mechanism:
 
 - Ask only what the request left open. The scan already discards decisions the request settled and decisions that do not apply to it.
-- Never block. Every question carries a default; silence means the default is taken and named.
+- Never block **once the questions are out**. Every question carries a default, so silence is an answer — but only silence that follows the block being sent. Taking the defaults without asking is not the fast path, it is the failure this exists to prevent.
 - State `Confirmed / Answered / Assumed` before building, and keep `Assumed` in the delivery record.
 
 No Node available, or a surface where you cannot run a command? Read `docs/intake.slots.json` and perform the same scan by hand — `docs/INTAKE.md §3.2` has the four steps.
