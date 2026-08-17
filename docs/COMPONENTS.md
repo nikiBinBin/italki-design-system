@@ -942,12 +942,58 @@ The semantic token name is the contract. A theme boundary supplies `mode: "light
 
 A button means an operation (or a series of operations). Clicking a button triggers its corresponding business logic.
 
+**Default to Primary (`emphasis`)** — it is the main action of a section, and the
+value the component falls back to when no variant is passed. Reach for another
+variant only for the reason listed against it below. Two Red buttons on one page,
+or two Primary in one section, means the page has not decided what it wants the
+learner to do.
+
 - **Red button:** use for the highest-priority submit, confirm, booking, or conversion action; no more than one in a page or task step.
 - **Primary button:** use for the main action; no more than one primary button in one section.
 - **Default button:** use for a series of actions without priority.
 - **Ghost button:** commonly use for adding more actions; on complex backgrounds, especially home pages, it may provide a lower-contrast action boundary.
-- **White button:** use on a colored background.
+- **White button:** use on a colored background. Never on a white or near-white
+  surface — the fill matches the surface, only the border survives, and it reads
+  as a disabled control. On `--ui-color-card` or `--ui-color-page` use Secondary,
+  or Ghost for the quietest option. Pick the variant from what is behind it.
 - **Text button:** use for the most secondary action.
+
+#### Shape
+
+**Do not pass `shape`.** `default` already resolves per size — a 32 control is a
+pill, 40 and 48 are rounded — so the same prop reads correctly at every size.
+Spelling out `shape: "pill"` on a 32 button changes nothing and teaches the habit
+of passing it on a 40, where the system's answer is rounded; a page of pill 40s is
+how that habit looks.
+
+**An override is an instruction, never an initiative.** Pass `shape` only when a
+design decision has explicitly asked for it on that button. Do not infer one from
+a button's importance, from what a neighbouring screen does, or from a pattern
+copied out of another implementation. Absent an instruction, a 40 stays rounded —
+turning it into a pill is a change to the design, made silently, by whoever was
+typing.
+
+The failure this prevents is not one wrong button, it is a mismatched pair.
+`default` resolves by size, so an override on one button in a row leaves the
+button beside it on the system's answer: a pill CTA next to a rounded secondary,
+both individually legal, in the same action bar. **Shape belongs to the action
+row, not to the button.** If a row overrides, every button in it takes the same
+override; a row that does not override keeps one size throughout, so its buttons
+resolve to one shape by construction. Mixing a 32 and a 40 in one row splits the
+shape as surely as an override does.
+
+#### Label Length
+
+A button's label names an action in **one to three words, at most 24
+characters** — verb first, no trailing punctuation, no explanation. The row a
+button sits in was laid out for a name: a sentence wraps to a second line,
+breaks the alignment of everything beside it, and stops reading as something you
+press.
+
+When a label wants to be longer, the words belong somewhere else — the copy above
+the button, a field's helper text, or a Tooltip on the button. The action keeps
+the short name. `iconOnly` hides the label but still needs one: pass `ariaLabel`
+so the button is announced.
 - **Link button:** use for external links.
 - **Plus button:** use for italki Plus related features.
 - **Danger:** use for risky actions such as deletion or authorization.
@@ -1159,7 +1205,7 @@ Selection uses a white surface, 1px `Foreground/Border` boundary, `Radius/LG`, 1
 
 **`feedback family`** — Generic semantic family for info, success, warning, and error states. It is implemented through the component contracts below; use semantic status tokens from this file and execution usage rules from `EXECUTION.md`. Product patterns must not redefine the same family.
 
-**`alert`** — Persistent local status message. It receives semantic `tone` (`info | success | warning | error`), supplied title and optional description, closable state, optional supplied action slot, banner presentation, accessible label, and demo identifier through props. Its fixed local icon mapping is `info` → `Assets/Icons/info.svg`, `success` → `Assets/Icons/check.svg`, `warning` → `Assets/Icons/warning.svg`, and `error` → `Assets/Icons/error.svg`; callers cannot substitute a mismatched icon. `closable` provides the approved 24px `Assets/Icons/cross-sm.svg` dismissal control and asks the parent to own persistence or reappearance. It remains beside the affected context until dismissed or resolved; it does not become a toast, field-level error, confirmation dialog, or promotional callout. A banner is one concise page-region message and must not hide a required task action. The parent owns the actual condition, recovery action, and whether the message returns.
+**`alert`** — Persistent local status message. It receives semantic `tone` (`info | success | warning | error`), supplied title and optional description, closable state, optional supplied action slot, banner presentation, accessible label, and demo identifier through props. Its fixed local icon mapping is `info` → `Assets/Icons/info.svg`, `success` → `Assets/Icons/check.svg`, `warning` → `Assets/Icons/warning.svg`, and `error` → `Assets/Icons/error.svg`; callers cannot substitute a mismatched icon. `closable` provides the approved 24px `Assets/Icons/cross-sm.svg` dismissal control and asks the parent to own persistence or reappearance. It remains beside the affected context until dismissed or resolved; it does not become a toast, field-level error, confirmation dialog, or promotional callout. It takes the full width of its container and has no width of its own: it is page content and aligns with the page content it belongs to, so a narrower Alert is a narrower container, never a width set on the component. It previously capped at 680px, which read as a fixed width and left it ending short of whatever it sat beside. Its description is not held to a reading measure either; a long description in a wide column runs long, which is the accepted cost of the alignment. A banner is one concise page-region message and must not hide a required task action. The parent owns the actual condition, recovery action, and whether the message returns.
 
 **`status-info`**, **`status-success`**, **`status-warning`**, and **`status-error`** are named semantic presentations within `feedback family`, not four unrelated components. Each receives supplied message, tone, optional supporting detail, and one optional recovery action. Use the matching `Status/{tone}` token for concise inline meaning and `Status/{tone}-surface` only for a persistent local block. They do not replace field validation, toast, loading, or a full-page result state.
 

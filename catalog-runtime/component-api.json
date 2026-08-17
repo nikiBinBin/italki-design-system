@@ -1074,6 +1074,7 @@
           56,
           64,
           80,
+          96,
           120
         ],
         "variant": [
@@ -1162,7 +1163,10 @@
         "type": [
           "count",
           "dot",
-          "status"
+          "status",
+          "new",
+          "beta",
+          "previous"
         ],
         "tone": [
           "default",
@@ -1181,7 +1185,10 @@
         "overflow",
         "dot",
         "status",
-        "hidden"
+        "hidden",
+        "new",
+        "beta",
+        "previous"
       ],
       "subcomponents": {},
       "allowedTokens": [
@@ -1467,6 +1474,7 @@
         "id",
         "value",
         "count",
+        "size",
         "allowHalf",
         "allowClear",
         "disabled",
@@ -1481,6 +1489,7 @@
         "id": "\"\"",
         "value": "0",
         "count": "5",
+        "size": "20",
         "allowHalf": "false",
         "allowClear": "true",
         "disabled": "false",
@@ -1516,6 +1525,10 @@
           "default",
           "hover",
           "disabled"
+        ],
+        "size": [
+          20,
+          48
         ]
       },
       "states": [
@@ -1523,7 +1536,8 @@
         "labels",
         "clearable",
         "disabled",
-        "summary"
+        "summary",
+        "large"
       ],
       "subcomponents": {},
       "allowedTokens": [
@@ -2200,7 +2214,7 @@
         "title": "\"Drawer\"",
         "body": "\"\"",
         "footer": "\"\"",
-        "trigger": "\"\"",
+        "trigger": "required or context-provided",
         "triggerLabel": "\"Open drawer\"",
         "open": "false",
         "placement": "\"right\"",
@@ -2700,7 +2714,8 @@
         "value",
         "max",
         "label",
-        "ariaLabel"
+        "ariaLabel",
+        "currentComplete"
       ],
       "defaults": {
         "id": "\"\"",
@@ -2711,7 +2726,8 @@
         "value": "0",
         "max": "0",
         "label": "\"\"",
-        "ariaLabel": "\"\""
+        "ariaLabel": "\"\"",
+        "currentComplete": "false"
       },
       "enums": {
         "variant": [
@@ -2736,7 +2752,8 @@
         "dots",
         "top-indicator",
         "schedule-progress",
-        "progress-steps"
+        "progress-steps",
+        "icon-steps"
       ],
       "subcomponents": {},
       "allowedTokens": [
@@ -3112,7 +3129,7 @@
         "id": "\"\"",
         "options": "[]",
         "selected": "\"\"",
-        "size": "40",
+        "size": "32",
         "shape": "\"pill\"",
         "contentType": "\"text\"",
         "disabled": "false",
@@ -3160,6 +3177,9 @@
         "label",
         "time",
         "secondary",
+        "weekday",
+        "day",
+        "month",
         "appearance",
         "state",
         "selected",
@@ -3180,6 +3200,9 @@
         "label": "\"09:00\"",
         "time": "\"\"",
         "secondary": "\"\"",
+        "weekday": "\"\"",
+        "day": "\"\"",
+        "month": "\"\"",
         "appearance": "\"availability\"",
         "state": "\"available\"",
         "selected": "false",
@@ -3198,7 +3221,8 @@
       "enums": {
         "appearance": [
           "availability",
-          "option"
+          "option",
+          "scheduled"
         ],
         "duration": [
           15,
@@ -3221,7 +3245,8 @@
         "booked-by-others",
         "booked-by-you",
         "loading",
-        "option"
+        "option",
+        "scheduled"
       ],
       "subcomponents": {},
       "allowedTokens": [
@@ -3573,6 +3598,38 @@
         "placement",
         "with-actions",
         "leave-delay"
+      ],
+      "subcomponents": {},
+      "allowedTokens": [
+        "Color",
+        "Typography",
+        "Spacing",
+        "Radius",
+        "Shadow",
+        "Motion"
+      ]
+    },
+    "side-nav": {
+      "renderer": "",
+      "props": [
+        "id",
+        "items",
+        "activeId",
+        "ariaLabel",
+        "demo"
+      ],
+      "defaults": {
+        "id": "required or context-provided",
+        "items": "required or context-provided",
+        "activeId": "required or context-provided",
+        "ariaLabel": "required or context-provided",
+        "demo": "required or context-provided"
+      },
+      "enums": {},
+      "states": [
+        "default",
+        "active",
+        "disabled"
       ],
       "subcomponents": {},
       "allowedTokens": [
