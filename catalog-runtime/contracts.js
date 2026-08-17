@@ -565,6 +565,7 @@ window.ITalkiUIContracts = {
           56,
           64,
           80,
+          96,
           120
         ],
         "variant": [
@@ -624,7 +625,10 @@ window.ITalkiUIContracts = {
         "type": [
           "count",
           "dot",
-          "status"
+          "status",
+          "new",
+          "beta",
+          "previous"
         ],
         "tone": [
           "default",
@@ -775,6 +779,7 @@ window.ITalkiUIContracts = {
         "id",
         "value",
         "count",
+        "size",
         "allowHalf",
         "allowClear",
         "disabled",
@@ -810,6 +815,10 @@ window.ITalkiUIContracts = {
           "default",
           "hover",
           "disabled"
+        ],
+        "size": [
+          20,
+          48
         ]
       }
     },
@@ -1445,7 +1454,8 @@ window.ITalkiUIContracts = {
         "value",
         "max",
         "label",
-        "ariaLabel"
+        "ariaLabel",
+        "currentComplete"
       ],
       "props": {
         "variant": [
@@ -1650,6 +1660,9 @@ window.ITalkiUIContracts = {
         "label",
         "time",
         "secondary",
+        "weekday",
+        "day",
+        "month",
         "appearance",
         "state",
         "selected",
@@ -1668,7 +1681,8 @@ window.ITalkiUIContracts = {
       "props": {
         "appearance": [
           "availability",
-          "option"
+          "option",
+          "scheduled"
         ],
         "duration": [
           15,
@@ -1847,6 +1861,16 @@ window.ITalkiUIContracts = {
           300
         ]
       }
+    },
+    "side-nav": {
+      "acceptedProps": [
+        "id",
+        "items",
+        "activeId",
+        "ariaLabel",
+        "demo"
+      ],
+      "props": {}
     }
   }
 };

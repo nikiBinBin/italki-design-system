@@ -6,7 +6,65 @@
     "Assets/Images/"
   ],
   "migration": {
-    "migrated": ["button", "chip", "link", "video", "tag", "checkbox", "checkbox-group", "radio", "selection", "date-picker", "tooltip", "modal", "popup", "popconfirm", "divider", "section-intro", "avatar", "badge", "breadcrumb", "card", "list", "alert", "tabs", "pagination", "rate", "sidebar", "statistic", "table", "timeline", "top-nav", "slider", "panel", "search", "select", "switch", "drawer", "form-field", "text-input", "textarea", "number-stepper", "combobox", "upload", "stepper", "progress", "toast", "notification", "result", "skeleton", "dropdown-menu", "disclosure", "segmented-control", "time-slot", "time-picker", "calendar", "popover", "footer"],
+    "migrated": [
+      "alert",
+      "avatar",
+      "badge",
+      "breadcrumb",
+      "button",
+      "calendar",
+      "card",
+      "checkbox",
+      "checkbox-group",
+      "chip",
+      "combobox",
+      "date-picker",
+      "disclosure",
+      "divider",
+      "drawer",
+      "dropdown-menu",
+      "footer",
+      "form-field",
+      "link",
+      "list",
+      "modal",
+      "notification",
+      "number-stepper",
+      "pagination",
+      "panel",
+      "popconfirm",
+      "popover",
+      "popup",
+      "progress",
+      "radio",
+      "rate",
+      "result",
+      "search",
+      "section-intro",
+      "segmented-control",
+      "select",
+      "selection",
+      "side-nav",
+      "sidebar",
+      "skeleton",
+      "slider",
+      "statistic",
+      "stepper",
+      "switch",
+      "table",
+      "tabs",
+      "tag",
+      "text-input",
+      "textarea",
+      "time-picker",
+      "time-slot",
+      "timeline",
+      "toast",
+      "tooltip",
+      "top-nav",
+      "upload",
+      "video"
+    ],
     "pending": []
   },
   "tokens": {
@@ -82,526 +140,2333 @@
   },
   "components": {
     "button": {
-      "acceptedProps": ["label", "variant", "size", "shape", "state", "leadingIcon", "trailingIcon", "iconOnly", "disabled", "loading", "demo", "ariaLabel", "href", "download", "target", "rel", "ariaExpanded", "ariaPressed", "ariaDescribedBy", "ariaControls"],
+      "acceptedProps": [
+        "label",
+        "variant",
+        "size",
+        "shape",
+        "state",
+        "leadingIcon",
+        "trailingIcon",
+        "iconOnly",
+        "disabled",
+        "loading",
+        "demo",
+        "ariaLabel",
+        "href",
+        "download",
+        "target",
+        "rel",
+        "ariaExpanded",
+        "ariaPressed",
+        "ariaDescribedBy",
+        "ariaControls"
+      ],
       "props": {
-        "variant": ["emphasis", "red", "secondary", "white", "ghost", "text", "link", "danger", "plus"],
-        "size": [32, 40, 48],
-        "shape": ["default", "rounded", "pill"],
-        "state": ["default", "hover", "focus", "pressed", "disabled", "loading"]
+        "variant": [
+          "emphasis",
+          "red",
+          "secondary",
+          "white",
+          "ghost",
+          "text",
+          "link",
+          "danger",
+          "plus"
+        ],
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "pressed",
+          "disabled",
+          "loading"
+        ]
       },
-      "requiredStates": ["default", "hover", "focus", "disabled", "loading"]
+      "requiredStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "loading"
+      ]
     },
     "chip": {
-      "acceptedProps": ["label", "size", "surface", "checked", "selected", "disabled", "state", "demo"],
+      "acceptedProps": [
+        "label",
+        "size",
+        "surface",
+        "checked",
+        "selected",
+        "disabled",
+        "state",
+        "demo"
+      ],
       "props": {
-        "size": [24, 32, 40],
-        "surface": ["default", "white", "transparent"],
-        "state": ["default", "hover", "checked", "disabled"]
+        "size": [
+          24,
+          32,
+          40
+        ],
+        "surface": [
+          "default",
+          "white",
+          "transparent"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "checked",
+          "disabled"
+        ]
       },
-      "requiredStates": ["default", "hover", "checked", "disabled"]
+      "requiredStates": [
+        "default",
+        "hover",
+        "checked",
+        "disabled"
+      ]
     },
     "link": {
-      "acceptedProps": ["label", "href", "size", "variant", "trailingIcon", "external", "disabled", "state", "ariaLabel", "demo"],
+      "acceptedProps": [
+        "label",
+        "href",
+        "size",
+        "variant",
+        "trailingIcon",
+        "external",
+        "disabled",
+        "state",
+        "ariaLabel",
+        "demo"
+      ],
       "props": {
-        "size": [14, 16],
-        "variant": ["default", "subtle", "inverse"],
-        "trailingIcon": ["none", "chevron", "external"],
-        "state": ["default", "hover", "disabled"]
+        "size": [
+          14,
+          16
+        ],
+        "variant": [
+          "default",
+          "subtle",
+          "inverse"
+        ],
+        "trailingIcon": [
+          "none",
+          "chevron",
+          "external"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ]
       },
-      "requiredStates": ["default", "hover", "subtle", "inverse", "chevron", "external", "disabled"]
+      "requiredStates": [
+        "default",
+        "hover",
+        "subtle",
+        "inverse",
+        "chevron",
+        "external",
+        "disabled"
+      ]
     },
     "video": {
-      "acceptedProps": ["id", "poster", "posterAlt", "title", "duration", "playLabel", "state", "demo"],
+      "acceptedProps": [
+        "id",
+        "poster",
+        "posterAlt",
+        "title",
+        "duration",
+        "playLabel",
+        "state",
+        "demo"
+      ],
       "props": {
-        "state": ["default", "hover", "disabled"]
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ]
       },
-      "requiredStates": ["default", "duration", "titled", "hover", "disabled"]
+      "requiredStates": [
+        "default",
+        "duration",
+        "titled",
+        "hover",
+        "disabled"
+      ]
     },
     "tag": {
-      "acceptedProps": ["label", "value", "size", "tone", "variant", "leadingIcon", "removable", "removeDemo", "removeAriaLabel"],
+      "acceptedProps": [
+        "label",
+        "value",
+        "size",
+        "tone",
+        "variant",
+        "leadingIcon",
+        "removable",
+        "removeDemo",
+        "removeAriaLabel"
+      ],
       "props": {
-        "size": [24, 32, 40],
-        "tone": ["neutral", "info", "success", "warning", "error"],
-        "variant": ["default", "status", "promo"]
+        "size": [
+          24,
+          32,
+          40
+        ],
+        "tone": [
+          "neutral",
+          "info",
+          "success",
+          "warning",
+          "error"
+        ],
+        "variant": [
+          "default",
+          "status",
+          "promo"
+        ]
       },
-      "requiredStates": ["default", "removable", "status", "promo"]
+      "requiredStates": [
+        "default",
+        "removable",
+        "status",
+        "promo"
+      ]
     },
     "checkbox": {
-      "acceptedProps": ["id", "label", "checked", "state", "disabled", "toggleMode", "demo"],
+      "acceptedProps": [
+        "id",
+        "label",
+        "checked",
+        "state",
+        "disabled",
+        "toggleMode",
+        "demo"
+      ],
       "props": {
-        "checked": ["off", "on", "mixed"],
-        "state": ["default", "hover", "disabled"],
-        "toggleMode": ["binary", "indeterminate", "controlled"]
+        "checked": [
+          "off",
+          "on",
+          "mixed"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ],
+        "toggleMode": [
+          "binary",
+          "indeterminate",
+          "controlled"
+        ]
       },
-      "requiredStates": ["off", "on", "mixed", "disabled"]
+      "requiredStates": [
+        "off",
+        "on",
+        "mixed",
+        "disabled"
+      ]
     },
     "checkbox-group": {
-      "acceptedProps": ["id", "label", "description", "options", "selected", "layout", "selectAll", "feedback", "feedbackTone"],
+      "acceptedProps": [
+        "id",
+        "label",
+        "description",
+        "options",
+        "selected",
+        "layout",
+        "selectAll",
+        "feedback",
+        "feedbackTone"
+      ],
       "props": {
-        "layout": ["vertical", "inline"],
-        "feedbackTone": ["default", "error"]
+        "layout": [
+          "vertical",
+          "inline"
+        ],
+        "feedbackTone": [
+          "default",
+          "error"
+        ]
       },
-      "requiredStates": ["default", "inline", "select-all", "disabled", "feedback"]
+      "requiredStates": [
+        "default",
+        "inline",
+        "select-all",
+        "disabled",
+        "feedback"
+      ]
     },
     "radio": {
-      "acceptedProps": ["label", "value", "checked", "disabled", "state", "description", "demo", "tabIndex"],
-      "subcomponents": {
-        "group": { "acceptedProps": ["label", "options", "selected", "layout", "block"] }
-      },
-      "props": {
-        "state": ["default", "hover", "disabled"]
-      },
-      "requiredStates": ["default", "checked", "hover", "disabled", "inline", "vertical", "block"]
-    },
-    "selection": {
-      "acceptedProps": ["label", "value", "subtext", "description", "leading", "badge", "price", "period", "discount", "quantity", "quantityLabel", "originalPrice", "totalPrice", "selected", "selectedMarker", "disabled", "contentType", "selectionMode", "state", "tabIndex", "demo"],
+      "acceptedProps": [
+        "label",
+        "value",
+        "checked",
+        "disabled",
+        "state",
+        "description",
+        "demo",
+        "tabIndex"
+      ],
       "subcomponents": {
         "group": {
-          "acceptedProps": ["label", "options", "selected", "contentType", "selectionMode", "selectedMarker", "layout", "courseTitle", "courseMeta", "courses", "selectedDuration"],
-          "props": { "layout": ["stack", "grid", "package-grid"] }
+          "acceptedProps": [
+            "label",
+            "options",
+            "selected",
+            "layout",
+            "block"
+          ]
         }
       },
       "props": {
-        "contentType": ["standard", "icon-simple", "icon-card", "package-card", "lesson-options", "avatar", "payment-icon"],
-        "selectionMode": ["radio", "checkbox"],
-        "state": ["default", "hover", "focus", "disabled"]
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ]
       },
-      "requiredStates": ["icon-simple-default", "icon-simple-selected", "icon-simple-hover", "icon-simple-focus", "icon-simple-disabled", "icon-card-default", "package-card-default", "package-card-selected", "lesson-options-detailed", "lesson-options-compact", "lesson-options-list", "avatar-default", "payment-icon-default", "radio-default", "radio-selected", "checkbox-default", "checkbox-selected", "desktop", "mobile"]
+      "requiredStates": [
+        "default",
+        "checked",
+        "hover",
+        "disabled",
+        "inline",
+        "vertical",
+        "block"
+      ]
+    },
+    "selection": {
+      "acceptedProps": [
+        "label",
+        "value",
+        "subtext",
+        "description",
+        "leading",
+        "badge",
+        "price",
+        "period",
+        "discount",
+        "quantity",
+        "quantityLabel",
+        "originalPrice",
+        "totalPrice",
+        "selected",
+        "selectedMarker",
+        "disabled",
+        "contentType",
+        "selectionMode",
+        "state",
+        "tabIndex",
+        "demo"
+      ],
+      "subcomponents": {
+        "group": {
+          "acceptedProps": [
+            "label",
+            "options",
+            "selected",
+            "contentType",
+            "selectionMode",
+            "selectedMarker",
+            "layout",
+            "courseTitle",
+            "courseMeta",
+            "courses",
+            "selectedDuration"
+          ],
+          "props": {
+            "layout": [
+              "stack",
+              "grid",
+              "package-grid"
+            ]
+          }
+        }
+      },
+      "props": {
+        "contentType": [
+          "standard",
+          "icon-simple",
+          "icon-card",
+          "package-card",
+          "lesson-options",
+          "avatar",
+          "payment-icon"
+        ],
+        "selectionMode": [
+          "radio",
+          "checkbox"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ]
+      },
+      "requiredStates": [
+        "icon-simple-default",
+        "icon-simple-selected",
+        "icon-simple-hover",
+        "icon-simple-focus",
+        "icon-simple-disabled",
+        "icon-card-default",
+        "package-card-default",
+        "package-card-selected",
+        "lesson-options-detailed",
+        "lesson-options-compact",
+        "lesson-options-list",
+        "avatar-default",
+        "payment-icon-default",
+        "radio-default",
+        "radio-selected",
+        "checkbox-default",
+        "checkbox-selected",
+        "desktop",
+        "mobile"
+      ]
     },
     "date-picker": {
-      "acceptedProps": ["id", "label", "value", "placeholder", "size", "shape", "status", "open", "disabled", "state", "monthLabel", "weekdays", "days", "months", "monthIndex", "selected", "range", "demo"],
+      "acceptedProps": [
+        "id",
+        "label",
+        "value",
+        "placeholder",
+        "size",
+        "shape",
+        "status",
+        "open",
+        "disabled",
+        "state",
+        "monthLabel",
+        "weekdays",
+        "days",
+        "months",
+        "monthIndex",
+        "selected",
+        "range",
+        "demo"
+      ],
       "props": {
-        "size": [32, 40, 48],
-        "shape": ["default", "rounded", "pill"],
-        "status": ["default", "warning", "error"],
-        "state": ["default", "hover", "focus", "disabled"]
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ]
       },
-      "requiredStates": ["default", "open", "disabled", "selected", "range"]
+      "requiredStates": [
+        "default",
+        "open",
+        "disabled",
+        "selected",
+        "range"
+      ]
     },
     "tooltip": {
-      "acceptedProps": ["id", "content", "trigger", "triggerLabel", "placement", "arrow", "open", "disabled", "demo"],
+      "acceptedProps": [
+        "id",
+        "content",
+        "trigger",
+        "triggerLabel",
+        "placement",
+        "arrow",
+        "open",
+        "disabled",
+        "demo"
+      ],
       "props": {
-        "placement": ["top", "top-left", "top-right", "bottom", "bottom-left", "bottom-right", "left", "right"]
+        "placement": [
+          "top",
+          "top-left",
+          "top-right",
+          "bottom",
+          "bottom-left",
+          "bottom-right",
+          "left",
+          "right"
+        ]
       },
-      "requiredStates": ["default", "arrowless", "placement", "disabled"]
+      "requiredStates": [
+        "default",
+        "arrowless",
+        "placement",
+        "disabled"
+      ]
     },
     "modal": {
-      "acceptedProps": ["id", "title", "body", "footer", "trigger", "triggerLabel", "open", "size", "titleAlign", "stage", "closable", "maskClosable", "keyboardClosable", "demo"],
+      "acceptedProps": [
+        "id",
+        "title",
+        "body",
+        "footer",
+        "trigger",
+        "triggerLabel",
+        "open",
+        "size",
+        "titleAlign",
+        "stage",
+        "closable",
+        "maskClosable",
+        "keyboardClosable",
+        "demo"
+      ],
       "props": {
-        "size": ["default", "wide"],
-        "titleAlign": ["start", "center"],
-        "stage": ["demo", "inline"]
+        "size": [
+          "default",
+          "wide"
+        ],
+        "titleAlign": [
+          "start",
+          "center"
+        ],
+        "stage": [
+          "demo",
+          "inline"
+        ]
       },
-      "requiredStates": ["closed", "open", "wide", "non-closable"]
+      "requiredStates": [
+        "closed",
+        "open",
+        "wide",
+        "non-closable"
+      ]
     },
     "popup": {
-      "acceptedProps": ["id", "title", "body", "actions", "trigger", "triggerLabel", "open", "placement", "triggerMode", "closeOnLeave", "leaveDelay", "demo", "ariaLabel"],
+      "acceptedProps": [
+        "id",
+        "title",
+        "body",
+        "actions",
+        "trigger",
+        "triggerLabel",
+        "open",
+        "placement",
+        "triggerMode",
+        "closeOnLeave",
+        "leaveDelay",
+        "demo",
+        "ariaLabel"
+      ],
       "props": {
-        "placement": ["top", "bottom", "left", "right"],
-        "triggerMode": ["click", "hover", "focus"],
-        "closeOnLeave": [true, false],
-        "leaveDelay": [300]
+        "placement": [
+          "top",
+          "bottom",
+          "left",
+          "right"
+        ],
+        "triggerMode": [
+          "click",
+          "hover",
+          "focus"
+        ],
+        "closeOnLeave": [
+          true,
+          false
+        ],
+        "leaveDelay": [
+          300
+        ]
       },
-      "requiredStates": ["closed", "open", "placement", "with-actions", "leave-delay"]
+      "requiredStates": [
+        "closed",
+        "open",
+        "placement",
+        "with-actions",
+        "leave-delay"
+      ]
     },
     "popconfirm": {
-      "acceptedProps": ["id", "title", "description", "trigger", "triggerLabel", "confirm", "cancel", "confirmLabel", "cancelLabel", "showCancel", "open", "placement", "disabled", "loading", "demo", "ariaLabel"],
+      "acceptedProps": [
+        "id",
+        "title",
+        "description",
+        "trigger",
+        "triggerLabel",
+        "confirm",
+        "cancel",
+        "confirmLabel",
+        "cancelLabel",
+        "showCancel",
+        "open",
+        "placement",
+        "disabled",
+        "loading",
+        "demo",
+        "ariaLabel"
+      ],
       "props": {
-        "placement": ["top", "bottom", "left", "right"],
-        "showCancel": [true, false],
-        "disabled": [true, false],
-        "loading": [true, false]
+        "placement": [
+          "top",
+          "bottom",
+          "left",
+          "right"
+        ],
+        "showCancel": [
+          true,
+          false
+        ],
+        "disabled": [
+          true,
+          false
+        ],
+        "loading": [
+          true,
+          false
+        ]
       },
-      "requiredStates": ["closed", "open", "with-cancel", "loading", "disabled"]
+      "requiredStates": [
+        "closed",
+        "open",
+        "with-cancel",
+        "loading",
+        "disabled"
+      ]
     },
     "divider": {
-      "acceptedProps": ["type", "label", "orientation", "orientationMargin", "dashed", "plain", "tone", "icon", "ariaLabel"],
+      "acceptedProps": [
+        "type",
+        "label",
+        "orientation",
+        "orientationMargin",
+        "dashed",
+        "plain",
+        "tone",
+        "icon",
+        "ariaLabel"
+      ],
       "props": {
-        "type": ["horizontal", "vertical"],
-        "orientation": ["left", "center", "right"],
-        "dashed": [true, false],
-        "plain": [true, false],
-        "tone": ["divider", "border"]
+        "type": [
+          "horizontal",
+          "vertical"
+        ],
+        "orientation": [
+          "left",
+          "center",
+          "right"
+        ],
+        "dashed": [
+          true,
+          false
+        ],
+        "plain": [
+          true,
+          false
+        ],
+        "tone": [
+          "divider",
+          "border"
+        ]
       },
-      "requiredStates": ["horizontal", "vertical", "label", "left", "right", "dashed", "plain"]
+      "requiredStates": [
+        "horizontal",
+        "vertical",
+        "label",
+        "left",
+        "right",
+        "dashed",
+        "plain"
+      ]
     },
     "avatar": {
-      "acceptedProps": ["name", "image", "initials", "size", "flag", "flagLabel", "variant", "tone", "interactive", "state", "ariaLabel"],
+      "acceptedProps": [
+        "name",
+        "image",
+        "initials",
+        "size",
+        "flag",
+        "flagLabel",
+        "variant",
+        "tone",
+        "interactive",
+        "state",
+        "ariaLabel"
+      ],
       "subcomponents": {
-        "flag": { "acceptedProps": ["countryCode", "countryLabel", "size", "decorative", "ariaLabel"] },
-        "group": { "acceptedProps": ["members", "overflow", "addLabel", "size", "ariaLabel"] }
+        "flag": {
+          "acceptedProps": [
+            "countryCode",
+            "countryLabel",
+            "size",
+            "decorative",
+            "ariaLabel"
+          ]
+        },
+        "group": {
+          "acceptedProps": [
+            "members",
+            "overflow",
+            "addLabel",
+            "size",
+            "ariaLabel"
+          ]
+        }
       },
       "props": {
-        "size": [24, 32, 40, 48, 56, 64, 80, 120],
-        "variant": ["without-flag", "with-flag", "empty", "logo"],
-        "tone": ["primary", "info", "success", "warning"],
-        "interactive": [true, false],
-        "state": ["default", "hover"]
+        "size": [
+          24,
+          32,
+          40,
+          48,
+          56,
+          64,
+          80,
+          96,
+          120
+        ],
+        "variant": [
+          "without-flag",
+          "with-flag",
+          "empty",
+          "logo"
+        ],
+        "tone": [
+          "primary",
+          "info",
+          "success",
+          "warning"
+        ],
+        "interactive": [
+          true,
+          false
+        ],
+        "state": [
+          "default",
+          "hover"
+        ]
       },
-      "requiredStates": ["image", "with-flag", "empty", "logo", "hover", "group", "empty-group", "flag"]
+      "requiredStates": [
+        "image",
+        "with-flag",
+        "empty",
+        "logo",
+        "hover",
+        "group",
+        "empty-group",
+        "flag"
+      ]
     },
     "badge": {
-      "acceptedProps": ["type", "anchor", "count", "label", "tone", "overflowCount", "hidden", "ariaLabel"],
+      "acceptedProps": [
+        "type",
+        "anchor",
+        "count",
+        "label",
+        "tone",
+        "overflowCount",
+        "hidden",
+        "ariaLabel"
+      ],
       "props": {
-        "type": ["count", "dot", "status"],
-        "tone": ["default", "success", "info", "warning", "error"],
-        "hidden": [true, false]
+        "type": [
+          "count",
+          "dot",
+          "status",
+          "new",
+          "beta",
+          "previous"
+        ],
+        "tone": [
+          "default",
+          "success",
+          "info",
+          "warning",
+          "error"
+        ],
+        "hidden": [
+          true,
+          false
+        ]
       },
-      "requiredStates": ["count", "overflow", "dot", "status", "hidden"]
+      "requiredStates": [
+        "count",
+        "overflow",
+        "dot",
+        "status",
+        "hidden",
+        "new",
+        "beta",
+        "previous"
+      ]
     },
     "breadcrumb": {
-      "acceptedProps": ["items", "separator", "ariaLabel", "collapsedOpen", "demo"],
+      "acceptedProps": [
+        "items",
+        "separator",
+        "ariaLabel",
+        "collapsedOpen",
+        "demo"
+      ],
       "props": {
-        "collapsedOpen": [true, false]
+        "collapsedOpen": [
+          true,
+          false
+        ]
       },
-      "requiredStates": ["standard", "icon-only", "overflow", "custom-separator"]
+      "requiredStates": [
+        "standard",
+        "icon-only",
+        "overflow",
+        "custom-separator"
+      ]
     },
     "card": {
-      "acceptedProps": ["interactive", "outlined", "media", "mediaAlt", "mediaPlaceholder", "mediaRatio", "eyebrow", "title", "body", "meta", "footer", "density", "ariaLabel", "href", "demo"],
+      "acceptedProps": [
+        "interactive",
+        "outlined",
+        "media",
+        "mediaAlt",
+        "mediaPlaceholder",
+        "mediaRatio",
+        "eyebrow",
+        "title",
+        "body",
+        "meta",
+        "footer",
+        "density",
+        "ariaLabel",
+        "href",
+        "demo"
+      ],
       "props": {
-        "interactive": [true, false],
-        "outlined": [true, false],
-        "mediaPlaceholder": [true, false],
-        "mediaRatio": ["16:9", "3:1"],
-        "density": ["compact", "default", "comfortable"]
+        "interactive": [
+          true,
+          false
+        ],
+        "outlined": [
+          true,
+          false
+        ],
+        "mediaPlaceholder": [
+          true,
+          false
+        ],
+        "mediaRatio": [
+          "16:9",
+          "3:1"
+        ],
+        "density": [
+          "compact",
+          "default",
+          "comfortable"
+        ]
       },
-      "requiredStates": ["basic", "media", "interactive", "compact", "comfortable"]
+      "requiredStates": [
+        "basic",
+        "media",
+        "interactive",
+        "compact",
+        "comfortable"
+      ]
     },
     "alert": {
-      "acceptedProps": ["tone", "title", "description", "closable", "action", "banner", "ariaLabel", "demo"],
+      "acceptedProps": [
+        "tone",
+        "title",
+        "description",
+        "closable",
+        "action",
+        "banner",
+        "ariaLabel",
+        "demo"
+      ],
       "props": {
-        "tone": ["info", "success", "warning", "error"],
-        "closable": [true, false],
-        "banner": [true, false]
+        "tone": [
+          "info",
+          "success",
+          "warning",
+          "error"
+        ],
+        "closable": [
+          true,
+          false
+        ],
+        "banner": [
+          true,
+          false
+        ]
       },
-      "requiredStates": ["info", "success", "warning", "error", "closable", "with-action", "banner"]
+      "requiredStates": [
+        "info",
+        "success",
+        "warning",
+        "error",
+        "closable",
+        "with-action",
+        "banner"
+      ]
     },
     "tabs": {
-      "acceptedProps": ["id", "items", "activeId", "extra", "ariaLabel", "orientation", "variant", "activation", "demo"],
+      "acceptedProps": [
+        "id",
+        "items",
+        "activeId",
+        "extra",
+        "ariaLabel",
+        "orientation",
+        "variant",
+        "activation",
+        "demo"
+      ],
       "props": {
-        "orientation": ["horizontal"],
-        "variant": ["default", "red-line"],
-        "activation": ["manual", "automatic"]
+        "orientation": [
+          "horizontal"
+        ],
+        "variant": [
+          "default",
+          "red-line"
+        ],
+        "activation": [
+          "manual",
+          "automatic"
+        ]
       },
-      "requiredStates": ["basic", "red-line", "icon-count", "disabled", "trailing-action"]
+      "requiredStates": [
+        "basic",
+        "red-line",
+        "icon-count",
+        "disabled",
+        "trailing-action"
+      ]
     },
     "pagination": {
-      "acceptedProps": ["pages", "current", "previousDisabled", "nextDisabled", "ariaLabel", "demo"],
+      "acceptedProps": [
+        "pages",
+        "current",
+        "previousDisabled",
+        "nextDisabled",
+        "ariaLabel",
+        "demo"
+      ],
       "props": {
-        "previousDisabled": [true, false],
-        "nextDisabled": [true, false]
+        "previousDisabled": [
+          true,
+          false
+        ],
+        "nextDisabled": [
+          true,
+          false
+        ]
       },
-      "requiredStates": ["pages", "current", "disabled"]
+      "requiredStates": [
+        "pages",
+        "current",
+        "disabled"
+      ]
     },
     "rate": {
-      "acceptedProps": ["id", "value", "count", "allowHalf", "allowClear", "disabled", "labels", "showText", "label", "variant", "state", "demo"],
+      "acceptedProps": [
+        "id",
+        "value",
+        "count",
+        "size",
+        "allowHalf",
+        "allowClear",
+        "disabled",
+        "labels",
+        "showText",
+        "label",
+        "variant",
+        "state",
+        "demo"
+      ],
       "props": {
-        "variant": ["interactive", "summary"],
-        "allowHalf": [true, false],
-        "allowClear": [true, false],
-        "disabled": [true, false],
-        "showText": [true, false],
-        "state": ["default", "hover", "disabled"]
+        "variant": [
+          "interactive",
+          "summary"
+        ],
+        "allowHalf": [
+          true,
+          false
+        ],
+        "allowClear": [
+          true,
+          false
+        ],
+        "disabled": [
+          true,
+          false
+        ],
+        "showText": [
+          true,
+          false
+        ],
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ],
+        "size": [
+          20,
+          48
+        ]
       },
-      "requiredStates": ["basic", "labels", "clearable", "disabled", "summary"]
+      "requiredStates": [
+        "basic",
+        "labels",
+        "clearable",
+        "disabled",
+        "summary",
+        "large"
+      ]
     },
     "sidebar": {
-      "acceptedProps": ["id", "variant", "collapsed", "items", "sections", "moreItems", "moreOpen", "footer", "balance", "avatarInitials", "ariaLabel", "sticky", "demo"],
+      "acceptedProps": [
+        "id",
+        "variant",
+        "collapsed",
+        "items",
+        "sections",
+        "moreItems",
+        "moreOpen",
+        "footer",
+        "balance",
+        "avatarInitials",
+        "ariaLabel",
+        "sticky",
+        "demo"
+      ],
       "props": {
-        "variant": ["normal", "plus"],
-        "collapsed": [true, false],
-        "moreOpen": [true, false],
-        "sticky": [true, false]
+        "variant": [
+          "normal",
+          "plus"
+        ],
+        "collapsed": [
+          true,
+          false
+        ],
+        "moreOpen": [
+          true,
+          false
+        ],
+        "sticky": [
+          true,
+          false
+        ]
       },
-      "requiredStates": ["normal", "plus", "collapsed", "expanded-section", "more-open"]
+      "requiredStates": [
+        "normal",
+        "plus",
+        "collapsed",
+        "expanded-section",
+        "more-open"
+      ]
     },
     "statistic": {
-      "acceptedProps": ["title", "value", "prefix", "suffix", "description", "loading", "ariaLabel", "demo"],
+      "acceptedProps": [
+        "title",
+        "value",
+        "prefix",
+        "suffix",
+        "description",
+        "loading",
+        "ariaLabel",
+        "demo"
+      ],
       "props": {
-        "loading": [true, false]
+        "loading": [
+          true,
+          false
+        ]
       },
-      "requiredStates": ["default", "with-affix", "description", "loading"]
+      "requiredStates": [
+        "default",
+        "with-affix",
+        "description",
+        "loading"
+      ]
     },
     "table": {
-      "acceptedProps": ["id", "columns", "rows", "caption", "density", "loading", "empty", "ariaLabel", "demo"],
+      "acceptedProps": [
+        "id",
+        "columns",
+        "rows",
+        "caption",
+        "density",
+        "loading",
+        "empty",
+        "ariaLabel",
+        "demo"
+      ],
       "props": {
-        "density": ["compact", "default"],
-        "loading": [true, false]
+        "density": [
+          "compact",
+          "default"
+        ],
+        "loading": [
+          true,
+          false
+        ]
       },
-      "requiredStates": ["default", "with-action", "loading", "empty"]
+      "requiredStates": [
+        "default",
+        "with-action",
+        "loading",
+        "empty"
+      ]
     },
     "timeline": {
-      "acceptedProps": ["id", "items", "layout", "reverse", "tone", "ariaLabel", "demo"],
+      "acceptedProps": [
+        "id",
+        "items",
+        "layout",
+        "reverse",
+        "tone",
+        "ariaLabel",
+        "demo"
+      ],
       "props": {
-        "layout": ["left", "right", "alternate"],
-        "tone": ["default", "info", "success", "warning", "error"],
-        "reverse": [true, false]
+        "layout": [
+          "left",
+          "right",
+          "alternate"
+        ],
+        "tone": [
+          "default",
+          "info",
+          "success",
+          "warning",
+          "error"
+        ],
+        "reverse": [
+          true,
+          false
+        ]
       },
-      "requiredStates": ["default", "with-label", "alternate", "pending", "reverse", "single-tone"]
+      "requiredStates": [
+        "default",
+        "with-label",
+        "alternate",
+        "pending",
+        "reverse",
+        "single-tone"
+      ]
     },
     "top-nav": {
-      "acceptedProps": ["id", "variant", "leading", "center", "trailing", "contextLabel", "contextFlag", "contextOptions", "searchPlaceholder", "searchFilterLabel", "actionLabel", "actionIcon", "ariaLabel", "sticky", "demo"],
+      "acceptedProps": [
+        "id",
+        "variant",
+        "leading",
+        "center",
+        "trailing",
+        "contextLabel",
+        "contextFlag",
+        "contextOptions",
+        "searchPlaceholder",
+        "searchFilterLabel",
+        "actionLabel",
+        "actionIcon",
+        "ariaLabel",
+        "sticky",
+        "demo"
+      ],
       "subcomponents": {
         "context": {
-          "acceptedProps": ["id", "mode", "selected", "options", "open", "ariaLabel", "demo"],
+          "acceptedProps": [
+            "id",
+            "mode",
+            "selected",
+            "options",
+            "open",
+            "ariaLabel",
+            "demo"
+          ],
           "props": {
-            "mode": ["labelled", "compact"],
-            "open": [true, false]
+            "mode": [
+              "labelled",
+              "compact"
+            ],
+            "open": [
+              true,
+              false
+            ]
           }
         },
         "search": {
-          "acceptedProps": ["id", "value", "placeholder", "filter", "filterLabel", "filterIcon", "filterCount", "filtered", "clearable", "disabled", "state", "ariaLabel", "demo"],
+          "acceptedProps": [
+            "id",
+            "value",
+            "placeholder",
+            "filter",
+            "filterLabel",
+            "filterIcon",
+            "filterCount",
+            "filtered",
+            "clearable",
+            "disabled",
+            "state",
+            "ariaLabel",
+            "demo"
+          ],
           "props": {
-            "filter": [true, false],
-            "filtered": [true, false],
-            "clearable": [true, false],
-            "disabled": [true, false],
-            "state": ["default", "focus", "disabled"]
+            "filter": [
+              true,
+              false
+            ],
+            "filtered": [
+              true,
+              false
+            ],
+            "clearable": [
+              true,
+              false
+            ],
+            "disabled": [
+              true,
+              false
+            ],
+            "state": [
+              "default",
+              "focus",
+              "disabled"
+            ]
           }
         }
       },
-      "props": {"sticky": [true, false], "variant": ["custom", "global-default", "teacher-search"]},
-      "requiredStates": ["global-default", "teacher-search", "context-open", "search-query", "filtered"]
+      "props": {
+        "sticky": [
+          true,
+          false
+        ],
+        "variant": [
+          "custom",
+          "global-default",
+          "teacher-search"
+        ]
+      },
+      "requiredStates": [
+        "global-default",
+        "teacher-search",
+        "context-open",
+        "search-query",
+        "filtered"
+      ]
     },
     "slider": {
-      "acceptedProps": ["value", "label", "disabled", "tooltip", "reversed", "state"],
+      "acceptedProps": [
+        "value",
+        "label",
+        "disabled",
+        "tooltip",
+        "reversed",
+        "state"
+      ],
       "subcomponents": {
-        "range": { "acceptedProps": ["lower", "upper", "label"] },
-        "vertical": { "acceptedProps": ["value", "label", "disabled"] }
+        "range": {
+          "acceptedProps": [
+            "lower",
+            "upper",
+            "label"
+          ]
+        },
+        "vertical": {
+          "acceptedProps": [
+            "value",
+            "label",
+            "disabled"
+          ]
+        }
       },
       "props": {
-        "orientation": ["horizontal", "vertical"],
-        "mode": ["single", "range"],
-        "state": ["default", "hover", "focus", "disabled"],
-        "reversed": [true, false]
+        "orientation": [
+          "horizontal",
+          "vertical"
+        ],
+        "mode": [
+          "single",
+          "range"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ],
+        "reversed": [
+          true,
+          false
+        ]
       },
-      "requiredStates": ["default", "hover", "focus", "disabled", "range", "vertical", "reverse"]
+      "requiredStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "range",
+        "vertical",
+        "reverse"
+      ]
     },
     "panel": {
-      "acceptedProps": ["title", "body", "extra", "divider", "density"],
+      "acceptedProps": [
+        "title",
+        "body",
+        "extra",
+        "divider",
+        "density"
+      ],
       "props": {
-        "density": ["small", "medium", "large"],
-        "divider": [true, false]
+        "density": [
+          "small",
+          "medium",
+          "large"
+        ],
+        "divider": [
+          true,
+          false
+        ]
       },
-      "requiredStates": ["with-title", "without-title"]
+      "requiredStates": [
+        "with-title",
+        "without-title"
+      ]
     },
     "search": {
-      "acceptedProps": ["id", "value", "placeholder", "size", "shape", "state", "clearable", "disabled"],
+      "acceptedProps": [
+        "id",
+        "value",
+        "placeholder",
+        "size",
+        "shape",
+        "state",
+        "clearable",
+        "disabled"
+      ],
       "props": {
-        "size": [32, 40, 48],
-        "shape": ["rounded", "pill"],
-        "state": ["default", "hover", "focus", "disabled"]
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "rounded",
+          "pill"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ]
       },
-      "requiredStates": ["default", "hover", "focus", "disabled", "clearable"]
+      "requiredStates": [
+        "default",
+        "hover",
+        "focus",
+        "disabled",
+        "clearable"
+      ]
     },
     "select": {
-      "acceptedProps": ["id", "label", "placeholder", "options", "groups", "selected", "mode", "size", "shape", "status", "state", "clearable", "searchable", "query", "disabled", "loading", "open"],
+      "acceptedProps": [
+        "id",
+        "label",
+        "placeholder",
+        "options",
+        "groups",
+        "selected",
+        "mode",
+        "size",
+        "shape",
+        "status",
+        "state",
+        "clearable",
+        "searchable",
+        "query",
+        "disabled",
+        "loading",
+        "open"
+      ],
       "props": {
-        "mode": ["single", "multiple"],
-        "size": [32, 40, 48],
-        "shape": ["default", "rounded", "pill"],
-        "status": ["default", "warning", "error"],
-        "state": ["default", "hover", "focus", "disabled", "loading"]
+        "mode": [
+          "single",
+          "multiple"
+        ],
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled",
+          "loading"
+        ]
       },
-      "requiredStates": ["default", "focus", "disabled", "warning", "error", "loading", "clearable", "multiple", "searchable", "grouped", "empty-result", "disabled-option"]
+      "requiredStates": [
+        "default",
+        "focus",
+        "disabled",
+        "warning",
+        "error",
+        "loading",
+        "clearable",
+        "multiple",
+        "searchable",
+        "grouped",
+        "empty-result",
+        "disabled-option"
+      ]
     },
     "switch": {
-      "acceptedProps": ["checked", "disabled", "state", "demo", "label"],
+      "acceptedProps": [
+        "checked",
+        "disabled",
+        "state",
+        "demo",
+        "label"
+      ],
       "props": {
-        "state": ["default", "hover", "disabled"]
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ]
       },
-      "requiredStates": ["off", "on", "hover", "disabled"]
+      "requiredStates": [
+        "off",
+        "on",
+        "hover",
+        "disabled"
+      ]
     },
     "drawer": {
-      "acceptedProps": ["id", "title", "body", "footer", "trigger", "triggerLabel", "open", "placement", "size", "closable", "maskClosable", "keyboardClosable", "demo"],
+      "acceptedProps": [
+        "id",
+        "title",
+        "body",
+        "footer",
+        "trigger",
+        "triggerLabel",
+        "open",
+        "placement",
+        "size",
+        "closable",
+        "maskClosable",
+        "keyboardClosable",
+        "demo"
+      ],
       "props": {
-        "placement": ["left", "right", "bottom"],
-        "size": ["default", "wide"]
+        "placement": [
+          "left",
+          "right",
+          "bottom"
+        ],
+        "size": [
+          "default",
+          "wide"
+        ]
       },
-      "requiredStates": ["closed", "right", "left", "bottom", "wide", "non-closable"]
+      "requiredStates": [
+        "closed",
+        "right",
+        "left",
+        "bottom",
+        "wide",
+        "non-closable"
+      ]
     },
     "form-field": {
-      "acceptedProps": ["id", "label", "control", "helper", "error", "status", "size", "shape", "state", "required", "disabled"],
+      "acceptedProps": [
+        "id",
+        "label",
+        "control",
+        "helper",
+        "error",
+        "status",
+        "size",
+        "shape",
+        "state",
+        "required",
+        "disabled"
+      ],
       "props": {
-        "size": [32, 40, 48],
-        "shape": ["default", "rounded", "pill"],
-        "status": ["default", "warning", "error"],
-        "state": ["default", "hover", "focus", "disabled"]
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ]
       },
-      "requiredStates": ["default", "helper", "leading-icon", "trailing-action", "warning", "error", "required", "disabled"]
+      "requiredStates": [
+        "default",
+        "helper",
+        "leading-icon",
+        "trailing-action",
+        "warning",
+        "error",
+        "required",
+        "disabled"
+      ]
     },
     "text-input": {
-      "acceptedProps": ["id", "value", "placeholder", "size", "shape", "status", "state", "disabled", "readOnly", "leadingIcon", "trailingIcon", "trailingAction", "ariaLabel", "demo"],
+      "acceptedProps": [
+        "id",
+        "value",
+        "placeholder",
+        "size",
+        "shape",
+        "status",
+        "state",
+        "disabled",
+        "readOnly",
+        "leadingIcon",
+        "trailingIcon",
+        "trailingAction",
+        "ariaLabel",
+        "demo"
+      ],
       "props": {
-        "size": [32, 40, 48],
-        "shape": ["default", "rounded", "pill"],
-        "status": ["default", "warning", "error"],
-        "state": ["default", "hover", "focus", "warning", "error", "disabled"]
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "warning",
+          "error",
+          "disabled"
+        ]
       },
-      "requiredStates": ["default", "hover", "focus", "warning", "error", "disabled", "read-only", "with-leading-icon", "with-trailing-icon"]
+      "requiredStates": [
+        "default",
+        "hover",
+        "focus",
+        "warning",
+        "error",
+        "disabled",
+        "read-only",
+        "with-leading-icon",
+        "with-trailing-icon"
+      ]
     },
     "textarea": {
-      "acceptedProps": ["id", "value", "placeholder", "size", "rows", "maxLength", "showCount", "status", "state", "disabled", "readOnly", "ariaLabel", "demo"],
+      "acceptedProps": [
+        "id",
+        "value",
+        "placeholder",
+        "size",
+        "rows",
+        "maxLength",
+        "showCount",
+        "status",
+        "state",
+        "disabled",
+        "readOnly",
+        "ariaLabel",
+        "demo"
+      ],
       "props": {
-        "size": [32, 40, 48],
-        "status": ["default", "warning", "error"],
-        "state": ["default", "hover", "focus", "warning", "error", "disabled"]
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "warning",
+          "error",
+          "disabled"
+        ]
       },
-      "requiredStates": ["default", "focus", "count", "warning", "error", "disabled", "read-only"]
+      "requiredStates": [
+        "default",
+        "focus",
+        "count",
+        "warning",
+        "error",
+        "disabled",
+        "read-only"
+      ]
     },
     "number-stepper": {
-      "acceptedProps": ["id", "value", "min", "max", "step", "size", "shape", "status", "state", "disabled", "label", "ariaLabel", "demo"],
+      "acceptedProps": [
+        "id",
+        "value",
+        "min",
+        "max",
+        "step",
+        "size",
+        "shape",
+        "status",
+        "state",
+        "disabled",
+        "label",
+        "ariaLabel",
+        "demo"
+      ],
       "props": {
-        "size": [32, 40, 48],
-        "shape": ["default", "rounded", "pill"],
-        "status": ["default", "warning", "error"],
-        "state": ["default", "hover", "focus", "disabled"]
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ]
       },
-      "requiredStates": ["default", "minimum", "maximum", "disabled"]
+      "requiredStates": [
+        "default",
+        "minimum",
+        "maximum",
+        "disabled"
+      ]
     },
     "combobox": {
-      "acceptedProps": ["id", "label", "placeholder", "options", "groups", "selected", "size", "shape", "status", "state", "clearable", "disabled", "loading", "open", "query"],
+      "acceptedProps": [
+        "id",
+        "label",
+        "placeholder",
+        "options",
+        "groups",
+        "selected",
+        "size",
+        "shape",
+        "status",
+        "state",
+        "clearable",
+        "disabled",
+        "loading",
+        "open",
+        "query"
+      ],
       "props": {
-        "size": [32, 40, 48],
-        "shape": ["default", "rounded", "pill"],
-        "status": ["default", "warning", "error"],
-        "state": ["default", "hover", "focus", "disabled", "loading"]
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled",
+          "loading"
+        ]
       },
-      "requiredStates": ["default", "open", "query", "selected", "empty-result", "disabled"]
+      "requiredStates": [
+        "default",
+        "open",
+        "query",
+        "selected",
+        "empty-result",
+        "disabled"
+      ]
     },
     "upload": {
-      "acceptedProps": ["id", "label", "description", "accept", "multiple", "files", "variant", "state", "disabled", "actionLabel", "maxSize", "avatar", "avatarAlt", "error", "ariaLabel", "demo"],
+      "acceptedProps": [
+        "id",
+        "label",
+        "description",
+        "accept",
+        "multiple",
+        "files",
+        "variant",
+        "state",
+        "disabled",
+        "actionLabel",
+        "maxSize",
+        "avatar",
+        "avatarAlt",
+        "error",
+        "ariaLabel",
+        "demo"
+      ],
       "props": {
-        "variant": ["dropzone", "trigger", "avatar"],
-        "state": ["default", "hover", "focus", "disabled", "uploading", "error"]
+        "variant": [
+          "dropzone",
+          "trigger",
+          "avatar"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled",
+          "uploading",
+          "error"
+        ]
       },
-      "requiredStates": ["dropzone", "trigger", "avatar-empty", "avatar-filled", "avatar-uploading", "avatar-error", "hover", "focus", "disabled", "uploading", "complete", "error", "multiple", "accept"]
+      "requiredStates": [
+        "dropzone",
+        "trigger",
+        "avatar-empty",
+        "avatar-filled",
+        "avatar-uploading",
+        "avatar-error",
+        "hover",
+        "focus",
+        "disabled",
+        "uploading",
+        "complete",
+        "error",
+        "multiple",
+        "accept"
+      ]
     },
     "stepper": {
-      "acceptedProps": ["id", "items", "current", "variant", "orientation", "value", "max", "label", "ariaLabel"],
+      "acceptedProps": [
+        "id",
+        "items",
+        "current",
+        "variant",
+        "orientation",
+        "value",
+        "max",
+        "label",
+        "ariaLabel",
+        "currentComplete"
+      ],
       "props": {
-        "variant": ["default", "flow-progress", "dots", "top-indicator", "schedule-progress", "progress-steps"],
-        "orientation": ["horizontal", "vertical"]
+        "variant": [
+          "default",
+          "flow-progress",
+          "dots",
+          "top-indicator",
+          "schedule-progress",
+          "progress-steps"
+        ],
+        "orientation": [
+          "horizontal",
+          "vertical"
+        ]
       },
-      "requiredStates": ["default", "current", "complete", "vertical", "flow-progress", "dots", "top-indicator", "schedule-progress", "progress-steps"]
+      "requiredStates": [
+        "default",
+        "current",
+        "complete",
+        "vertical",
+        "flow-progress",
+        "dots",
+        "top-indicator",
+        "schedule-progress",
+        "progress-steps",
+        "icon-steps"
+      ]
     },
     "progress": {
-      "acceptedProps": ["value", "max", "status", "type", "size", "showLabel", "indeterminate", "ariaLabel"],
+      "acceptedProps": [
+        "value",
+        "max",
+        "status",
+        "type",
+        "size",
+        "showLabel",
+        "indeterminate",
+        "ariaLabel"
+      ],
       "props": {
-        "status": ["default", "success", "error"],
-        "type": ["line", "circle", "semicircle"],
-        "size": [80, 120]
+        "status": [
+          "default",
+          "success",
+          "error"
+        ],
+        "type": [
+          "line",
+          "circle",
+          "semicircle"
+        ],
+        "size": [
+          80,
+          120
+        ]
       },
-      "requiredStates": ["default", "success", "error", "indeterminate", "circle", "semicircle"]
+      "requiredStates": [
+        "default",
+        "success",
+        "error",
+        "indeterminate",
+        "circle",
+        "semicircle"
+      ]
     },
     "toast": {
-      "acceptedProps": ["id", "tone", "title", "description", "action", "duration", "closable", "open", "ariaLabel"],
+      "acceptedProps": [
+        "id",
+        "tone",
+        "title",
+        "description",
+        "action",
+        "duration",
+        "closable",
+        "open",
+        "ariaLabel"
+      ],
       "props": {
-        "tone": ["info", "success", "warning", "error"]
+        "tone": [
+          "info",
+          "success",
+          "warning",
+          "error"
+        ]
       },
-      "requiredStates": ["info", "success", "warning", "error", "closable"]
+      "requiredStates": [
+        "info",
+        "success",
+        "warning",
+        "error",
+        "closable"
+      ]
     },
     "notification": {
-      "acceptedProps": ["id", "tone", "title", "description", "action", "closable", "open", "ariaLabel"],
+      "acceptedProps": [
+        "id",
+        "tone",
+        "title",
+        "description",
+        "action",
+        "closable",
+        "open",
+        "ariaLabel"
+      ],
       "props": {
-        "tone": ["info", "success", "warning", "error"]
+        "tone": [
+          "info",
+          "success",
+          "warning",
+          "error"
+        ]
       },
-      "requiredStates": ["info", "success", "warning", "error", "closable", "with-action"]
+      "requiredStates": [
+        "info",
+        "success",
+        "warning",
+        "error",
+        "closable",
+        "with-action"
+      ]
     },
     "result": {
-      "acceptedProps": ["id", "tone", "title", "description", "action", "secondaryAction", "ariaLabel"],
+      "acceptedProps": [
+        "id",
+        "tone",
+        "title",
+        "description",
+        "action",
+        "secondaryAction",
+        "ariaLabel"
+      ],
       "props": {
-        "tone": ["info", "success", "warning", "error"]
+        "tone": [
+          "info",
+          "success",
+          "warning",
+          "error"
+        ]
       },
-      "requiredStates": ["success", "info", "warning", "error", "with-action", "with-secondary-action"]
+      "requiredStates": [
+        "success",
+        "info",
+        "warning",
+        "error",
+        "with-action",
+        "with-secondary-action"
+      ]
     },
     "skeleton": {
-      "acceptedProps": ["type", "lines", "width", "height", "title", "avatar", "lastLineWidth", "shape", "round", "animated", "ariaLabel"],
+      "acceptedProps": [
+        "type",
+        "lines",
+        "width",
+        "height",
+        "title",
+        "avatar",
+        "lastLineWidth",
+        "shape",
+        "round",
+        "animated",
+        "ariaLabel"
+      ],
       "props": {
-        "type": ["text", "content", "avatar", "button", "input", "image", "card"],
-        "shape": ["default", "round", "circle", "square"]
+        "type": [
+          "text",
+          "content",
+          "avatar",
+          "button",
+          "input",
+          "image",
+          "card"
+        ],
+        "shape": [
+          "default",
+          "round",
+          "circle",
+          "square"
+        ]
       },
-      "requiredStates": ["text", "content", "avatar", "button", "input", "image", "card", "reduced-motion"]
+      "requiredStates": [
+        "text",
+        "content",
+        "avatar",
+        "button",
+        "input",
+        "image",
+        "card",
+        "reduced-motion"
+      ]
     },
     "dropdown-menu": {
-      "acceptedProps": ["id", "trigger", "triggerLabel", "items", "open", "placement", "ariaLabel"],
+      "acceptedProps": [
+        "id",
+        "trigger",
+        "triggerLabel",
+        "items",
+        "open",
+        "placement",
+        "ariaLabel"
+      ],
       "props": {
-        "placement": ["bottom-start", "bottom-end"]
+        "placement": [
+          "bottom-start",
+          "bottom-end"
+        ]
       },
-      "requiredStates": ["closed", "open", "disabled-item", "destructive-item"]
+      "requiredStates": [
+        "closed",
+        "open",
+        "disabled-item",
+        "destructive-item"
+      ]
     },
     "disclosure": {
-      "acceptedProps": ["id", "title", "content", "open", "disabled", "kind", "ariaLabel"],
+      "acceptedProps": [
+        "id",
+        "title",
+        "content",
+        "open",
+        "disabled",
+        "kind",
+        "ariaLabel"
+      ],
       "props": {
-        "kind": ["accordion", "details"]
+        "kind": [
+          "accordion",
+          "details"
+        ]
       },
-      "requiredStates": ["closed", "open", "disabled", "details"]
+      "requiredStates": [
+        "closed",
+        "open",
+        "disabled",
+        "details"
+      ]
     },
     "segmented-control": {
-      "acceptedProps": ["id", "options", "selected", "size", "shape", "contentType", "disabled", "ariaLabel"],
+      "acceptedProps": [
+        "id",
+        "options",
+        "selected",
+        "size",
+        "shape",
+        "contentType",
+        "disabled",
+        "ariaLabel"
+      ],
       "props": {
-        "size": [32, 40, 48],
-        "shape": ["pill", "rounded"],
-        "contentType": ["text", "icon", "role"]
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "pill",
+          "rounded"
+        ],
+        "contentType": [
+          "text",
+          "icon",
+          "role"
+        ]
       },
-      "requiredStates": ["default", "pill", "rounded", "icon", "role", "selected", "disabled"]
+      "requiredStates": [
+        "default",
+        "pill",
+        "rounded",
+        "icon",
+        "role",
+        "selected",
+        "disabled"
+      ]
     },
     "time-slot": {
-      "acceptedProps": ["id", "label", "time", "secondary", "appearance", "state", "selected", "unavailable", "held", "loading", "disabled", "duration", "teacher", "calendarDay", "calendarMinute", "ariaLabel", "tooltip", "demo"],
+      "acceptedProps": [
+        "id",
+        "label",
+        "time",
+        "secondary",
+        "weekday",
+        "day",
+        "month",
+        "appearance",
+        "state",
+        "selected",
+        "unavailable",
+        "held",
+        "loading",
+        "disabled",
+        "duration",
+        "teacher",
+        "calendarDay",
+        "calendarMinute",
+        "ariaLabel",
+        "tooltip",
+        "demo"
+      ],
       "props": {
-        "appearance": ["availability", "option"],
-        "duration": [15, 30, 60],
-        "state": ["available", "selected", "unavailable", "booked-by-others", "booked-by-you", "loading"]
+        "appearance": [
+          "availability",
+          "option",
+          "scheduled"
+        ],
+        "duration": [
+          15,
+          30,
+          60
+        ],
+        "state": [
+          "available",
+          "selected",
+          "unavailable",
+          "booked-by-others",
+          "booked-by-you",
+          "loading"
+        ]
       },
-      "requiredStates": ["available", "selected", "unavailable", "booked-by-others", "booked-by-you", "loading", "option"]
+      "requiredStates": [
+        "available",
+        "selected",
+        "unavailable",
+        "booked-by-others",
+        "booked-by-you",
+        "loading",
+        "option",
+        "scheduled"
+      ]
     },
     "time-picker": {
-      "acceptedProps": ["id", "label", "placeholder", "slots", "selected", "selectionMode", "disabled", "open", "state", "ariaLabel"],
+      "acceptedProps": [
+        "id",
+        "label",
+        "placeholder",
+        "slots",
+        "selected",
+        "selectionMode",
+        "disabled",
+        "open",
+        "state",
+        "ariaLabel"
+      ],
       "props": {
-        "state": ["default", "hover", "focus", "disabled"],
-        "selectionMode": ["single", "multiple"]
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ],
+        "selectionMode": [
+          "single",
+          "multiple"
+        ]
       },
-      "requiredStates": ["default", "open", "selected", "multiple", "disabled"]
+      "requiredStates": [
+        "default",
+        "open",
+        "selected",
+        "multiple",
+        "disabled"
+      ]
     },
     "calendar": {
-      "acceptedProps": ["id", "variant", "timezone", "weekLabel", "todayLabel", "dates", "rows", "weekViews", "activeWeek", "todayWeek", "timePicker", "availabilityLabel", "teacherAvailability", "recordTitle", "recordMonths", "recordStats", "weekdays", "disabled", "ariaLabel", "demo"],
+      "acceptedProps": [
+        "id",
+        "variant",
+        "timezone",
+        "weekLabel",
+        "todayLabel",
+        "dates",
+        "rows",
+        "weekViews",
+        "activeWeek",
+        "todayWeek",
+        "timePicker",
+        "availabilityLabel",
+        "teacherAvailability",
+        "recordTitle",
+        "recordMonths",
+        "recordStats",
+        "weekdays",
+        "disabled",
+        "ariaLabel",
+        "demo"
+      ],
       "props": {
-        "variant": ["availability", "teacher-availability", "compact-availability", "lesson-record"]
+        "variant": [
+          "availability",
+          "teacher-availability",
+          "compact-availability",
+          "lesson-record"
+        ]
       },
-      "requiredStates": ["default", "selected-slot", "unavailable-slot", "with-time-picker", "teacher-availability", "compact-availability", "lesson-record"]
+      "requiredStates": [
+        "default",
+        "selected-slot",
+        "unavailable-slot",
+        "with-time-picker",
+        "teacher-availability",
+        "compact-availability",
+        "lesson-record"
+      ]
     },
     "footer": {
-      "acceptedProps": ["id", "columns", "utilities", "copyright", "legalLinks", "socialLinks", "ariaLabel", "demo"],
+      "acceptedProps": [
+        "id",
+        "columns",
+        "utilities",
+        "copyright",
+        "legalLinks",
+        "socialLinks",
+        "ariaLabel",
+        "demo"
+      ],
       "props": {},
-      "requiredStates": ["standard", "with-utilities", "with-legal-links", "with-social-links"]
+      "requiredStates": [
+        "standard",
+        "with-utilities",
+        "with-legal-links",
+        "with-social-links"
+      ]
     },
     "section-intro": {
-      "acceptedProps": ["id", "eyebrow", "title", "description", "action", "size", "alignment", "headingLevel", "ariaLabel"],
+      "acceptedProps": [
+        "id",
+        "eyebrow",
+        "title",
+        "description",
+        "action",
+        "size",
+        "alignment",
+        "headingLevel",
+        "ariaLabel"
+      ],
       "props": {
-        "size": ["compact", "default"],
-        "alignment": ["start", "center"],
-        "headingLevel": [2, 3]
+        "size": [
+          "compact",
+          "default"
+        ],
+        "alignment": [
+          "start",
+          "center"
+        ],
+        "headingLevel": [
+          2,
+          3
+        ]
       },
-      "requiredStates": ["title-only", "with-eyebrow", "with-description", "with-action", "compact", "centered"]
+      "requiredStates": [
+        "title-only",
+        "with-eyebrow",
+        "with-description",
+        "with-action",
+        "compact",
+        "centered"
+      ]
     },
     "list": {
-      "acceptedProps": ["id", "items", "size", "variant", "divided", "ariaLabel", "demo"],
+      "acceptedProps": [
+        "id",
+        "items",
+        "size",
+        "variant",
+        "divided",
+        "ariaLabel",
+        "demo"
+      ],
       "props": {
-        "size": ["small", "default", "large"],
-        "variant": ["default", "avatar", "image", "content"],
-        "divided": [true, false]
+        "size": [
+          "small",
+          "default",
+          "large"
+        ],
+        "variant": [
+          "default",
+          "avatar",
+          "image",
+          "content"
+        ],
+        "divided": [
+          true,
+          false
+        ]
       },
-      "requiredStates": ["default-size", "small-size", "large-size", "with-description", "with-trailing", "interactive", "avatar", "image", "content", "undivided"]
+      "requiredStates": [
+        "default-size",
+        "small-size",
+        "large-size",
+        "with-description",
+        "with-trailing",
+        "interactive",
+        "avatar",
+        "image",
+        "content",
+        "undivided"
+      ]
     },
     "popover": {
-      "acceptedProps": ["id", "title", "body", "actions", "trigger", "triggerLabel", "open", "placement", "triggerMode", "closeOnLeave", "leaveDelay", "demo", "ariaLabel"],
+      "acceptedProps": [
+        "id",
+        "title",
+        "body",
+        "actions",
+        "trigger",
+        "triggerLabel",
+        "open",
+        "placement",
+        "triggerMode",
+        "closeOnLeave",
+        "leaveDelay",
+        "demo",
+        "ariaLabel"
+      ],
       "props": {
-        "placement": ["top", "bottom", "left", "right"],
-        "triggerMode": ["click", "hover", "focus"],
-        "closeOnLeave": [true, false],
-        "leaveDelay": [300]
+        "placement": [
+          "top",
+          "bottom",
+          "left",
+          "right"
+        ],
+        "triggerMode": [
+          "click",
+          "hover",
+          "focus"
+        ],
+        "closeOnLeave": [
+          true,
+          false
+        ],
+        "leaveDelay": [
+          300
+        ]
       },
-      "requiredStates": ["closed", "open", "placement", "with-actions", "leave-delay"]
+      "requiredStates": [
+        "closed",
+        "open",
+        "placement",
+        "with-actions",
+        "leave-delay"
+      ]
+    },
+    "side-nav": {
+      "acceptedProps": [
+        "id",
+        "items",
+        "activeId",
+        "ariaLabel",
+        "demo"
+      ],
+      "props": {},
+      "requiredStates": [
+        "default",
+        "active",
+        "disabled"
+      ]
     }
   }
 }

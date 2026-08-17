@@ -107,7 +107,44 @@
     return `<img class="${className}" src="${escapeHTML(withBase(path))}" alt="" />`;
   };
 
+  /* A url() an inline style can carry unquoted, so the same declaration survives
+     both this renderer and React's attribute escaping — quotes come back out the
+     other side spelled differently in each. Percent-encoding covers the
+     characters that would end the url() early. */
+  const cssUrl = (path) => `url(${encodeURI(path).replace(/['"()]/g, (character) => ({ "'": "%27", '"': "%22", "(": "%28", ")": "%29" })[character])})`;
+  /* mask-image itself, not a custom property holding the url: a relative url()
+     handed to a variable is resolved against the stylesheet that reads it — the
+     runtime's own folder — and every icon came out missing. Declared on the
+     element, it resolves against the page, which is where the assets are. */
+  const maskImageStyle = (path) => `-webkit-mask-image:${cssUrl(path)};mask-image:${cssUrl(path)}`;
+
+  /* A glyph that has to take the colour of what it sits in. A step marker changes
+     colour with its state — grey while it waits, white once it is behind you —
+     and an <img> cannot follow that. Same name resolution and same approval as
+     icon(); painted as a mask so currentColor shows through. */
+  /* Split out because a mask glyph is not always its own element. Two of them —
+     the package offer's category mark and the calendar's timezone pin — belong to
+     a span the renderer was already emitting, and they used to name their asset in
+     the stylesheet instead. A url() there resolves against the stylesheet, which
+     moves: catalog-runtime/ in the repo, the project root once published, and
+     _ds/<kit>/ in a project that adds the kit as a library. One of those is right
+     at a time. Emitted here it goes through withBase() like every other asset. */
+  const maskStyle = (rawPath) => {
+    const path = resolveIcon(rawPath);
+    if (!approvedAsset(path)) throw new Error(`Unapproved asset: ${path}`);
+    return maskImageStyle(withBase(path));
+  };
+
+  const maskIcon = (rawPath, className) => {
+    if (!rawPath) return "";
+    return `<i class="${className}" style="${maskStyle(rawPath)}" aria-hidden="true"></i>`;
+  };
+
   const resolveControlShape = (size, shape) => shape === "default" ? (size === 32 ? "pill" : "rounded") : shape;
+  /* The stepper is the one control whose default is a pill at every size: the two
+     round actions sit either side of the value, and a rounded box around them
+     reads as a field the value could be typed into, which it cannot. */
+  const resolveStepperShape = (shape) => shape === "default" ? "pill" : shape;
 
   // Field controls separate interaction from validation. Legacy state="warning" and
   // state="error" remain supported while consumers move to status.
@@ -317,7 +354,7 @@
     const feature = leading ? `<span class="ui-selection__feature ui-selection__feature--${contentType}">${leading}</span>` : "";
     const title = `<span class="ui-selection__title">${escapeHTML(label)}</span>${subtext ? `<span class="ui-selection__subtext">${escapeHTML(subtext)}</span>` : ""}`;
     const copy = `<span class="ui-selection__copy"><span class="ui-selection__title-row">${title}</span>${description ? `<span class="ui-selection__description">${escapeHTML(description)}</span>` : ""}</span>`;
-    const packageOffer = discount ? `<span class="ui-selection__package-offer${discount === "No discount" ? " is-neutral" : ""}"><span class="ui-selection__package-offer-icon" aria-hidden="true"></span><span>${escapeHTML(discount)}</span></span>` : "";
+    const packageOffer = discount ? `<span class="ui-selection__package-offer${discount === "No discount" ? " is-neutral" : ""}"><span class="ui-selection__package-offer-icon" style="${maskStyle("Assets/Icons/16px/category-sm.svg")}" aria-hidden="true"></span><span>${escapeHTML(discount)}</span></span>` : "";
     const packageQuantity = quantity ? `<span class="ui-selection__package-quantity"><strong>${escapeHTML(quantity)}</strong><span>${escapeHTML(quantityLabel)}</span></span>` : "";
     const packageTotal = originalPrice || totalPrice ? `<span class="ui-selection__package-total">${originalPrice ? `<s>${escapeHTML(originalPrice)}</s>` : ""}${totalPrice ? `<strong>${escapeHTML(totalPrice)}</strong>` : ""}</span>` : "";
     const packageBody = `<span class="ui-selection__package-copy">${packageOffer}${price ? `<span class="ui-selection__package-price">${escapeHTML(price)}${period ? `<small>${escapeHTML(period)}</small>` : ""}</span>` : ""}${description ? `<span class="ui-selection__package-description">${escapeHTML(description)}</span>` : ""}</span>${packageQuantity || packageTotal ? `<span class="ui-selection__package-footer">${packageQuantity}${packageTotal}</span>` : ""}`;
@@ -357,7 +394,9 @@
           return `<button class="ui-selection__lesson-option${optionSelected ? " is-selected" : ""}${disabled ? " is-disabled" : ""}" type="button" data-component="selection" data-demo="ui-selection-card" data-selection-mode="radio" data-selection-value="${escapeHTML(optionValue)}" role="radio" aria-checked="${optionSelected}" aria-label="${escapeHTML(`${option?.label || optionValue}${option?.price ? `, ${option.price}` : ""}`)}" tabindex="${optionSelected || (!durationValue && optionIndex === 0) ? 0 : -1}"${disabled ? " disabled" : ""}><span class="ui-selection__lesson-option-label">${escapeHTML(option?.label || optionValue)}</span>${option?.price ? `<span class="ui-selection__lesson-option-price">${escapeHTML(option.price)}</span>` : ""}<span class="ui-selection__lesson-option-indicator" aria-hidden="true"></span></button>`;
         }).join("");
         const summary = `<button class="ui-selection__lesson-toggle${courseSelected ? " is-selected" : ""}" type="button" data-demo="ui-lesson-toggle" data-lesson-course="${escapeHTML(courseValue)}" aria-expanded="${courseSelected}" aria-checked="${courseSelected}" role="radio"><span class="ui-selection__lesson-summary-copy"><span class="ui-selection__lesson-summary-title">${escapeHTML(course?.title || course?.label || courseValue)}</span>${course?.meta ? `<span class="ui-selection__lesson-summary-meta">${escapeHTML(course.meta)}</span>` : ""}</span>${course?.price ? `<span class="ui-selection__lesson-summary-price">${escapeHTML(course.price)}</span>` : ""}</button>`;
-        const durationMarkup = `<div class="ui-selection__lesson-options${courseSelected ? "" : " is-collapsed"}" data-ui-selection-group role="radiogroup" aria-label="${escapeHTML(`${course?.title || courseValue} duration`)}" aria-hidden="${!courseSelected}"${courseSelected ? "" : " inert"}><div class="ui-selection__lesson-options-inner">${durationRows}</div></div>`;
+        /* A course with no lengths has nothing to expand — emitting the
+           container anyway gave the card a block of padding when it was picked. */
+        const durationMarkup = !durationRows ? "" : `<div class="ui-selection__lesson-options${courseSelected ? "" : " is-collapsed"}" data-ui-selection-group role="radiogroup" aria-label="${escapeHTML(`${course?.title || courseValue} duration`)}" aria-hidden="${!courseSelected}"${courseSelected ? "" : " inert"}><div class="ui-selection__lesson-options-inner">${durationRows}</div></div>`;
         return `<section class="ui-selection__lesson-card${courseSelected ? " is-expanded" : ""}" data-lesson-course-card="${escapeHTML(courseValue)}">${summary}${durationMarkup}</section>`;
       }).join("");
       return `<div class="ui-selection-group ui-selection-group--lesson-options-list" data-component="selection-group" data-ui-lesson-options data-selection-mode="radio" role="group" aria-label="${escapeHTML(label)}">${courseCards}</div>`;
@@ -570,11 +609,29 @@
 
     const numericCount = typeof count === "number" && Number.isFinite(count) ? count : null;
     const displayCount = numericCount !== null && numericCount > overflowCount ? `${overflowCount}+` : escapeHTML(String(count));
-    const accessibleLabel = ariaLabel || (type === "status" ? label : type === "dot" ? "New activity" : `${displayCount} notifications`);
+    const accessibleLabel = ariaLabel || (type === "status" ? label : type === "dot" ? "New activity" : type === "previous" ? (label || "Previous lesson") : type === "new" || type === "beta" ? (label || type.toUpperCase()) : `${displayCount} notifications`);
     const classes = ["ui-badge", `ui-badge--${type}`, `ui-badge--${tone}`, hidden ? "is-hidden" : ""].filter(Boolean).join(" ");
 
     if (type === "status") {
       return `<span class="${classes}" data-component="badge" role="status" aria-label="${escapeHTML(accessibleLabel)}"><span class="ui-badge__status-dot" aria-hidden="true"></span><span class="ui-badge__label">${escapeHTML(label)}</span></span>`;
+    }
+
+    /* NEW and BETA are words, not counts: they mark what a thing is, so they take
+       no anchor, no number and no tone. NEW is the brand surface — it is a
+       promotion — and BETA is the info surface, because it is a statement about
+       maturity rather than an invitation. A label may rename either one for
+       another language; the shape does not change. */
+    /* "Previous lesson" is a note, not a shout: it marks the lesson type a
+       returning student took last time, so it reads in sentence case on a tinted
+       surface rather than as a solid uppercase mark. */
+    if (type === "previous") {
+      const note = label || "Previous lesson";
+      return `<span class="${classes}" data-component="badge" role="status" aria-label="${escapeHTML(ariaLabel || note)}"><span class="ui-badge__note">${escapeHTML(note)}</span></span>`;
+    }
+
+    if (type === "new" || type === "beta") {
+      const word = label || type.toUpperCase();
+      return `<span class="${classes}" data-component="badge" role="status" aria-label="${escapeHTML(ariaLabel || word)}"><span class="ui-badge__word">${escapeHTML(word)}</span></span>`;
     }
 
     const marker = hidden ? "" : type === "dot"
@@ -721,7 +778,12 @@
     };
     const close = closable ? `<button class="ui-alert__close" type="button" data-demo="ui-alert-close" aria-label="Dismiss alert">${icon("Assets/Icons/cross.svg", "ui-alert__close-icon")}</button>` : "";
     const descriptionMarkup = description ? `<span class="ui-alert__description">${escapeHTML(description)}</span>` : "";
-    const actionMarkup = action ? `<div class="ui-alert__action">${action}</div>` : "";
+    /* The action is a label, and the Alert builds the button: a 32 pill White,
+       which is the one shape that belongs on a tinted alert surface. It used to
+       take rendered markup, so every caller chose a size and a variant of its
+       own and no two alerts agreed. */
+    if (action && /^\s*</.test(String(action))) throw new Error("alert.action takes a label; the Alert renders its own 32 pill White button");
+    const actionMarkup = action ? `<div class="ui-alert__action">${button({ label: String(action), variant: "white", size: 32, shape: "pill" })}</div>` : "";
     const classes = ["ui-alert", `ui-alert--${tone}`, action ? "has-action" : "", closable ? "is-closable" : "", banner ? "is-banner" : ""].filter(Boolean).join(" ");
     return `<section class="${classes}" data-component="alert"${demo ? ` data-demo-alert="${escapeHTML(demo)}"` : ""} role="alert" aria-label="${escapeHTML(ariaLabel || title)}"><span class="ui-alert__icon" aria-hidden="true">${icon(iconByTone[tone], "ui-alert__icon-image")}</span><div class="ui-alert__copy"><strong>${escapeHTML(title)}</strong>${descriptionMarkup}</div>${actionMarkup}${close}</section>`;
   }
@@ -842,6 +904,7 @@
       id = "",
       value = 0,
       count = 5,
+      size = 20,
       allowHalf = false,
       allowClear = true,
       disabled = false,
@@ -853,6 +916,7 @@
       demo = ""
     } = props;
     enumValue("rate", "variant", variant);
+    enumValue("rate", "size", size);
     enumValue("rate", "allowHalf", allowHalf);
     enumValue("rate", "allowClear", allowClear);
     enumValue("rate", "disabled", disabled);
@@ -879,7 +943,10 @@
       const visualState = state === "hover" ? `${active || half ? " is-preview-active" : ""}${half ? " is-preview-half" : ""}` : `${active ? " is-active" : ""}${half ? " is-half" : ""}`;
       return `<button class="ui-rate__item${visualState}" type="button" role="radio" aria-checked="${String(active || half)}" aria-label="${escapeHTML(name)}" data-demo="${escapeHTML(demo || "ui-rate")}" data-rate-index="${index}" tabindex="${index === activeIndex ? "0" : "-1"}"${labels[offset] ? ` title="${escapeHTML(labels[offset])}"` : ""}${disabled ? " disabled" : ""}><span class="ui-rate__star" aria-hidden="true">${starBase}<span class="ui-rate__star-fill">${starFill}</span></span></button>`;
     }).join("");
-    const classes = ["ui-rate", disabled ? "is-disabled" : "", state === "hover" ? "is-preview" : ""].filter(Boolean).join(" ");
+    /* Two sizes, and they are two different jobs: 20 is a score being read in a
+       list, 48 is a question being asked after a lesson — big enough to hit with
+       a thumb. */
+    const classes = ["ui-rate", `ui-rate--${size}`, disabled ? "is-disabled" : "", state === "hover" ? "is-preview" : ""].filter(Boolean).join(" ");
     const idAttribute = id ? ` id="${escapeHTML(id)}"` : "";
     return `<div class="${classes}"${idAttribute} data-component="rate" data-ui-rate data-rate-value="${value}" data-rate-count="${count}" data-rate-allow-half="${allowHalf}" data-rate-allow-clear="${allowClear}" data-rate-disabled="${disabled}" data-rate-labels="${escapeHTML(labels.join("|"))}" role="radiogroup" aria-label="${escapeHTML(label)}">${items}<output class="ui-rate__output" data-rate-output>${display}</output>${showText ? `<span class="ui-rate__text" data-rate-text>${escapeHTML(text)}</span>` : ""}</div>`;
   }
@@ -1109,7 +1176,10 @@
     };
     const brand = `<button class="ui-sidebar__brand" type="button" data-demo="ui-sidebar-brand" aria-label="${collapsed ? "Show sidebar" : "italki"}" aria-controls="${escapeHTML(sidebarId)}"${eventAttribute}>${renderIcon("Assets/Icons/logo-italki-wordmark.svg", "ui-sidebar__brand-wordmark")} ${renderIcon("Assets/Icons/logo-italki-logomark.svg", "ui-sidebar__brand-mark")} ${renderIcon("Assets/Icons/logo-italki-plus.svg", "ui-sidebar__brand-plus")} ${renderIcon("Assets/Icons/layout-left.svg", "ui-sidebar__brand-expand")}</button>`;
     const brandTooltip = tooltip({ id: `${sidebarId}-expand-tooltip`, content: "Show sidebar", placement: "bottom", trigger: brand });
-    const collapseTrigger = `<button class="ui-sidebar__utility" type="button" data-demo="ui-sidebar-collapse" aria-label="Hide sidebar" aria-expanded="${!collapsed}" aria-controls="${escapeHTML(sidebarId)}"${eventAttribute}>${renderIcon("Assets/Icons/layout-left.svg", "ui-sidebar__utility-icon")}</button>`;
+    /* The label says what the click will do, and a rail that starts collapsed will
+       expand. setSidebarCollapsed already keeps it honest after the first toggle;
+       rendering it "Hide sidebar" while collapsed only left the first one wrong. */
+    const collapseTrigger = `<button class="ui-sidebar__utility" type="button" data-demo="ui-sidebar-collapse" aria-label="${collapsed ? "Show sidebar" : "Hide sidebar"}" aria-expanded="${!collapsed}" aria-controls="${escapeHTML(sidebarId)}"${eventAttribute}>${renderIcon("Assets/Icons/layout-left.svg", "ui-sidebar__utility-icon")}</button>`;
     const collapseTooltip = tooltip({ id: `${sidebarId}-collapse-tooltip`, content: "Hide sidebar", placement: "bottom", trigger: collapseTrigger });
     /* The footer is a slot, and the only thing anyone puts in it is the wallet
        balance and the account avatar. Filling it meant calling button() and
@@ -1582,8 +1652,11 @@
     const centerContent = center || (composed
       ? topNavSearch({ id: `${navId}-search`, placeholder: searchPlaceholder, filter: searchBar, filterLabel: searchFilterLabel })
       : "");
+    /* Named as well as labelled: when the bar runs out of room the CSS drops the
+       written label and leaves the icon, and a button whose only text is hidden
+       has no accessible name left. The aria-label is what survives that. */
     const trailingContent = trailing || (composed
-      ? button({ label: actionLabel, variant: "emphasis", size: 40, shape: "pill", leadingIcon: actionIcon })
+      ? button({ label: actionLabel, ariaLabel: actionLabel, variant: "emphasis", size: 40, shape: "pill", leadingIcon: actionIcon })
       : "");
     return `<header class="ui-top-nav${sticky ? "" : " is-flow"}" id="${escapeHTML(navId)}" data-component="top-nav" data-ui-top-nav aria-label="${escapeHTML(ariaLabel)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}><div class="ui-top-nav__leading">${leadingContent}</div><div class="ui-top-nav__center">${centerContent}</div><div class="ui-top-nav__trailing">${trailingContent}</div></header>`;
   }
@@ -1793,6 +1866,14 @@
     const popconfirmId = id || `popconfirm-${String(title).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "action"}`;
     const triggerMarkup = trigger || button({ label: triggerLabel, variant: "secondary", size: 32, shape: "pill", disabled, demo: demo || "ui-popconfirm-toggle", ariaExpanded: open, ariaControls: `${popconfirmId}-surface` });
     const cancelMarkup = showCancel ? (cancel || button({ label: cancelLabel, variant: "secondary", size: 32, shape: "pill", demo: "ui-popconfirm-close" })) : "";
+/* The danger variant, not a filled red one. Red is this system's promoted
+     action — Book lesson, Book trial — so a filled red "Cancel lesson" makes
+     destroying the thing look like the thing you came to do. Danger is red on
+     the card colour, quieter than the secondary "Keep lesson" beside it, which
+     is the right order for a question whose safe answer is no.
+     (It was filled red for a while on my reading of "a White button needs a
+     coloured background". That rule is about the White variant; danger is not
+     it.) */
     const confirmMarkup = confirm || button({ label: confirmLabel, variant: "danger", size: 32, shape: "pill", disabled: disabled || loading, loading, demo: "ui-popconfirm-close" });
     const descriptionMarkup = description ? `<p>${escapeHTML(description)}</p>` : "";
     const labelledBy = title ? ` aria-labelledby="${escapeHTML(popconfirmId)}-title"` : ` aria-label="${escapeHTML(ariaLabel || triggerLabel)}"`;
@@ -2488,7 +2569,7 @@
     enumValue("number-stepper", "shape", shape);
     container?.querySelectorAll?.(".ui-number-stepper").forEach((root) => {
       root.classList.remove("ui-number-stepper--32", "ui-number-stepper--40", "ui-number-stepper--48", "ui-number-stepper--rounded", "ui-number-stepper--pill");
-      root.classList.add(`ui-number-stepper--${size}`, `ui-number-stepper--${resolveControlShape(size, shape)}`);
+      root.classList.add(`ui-number-stepper--${size}`, `ui-number-stepper--${resolveStepperShape(shape)}`);
     });
   }
 
@@ -2689,7 +2770,11 @@
 
   function drawer(props = {}) {
     assertProps("drawer", props);
-    const { id = "", title = "Drawer", body = "", footer = "", trigger = "", triggerLabel = "Open drawer", open = false, placement = "right", size = "default", closable = true, maskClosable = true, keyboardClosable = true, demo = "" } = props;
+    /* No default for `trigger`: the check below asks whether it was passed at all,
+       and `trigger = ""` answered that question before it could be asked — so the
+       default button never rendered and triggerLabel was dead. Modal reads the
+       same way; the two dialogs now behave alike. */
+    const { id = "", title = "Drawer", body = "", footer = "", trigger, triggerLabel = "Open drawer", open = false, placement = "right", size = "default", closable = true, maskClosable = true, keyboardClosable = true, demo = "" } = props;
     enumValue("drawer", "placement", placement);
     enumValue("drawer", "size", size);
     const drawerId = id || `drawer-${String(title).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "panel"}`;
@@ -2766,7 +2851,7 @@
     const numericValue = Math.min(numericMax, Math.max(numericMin, Number(value)));
     const decrementDisabled = disabled || numericValue <= numericMin;
     const incrementDisabled = disabled || numericValue >= numericMax;
-    return `<div class="ui-number-stepper ui-number-stepper--${size} ui-number-stepper--${resolveControlShape(size, shape)}${presentation.state !== "default" ? ` is-${presentation.state}` : ""}${presentation.status !== "default" ? ` is-${presentation.status}` : ""}" data-component="number-stepper" data-ui-number-stepper data-min="${numericMin}" data-max="${numericMax}" data-step="${numericStep}"${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel || label)}"><button class="ui-number-stepper__action" type="button" data-demo="ui-number-stepper-decrement" aria-label="Decrease ${escapeHTML(label)}"${decrementDisabled ? " disabled" : ""}>${icon("Assets/Icons/minus-circle.svg", "ui-number-stepper__icon")}</button><output data-ui-number-stepper-value>${numericValue}</output><button class="ui-number-stepper__action" type="button" data-demo="ui-number-stepper-increment" aria-label="Increase ${escapeHTML(label)}"${incrementDisabled ? " disabled" : ""}>${icon("Assets/Icons/plus-circle.svg", "ui-number-stepper__icon")}</button></div>`;
+    return `<div class="ui-number-stepper ui-number-stepper--${size} ui-number-stepper--${resolveStepperShape(shape)}${presentation.state !== "default" ? ` is-${presentation.state}` : ""}${presentation.status !== "default" ? ` is-${presentation.status}` : ""}" data-component="number-stepper" data-ui-number-stepper data-min="${numericMin}" data-max="${numericMax}" data-step="${numericStep}"${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel || label)}"><button class="ui-number-stepper__action" type="button" data-demo="ui-number-stepper-decrement" aria-label="Decrease ${escapeHTML(label)}"${decrementDisabled ? " disabled" : ""}>${icon("Assets/Icons/minus-circle.svg", "ui-number-stepper__icon")}</button><output data-ui-number-stepper-value>${numericValue}</output><button class="ui-number-stepper__action" type="button" data-demo="ui-number-stepper-increment" aria-label="Increase ${escapeHTML(label)}"${incrementDisabled ? " disabled" : ""}>${icon("Assets/Icons/plus-circle.svg", "ui-number-stepper__icon")}</button></div>`;
   }
 
   function combobox(props = {}) {
@@ -2789,7 +2874,13 @@
       query = ""
     } = props;
     const markup = select({ id, label, placeholder, options, groups, selected, mode: "single", size, shape, status, state, clearable, searchable: true, query, disabled, loading, open: Boolean(open || query) });
-    return markup.replace('data-component="select"', 'data-component="combobox"').replace('data-ui-select', 'data-ui-select data-ui-combobox');
+    /* The marker is added to the display hook, not swapped in for it: replacing
+       "data-ui-select" turned data-ui-select-single into data-ui-combobox-single,
+       and syncSelectDisplay looks the hook up by name — so choosing an option in
+       a combobox ticked the option and never changed what the trigger said. */
+    return markup
+      .replace('data-component="select"', 'data-component="combobox"')
+      .replace('data-ui-select-single', 'data-ui-select-single data-ui-combobox-single');
   }
 
   function formatUploadSize(value) {
@@ -2921,19 +3012,26 @@
   }
 
   function normalizeStep(item, index) {
-    return typeof item === "string" ? { id: `step-${index + 1}`, label: item } : { id: item?.id || `step-${index + 1}`, label: item?.label || `Step ${index + 1}`, description: item?.description || "", disabled: Boolean(item?.disabled) };
+    return typeof item === "string" ? { id: `step-${index + 1}`, label: item, icon: "" } : { id: item?.id || `step-${index + 1}`, label: item?.label || `Step ${index + 1}`, description: item?.description || "", icon: item?.icon || "", disabled: Boolean(item?.disabled) };
   }
+
+  /* A step is numbered unless it hands over an icon, and an icon step keeps its
+     icon the whole way through: a number says where the step sits in the row, so
+     a tick can take its place once it is behind you, but an icon says what the
+     step *is*, and swapping that for a tick loses the one thing it carried. Being
+     done still reads — the marker fills in, exactly as the numbered one does. */
+  const stepMarker = (item, index, currentIndex) => `<span class="ui-stepper__marker">${item.icon ? maskIcon(item.icon, "ui-stepper__step-icon") : (index < currentIndex ? icon("Assets/Icons/confirm-sm.svg", "ui-stepper__complete-icon") : index + 1)}</span>`;
 
   function stepper(props = {}) {
     assertProps("stepper", props);
-    const { id = "", items = [], current = 0, variant = "default", orientation = "horizontal", value = 0, max = 0, label = "", ariaLabel = "" } = props;
+    const { id = "", items = [], current = 0, currentComplete = false, variant = "default", orientation = "horizontal", value = 0, max = 0, label = "", ariaLabel = "" } = props;
     enumValue("stepper", "variant", variant);
     enumValue("stepper", "orientation", orientation);
     const normalized = items.map(normalizeStep);
     const currentIndex = Math.max(0, Math.min(normalized.length - 1, Number(current)));
     if (variant === "flow-progress") {
       if (orientation !== "horizontal") throw new Error("flow-progress Stepper only supports horizontal orientation");
-      const flowItem = (item, index) => `<li class="ui-stepper__item${index < currentIndex ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}${item.disabled ? " is-disabled" : ""}"${index === currentIndex ? ' aria-current="step"' : ""}${item.disabled ? ' aria-disabled="true"' : ""}><span class="ui-stepper__marker">${index < currentIndex ? icon("Assets/Icons/confirm-sm.svg", "ui-stepper__complete-icon") : index + 1}</span><strong>${escapeHTML(item.label)}</strong></li>`;
+      const flowItem = (item, index) => `<li class="ui-stepper__item${index < currentIndex ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}${item.disabled ? " is-disabled" : ""}"${index === currentIndex ? ' aria-current="step"' : ""}${item.disabled ? ' aria-disabled="true"' : ""}>${stepMarker(item, index, currentIndex)}<strong>${escapeHTML(item.label)}</strong></li>`;
       const content = normalized.flatMap((item, index) => [flowItem(item, index), index < normalized.length - 1 ? `<li class="ui-stepper__connector${index < currentIndex ? " is-complete" : ""}" role="presentation" aria-hidden="true"></li>` : ""]).join("");
       return `<ol class="ui-stepper ui-stepper--flow-progress" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel || "Steps")}">${content}</ol>`;
     }
@@ -2942,7 +3040,7 @@
       return `<ol class="ui-stepper ui-stepper--dots" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel || "Steps")}">${content}</ol>`;
     }
     if (variant === "top-indicator") {
-      const content = normalized.map((item, index) => `<li class="ui-stepper__segment${index < currentIndex ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}"${index === currentIndex ? ' aria-current="step"' : ""}><span class="ui-stepper__sr-only">${escapeHTML(item.label)}</span></li>`).join("");
+      const content = normalized.map((item, index) => `<li class="ui-stepper__segment${index < currentIndex || (index === currentIndex && currentComplete) ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}"${index === currentIndex ? ' aria-current="step"' : ""}><span class="ui-stepper__sr-only">${escapeHTML(item.label)}</span></li>`).join("");
       return `<ol class="ui-stepper ui-stepper--top-indicator" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel || "Steps")}">${content}</ol>`;
     }
     if (variant === "schedule-progress") {
@@ -2954,11 +3052,11 @@
     }
     if (variant === "progress-steps") {
       if (orientation !== "horizontal") throw new Error("progress-steps Stepper only supports horizontal orientation");
-      const progressStep = (item, index) => `<li class="ui-stepper__item${index < currentIndex ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}${item.disabled ? " is-disabled" : ""}"${index === currentIndex ? ' aria-current="step"' : ""}${item.disabled ? ' aria-disabled="true"' : ""}><span class="ui-stepper__marker">${index < currentIndex ? icon("Assets/Icons/confirm-sm.svg", "ui-stepper__complete-icon") : index + 1}</span><strong>${escapeHTML(item.label)}</strong></li>`;
+      const progressStep = (item, index) => `<li class="ui-stepper__item${index < currentIndex ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}${item.disabled ? " is-disabled" : ""}"${index === currentIndex ? ' aria-current="step"' : ""}${item.disabled ? ' aria-disabled="true"' : ""}>${stepMarker(item, index, currentIndex)}<strong>${escapeHTML(item.label)}</strong></li>`;
       const content = normalized.flatMap((item, index) => [progressStep(item, index), index < normalized.length - 1 ? `<li class="ui-stepper__connector${index < currentIndex ? " is-complete" : ""}" role="presentation" aria-hidden="true"></li>` : ""]).join("");
       return `<ol class="ui-stepper ui-stepper--progress-steps" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel || "Steps")}">${content}</ol>`;
     }
-    const stepItem = (item, index) => `<li class="ui-stepper__item${index < currentIndex ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}${item.disabled ? " is-disabled" : ""}"><button type="button" data-demo="ui-stepper" data-step-index="${index}" aria-current="${index === currentIndex ? "step" : "false"}"${item.disabled ? " disabled" : ""}><span class="ui-stepper__marker">${index < currentIndex ? icon("Assets/Icons/confirm-sm.svg", "ui-stepper__complete-icon") : index + 1}</span><span><strong>${escapeHTML(item.label)}</strong>${item.description ? `<small>${escapeHTML(item.description)}</small>` : ""}</span></button></li>`;
+    const stepItem = (item, index) => `<li class="ui-stepper__item${index < currentIndex ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}${item.disabled ? " is-disabled" : ""}"><button type="button" data-demo="ui-stepper" data-step-index="${index}" aria-current="${index === currentIndex ? "step" : "false"}"${item.disabled ? " disabled" : ""}>${stepMarker(item, index, currentIndex)}<span><strong>${escapeHTML(item.label)}</strong>${item.description ? `<small>${escapeHTML(item.description)}</small>` : ""}</span></button></li>`;
     const content = orientation === "horizontal"
       ? normalized.flatMap((item, index) => [stepItem(item, index), index < normalized.length - 1 ? `<li class="ui-stepper__connector${index < currentIndex ? " is-complete" : ""}" role="presentation" aria-hidden="true"></li>` : ""]).join("")
       : normalized.map(stepItem).join("");
@@ -3062,7 +3160,9 @@
 
   function segmentedControl(props = {}) {
     assertProps("segmented-control", props);
-    const { id = "", options = [], selected = "", size = 40, shape = "pill", contentType = "text", disabled = false, ariaLabel = "Segmented control" } = props;
+    /* 32 by default: a segmented control sits above a list it filters, and at 40 it
+       stands taller than the rows it belongs to. */
+    const { id = "", options = [], selected = "", size = 32, shape = "pill", contentType = "text", disabled = false, ariaLabel = "Segmented control" } = props;
     enumValue("segmented-control", "size", size);
     enumValue("segmented-control", "shape", shape);
     enumValue("segmented-control", "contentType", contentType);
@@ -3080,7 +3180,7 @@
 
   function timeSlot(props = {}) {
     assertProps("time-slot", props);
-    const { id = "", label = "09:00", time = "", secondary = "", appearance = "availability", state = "available", selected = false, unavailable = false, held = false, loading = false, disabled = false, duration = 15, teacher = "", calendarDay = "", calendarMinute = null, ariaLabel = "", tooltip: tooltipContent = "", demo = "" } = props;
+    const { id = "", label = "09:00", time = "", secondary = "", month = "", day = "", weekday = "", appearance = "availability", state = "available", selected = false, unavailable = false, held = false, loading = false, disabled = false, duration = 15, teacher = "", calendarDay = "", calendarMinute = null, ariaLabel = "", tooltip: tooltipContent = "", demo = "" } = props;
     enumValue("time-slot", "appearance", appearance);
     enumValue("time-slot", "duration", duration);
     const resolvedState = loading ? "loading" : (selected ? "selected" : (unavailable || disabled ? "unavailable" : (held ? "booked-by-others" : state)));
@@ -3098,10 +3198,20 @@
     }[resolvedState];
     const slotId = id || `time-slot-${interval.toLowerCase().replace(/[^a-z0-9]+/g, "-") || "interval"}-${resolvedState}`;
     const tooltipId = `${slotId}-tooltip`;
-    const classes = ["ui-time-slot", `ui-time-slot--${appearance}`, `ui-time-slot--${duration}`, `is-${resolvedState}`].join(" ");
+    const classes = ["ui-time-slot", `ui-time-slot--${appearance}`, `ui-time-slot--${duration}`, `is-${resolvedState}`,
+      secondary && appearance === "option" ? "has-secondary" : ""].filter(Boolean).join(" ");
     const slotLabel = loading ? '<i class="ui-time-slot__spinner" aria-hidden="true"></i>' : (appearance === "availability" ? "" : escapeHTML(label));
     const calendarMetadata = calendarDay ? ` data-calendar-day="${escapeHTML(calendarDay)}"${calendarMinute === null || calendarMinute === undefined ? "" : ` data-calendar-minute="${escapeHTML(calendarMinute)}"`}` : "";
     const tooltipDisabled = appearance === "availability" && resolvedState === "selected";
+    /* Scheduled is not a cell you pick — it is the lesson you already have: a
+       date tile beside the day and the interval. So it is not a button either,
+       and it carries no pressed state; the row states what is booked. */
+    if (appearance === "scheduled") {
+      const dateTile = `<span class="ui-time-slot__date" aria-hidden="true"><span class="ui-time-slot__month">${escapeHTML(month)}</span><span class="ui-time-slot__day">${escapeHTML(day)}</span></span>`;
+      const readable = ariaLabel || [weekday, month && day ? `${day} ${month}` : "", interval].filter(Boolean).join(", ");
+      return `<div class="${classes}" data-component="time-slot" data-time-slot-state="${resolvedState}" data-time-slot-time="${escapeHTML(interval)}"${calendarMetadata} id="${escapeHTML(slotId)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""} role="group" aria-label="${escapeHTML(readable)}">${dateTile}<span class="ui-time-slot__schedule"><strong>${escapeHTML(weekday)}</strong><span>${escapeHTML(interval)}</span></span></div>`;
+    }
+
     const slotControl = `<button class="${classes}" type="button" data-component="time-slot" data-time-slot-state="${resolvedState}" data-time-slot-duration="${escapeHTML(duration)}" data-time-slot-time="${escapeHTML(interval)}"${calendarMetadata} id="${escapeHTML(slotId)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""} aria-pressed="${resolvedState === "selected"}" aria-label="${escapeHTML(ariaLabel || `${interval}, ${stateLabel}`)}"${appearance === "availability" && !tooltipDisabled ? ` aria-describedby="${escapeHTML(tooltipId)}"` : ""}${disabled || unavailableState ? " disabled" : ""}><span class="ui-time-slot__label">${slotLabel}</span>${secondary && appearance !== "availability" ? `<small>${escapeHTML(secondary)}</small>` : ""}</button>`;
     if (appearance !== "availability") return slotControl;
     return tooltip({ id: tooltipId, content: tooltipContent || tooltipCopy, placement: "bottom", trigger: slotControl }).replace('class="ui-tooltip-wrap"', `class="ui-tooltip-wrap ui-time-slot__tooltip-wrap${tooltipDisabled ? " is-tooltip-disabled" : ""}"`);
@@ -3327,12 +3437,28 @@
     const today = action("today", { label: todayLabel, variant: "secondary", size: 32, shape: "pill", leadingIcon: "Assets/Icons/16px/today-sm.svg" });
     const scrollable = normalizedRows.length > 12;
     const calendarConfig = hasWeekViews ? escapeHTML(JSON.stringify({ id: calendarId, variant, timezone, weekLabel, todayLabel, weekViews, todayWeek: todayWeekIndex, timePicker: timePickerProps, disabled, ariaLabel, demo })) : "";
-    return `<section class="ui-calendar${scrollable ? " ui-calendar--scrollable" : ""}${disabled ? " is-disabled" : ""}" data-component="calendar" data-ui-calendar data-calendar-week-index="${activeWeekIndex}" data-calendar-today-week="${todayWeekIndex}"${calendarConfig ? ` data-calendar-config="${calendarConfig}"` : ""} id="${escapeHTML(calendarId)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""} aria-label="${escapeHTML(ariaLabel)}"><header class="ui-calendar__controls"><div class="ui-calendar__context"><span class="ui-calendar__timezone"><span class="ui-calendar__timezone-icon" aria-hidden="true"></span><span>${escapeHTML(timezone)}</span></span>${selectedTime ? `<div class="ui-calendar__time-picker">${selectedTime}</div>` : ""}</div><div class="ui-calendar__actions">${today}<div class="ui-calendar__week-navigation">${previous}<strong>${escapeHTML(displayedWeekLabel)}</strong>${next}</div></div></header><div class="ui-calendar__scroll"><div class="ui-calendar__grid" role="grid" aria-label="${escapeHTML(ariaLabel)}" style="--ui-calendar-day-count:${normalizedDates.length};--ui-calendar-grid-height:${(normalizedRows.length + 1) * 40}px"><div class="ui-calendar__row ui-calendar__row--header" role="row"><div class="ui-calendar__corner" aria-hidden="true"></div>${dateHeader}</div>${timeRows}</div></div></section>`;
+    return `<section class="ui-calendar${scrollable ? " ui-calendar--scrollable" : ""}${disabled ? " is-disabled" : ""}" data-component="calendar" data-ui-calendar data-calendar-week-index="${activeWeekIndex}" data-calendar-today-week="${todayWeekIndex}"${calendarConfig ? ` data-calendar-config="${calendarConfig}"` : ""} id="${escapeHTML(calendarId)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""} aria-label="${escapeHTML(ariaLabel)}"><header class="ui-calendar__controls"><div class="ui-calendar__context"><span class="ui-calendar__timezone"><span class="ui-calendar__timezone-icon" style="${maskStyle("Assets/Icons/16px/location-sm.svg")}" aria-hidden="true"></span><span>${escapeHTML(timezone)}</span></span>${selectedTime ? `<div class="ui-calendar__time-picker">${selectedTime}</div>` : ""}</div><div class="ui-calendar__actions">${today}<div class="ui-calendar__week-navigation">${previous}<strong>${escapeHTML(displayedWeekLabel)}</strong>${next}</div></div></header><div class="ui-calendar__scroll"><div class="ui-calendar__grid" role="grid" aria-label="${escapeHTML(ariaLabel)}" style="--ui-calendar-day-count:${normalizedDates.length};--ui-calendar-grid-height:${(normalizedRows.length + 1) * 40}px"><div class="ui-calendar__row ui-calendar__row--header" role="row"><div class="ui-calendar__corner" aria-hidden="true"></div>${dateHeader}</div>${timeRows}</div></div></section>`;
   }
 
   function popover(props = {}) {
     assertProps("popover", props);
     return popup(props).replace('data-component="popup"', 'data-component="popover"').replace('data-ui-popup', 'data-ui-popup data-ui-popover');
+  }
+
+  function sideNav(props = {}) {
+    assertProps("side-nav", props);
+    const { id = "", items = [], activeId = "", ariaLabel = "Sections", demo = "" } = props;
+    if (!Array.isArray(items) || !items.length) throw new Error("side-nav requires at least one item");
+    /* The marker is in every row, not only the active one: it is 4px wide with a
+       12px gap, which is exactly the 16px inset an inactive row has — so the
+       labels line up and nothing shifts sideways when the section changes. */
+    const rows = items.map((item, index) => {
+      const { id: itemId = `item-${index + 1}`, label = "", disabled = false } = typeof item === "string" ? { id: item, label: item } : (item || {});
+      if (!label) throw new Error("side-nav items require a label");
+      const active = String(activeId) === String(itemId);
+      return `<button class="ui-side-nav__item${active ? " is-active" : ""}" type="button" data-demo="${escapeHTML(demo || "ui-side-nav-item")}" data-side-nav-item="${escapeHTML(itemId)}"${active ? ' aria-current="page"' : ""}${disabled ? " disabled" : ""}><i class="ui-side-nav__indicator" aria-hidden="true"></i><span>${escapeHTML(label)}</span></button>`;
+    }).join("");
+    return `<nav class="ui-side-nav" data-component="side-nav" data-ui-side-nav${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel)}">${rows}</nav>`;
   }
 
   function footer(props = {}) {
@@ -3586,9 +3712,20 @@
     return true;
   }
 
+  function clearCalendarTooltips(root) {
+    root?.querySelectorAll?.(".is-calendar-tooltip-active")
+      .forEach((node) => node.classList.remove("is-calendar-tooltip-active"));
+  }
+
   function syncCalendarTooltipPosition(target) {
     const scrollRoot = target?.matches?.(".ui-calendar__scroll") ? target : target?.closest?.(".ui-calendar__scroll");
     const wrapper = scrollRoot?.querySelector?.(".ui-tooltip-wrap:hover");
+    /* Nothing under the pointer: the tooltip that was showing has to go. Without
+       this it stayed behind after the mouse left the grid. */
+    if (!wrapper) {
+      clearCalendarTooltips(scrollRoot?.closest?.("[data-ui-calendar]") ?? scrollRoot);
+      return false;
+    }
     setActiveCalendarTooltip(wrapper);
     return positionCalendarTooltip(wrapper);
   }
@@ -3690,6 +3827,14 @@
   global.document?.addEventListener?.("scroll", (event) => {
     syncCalendarTooltipPosition(event.target);
   }, true);
+  global.document?.addEventListener?.("mouseover", (event) => {
+    const scroller = event.target?.closest?.(".ui-calendar__scroll");
+    if (scroller) syncCalendarTooltipPosition(scroller);
+  });
+  global.document?.addEventListener?.("mouseout", (event) => {
+    const scroller = event.target?.closest?.(".ui-calendar__scroll");
+    if (scroller && !scroller.contains(event.relatedTarget)) clearCalendarTooltips(scroller.closest("[data-ui-calendar]") ?? scroller);
+  });
 
   global.ITalkiUI = Object.freeze({
     contracts,
@@ -3758,6 +3903,7 @@
     timePicker,
     calendar,
     popover,
+    sideNav,
     footer,
     setCheckboxValue,
     toggleCheckbox,
