@@ -779,8 +779,7 @@ for (const c of COMPONENTS) {
 <html lang="en"><head>
 <meta charset="utf-8">
 <title>${c.name} — italki UI Kit</title>
-<base href="../../../">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../../styles.css">
 <style>
   *{box-sizing:border-box}
   body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page);font-family:var(--ui-font-family);color:var(--ui-color-text)}
@@ -1518,10 +1517,15 @@ is the machine-readable contract the assertions come from.
     const w = fixed ? Math.round(h * ratio(asset)) : h;
     /* Terse on purpose. 1,526 tiles at the readable markup came to 268KB —
        6KB past the 256KiB ceiling the platform reads a file under, and the card
-       stopped rendering. <base> carries the path prefix, the grid is a list so
-       each tile needs no class, and the caption is a span. Same output, ~78KB
-       less of it. */
-    return `<li><img src="${asset}" alt="" width="${w}" height="${h}" loading=lazy><span>${escape(label(asset))}</span></li>`;
+       stopped rendering. The grid is a list so each tile needs no class and the
+       caption is a span, which is most of the saving.
+
+       A <base> element carried the path prefix too, for another 14KB — reverted
+       after the icons broke again on the design surface. The saving was real and
+       the risk was not worth it: a card is rendered by a host that decides how
+       relative URLs resolve, and declaring a base overrides whatever that host
+       had arranged. Explicit prefixes cannot be overridden by anything. */
+    return `<li><img src="../../../${asset}" alt="" width="${w}" height="${h}" loading=lazy><span>${escape(label(asset))}</span></li>`;
   };
   /* Sections, not one grid. The two sizes are different sets — 248 glyphs exist
      only at 24, 67 only at 16, and 25 in both — and the rule that matters is
@@ -1537,8 +1541,7 @@ is the machine-readable contract the assertions come from.
 <html lang="en"><head>
 <meta charset="utf-8">
 <title>${title} — italki UI Kit</title>
-<base href="../../../">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../../styles.css">
 <style>
   *{box-sizing:border-box}
   body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page);font-family:var(--ui-font-family);color:var(--ui-color-text)}
@@ -1690,6 +1693,11 @@ On conflict, the owning document wins — \`EXECUTION.md §1.5\`.
   colour; a clickable word is \`Link\` or \`Button variant="link"\`.
 - **One \`variant="red"\` action per page or task step.** It is the booking /
   conversion action.
+- **The authenticated shell is assembled, never hand-written.** A page inside the
+  signed-in product carries \`workspace-header\` and \`sidebar-navigation\` from
+  \`guidelines/PATTERNS.md\`; do not draw a top bar or a left rail of your own
+  beside them. Whether a page is inside the product at all is the intake's
+  \`shell\` decision — read it off the answers, do not infer it from the layout.
 - **Never expose component names or internal rule names in a product screen.**
 
 \`README.md\` has the prop vocabulary, the slot table, the token list and the
