@@ -1517,7 +1517,14 @@ is the machine-readable contract the assertions come from.
     const w = fixed ? Math.round(h * ratio(asset)) : h;
     return `    <figure class="icon-tile"><img src="../../../${asset}" alt="" width="${w}" height="${h}" loading="lazy"><figcaption>${escape(label(asset))}</figcaption></figure>`;
   };
-  const sheet = (name, title, group, entries, size, note, blurb) => {
+  /* Sections, not one grid. The two sizes are different sets — 248 glyphs exist
+     only at 24, 67 only at 16, and 25 in both — and the rule that matters is
+     "match the icon size to the control, never scale one to the other". Piled
+     into a single grid there is nothing to match against: the sizes interleave
+     by alphabet and the reader cannot see which set a glyph belongs to, which
+     is the one thing they came to the card to learn. */
+  const sheet = (name, title, group, groups, size, note) => {
+    const entries = groups.flatMap((g) => g.items);
     const dir = `components/foundations/${name}`;
     write(`${dir}/${name}.html`, `<!-- @dsCard group="${group}" -->
 <!doctype html>
@@ -1528,16 +1535,18 @@ is the machine-readable contract the assertions come from.
 <style>
   *{box-sizing:border-box}
   body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page);font-family:var(--ui-font-family);color:var(--ui-color-text)}
-  .icon-note{margin:0 0 var(--ui-space-5,20px);color:var(--ui-color-secondary);font-size:14px;line-height:20px}
-  .icon-note code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--ui-color-text)}
+  .icon-section{margin:var(--ui-space-8,40px) 0 var(--ui-space-1,4px);font-size:16px;line-height:24px;font-weight:600;color:var(--ui-color-title)}
+  .icon-section:first-of-type{margin-top:0}
+  .icon-hint{margin:0 0 var(--ui-space-4,16px);color:var(--ui-color-secondary);font-size:13px;line-height:18px}
+  .icon-hint code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--ui-color-text)}
   .icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:var(--ui-space-3,12px)}
   .icon-tile{display:grid;justify-items:center;gap:var(--ui-space-2,8px);margin:0;padding:var(--ui-space-4,16px) var(--ui-space-2,8px);border-radius:var(--ui-radius-lg,12px);background:var(--ui-color-divider)}
   .icon-tile figcaption{color:var(--ui-color-secondary);font-size:12px;line-height:16px;text-align:center;overflow-wrap:anywhere}
 </style>
 </head><body>
-${blurb ? `<p class="icon-note">${blurb}</p>\n` : ''}<div class="icon-grid">
-${entries.map((a) => tile(a, size)).join('\n')}
-</div>
+${groups.map((g) => `${g.heading ? `<h2 class="icon-section">${g.heading}</h2>\n` : ''}${g.hint ? `<p class="icon-hint">${g.hint}</p>\n` : ''}<div class="icon-grid">
+${g.items.map((a) => tile(a, size)).join('\n')}
+</div>`).join('\n')}
 </body></html>
 `);
     write(`${dir}/${name}.prompt.md`, `${title} — the approved ${title.toLowerCase()} assets, ${entries.length} in total.
@@ -1564,17 +1573,35 @@ Generated from \`catalog-runtime/icon-manifest.js\`; run
   const isGeneral = (a) => a.includes('/ui/');
   const general = icons.filter((a) => isGeneral(a) && !isLogo(a));
   const glyphs = icons.filter((a) => !isLogo(a) && !isGeneral(a));
-  const logoCount = sheet('Logo', 'Logo', 'Foundation', logos, 40,
+  const logoCount = sheet('Logo', 'Logo', 'Foundation', [{ items: logos }], 40,
     'Brand marks. Use the wordmark where the brand is being asserted and the logomark where space is constrained; the -white variants are for dark surfaces.');
-  const iconCount = sheet('Icon', 'Icon', 'Foundation', glyphs, null,
+  /* Split where the contract splits. 16px is not a scaled 24 — the two sets
+     barely overlap, and each carries drawings the other does not have. */
+  const small = glyphs.filter((a) => a.includes('/16px/'));
+  const large = glyphs.filter((a) => !a.includes('/16px/'));
+  const iconCount = sheet('Icon', 'Icon', 'Foundation', [
+    { heading: `24px — ${large.length}`,
+      hint: 'The default set. <code>Assets/Icons/&lt;name&gt;.svg</code> — use these in anything 32 and up.',
+      items: large },
+    { heading: `16px — ${small.length}`,
+      hint: 'A separate set, not a scaled copy: <code>Assets/Icons/16px/&lt;name&gt;-sm.svg</code>. Only 25 names exist at both sizes, so a 24 glyph usually has no small form and a small one usually has no large. Match the icon to the control; never scale one into the other\u2019s slot.',
+      items: small },
+    /* Last, and only because the card is sectioned now. Tiled as one grid with
+       italki's own it was a wall that buried them; behind its own heading it is
+       a shelf you scroll to. Order is the whole argument for which set to
+       reach for first. */
+    { heading: `General purpose — ${general.length}`,
+      hint: 'Vendored, same 24 canvas, referenced the same way: <code>Assets/Icons/ui/&lt;name&gt;.svg</code>. The backup, not a peer \u2014 take from it only when nothing above carries the meaning, because a screen built from the italki set reads as one hand and every borrowed glyph breaks that.',
+      items: general },
+  ], null,
     `Icons live at two sizes: \`Assets/Icons/<name>.svg\` is the 24px set and \`Assets/Icons/16px/<name>-sm.svg\` the 16px set. Match the icon size to the control, never scale one to the other.
 
-Tiled above are italki's own ${glyphs.length} glyphs — **search these first**. A vendored general-purpose set of ${general.length} more sits at \`Assets/Icons/ui/<name>.svg\`, same 24px canvas, referenced the same way; it is the backup, not a peer. Take from it only when no italki glyph carries the meaning, because a screen built from the italki set reads as one hand and every borrowed glyph breaks that. It is not tiled here because it is too large to scan — list it with \`ls Assets/Icons/ui\`. If neither set fits, say so and ask for the icon rather than settling for a near-miss that says the wrong thing.`);
+Tiled above are italki's own ${glyphs.length} glyphs — **search these first**. A vendored general-purpose set of ${general.length} more sits at \`Assets/Icons/ui/<name>.svg\`, same 24px canvas, referenced the same way; it is the backup, not a peer. Take from it only when no italki glyph carries the meaning, because a screen built from the italki set reads as one hand and every borrowed glyph breaks that. It is tiled last on the card, behind its own heading, so reaching for it is a scroll rather than an accident. If neither set fits, say so and ask for the icon rather than settling for a near-miss that says the wrong thing.`);
   /* No blurb on the card. The same paragraph is in the prompt above, where the
      agent that has to choose an icon will read it; on the card it sat between
      the reader and the grid they came for, explaining a set the card does not
      show. Browsing and choosing are different jobs. */
-  report.foundations = `Icon ${iconCount} (+${general.length} general) · Logo ${logoCount}`;
+  report.foundations = `Icon ${large.length} at 24 · ${small.length} at 16 · ${general.length} general · Logo ${logoCount}`;
 }
 
 // ── guidelines — the docs the design agent reads before it writes ─────────
