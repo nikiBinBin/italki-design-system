@@ -121,6 +121,8 @@ The parent supplies every identity field, role, language and interest tag, intro
 
 `detail-section` holds one supplied topic such as fit, teaching focus, lesson style, reviews, or pricing. It receives heading, content slots, optional local action, density, and surface choice. It may be unframed or use one approved card surface; it is not a generic page wrapper.
 
+“Unframed” permits removing a visible border, shadow, or card outline. It does not permit a detail section to blend into the same background as adjacent content. Each detail section must retain intentional surface distinction through `Background/Card`, `Foreground/Divider`, an appropriate semantic surface, or a clear spacing/divider boundary. Use a full card surface only when the topic is a discrete object or bounded task.
+
 `review-card` presents concise learner proof. `pricing-row` keeps lesson type, description, price, and duration together. Both are evidence patterns and do not own teacher-detail page order.
 
 ## Booking And Payment
