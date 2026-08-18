@@ -1569,8 +1569,11 @@ Generated from \`catalog-runtime/icon-manifest.js\`; run
   const iconCount = sheet('Icon', 'Icon', 'Foundation', glyphs, null,
     `Icons live at two sizes: \`Assets/Icons/<name>.svg\` is the 24px set and \`Assets/Icons/16px/<name>-sm.svg\` the 16px set. Match the icon size to the control, never scale one to the other.
 
-Tiled above are italki's own ${glyphs.length} glyphs — **search these first**. A vendored general-purpose set of ${general.length} more sits at \`Assets/Icons/ui/<name>.svg\`, same 24px canvas, referenced the same way; it is the backup, not a peer. Take from it only when no italki glyph carries the meaning, because a screen built from the italki set reads as one hand and every borrowed glyph breaks that. It is not tiled here because it is too large to scan — list it with \`ls Assets/Icons/ui\`. If neither set fits, say so and ask for the icon rather than settling for a near-miss that says the wrong thing.`,
-    `Below are italki's own <strong>${glyphs.length}</strong> glyphs — <strong>search these first</strong>. A vendored general-purpose set of <strong>${general.length}</strong> more lives at <code>Assets/Icons/ui/&lt;name&gt;.svg</code>: same 24px canvas, referenced the same way, but it is the backup — take from it only when no italki glyph fits. Not tiled here; browse it with <code>ls Assets/Icons/ui</code>.`);
+Tiled above are italki's own ${glyphs.length} glyphs — **search these first**. A vendored general-purpose set of ${general.length} more sits at \`Assets/Icons/ui/<name>.svg\`, same 24px canvas, referenced the same way; it is the backup, not a peer. Take from it only when no italki glyph carries the meaning, because a screen built from the italki set reads as one hand and every borrowed glyph breaks that. It is not tiled here because it is too large to scan — list it with \`ls Assets/Icons/ui\`. If neither set fits, say so and ask for the icon rather than settling for a near-miss that says the wrong thing.`);
+  /* No blurb on the card. The same paragraph is in the prompt above, where the
+     agent that has to choose an icon will read it; on the card it sat between
+     the reader and the grid they came for, explaining a set the card does not
+     show. Browsing and choosing are different jobs. */
   report.foundations = `Icon ${iconCount} (+${general.length} general) · Logo ${logoCount}`;
 }
 
