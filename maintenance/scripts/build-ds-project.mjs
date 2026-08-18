@@ -779,7 +779,8 @@ for (const c of COMPONENTS) {
 <html lang="en"><head>
 <meta charset="utf-8">
 <title>${c.name} — italki UI Kit</title>
-<link rel="stylesheet" href="../../../styles.css">
+<base href="../../../">
+<link rel="stylesheet" href="styles.css">
 <style>
   *{box-sizing:border-box}
   body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page);font-family:var(--ui-font-family);color:var(--ui-color-text)}
@@ -1515,7 +1516,12 @@ is the machine-readable contract the assertions come from.
   const tile = (asset, fixed) => {
     const h = fixed ?? nativeSize(asset);
     const w = fixed ? Math.round(h * ratio(asset)) : h;
-    return `    <figure class="icon-tile"><img src="../../../${asset}" alt="" width="${w}" height="${h}" loading="lazy"><figcaption>${escape(label(asset))}</figcaption></figure>`;
+    /* Terse on purpose. 1,526 tiles at the readable markup came to 268KB —
+       6KB past the 256KiB ceiling the platform reads a file under, and the card
+       stopped rendering. <base> carries the path prefix, the grid is a list so
+       each tile needs no class, and the caption is a span. Same output, ~78KB
+       less of it. */
+    return `<li><img src="${asset}" alt="" width="${w}" height="${h}" loading=lazy><span>${escape(label(asset))}</span></li>`;
   };
   /* Sections, not one grid. The two sizes are different sets — 248 glyphs exist
      only at 24, 67 only at 16, and 25 in both — and the rule that matters is
@@ -1531,7 +1537,8 @@ is the machine-readable contract the assertions come from.
 <html lang="en"><head>
 <meta charset="utf-8">
 <title>${title} — italki UI Kit</title>
-<link rel="stylesheet" href="../../../styles.css">
+<base href="../../../">
+<link rel="stylesheet" href="styles.css">
 <style>
   *{box-sizing:border-box}
   body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page);font-family:var(--ui-font-family);color:var(--ui-color-text)}
@@ -1539,14 +1546,14 @@ is the machine-readable contract the assertions come from.
   .icon-section:first-of-type{margin-top:0}
   .icon-hint{margin:0 0 var(--ui-space-4,16px);color:var(--ui-color-secondary);font-size:13px;line-height:18px}
   .icon-hint code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--ui-color-text)}
-  .icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:var(--ui-space-3,12px)}
-  .icon-tile{display:grid;justify-items:center;gap:var(--ui-space-2,8px);margin:0;padding:var(--ui-space-4,16px) var(--ui-space-2,8px);border-radius:var(--ui-radius-lg,12px);background:var(--ui-color-divider)}
-  .icon-tile figcaption{color:var(--ui-color-secondary);font-size:12px;line-height:16px;text-align:center;overflow-wrap:anywhere}
+  .icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:var(--ui-space-3,12px);margin:0;padding:0;list-style:none}
+  .icon-grid li{display:grid;justify-items:center;gap:var(--ui-space-2,8px);padding:var(--ui-space-4,16px) var(--ui-space-2,8px);border-radius:var(--ui-radius-lg,12px);background:var(--ui-color-divider)}
+  .icon-grid span{color:var(--ui-color-secondary);font-size:12px;line-height:16px;text-align:center;overflow-wrap:anywhere}
 </style>
 </head><body>
-${groups.map((g) => `${g.heading ? `<h2 class="icon-section">${g.heading}</h2>\n` : ''}${g.hint ? `<p class="icon-hint">${g.hint}</p>\n` : ''}<div class="icon-grid">
-${g.items.map((a) => tile(a, size)).join('\n')}
-</div>`).join('\n')}
+${groups.map((g) => `${g.heading ? `<h2 class="icon-section">${g.heading}</h2>\n` : ''}${g.hint ? `<p class="icon-hint">${g.hint}</p>\n` : ''}<ul class="icon-grid">
+${g.items.map((a) => tile(a, size)).join('')}
+</ul>`).join('\n')}
 </body></html>
 `);
     write(`${dir}/${name}.prompt.md`, `${title} — the approved ${title.toLowerCase()} assets, ${entries.length} in total.
