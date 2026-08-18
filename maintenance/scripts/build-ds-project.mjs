@@ -1300,11 +1300,27 @@ The italki design system, published from the framework-neutral catalog runtime
 A request to design a page does not start with components. It starts with the
 gap scan in \`guidelines/INTAKE.md\`: read \`guidelines/intake.slots.json\`, drop
 every decision the request does not touch, drop every decision the request
-already settles, and ask about at most the five most consequential of what is
-left. Each question carries a default, so a requester who answers nothing still
-gets built work — on assumptions you then state.
+already settles, and put the most consequential of what is left — at most five
+— to the requester as questions you write yourself.
+
+**Then stop.** Silence is not an answer and the catalog's defaults are not
+permission: they may be taken only when the requester says "你来决定", "decide
+for me", or otherwise authorizes them out loud. Present the questions and wait
+— do not open a file in the meantime.
 
 State \`Confirmed / Answered / Assumed\` before the first component goes down.
+
+## A page inside the product is built on the shell
+
+\`TopNav\` and \`Sidebar\` are not two components to pick off the list. An
+authenticated page composes \`workspace-header\` and \`sidebar-navigation\` from
+\`guidelines/PATTERNS.md\`, and what the page is actually about lives in the
+region those two leave. Do not draw a top bar or a left rail of your own beside
+them.
+
+Whether a page is inside the product at all is the intake's \`shell\` decision —
+a signed-out marketing page, an email and an embedded widget each have none.
+Read it off the answers rather than inferring it from the layout you had in mind.
 
 ## Using a component
 
