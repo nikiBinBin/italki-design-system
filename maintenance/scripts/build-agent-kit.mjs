@@ -67,6 +67,12 @@ for (const f of FILES) {
 // guidelines/ entire: the four documents, INTAKE.md, and the slot catalog.
 cpSync(join(scratch, 'guidelines'), join(OUT, 'guidelines'), { recursive: true });
 
+/* skills/ — the review pass, adapted from Anthropic's design plugin so its
+   consistency and token sections cite this kit's contracts instead of generic
+   good practice. They ship here and install.mjs places them where the host
+   agent looks; a skill directory inside a vendored subfolder is never found. */
+cpSync(join(HERE, 'maintenance/agent-skills'), join(OUT, 'skills'), { recursive: true });
+
 /* AGENTS.md is only picked up as instructions when it sits at the root of the
    agent's working directory. Hand this folder to an agent working somewhere
    else and it is just a file — the agent opens README.md for the API and never
@@ -78,10 +84,19 @@ cpSync(join(scratch, 'guidelines'), join(OUT, 'guidelines'), { recursive: true }
 const readmePath = join(OUT, 'README.md');
 writeFileSync(readmePath, `# italki UI Kit
 
-> **Read AGENTS.md before building anything.** If your agent did not load it —
-> it is only picked up automatically when it sits at the root of the working
-> directory — paste this line into the request: *"follow AGENTS.md in the kit
-> folder."* The two things it gets wrong without it are below.
+> **Run this once, in the project that will use the kit:**
+>
+> \`\`\`bash
+> node italki-ui-kit/enforcement/install.mjs --pages src/app
+> \`\`\`
+>
+> It writes the root pointer that makes \`AGENTS.md\` load in every session, turns
+> on the intake gate, and installs the review skills. \`--pages\` is the directory
+> whose immediate subdirectories are the things a requester asks for.
+>
+> Skip it and \`AGENTS.md\` is only picked up when this folder *is* the working
+> directory root; otherwise paste *"follow AGENTS.md in the kit folder"* into every
+> request. The two things an agent gets wrong without those rules are below.
 
 ## 1. A design request starts with the intake, not with components
 
@@ -178,15 +193,16 @@ writeFileSync(join(OUT, 'enforcement/intake.config.example.json'), `{
    deserved — a reviewer finding the implementation present and the enforcement
    off. One command writes all three, and says what it wrote. */
 writeFileSync(join(OUT, 'enforcement/install.mjs'), `#!/usr/bin/env node
-// Turn the gates on in the project this is run from.
+// Wire this kit into the project this is run from.
 //
 //   node italki-ui-kit/enforcement/install.mjs --pages src/app
 //
-// Writes intake.config.json, merges the PreToolUse hook into .claude/settings.json,
-// and adds a GitHub Actions step. Existing files are merged, never replaced;
-// anything already correct is left alone and reported as such.
+// Writes the root instruction pointer that makes the kit's AGENTS.md load at all,
+// intake.config.json, the PreToolUse hook, a GitHub Actions step, and the review
+// skills. Existing files are merged, never replaced; anything already correct is
+// left alone and reported as such. --skip-skills leaves the skills out.
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -207,7 +223,52 @@ design system's own repository it is maintenance/templates.
   process.exit(2);
 }
 
-// 1. the config both gates read
+/* 1. the pointer, without which none of the rest is ever read.
+
+   An agent loads CLAUDE.md and AGENTS.md from the root of its working
+   directory. Vendored, this kit's AGENTS.md sits one level down and is just a
+   file: the agent opens README.md for the API and never learns that a request
+   starts with the intake or that tokens are mandatory. Prepending the warning to
+   README.md asked the requester to paste a line into every request, which is not
+   a mechanism. Twelve lines at the root is. */
+const POINTER = [
+  '## Building product UI in this project',
+  '',
+  'Read \`' + KIT + '/AGENTS.md\`. It is the single instruction file for building',
+  'product UI here, and it applies without amendment.',
+  '',
+  'The one rule that must not wait on that read: **a request to design or build a',
+  'page, section, unit, overlay, flow step or enhancement starts with the intake,',
+  'not with code.**',
+  '',
+  '    node ' + KIT + '/intake.mjs "<the request, verbatim>"',
+  '',
+  'It prints a brief, not a question block: every decision the request leaves',
+  'open, each with a default. You write the questions, in the requester\\'s own',
+  'language, with this request\\'s real options. Send them, take whatever is',
+  'answered, then build — stating \`Confirmed / Answered / Assumed\` before the',
+  'first component goes down. Silence is an answer: name the defaults you took',
+  'under \`Assumed\` and keep building.',
+  '',
+  'Skip the intake only when the request is not a build: a question about the kit,',
+  'a rename, a typo, a file move.',
+  '',
+].join('\\n');
+
+for (const name of ['CLAUDE.md', 'AGENTS.md']) {
+  const at = join(ROOT, name);
+  if (!existsSync(at)) {
+    writeFileSync(at, '# ' + name.replace('.md', '') + '\\n\\n' + POINTER);
+    done.push([name, 'written — the kit\\'s rules now load in every session']);
+  } else if (readFileSync(at, 'utf8').includes(KIT + '/AGENTS.md')) {
+    done.push([name, 'already points at the kit — left as it is']);
+  } else {
+    writeFileSync(at, readFileSync(at, 'utf8').replace(/\\s*$/, '') + '\\n\\n' + POINTER);
+    done.push([name, 'pointer appended, your own content kept above it']);
+  }
+}
+
+// 2. the config both gates read
 const cfgPath = join(ROOT, 'intake.config.json');
 const cfg = { pages, records, intake: join(KIT, 'intake.mjs') };
 if (existsSync(cfgPath) && readFileSync(cfgPath, 'utf8').includes('"pages"')) {
@@ -217,7 +278,7 @@ if (existsSync(cfgPath) && readFileSync(cfgPath, 'utf8').includes('"pages"')) {
   done.push(['intake.config.json', \`pages=\${pages} records=\${records}\`]);
 }
 
-// 2. the write gate, for Claude Code
+// 3. the write gate, for Claude Code
 const settingsPath = join(ROOT, '.claude/settings.json');
 const hook = {
   matcher: 'Write|Edit|NotebookEdit',
@@ -240,7 +301,7 @@ if (already) {
   done.push(['.claude/settings.json', 'PreToolUse hook added, existing settings kept']);
 }
 
-// 3. the commit check, for every agent and every person
+// 4. the commit check, for every agent and every person
 const wfPath = join(ROOT, '.github/workflows/intake.yml');
 if (existsSync(wfPath)) {
   done.push(['.github/workflows/intake.yml', 'already there — left as it is']);
@@ -261,9 +322,39 @@ jobs:
   done.push(['.github/workflows/intake.yml', 'runs the check on every pull request']);
 }
 
-console.log(\`Intake enforcement installed in \${ROOT}\\n\`);
+/* 5. the review skills. A skills directory inside the vendored kit is never
+   discovered — an agent reads .claude/skills at the root of its working
+   directory and nowhere else — so they are copied out, with {KIT} resolved to
+   wherever this kit actually sits. A file already present is left alone: it is
+   more likely someone's edit than a stale copy. */
+const skillsFrom = resolve(ROOT, KIT, 'skills');
+if (argv.includes('--skip-skills')) {
+  done.push(['.claude/skills/', 'skipped (--skip-skills)']);
+} else if (!existsSync(skillsFrom)) {
+  done.push(['.claude/skills/', 'this kit ships none — nothing to install']);
+} else {
+  const to = join(ROOT, '.claude/skills');
+  let wrote = 0, kept = 0;
+  const place = (rel) => {
+    const dest = join(to, rel);
+    if (existsSync(dest)) { kept++; return; }
+    mkdirSync(dirname(dest), { recursive: true });
+    writeFileSync(dest, readFileSync(join(skillsFrom, rel), 'utf8').split('{KIT}').join(KIT));
+    wrote++;
+  };
+  for (const e of readdirSync(skillsFrom, { withFileTypes: true })) {
+    place(e.isDirectory() ? join(e.name, 'SKILL.md') : e.name);
+  }
+  done.push(['.claude/skills/', \`\${wrote} installed\` + (kept ? \`, \${kept} already there and left alone\` : '')]);
+}
+
+console.log(\`italki UI Kit wired into \${ROOT}\\n\`);
 for (const [f, what] of done) console.log(\`  \${f.padEnd(32)} \${what}\`);
 console.log(\`
+The first line is the one that matters: without a pointer at the root, this kit's
+AGENTS.md is a file nobody opens, and an agent will build without the intake and
+without the tokens. Everything below it only enforces what that line loads.
+
 Claude Code reads .claude/settings.json at startup — restart it, or open /hooks
 once, before the write gate is live in an already-running session.
 
@@ -294,16 +385,22 @@ document makes that true. These two make it true, and they are the reason the
 rule survives an agent that did not read the document — which is the normal
 case, not the exceptional one.
 
-Both need one file at your project root saying where your pages and your records
-live. Copy \`intake.config.example.json\` to \`intake.config.json\` and set them:
+## Install both, and the pointer they depend on
 
-\`\`\`json
-{ "pages": "src/app", "records": "docs/intakes" }
+\`\`\`bash
+node italki-ui-kit/enforcement/install.mjs --pages src/app
 \`\`\`
 
+That is the whole setup. It writes the root \`CLAUDE.md\` / \`AGENTS.md\` pointer
+without which the rules are never loaded, \`intake.config.json\`, the hook, a CI
+step, and the review skills. Every file is merged, never replaced, and what it did
+is printed. Re-running it is safe.
+
 \`pages\` is the directory whose immediate subdirectories are the things a
-requester asks for. \`records\` is where the intake record for each one is kept.
-Environment variables \`INTAKE_PAGES\` and \`INTAKE_RECORDS\` override both.
+requester asks for. \`records\` is where the intake record for each one is kept
+(default \`docs/intakes\`). Environment variables \`INTAKE_PAGES\` and
+\`INTAKE_RECORDS\` override both. The sections below are what it wires, for when
+you would rather do it by hand.
 
 ## The write gate — Claude Code only
 
@@ -393,7 +490,8 @@ const commit = git('rev-parse', '--short', 'HEAD') || 'unknown';
    and a stamp that cries dirty over unrelated work is a stamp people learn to
    ignore. */
 const SOURCES = ['catalog-runtime', 'docs', 'Assets', 'maintenance/prompt-notes',
-  'maintenance/catalog-cards.json', 'maintenance/fixtures', 'maintenance/scripts'];
+  'maintenance/catalog-cards.json', 'maintenance/fixtures', 'maintenance/scripts',
+  'maintenance/agent-skills'];
 const dirty = git('status', '--porcelain', '--', ...SOURCES) !== '';
 const built = new Date().toISOString().slice(0, 10);
 const componentCount = readdirSync(join(OUT, 'components'), { recursive: true }).filter((f) => String(f).endsWith('.d.ts')).length;
@@ -410,6 +508,7 @@ catalog     index.html — open it from a local server, not file://
 components  ${componentCount}
 icons       ${iconCount}
 guidelines  ${readdirSync(join(OUT, 'guidelines')).length} files, including INTAKE.md and its slot catalog
+skills      ${readdirSync(join(OUT, 'skills'), { withFileTypes: true }).filter((e) => e.isDirectory()).length} review skills — installed into the host by enforcement/install.mjs
 assets      ${ASSET_DIRS.join(', ')} under Assets/
 
 Assets/Icons and Assets/Flags are vocabulary: a component names one and the
