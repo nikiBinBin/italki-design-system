@@ -38,7 +38,7 @@ const OUT = resolve(flag('out', join(HERE, '../italki-ui-kit')));
 
 // ── 1. rebuild the design payload into scratch ────────────────────────────
 const scratch = mkdtempSync(join(tmpdir(), 'italki-kit-'));
-execFileSync('node', [join(HERE, 'maintenance/scripts/build-ds-project.mjs'), '--out', scratch], { stdio: 'inherit' });
+execFileSync('node', [join(HERE, 'maintenance/scripts/build-ds-project.mjs'), '--out', scratch, '--flavour', 'kit'], { stdio: 'inherit' });
 
 // ── 2. take the parts a consuming project uses ────────────────────────────
 rmSync(OUT, { recursive: true, force: true });
