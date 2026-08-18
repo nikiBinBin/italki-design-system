@@ -10,7 +10,7 @@ file in the kit. Connectors only widen what they can read.
 | User feedback (Intercom, Dovetail) | `/research-synthesis` reads real tickets and transcripts | Not configured |
 | Knowledge base (Notion, Confluence) | Publish an audit or a component doc where the team reads it | Not configured |
 
-Upstream, the `design` plugin shipped a `.mcp.json` pre-configuring these. This fork
+Upstream, Anthropic's `design` plugin shipped a `.mcp.json` pre-configuring these. This fork
 ships none: the kit is vendor-neutral by charter (`{KIT}/AGENTS.md`), so connecting
 tools is the consuming project's decision, not the kit's. Every skill degrades to
 "ask the requester for the design" when nothing is connected — the normal case.
