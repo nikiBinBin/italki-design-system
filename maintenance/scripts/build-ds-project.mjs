@@ -34,6 +34,15 @@ const flag = (n, d) => { const i = argv.indexOf(`--${n}`); return i < 0 ? d : ar
 const HERE = resolve(fileURLToPath(import.meta.url), '../../..');
 const REPO = resolve(flag('repo', HERE));
 const OUT = resolve(flag('out', join(HERE, 'maintenance/ds-project')));
+
+/* Two readers, opposite needs, one payload. The design surface asks a requester
+   what a request left open through its own product — a form it owns — so an
+   intake procedure written into these documents is a second mechanism competing
+   with one that already works, and the `node intake.mjs` it opens with cannot
+   run there at all. An editor agent handed the kit has no such mechanism and
+   needs the procedure in full, runnable. Everything else the two receive is
+   identical, so only AGENTS.md, README.md, INTAKE.md and the runner branch. */
+const KIT = flag('flavour', flag('flavor', 'cloud')) === 'kit';
 const RUNTIME = join(REPO, 'catalog-runtime');
 
 // ── load the vanilla runtime under a stub window ──────────────────────────
@@ -1290,12 +1299,30 @@ const axisTable = [
   return `| \`${prop}\` | ${label} | ${values} | ${shared} |`;
 }).join('\n');
 
-write('README.md', `# italki UI Kit
+/* The intake, in the two forms its two readers need. `KIT` gets the procedure
+   and the runner; the design surface gets the same knowledge as a list of
+   decisions, because the asking is already its own. */
+const DECISIONS = `## What an italki page turns on
 
-The italki design system, published from the framework-neutral catalog runtime
-(\`catalog-runtime/italki-ui.js\`). ${report.ok.length} components.
+You have your own way of finding out what a request left open. This is not a
+procedure — it is the list of decisions italki pages actually turn on, the ones
+a general clarifying question does not reach. \`guidelines/intake.slots.json\`
+holds all fifteen with their options. The five that most often arrive unstated:
 
-## Before you build: run the intake
+- **shell** — inside the signed-in product, or a standalone page? This decides
+  whether the page is built on \`workspace-header\` + \`sidebar-navigation\`.
+- **actor** — the student's view, the teacher's, or both. The same object makes
+  a different page.
+- **primary-action** — the one action this surface must make possible. It is the
+  single \`variant="red"\`.
+- **status-set** — which statuses of the object the surface handles. One of them
+  is the resting state.
+- **must-have-data** — what has to be visible for the task to work.
+
+A page built with any of these guessed is usually wrong in a way that only shows
+once it is built.`;
+
+const README_INTAKE = KIT ? `## Before you build: run the intake
 
 A request to design a page does not start with components. It starts with the
 gap scan in \`guidelines/INTAKE.md\`: read \`guidelines/intake.slots.json\`, drop
@@ -1308,7 +1335,45 @@ permission: they may be taken only when the requester says "你来决定", "deci
 for me", or otherwise authorizes them out loud. Present the questions and wait
 — do not open a file in the meantime.
 
-State \`Confirmed / Answered / Assumed\` before the first component goes down.
+State \`Confirmed / Answered / Assumed\` before the first component goes down.` : DECISIONS;
+
+const AGENTS_INTRO = KIT
+  ? `The italki UI Kit, vendored. ${report.ok.length} components, their contracts, and
+the rules that govern using them. Instructions for any agent building product UI
+with this kit — vendor-neutral: nothing here depends on which assistant reads it.`
+  : `The italki UI Kit. ${report.ok.length} components, their contracts, and the
+rules that govern using them.`;
+
+const AGENTS_INTAKE = KIT ? `## Before you build: run the intake
+
+A request to design a page does not start with components. It starts with the
+gap scan in \`guidelines/INTAKE.md\`:
+
+\`\`\`bash
+node intake.mjs "<the request, verbatim>"
+\`\`\`
+
+It reads \`guidelines/intake.slots.json\`, drops every decision the request does
+not touch, drops every decision the request already settles, and prints the few
+that are left — at most five, each with a default. Send that block and wait for
+the answers; build from what comes back.
+
+- **Stop after the questions.** When the intake identifies one or more open decisions, the agent must present the question block and stop before creating or modifying implementation files. Silence is not authorization to use defaults. Defaults may be applied only when the requester explicitly says "你来决定", "decide for me", or otherwise clearly authorizes the listed defaults.
+- **State \`Confirmed / Answered / Assumed\`** before the first component goes
+  down. \`Assumed\` is the list of decisions the requester never made.
+
+No Node here? Read \`guidelines/intake.slots.json\` and do the same four steps by
+hand — \`guidelines/INTAKE.md §3.2\`.
+
+Skip the intake only when the request is not a build: a question about the kit,
+a rename, a typo.` : DECISIONS;
+
+write('README.md', `# italki UI Kit
+
+The italki design system, published from the framework-neutral catalog runtime
+(\`catalog-runtime/italki-ui.js\`). ${report.ok.length} components.
+
+${README_INTAKE}
 
 ## A page inside the product is built on the shell
 
@@ -1318,7 +1383,7 @@ authenticated page composes \`workspace-header\` and \`sidebar-navigation\` from
 region those two leave. Do not draw a top bar or a left rail of your own beside
 them.
 
-Whether a page is inside the product at all is the intake's \`shell\` decision —
+Whether a page is inside the product at all is the \`shell\` decision above —
 a signed-out marketing page, an email and an embedded widget each have none.
 Read it off the answers rather than inferring it from the layout you had in mind.
 
@@ -1636,10 +1701,11 @@ Tiled above are italki's own ${glyphs.length} glyphs — **search these first**.
 // carried it across. A page generated against a stale copy is wrong in a way
 // nobody can see from the page. Copied here so the build is the only path.
 //
-// INTAKE.md and its catalog travel with them: the design surface has no shell to
-// run maintenance/scripts/intake.mjs in, so the slots have to arrive as data the
-// agent can read and the protocol as prose it can follow.
-for (const doc of ['INTAKE.md', 'COMPONENTS.md', 'DESIGN.md', 'EXECUTION.md', 'PATTERNS.md', 'intake.slots.json']) {
+// The slot catalog travels with both flavours — those decisions are italki
+// knowledge no reader can derive. INTAKE.md, the protocol, travels only with the
+// kit: the design surface collects a requester's answers through its own form,
+// and a second procedure written here would compete with one that already works.
+for (const doc of [...(KIT ? ['INTAKE.md'] : []), 'COMPONENTS.md', 'DESIGN.md', 'EXECUTION.md', 'PATTERNS.md', 'intake.slots.json']) {
   const source = join(REPO, 'docs', doc);
   if (!existsSync(source)) throw new Error(`docs/${doc} is missing — the project's guidelines would ship stale`);
   write(`guidelines/${doc}`, readFileSync(source));
@@ -1653,36 +1719,12 @@ for (const doc of ['INTAKE.md', 'COMPONENTS.md', 'DESIGN.md', 'EXECUTION.md', 'P
    AGENTS.md and would otherwise find no rules at all — including the intake.
    The repository's own AGENTS.md is the wrong file to copy: it talks about
    rebuilding indexes and where index.html lives, which is not this reader's job. */
-write('intake.mjs', readFileSync(join(REPO, 'maintenance/scripts/intake.mjs')));
+if (KIT) write('intake.mjs', readFileSync(join(REPO, 'maintenance/scripts/intake.mjs')));
 write('AGENTS.md', `# AGENTS.md
 
-The italki UI Kit, vendored. ${report.ok.length} components, their contracts, and
-the rules that govern using them. Instructions for any agent building product UI
-with this kit — vendor-neutral: nothing here depends on which assistant reads it.
+${AGENTS_INTRO}
 
-## Before you build: run the intake
-
-A request to design a page does not start with components. It starts with the
-gap scan in \`guidelines/INTAKE.md\`:
-
-\`\`\`bash
-node intake.mjs "<the request, verbatim>"
-\`\`\`
-
-It reads \`guidelines/intake.slots.json\`, drops every decision the request does
-not touch, drops every decision the request already settles, and prints the few
-that are left — at most five, each with a default. Send that block and wait for
-the answers; build from what comes back.
-
-- **Stop after the questions.** When the intake identifies one or more open decisions, the agent must present the question block and stop before creating or modifying implementation files. Silence is not authorization to use defaults. Defaults may be applied only when the requester explicitly says "你来决定", "decide for me", or otherwise clearly authorizes the listed defaults.
-- **State \`Confirmed / Answered / Assumed\`** before the first component goes
-  down. \`Assumed\` is the list of decisions the requester never made.
-
-No Node here? Read \`guidelines/intake.slots.json\` and do the same four steps by
-hand — \`guidelines/INTAKE.md §3.2\`.
-
-Skip the intake only when the request is not a build: a question about the kit,
-a rename, a typo.
+${AGENTS_INTAKE}
 
 ## Then read, in this order
 
@@ -1712,8 +1754,8 @@ On conflict, the owning document wins — \`EXECUTION.md §1.5\`.
 - **The authenticated shell is assembled, never hand-written.** A page inside the
   signed-in product carries \`workspace-header\` and \`sidebar-navigation\` from
   \`guidelines/PATTERNS.md\`; do not draw a top bar or a left rail of your own
-  beside them. Whether a page is inside the product at all is the intake's
-  \`shell\` decision — read it off the answers, do not infer it from the layout.
+  beside them. Whether a page is inside the product at all is the \`shell\`
+  decision — settle it with the requester, do not infer it from the layout.
 - **Never expose component names or internal rule names in a product screen.**
 
 \`README.md\` has the prop vocabulary, the slot table, the token list and the
