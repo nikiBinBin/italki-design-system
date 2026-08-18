@@ -1652,10 +1652,10 @@ node intake.mjs "<the request, verbatim>"
 
 It reads \`guidelines/intake.slots.json\`, drops every decision the request does
 not touch, drops every decision the request already settles, and prints the few
-that are left — at most five, each with a default. Send that block, take
-whatever the requester chooses to answer, then build.
+that are left — at most five, each with a default. Send that block and wait for
+the answers; build from what comes back.
 
-- **Never block.** Silence means the default is taken and named.
+- **Stop after the questions.** When the intake identifies one or more open decisions, the agent must present the question block and stop before creating or modifying implementation files. Silence is not authorization to use defaults. Defaults may be applied only when the requester explicitly says "你来决定", "decide for me", or otherwise clearly authorizes the listed defaults.
 - **State \`Confirmed / Answered / Assumed\`** before the first component goes
   down. \`Assumed\` is the list of decisions the requester never made.
 

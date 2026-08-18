@@ -24,9 +24,9 @@ The intake is a gap scan, not a questionnaire. A question is asked only when the
 
 Three rules bound it:
 
-- **Never block — after the questions have been sent.** Every slot carries a default, and a requester who ignores the block gets a complete deliverable built on stated assumptions rather than a stalled turn. This is not permission to skip the asking: a default may only be taken for a question that was put to the requester and went unanswered, or that they explicitly waived. An agent that reads "never block" as "assume and proceed" has inverted the rule, and the first thing it will get wrong is whose view the page is for.
+- **Stop after the questions.** When the intake identifies one or more open decisions, the agent must present the question block and stop before creating or modifying implementation files. Silence is not authorization to use defaults. Defaults may be applied only when the requester explicitly says "你来决定", "decide for me", or otherwise clearly authorizes the listed defaults. An agent that reads a silent turn as "assume and proceed" has inverted this rule, and the first thing it will get wrong is whose view the page is for.
 - **Never ask twice.** A decision the prompt settled is echoed back as settled, not re-asked. The echo is how a wrong reading gets corrected cheaply.
-- **Never exceed the cap.** At most `maxQuestions` (currently five) are asked. Lower-impact gaps take their defaults and are reported in one line.
+- **Never exceed the cap.** At most `maxQuestions` (currently five) are asked. Lower-impact gaps are reported in one line with the default each *would* take. Disclosing a default is not applying it: the stop above covers them too, and they are applied on the same authorization as everything else.
 
 ## 2. The Slot Catalog
 

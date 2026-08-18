@@ -121,8 +121,9 @@ const scan = (prompt, { max = CATALOG.maxQuestions } = {}) => {
     object,
     settled,
     ask: gaps.slice(0, max),
-    /* Below the cap, not resolved: they take their defaults like anything else,
-       but they are reported so a long silence is visible rather than implied. */
+    /* Below the cap, not resolved: reported with the default each would take, so
+       a long silence is visible rather than implied. Reporting is not applying —
+       these wait on the same authorization as the questions above. */
     deferred: gaps.slice(max),
     notApplicable: skipped,
   };
@@ -344,8 +345,11 @@ and add up to two questions the catalog does not cover.
 
 **You may not** drop an open decision — ask it or state its default; invent a
 default other than the one given; or ask about something already settled below.
-Sending the block is the point: a default may only be taken for a question the
-requester saw.
+
+**Then stop.** Present the question block and do not create or modify
+implementation files until the answers come back. Silence is not authorization to
+use defaults; they may be applied only when the requester explicitly says
+“你来决定”, “decide for me”, or otherwise clearly authorizes the ones listed.
 
 ## Already settled — echo these for correction, do not ask
 
@@ -363,7 +367,7 @@ ${result.object
 
 ${result.ask.map(line).join('\n\n')}
 
-${result.deferred.length ? `## Below the cap — take these defaults and say so in one line
+${result.deferred.length ? `## Below the cap — disclose these in one line; they are not applied yet either
 
 ${result.deferred.map((s) => `- ${pick(s, 'title', lang)} → ${pick(s, 'default', lang)}`).join('\n')}` : ''}
 

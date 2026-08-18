@@ -21,7 +21,7 @@ Rules that matter more than the mechanism:
 
 - Ask only what the request left open. The scan already discards decisions the request settled and decisions that do not apply to it.
 - The brief is a floor. Rewrite the wording, replace the options, merge two decisions into one question, add up to two of your own — but do not drop an open decision, and do not invent a default.
-- Never block **once the questions are out**. Every question carries a default, so silence is an answer — but only silence that follows the block being sent. Taking the defaults without asking is not the fast path, it is the failure this exists to prevent.
+- **Stop after the questions.** When the intake identifies one or more open decisions, the agent must present the question block and stop before creating or modifying implementation files. Silence is not authorization to use defaults. Defaults may be applied only when the requester explicitly says "你来决定", "decide for me", or otherwise clearly authorizes the listed defaults. Taking the defaults without asking is not the fast path, it is the failure this exists to prevent.
 - State `Confirmed / Answered / Assumed` before building, and keep `Assumed` in the delivery record.
 
 No Node available, or a surface where you cannot run a command? Read `docs/intake.slots.json` and perform the same scan by hand — `docs/INTAKE.md §3.2` has the four steps.
