@@ -4,8 +4,8 @@ description: Run a WCAG 2.1 AA accessibility audit on a design or page. Trigger 
 argument-hint: "<Figma URL, URL, or description>"
 ---
 
-> **Adapted from Anthropic's `design` plugin** (v1.2.0), whose package declares no
-> licence — check before redistributing this kit outside italki. The consistency
+> **Adapted from Anthropic's `design` plugin** (v1.2.0) —
+> github.com/anthropics/knowledge-work-plugins, Apache-2.0. The consistency
 > and design-token sections have been rewired to this kit's contracts:
 > `{KIT}/guidelines/`, `{KIT}/tokens/tokens.css`, and each component's `.d.ts`.
 > `{KIT}` is where the kit sits in this project. On conflict the owning document

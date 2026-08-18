@@ -1,0 +1,15 @@
+The seven skills in this directory are derivative works of the `design` plugin
+from https://github.com/anthropics/knowledge-work-plugins, Copyright Anthropic,
+licensed under the Apache License, Version 2.0.
+
+Modified for the italki UI Kit: the consistency and design-token sections of
+design-critique, design-system and design-handoff were rewritten to cite this
+kit's own contracts — the semantic token handoff table, the closed typography
+set, one red CTA per task step, and the runtime-asserted component props —
+rather than generic design-system practice. accessibility-review and ux-copy
+were pointed at this kit's theme mapping and content style. research-synthesis
+and user-research are unmodified. Kit-relative paths are written {KIT} and
+resolved when enforcement/install.mjs places these in a project.
+
+A copy of the Apache License, Version 2.0 is at
+http://www.apache.org/licenses/LICENSE-2.0
