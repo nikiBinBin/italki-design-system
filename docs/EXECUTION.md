@@ -106,6 +106,7 @@ If a visible element has no evidence, no clear relationship, or no meaningful re
 - repeated information must have one owner; do not restate the same lesson, date, or destination in multiple regions
 - mobile must preserve the same task sequence and local relationships before exposing secondary content
 - a real page must not display component names, rule labels, legends, or implementation notes
+- an authenticated page must use the `workspace-header` + `sidebar-navigation` shell as that pattern assembles it; substituting, reordering or trimming the top navigation, the sidebar, or the header's right-side actions needs an explicit component contract permitting it or a product rule requiring it — `PATTERNS.md § workspace-header` owns this rule
 
 **Completion status:**
 AI may call the page complete only after reporting `Pass`, `Needs Decision`, or `Blocked` for each gate item. `Needs Decision` and `Blocked` are not complete implementation states.

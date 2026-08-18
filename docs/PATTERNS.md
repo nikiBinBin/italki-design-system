@@ -29,6 +29,8 @@ Use a calm, familiar learning workspace with purposeful variation in density. A 
 
 The resting desktop frame is light and compact. New authenticated specifications use `workspace-header` with `sidebar-navigation`; they do not recreate legacy global text navigation such as `Teachers`, `Lessons`, or `Community`.
 
+An authenticated workspace is **assembled from this pattern, not composed per page**. Neither the top navigation nor the sidebar — including the header's right-side utility and account cluster — may be substituted, reordered, or trimmed because a page appears to need something different. The reusable `top-nav` and `sidebar` contracts in `COMPONENTS.md` own their anatomy, dimensions and states; this pattern owns which product data fills them. A departure from either is valid on exactly two grounds: an explicit component contract that permits it, or a product rule in `DESIGN.md` or `EXECUTION.md` that requires it. Page-level convenience is neither, and a supplied reference that shows a different shell does not settle it — `EXECUTION.md §0.5` source precedence decides, and the deviation protocol in `DESIGN.md` applies. Where a page genuinely needs an action the cluster does not carry, that action belongs in the page's own task area, not in the shell.
+
 ### sidebar-navigation
 
 `sidebar-navigation` is the persistent authenticated workspace pattern. It composes the reusable `sidebar` surface from `COMPONENTS.md` with product-owned destinations, relationship collections, account access, user state, and entitlement data through its adapter. The reusable Sidebar contract owns dimensions, local interaction states, and responsive presentation; this pattern owns the product data, destination meaning, and information relationships.
