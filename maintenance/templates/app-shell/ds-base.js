@@ -29,7 +29,17 @@
      that publishes it, both of which are fixed. */
   const VENDORED = '_ds/italki-ui-kit-ds-3-0-f7eb9b7d-40fb-4766-bccc-0202f1c91fb8/';
   const KIT_BASES = [from('../../'), from('./'), from('./' + VENDORED), from('../../' + VENDORED)];
-  const ASSET_BASES = [from('../../'), from('./')];
+  /* Assets/ is uploaded to the design-system project separately and stays at
+     its root, so both local candidates are relative depths into the host: two
+     levels up from templates/<name>/, or the root itself. Neither exists once
+     the template is copied out — "start from this template" produces a project
+     holding the page, ds-base.js and a vendored _ds/ folder, and no Assets/ at
+     all, so every icon 404s while the same page renders correctly inside the
+     design system. That is not a resolvable path, so the last candidate is not
+     a path: the hosted copy of this design system, which serves Assets/ with
+     access-control-allow-origin: *, so the HEAD probe below reaches it like any
+     other. It is last, so a host that has its own Assets/ never leaves home. */
+  const ASSET_BASES = [from('../../'), from('./'), 'https://design.italkiux.com/'];
 
   const firstThatHas = async (bases, probe) => {
     for (const base of bases) {
