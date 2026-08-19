@@ -792,8 +792,12 @@ for (const c of COMPONENTS) {
 <style>
   *{box-sizing:border-box}
   body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page);font-family:var(--ui-font-family);color:var(--ui-color-text)}
-  .ds-grid{display:flex;flex-wrap:wrap;gap:var(--ui-space-6,24px) var(--ui-space-8,32px);align-items:flex-start}
-  .cell{min-width:0}
+  .ds-grid{display:flex;flex-wrap:wrap;gap:var(--ui-space-6,24px);align-items:flex-start}
+  /* Framed rows on a page-coloured field, the same shape italki React DS gives
+     these demos. Kept identical to build-ds-cards.mjs: the two generators write
+     the same card for different components, and a boundary that is a frame in
+     one and a gap in the other reads as two design systems. */
+  .cell{min-width:0;border:1px solid var(--ui-color-border);border-radius:var(--ui-radius-lg,12px);background:var(--ui-color-card)}
   /* Anchored overlays are open in a static card, so the reservation must be
      real in every direction. Sideways placements push a whole surface (up to
      320px) clear of the trigger, which no padding on a shrink-to-fit cell can
@@ -803,7 +807,8 @@ for (const c of COMPONENTS) {
   .cell--anchored>.cell-body{display:grid;place-items:center;padding:var(--ui-space-12,96px) 0}
   /* Full-surface overlays take their own row so width:100% has a width. */
   .cell--surface,.cell--full{flex:0 0 100%;width:100%}
-  .cell-label{font-size:12px;line-height:16px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ui-color-secondary);margin:0 0 var(--ui-space-2,8px)}
+  .cell-label{font-size:12px;line-height:16px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ui-color-secondary);margin:0;padding:var(--ui-space-4,16px) var(--ui-space-6,24px) 0}
+  .cell-body{padding:var(--ui-space-4,16px) var(--ui-space-6,24px) var(--ui-space-6,24px)}
 </style>
 </head><body>
 <div class="ds-grid">
