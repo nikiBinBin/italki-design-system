@@ -38,7 +38,7 @@
       });
       const groups = [
         { id: "principles", title: "Principles", description: "", data: parse("Design Principles|Product direction and decision principles.") },
-        { id: "foundation", title: "Foundation", description: "", data: parse("Color|Color tokens and semantic roles.;Typography|;Icon library|Browse the italki icon assets by size and source set.;Spacing|Module padding and margin scale.;Grid|Responsive page and composition grid.;Image|Approved image ratios for content and banners.;Radius|Corner radius scale and component mapping.;Shadow|Surface-depth tokens and elevation boundaries.") },
+        { id: "foundation", title: "Foundation", description: "", data: parse("Color|Color tokens and semantic roles.;Typography|;Icon library|Browse the italki icon assets by size and source set.;General icon set|The vendored general-purpose glyphs, kept apart from italki's own.;Spacing|Module padding and margin scale.;Grid|Responsive page and composition grid.;Image|Approved image ratios for content and banners.;Radius|Corner radius scale and component mapping.;Shadow|Surface-depth tokens and elevation boundaries.") },
         { id: "general", title: "General", description: "", data: parse("Button variants|Button hierarchy and visual variants.;Link|;Chip|Compact reversible local choice.;Segmented control|Compact switch between closely related views.") },
         { id: "data-entry", title: "Data Entry", description: "", data: parse("Form field|Label, support, validation, and one supplied control.;Text input|Controlled single-line text entry.;Textarea|Controlled multi-line text entry.;Number stepper|Controlled bounded numeric quantity.;Upload|Controlled file selection and supplied upload status.;Search|Controlled query input with supplied search behavior.;Select|Controlled value selection, including searchable Combobox.;Checkbox|Controlled multi-select choice, mixed state, and related checkbox groups.;Radio|Controlled single-select choice with supplied group behavior.;Date picker|Controlled date or date-range selection.;Time picker|Controlled single time selection.;Time slot|Bookable or unavailable supplied time.;Rate|Controlled fractional rating input.;Selection|Controlled selectable item, button, or row.;Slider|Controlled bounded numeric range.;Switch|Controlled immediate binary action.") },
         { id: "data-display", title: "Data Display", description: "", data: parse("Card|Bounded discrete object or actionable content surface.;List|Ordered local records with supplied identity, supporting text, and trailing content.;Video|Teaching-introduction media: a cover and the way in.;Avatar|Person image, initials, country marker, and supplied group composition.;Badge|Compact count, dot, or status marker.;Tag|Compact static attribute or removable selected value.;Tabs|Controlled local content-view switcher.;Statistic|Emphasized supplied numeric fact.;Table|Structured collection display.;Calendar|Weekly availability display composed from supplied Time slot and Time picker primitives.;Timeline|Chronological supplied events.;Disclosure|Optional local details revealed by the user.") },
@@ -65,7 +65,13 @@
       // marks first, three duplicate glyphs excluded — reasons live in the
       // script). validate-contracts.mjs fails when the manifest is stale, so a
       // new icon cannot silently miss this page.
-      const iconAssets = window.ITalkiIconManifest.slice();
+      // `Assets/Icons/ui/` is the vendored general-purpose set. At 1171 glyphs it
+      // swamped this page and buried the icons italki actually drew, so it gets
+      // its own board and the Icon library stays italki-only. Both sets are
+      // equally approved — contracts.js allows all of `Assets/Icons/`.
+      const isGeneralIcon = (asset) => asset.includes("/ui/");
+      const iconAssets = window.ITalkiIconManifest.filter((asset) => !isGeneralIcon(asset));
+      const generalIconAssets = window.ITalkiIconManifest.filter(isGeneralIcon);
       // Bundled from the approved Flags library: 252 unique ISO 3166-1 alpha-2 countries and territories.
       const flagCodes = `ae ar at au bd be br ca ch cl cn co cz de dk eg es fi fr gb gr hk hu id ie il in ir is it jp ke kr ma mx my ng nl no nz pe ph pk pl pt ro ru sa se sg th tr tw ua us vn za`.split(/\s+/);
       const flagLabelOverrides = { gb: "UK", us: "USA", kr: "Korea", kp: "North Korea", cz: "Czechia" };
@@ -82,6 +88,7 @@
       let routeScrollCapturePending = false;
       let iconGroup = "24px";
       let iconQuery = "";
+      let generalIconQuery = "";
       let flagQuery = "";
       let sidebarSearchQuery = "";
       const sidebarCategoryOpen = { foundation: true, components: true, patterns: true };
@@ -156,11 +163,14 @@
         other: "Other"
       };
       const iconCategoryOrder = Object.keys(iconCategoryLabels);
-      function renderIconGrid() {
-        const grid = document.getElementById("icon-grid");
+      /* One painter for both boards — the Icon library and the General icon set
+         differ only in which assets they list and how they are filtered, so the
+         tile markup, categories and copy affordance stay identical between them. */
+      function paintIconGrid(gridId, assets, { group, query: rawQuery }) {
+        const grid = document.getElementById(gridId);
         if (!grid) return;
-        const query = iconQuery.toLowerCase();
-        const visible = iconAssets.filter((asset) => (iconGroup === "all" || iconGroupFor(asset) === iconGroup) && (!query || asset.toLowerCase().includes(query)));
+        const query = rawQuery.toLowerCase();
+        const visible = assets.filter((asset) => (group === "all" || iconGroupFor(asset) === group) && (!query || asset.toLowerCase().includes(query)));
         const tile = (asset) => {
           const assetGroup = iconGroupFor(asset);
           const assetSize = assetGroup === "16px" ? 16 : 24;
@@ -180,6 +190,13 @@
           if (!assets.length) return "";
           return `<section class="icon-category"><div class="icon-grid"><h2 class="icon-category-title">${iconCategoryLabels[category]}</h2>${assets.map(tile).join("")}</div></section>`;
         }).join("") || '<p class="icon-empty">No icon assets match these filters.</p>';
+      }
+      function renderIconGrid() {
+        paintIconGrid("icon-grid", iconAssets, { group: iconGroup, query: iconQuery });
+      }
+      /* The general set is 24px throughout, so it needs no size filter — only search. */
+      function renderGeneralIconGrid() {
+        paintIconGrid("general-icon-grid", generalIconAssets, { group: "all", query: generalIconQuery });
       }
       async function copyIconAsset(asset, tile) {
         try {
@@ -204,6 +221,9 @@
       function iconLibraryDetail() {
         const groups = ui.segmentedControl({ id: "icon-library-group", options: [{ value: "24px", label: "24px" }, { value: "16px", label: "16px" }, { value: "all", label: "All" }], selected: "24px", size: 32, shape: "pill", ariaLabel: "Icon asset group" });
         return `<section class="detail-section"><div class="detail-sample"><div class="icon-toolbar"><div class="icon-filter-sets"><div class="icon-filter-set">${groups}</div></div>${ui.search({ id: "icon-search", placeholder: "Search icon assets", size: 40, shape: "pill" })}</div><div class="icon-groups" id="icon-grid"></div></div></section>`;
+      }
+      function generalIconsDetail() {
+        return `<section class="detail-section"><div class="detail-sample"><p class="intro">The backup set: ${generalIconAssets.length} general-purpose glyphs vendored at <code>Assets/Icons/ui/&lt;name&gt;.svg</code>, same 24px canvas as italki's own and referenced the same way. Search the <strong>Icon library</strong> first — these are for when nothing italki drew carries the meaning.</p><div class="icon-toolbar">${ui.search({ id: "general-icon-search", placeholder: "Search the general set", size: 40, shape: "pill" })}</div><div class="icon-groups" id="general-icon-grid"></div></div></section>`;
       }
       function principlesDetail() {
         const list = (items) => `<ul>${items.map((item) => `<li>${item}</li>`).join("")}</ul>`;
@@ -1043,6 +1063,7 @@
         else if (name === "image") content = '<div class="image-overview-preview" aria-label="Approved image ratios"><i></i><i></i></div>';
         else if (name === "avatar") content = avatarGroupPreview();
         else if (name === "icon library") content = '<div class="icon-preview"><img src="Assets/Icons/search.svg" alt="" /><img src="Assets/Icons/add.svg" alt="" /><img src="Assets/Icons/lesson.svg" alt="" /><img src="Assets/Icons/message.svg" alt="" /></div>';
+        else if (name === "general icon set") content = '<div class="icon-preview"><img src="Assets/Icons/ui/globe-01.svg" alt="" /><img src="Assets/Icons/ui/rocket-01.svg" alt="" /><img src="Assets/Icons/ui/pie-chart-01.svg" alt="" /><img src="Assets/Icons/ui/thumbs-up.svg" alt="" /></div>';
         else if (name === "typography") content = '<div class="type-preview"><b>Teacher profile</b><span>Body / Caption / Label</span></div>';
         else if (name === "search") content = `<div class="search-demo">${ui.search({ placeholder: "Search" })}</div>`;
         else if (name === "select") content = ui.select({ id: "overview-select", label: "Language", options: ["English", "French"], selected: "English", size: 32 });
@@ -1439,6 +1460,7 @@
         if (byName(entry) === "skeleton") return skeletonDetail();
         if (byName(entry) === "avatar") return avatarDetail();
         if (byName(entry) === "icon library") return iconLibraryDetail();
+        if (byName(entry) === "general icon set") return generalIconsDetail();
         if (byName(entry) === "typography") return typographyDetail();
         if (byName(entry) === "top nav") return topNavDetail();
         if (byName(entry) === "breadcrumb") return breadcrumbDetail();
@@ -1525,7 +1547,7 @@
         const isTeacherDetail = byName(entry) === "teacher detail";
         const isFilterPattern = entry.group.id === "patterns" && byName(entry) === "filter";
         const isPrinciples = byName(entry) === "design principles";
-        const isFoundation = ["color", "spacing", "grid", "image", "shadow", "radius", "button variants", "icon library", "typography", "divider", "section intro", "alert", "toast", "notification", "result", "progress", "skeleton", "badge", "chip", "tag", "search", "text input", "textarea", "form field", "number stepper", "upload", "combobox", "select", "checkbox", "radio", "date picker", "time picker", "time slot", "calendar", "rate", "selection", "slider", "switch", "segmented control", "avatar", "card", "list", "tabs", "statistic", "table", "timeline", "disclosure", "panel", "stepper", "modal", "drawer", "popconfirm", "popup", "popover", "dropdown menu", "tooltip", "top nav", "breadcrumb", "sidebar", "footer", "pagination"].includes(byName(entry));
+        const isFoundation = ["color", "spacing", "grid", "image", "shadow", "radius", "button variants", "icon library", "general icon set", "typography", "divider", "section intro", "alert", "toast", "notification", "result", "progress", "skeleton", "badge", "chip", "tag", "search", "text input", "textarea", "form field", "number stepper", "upload", "combobox", "select", "checkbox", "radio", "date picker", "time picker", "time slot", "calendar", "rate", "selection", "slider", "switch", "segmented control", "avatar", "card", "list", "tabs", "statistic", "table", "timeline", "disclosure", "panel", "stepper", "modal", "drawer", "popconfirm", "popup", "popover", "dropdown menu", "tooltip", "top nav", "breadcrumb", "sidebar", "footer", "pagination"].includes(byName(entry));
         document.getElementById("page-title").textContent = entry.name;
         const isButtonVariants = byName(entry) === "button variants";
         const isLink = byName(entry) === "link";
@@ -1534,10 +1556,11 @@
         const isColor = byName(entry) === "color";
         document.getElementById("total").innerHTML = isPrinciples ? downloadDocument("docs/DESIGN.md", "DESIGN.md") : (isColor ? colorUsageModal() : (isRadius ? buttonComponent({ label: "When To Use", variant: "secondary", size: 32, demo: "open-radius-usage" }) : (isSpacing ? buttonComponent({ label: "When To Use", variant: "secondary", size: 32, demo: "open-spacing-usage" }) : (isFoundation || isTeacherCard || isLessonCard || isLink ? "" : entry.group.title))));
         document.querySelector(".page-heading").classList.toggle("has-heading-action", isPrinciples || isColor || isRadius || isSpacing);
-        gallery.innerHTML = `<article class="component-detail${isButton ? " button-detail button-size-md shape-default" : ""}${byName(entry) === "color" ? " color-detail-page" : ""}${byName(entry) === "icon library" ? " icon-library-detail" : ""}${byName(entry) === "typography" ? " typography-detail" : ""}">${isFoundation || isPrinciples || isTeacherCard || isLessonCard || isFilterPattern || isTeacherDiscovery || isTeacherDetail || isLink ? "" : `<p class="detail-kicker">${entry.group.title}</p><p class="intro">${entry.description}</p>`}${detailContent(entry)}${isButtonVariants ? buttonUsageModal() : ""}${isRadius ? radiusUsageModal() : ""}${isSpacing ? spacingUsageModal() : ""}</article>`;
+        gallery.innerHTML = `<article class="component-detail${isButton ? " button-detail button-size-md shape-default" : ""}${byName(entry) === "color" ? " color-detail-page" : ""}${["icon library", "general icon set"].includes(byName(entry)) ? " icon-library-detail" : ""}${byName(entry) === "typography" ? " typography-detail" : ""}">${isFoundation || isPrinciples || isTeacherCard || isLessonCard || isFilterPattern || isTeacherDiscovery || isTeacherDetail || isLink ? "" : `<p class="detail-kicker">${entry.group.title}</p><p class="intro">${entry.description}</p>`}${detailContent(entry)}${isButtonVariants ? buttonUsageModal() : ""}${isRadius ? radiusUsageModal() : ""}${isSpacing ? spacingUsageModal() : ""}</article>`;
         sortCatalogSections(gallery);
         if (["popup", "popover"].includes(byName(entry))) bindPopupDismissal();
         if (byName(entry) === "icon library") renderIconGrid();
+        if (byName(entry) === "general icon set") renderGeneralIconGrid();
         if (byName(entry) === "avatar") renderFlagLibrary();
         if (isButtonVariants) applyButtonCatalogProps(gallery.querySelector(".button-detail"));
         if (byName(entry) === "form field") applyFormFieldCatalogProps(gallery.querySelector(".form-detail"));
@@ -1977,6 +2000,11 @@
           if (event.target.id === "icon-search") {
             iconQuery = event.target.value;
             renderIconGrid();
+            return;
+          }
+          if (event.target.id === "general-icon-search") {
+            generalIconQuery = event.target.value;
+            renderGeneralIconGrid();
             return;
           }
           if (event.target.id === "flag-search") {
