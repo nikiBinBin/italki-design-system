@@ -41,6 +41,20 @@ An authenticated workspace is **assembled from this pattern, not composed per pa
 - Relationship labels are not disclosure controls unless product state and a full accessible disclosure contract are supplied. Navigation previews are data rows, not nested cards.
 - Adapter data owns destination availability, active route, entitlement, account amount, avatar, activity rows, unread status, and all navigation outcomes. The pattern does not infer any of them.
 
+## Logged-Out Shell
+
+### visitor-header
+
+`visitor-header` is the signed-out counterpart to `workspace-header`, and the two never appear together. It composes the reusable `top-nav` surface in its `logged-out` variant with product-supplied destinations, one combined language-and-currency choice, and one way in. It carries no sidebar: a visitor has no workspace to navigate, so `sidebar-navigation` belongs to the authenticated shell alone.
+
+The destinations this pattern supplies are the public ones — `1-on-1 teacher`, `Group Class`, `Community`, `Become a teacher` — in that order. This is the one shell where global text navigation is correct; `workspace-header` still may not recreate it, because a signed-in learner reaches the same places through the sidebar.
+
+- **The way in is quiet on the bar and decisive in the menu.** `Sign up / Log in` is one control, not two, and it is `secondary` in the bar. The red CTA appears only inside the phone menu, where nothing else competes with it. A landing page therefore keeps its own red CTA as the page's single conversion action.
+- **The phone bar is the same variant, not a second pattern.** Below 744px the destinations move into the left Drawer the variant composes, and the bar's action becomes the supplied `mobileActionLabel` — `Open in App` on italki's own pages. A host that has no app to open supplies a different label rather than a different bar.
+- **Language and currency are one decision here.** The bar shows them together in the flagless `plain` context; the menu splits them into two 48px Selects because there is room. Neither reads or persists the choice — the host supplies the values and owns the outcome.
+- The mark is the brand anchor and the only element at the leading edge. Do not add a search surface to this bar: a visitor searching for teachers is doing that on the page, not in the shell.
+- Adapter data owns destinations, routes, locale and currency values, app-store availability, and every sign-up or log-in outcome. The pattern infers none of them.
+
 ## Discovery And Teacher Evaluation
 
 ### teacher-discovery-search and filter

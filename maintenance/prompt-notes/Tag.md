@@ -27,6 +27,7 @@ the tag exists to draw is gone.
 | `Canceled` | `neutral` | `Assets/Icons/16px/lesson-canceled-sm.svg` |
 | `Decline` | `neutral` | `Assets/Icons/16px/lesson-canceled-sm.svg` |
 | `Temporarily frozen` | `neutral` | `Assets/Icons/16px/frozen-sm.svg` |
+| `Terminated` | `neutral` | `Assets/Icons/16px/slash-circle-sm.svg` |
 
 **The tone column is a colour role, not a description of the status.** Tag's five
 tones carry no "someone must act" role, so the status tags borrow the two that

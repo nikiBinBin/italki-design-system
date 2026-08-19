@@ -957,7 +957,7 @@
 /* The bar spans what holds it. Without a width it is a grid sized by its
    content, so in any flex context it shrank and fell into the phone layout
    while there was room to spare. */
-.ui-top-nav { container-type: inline-size; width: 100%; min-height: 72px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 400px) minmax(0, 1fr); align-items: center; gap: var(--ui-space-4); position: sticky; top: 0; z-index: var(--ui-layer-top-nav, 40); border-bottom: 1px solid var(--ui-color-border); padding: 0 var(--ui-space-6); color: var(--ui-color-text); background: var(--ui-color-card); }
+.ui-top-nav { container-type: inline-size; width: 100%; min-height: 72px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 400px) minmax(0, 1fr); align-items: center; gap: var(--ui-space-4); position: sticky; top: 0; z-index: var(--ui-layer-top-nav, 40); border-bottom: 1px solid var(--ui-color-divider); padding: 0 var(--ui-space-6); color: var(--ui-color-text); background: var(--ui-color-card); }
 .ui-top-nav__leading, .ui-top-nav__trailing { min-width: 0; display: flex; align-items: center; }
 .ui-top-nav__center { min-width: 0; display: flex; align-items: center; justify-content: center; position: relative; }
 .ui-top-nav__trailing { justify-content: flex-end; }
@@ -979,7 +979,50 @@
   .ui-top-nav__trailing .ui-button--48,
   .ui-top-nav__trailing .ui-button--48.has-leading-icon,
   .ui-top-nav__trailing .ui-button--48.has-trailing-icon { width: 48px; min-width: 48px; }
+  /* The signed-in action can fall back to its icon because it has one. The
+     logged-out action is words only — "Sign up / Log in" reduced to a blank
+     40px circle is not a smaller control, it is an unreadable one. This bar
+     answers narrow width by changing shape at 744px instead. */
+  .ui-top-nav--logged-out .ui-top-nav__trailing .ui-button__label { display: inline; }
+  .ui-top-nav--logged-out .ui-top-nav__trailing .ui-button,
+  .ui-top-nav--logged-out .ui-top-nav__trailing .ui-button.has-leading-icon,
+  .ui-top-nav--logged-out .ui-top-nav__trailing .ui-button.has-trailing-icon { width: auto; min-width: 0; padding: 0 var(--ui-space-6); }
 }
+/* The logged-out bar: a mark at one end, everything else collected at the
+   other, and nothing in the middle. The centre column is not narrowed here, it
+   is removed — a 400px empty track would push the row off its own right inset. */
+.ui-top-nav--logged-out { grid-template-columns: auto minmax(0, 1fr); }
+.ui-top-nav--logged-out .ui-top-nav__center { display: none; }
+.ui-top-nav--logged-out .ui-top-nav__leading, .ui-top-nav--logged-out .ui-top-nav__trailing { gap: var(--ui-space-4); }
+.ui-top-nav--logged-out .ui-top-nav__trailing .ui-button { padding: 0 var(--ui-space-6); }
+.ui-top-nav__brand { display: inline-flex; align-items: center; flex: 0 0 auto; }
+/* Height only: the mark keeps its own aspect, which is what turns the desktop
+   56x40 into the phone bar's 44.8x32 without a second measurement. */
+.ui-top-nav__brand-mark { width: auto; height: 40px; }
+.ui-top-nav__links { min-width: 0; display: flex; align-items: center; gap: var(--ui-space-4); }
+.ui-top-nav__link { color: var(--ui-color-placeholder); font-size: var(--ui-font-size-14); font-weight: var(--ui-font-weight-medium); line-height: var(--ui-line-height-22); text-decoration: none; white-space: nowrap; transition: color 120ms ease; }
+.ui-top-nav__link:hover { color: var(--ui-color-text); }
+.ui-top-nav__link:focus-visible { outline: 0; border-radius: var(--ui-radius-xs); color: var(--ui-color-text); box-shadow: 0 0 0 1px var(--ui-color-border); }
+.ui-top-nav--logged-out .ui-top-nav-context__trigger { border-radius: var(--ui-radius-lg); color: var(--ui-color-placeholder); font-weight: var(--ui-font-weight-medium); line-height: var(--ui-line-height-22); }
+.ui-top-nav__menu, .ui-top-nav__action-compact { display: none; }
+.ui-top-nav__action { display: inline-flex; }
+@container (max-width: 743px) {
+  .ui-top-nav--logged-out { min-height: 56px; padding: 0 var(--ui-space-4); }
+  .ui-top-nav--logged-out .ui-top-nav__brand-mark { height: 32px; }
+  .ui-top-nav--logged-out .ui-top-nav__menu { display: inline-flex; }
+  .ui-top-nav--logged-out .ui-top-nav-context,
+  .ui-top-nav--logged-out .ui-top-nav__links,
+  .ui-top-nav--logged-out .ui-top-nav__action { display: none; }
+  .ui-top-nav--logged-out .ui-top-nav__action-compact { display: inline-flex; }
+}
+.ui-top-nav-menu { min-height: 100%; display: flex; flex-direction: column; }
+.ui-top-nav-menu__list { display: grid; align-content: start; gap: var(--ui-space-3); }
+.ui-top-nav-menu__item { min-height: 40px; display: flex; align-items: center; gap: var(--ui-space-2); border-radius: var(--ui-radius-md); padding: var(--ui-space-2); color: var(--ui-color-title); font-size: var(--ui-font-size-16); font-weight: var(--ui-font-weight-medium); line-height: var(--ui-line-height-24); text-decoration: none; }
+.ui-top-nav-menu__item:hover, .ui-top-nav-menu__item:focus-visible { outline: 0; background: var(--ui-color-divider); }
+.ui-top-nav-menu__item-icon { width: 24px; height: 24px; flex: 0 0 24px; }
+.ui-top-nav-menu__foot { display: grid; gap: var(--ui-space-4); margin-top: auto; padding-top: var(--ui-space-6); }
+.ui-top-nav-menu__foot .ui-button { width: 100%; }
+.ui-top-nav-menu__options { display: grid; grid-template-columns: 1fr 1fr; gap: var(--ui-space-2); }
 .ui-top-nav-context { min-width: 0; position: relative; }
 /* Capped at the column it sits in: as an inline-flex it was sized by its content,
    so a long context name ("English Teachers") ran straight under the action
@@ -1236,6 +1279,14 @@ html.ui-modal-scroll-locked, body.ui-modal-scroll-locked { overflow: hidden; }
 .ui-drawer__mask { position: absolute; inset: 0; border: 0; padding: 0; background: var(--ui-color-modal-mask); cursor: default; }
 .ui-drawer { width: min(88%, 360px); min-height: 100%; position: relative; z-index: 1; display: flex; flex-direction: column; border: 0; border-radius: var(--ui-radius-xl) 0 0 var(--ui-radius-xl); color: var(--ui-color-text); background: var(--ui-color-card); box-shadow: var(--ui-shadow-xl); transform: translateX(100%); transition: transform 220ms cubic-bezier(.2, .8, .2, 1); }
 .ui-drawer--wide { width: min(94%, 520px); }
+/* The two stages, read the same way as the Modal's: `demo` is the bounded grey
+   preview the Catalog shows, `inline` leaves only the trigger in the page and
+   hangs the panel off the viewport. */
+.ui-drawer-stage--inline { width: auto; min-height: 0; display: inline-flex; position: static; overflow: visible; border-radius: 0; background: transparent; }
+.ui-drawer-stage--inline .ui-drawer__layer { position: fixed; z-index: var(--ui-layer-overlay, 60); }
+.ui-drawer-stage--inline .ui-drawer { min-height: 100dvh; }
+.ui-drawer__header.is-title-hidden { justify-content: flex-end; border-bottom: 0; }
+.ui-drawer__header.is-title-hidden h3 { width: 1px; height: 1px; position: absolute; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
 .ui-drawer--right { border-radius: 0; }
 .ui-drawer--left { margin-right: auto; border-radius: 0 var(--ui-radius-xl) var(--ui-radius-xl) 0; transform: translateX(-100%); }
 .ui-drawer--bottom { width: 100%; min-height: 0; max-height: 95%; margin-top: auto; border-radius: var(--ui-radius-xl) var(--ui-radius-xl) 0 0; transform: translateY(100%); }

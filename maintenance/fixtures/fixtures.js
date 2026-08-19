@@ -86,6 +86,29 @@
       trailing: ui.button({ label: "Book lessons", variant: "emphasis", size: 40, shape: "pill", leadingIcon: "Assets/Icons/plus.svg" }),
       ariaLabel: "Top navigation"
     });
+    const visitorLinks = [
+      { id: "one-on-one", label: "1-on-1 teacher", icon: "Assets/Icons/search_teacher_2.svg" },
+      { id: "group-class", label: "Group Class", icon: "Assets/Icons/group.svg" },
+      { id: "community", label: "Community", icon: "Assets/Icons/community.svg" },
+      { id: "become-teacher", label: "Become a teacher", icon: "Assets/Icons/teacher.svg" }
+    ];
+    const visitorNav = ({ id, menuOpen = false }) => ui.topNav({
+      id,
+      variant: "logged-out",
+      links: visitorLinks,
+      localeLabel: "English · USD $",
+      localeOptions: [{ id: "en-usd", label: "English · USD $" }, { id: "zh-cny", label: "中文 · CNY ¥" }],
+      actionLabel: "Sign up / Log in",
+      mobileActionLabel: "Open in App",
+      menuOpen,
+      menuLocale: { label: "Language", options: ["English", "中文"], selected: "English" },
+      menuCurrency: { label: "Currency", options: ["USD $", "CNY ¥"], selected: "CNY ¥" },
+      ariaLabel: "Top navigation"
+    });
+    /* The phone bar is the same variant at a narrower measurement, so the
+       fixture supplies the width the container query reads rather than a second
+       component. */
+    const visitorPhone = (markup) => `<div style="width: 375px;">${markup}</div>`;
     const entries = {
       button: [
         fixture("button", "default", ui.button({ label: "Default" })),
@@ -147,7 +170,7 @@
         fixture("selection", "lesson-options-detailed", ui.selectionGroup({ label: "Choose lesson duration", contentType: "lesson-options", selectionMode: "radio", courseTitle: "🎙️ Real-life Conversation (English) (📚 with materials) 进阶英语", courseMeta: "B1-C2 · Language Essentials · 2,182 lessons completed", selected: "30", options: [{ label: "30 mins", value: "30", price: "¥114.70" }, { label: "45 mins", value: "45", price: "¥168.67" }, { label: "60 mins", value: "60", price: "¥182.17" }, { label: "90 mins", value: "90", price: "¥296.86" }] })),
         fixture("selection", "lesson-options-compact", ui.selection({ label: "👩🏻‍🏫 Structured English Course (📚 materials and textbooks) 系统学习英语", contentType: "lesson-options", selectionMode: "radio", description: "A1-B2 · Language Essentials · 111 lessons completed", price: "¥114.70+" })),
         fixture("selection", "lesson-options-list", ui.selectionGroup({ label: "Choose a course and lesson duration", contentType: "lesson-options", selectionMode: "radio", selected: "conversation", selectedDuration: "30", courses: [{ value: "conversation", title: "Real-life Conversation", meta: "B1-C2 · Language Essentials", options: [{ label: "30 mins", value: "30", price: "¥114.70" }, { label: "45 mins", value: "45", price: "¥168.67" }] }, { value: "structured", title: "Structured English Course", meta: "A1-B2 · Language Essentials", price: "¥114.70+", options: [{ label: "30 mins", value: "30", price: "¥114.70" }, { label: "45 mins", value: "45", price: "¥168.67" }] }] })),
-        fixture("selection", "avatar-default", ui.selection({ label: "Olivia Rhye", contentType: "avatar", leading: '<img src="Assets/Images/avatars/teacher-rachel.png" alt="" />', description: "Product Manager" })),
+        fixture("selection", "avatar-default", ui.selection({ label: "Olivia Rhye", contentType: "avatar", leading: '<img src="Assets/Images/faces/01.jpg" alt="" />', description: "Product Manager" })),
         fixture("selection", "payment-icon-default", ui.selection({ label: "Visa ending in 4242", contentType: "payment-icon", leading: '<img src="Assets/Icons/pay-visa.svg" alt="" />', description: "Expires 12/28" })),
         fixture("selection", "radio-default", ui.selection({ label: "Basic plan", contentType: "standard", selectionMode: "radio" })),
         fixture("selection", "radio-selected", ui.selection({ label: "Basic plan", contentType: "standard", selectionMode: "radio", selected: true })),
@@ -215,8 +238,8 @@
         fixture("link", "disabled", ui.link({ label: "Unavailable", disabled: true })),
       ],
       avatar: [
-        fixture("avatar", "image", ui.avatar({ name: "Maya Chen", image: "Assets/Images/avatars/teacher-bob.png", size: 48 })),
-        fixture("avatar", "with-flag", ui.avatar({ name: "Maya Chen, USA", image: "Assets/Images/avatars/teacher-bob.png", size: 56, flag: "us", flagLabel: "USA", variant: "with-flag" })),
+        fixture("avatar", "image", ui.avatar({ name: "Maya Chen", image: "Assets/Images/faces/03.jpg", size: 48 })),
+        fixture("avatar", "with-flag", ui.avatar({ name: "Maya Chen, USA", image: "Assets/Images/faces/03.jpg", size: 56, flag: "us", flagLabel: "USA", variant: "with-flag" })),
         fixture("avatar", "empty", ui.avatar({ name: "Maya Chen", initials: "MC", size: 48, variant: "empty" })),
         fixture("avatar", "logo", ui.avatar({ name: "italki", size: 48, variant: "logo" })),
         fixture("avatar", "hover", ui.avatar({ name: "Maya Chen", initials: "MC", size: 48, variant: "empty", state: "hover" })),
@@ -242,7 +265,7 @@
       ],
       card: [
         fixture("card", "basic", ui.card({ eyebrow: "Lesson resource", title: "Conversation prompts", body: "<p>Prompts for your next speaking lesson.</p>" })),
-        fixture("card", "media", ui.card({ media: "Assets/Images/avatars/lesson-card-sunshine.png", mediaAlt: "", title: "Weekly learning plan", body: "<p>Media is supplied by the parent.</p>" })),
+        fixture("card", "media", ui.card({ media: "Assets/Images/covers/teacher-intro.jpg", mediaAlt: "", title: "Weekly learning plan", body: "<p>Media is supplied by the parent.</p>" })),
         fixture("card", "interactive", ui.card({ interactive: true, outlined: false, ariaLabel: "Open lesson materials", eyebrow: "Clickable card", title: "Lesson materials", body: "<p>One root action only.</p>" })),
         fixture("card", "compact", ui.card({ density: "compact", title: "Compact card", body: "<p>Dense local content.</p>" })),
         fixture("card", "comfortable", ui.card({ density: "comfortable", title: "Comfortable card", body: "<p>Spacious content region.</p>" }))
@@ -320,7 +343,10 @@
         fixture("top-nav", "teacher-search", topNavFixture({ id: "fixture-top-nav-teacher" })),
         fixture("top-nav", "context-open", topNavFixture({ id: "fixture-top-nav-context-open", contextOpen: true })),
         fixture("top-nav", "search-query", topNavFixture({ id: "fixture-top-nav-query", value: "French" })),
-        fixture("top-nav", "filtered", topNavFixture({ id: "fixture-top-nav-filtered", filtered: true }))
+        fixture("top-nav", "filtered", topNavFixture({ id: "fixture-top-nav-filtered", filtered: true })),
+        fixture("top-nav", "logged-out", visitorNav({ id: "fixture-top-nav-logged-out" })),
+        fixture("top-nav", "logged-out-mobile", visitorPhone(visitorNav({ id: "fixture-top-nav-logged-out-mobile" }))),
+        fixture("top-nav", "logged-out-menu-open", visitorPhone(visitorNav({ id: "fixture-top-nav-logged-out-menu", menuOpen: true })))
       ],
       slider: [
         fixture("slider", "default", ui.slider({ value: 50, label: "Default slider" })),
@@ -420,8 +446,8 @@
         fixture("upload", "dropzone", ui.upload({ id: "fixture-upload-dropzone", label: "Add lesson material", description: "PDF, DOCX, PNG or JPG up to 10 MB.", accept: ".pdf,.docx,.png,.jpg" })),
         fixture("upload", "trigger", ui.upload({ id: "fixture-upload-trigger", variant: "trigger", label: "Lesson material", description: "Choose one file to attach." })),
         fixture("upload", "avatar-empty", ui.upload({ id: "fixture-upload-avatar-empty", variant: "avatar", label: "Profile photo", description: "JPG or PNG, up to 5 MB." })),
-        fixture("upload", "avatar-filled", ui.upload({ id: "fixture-upload-avatar-filled", variant: "avatar", label: "Profile photo", avatar: "Assets/Images/avatars/teacher-rachel.png", avatarAlt: "Elena Ruiz profile photo" })),
-        fixture("upload", "avatar-uploading", ui.upload({ id: "fixture-upload-avatar-uploading", variant: "avatar", label: "Profile photo", avatar: "Assets/Images/avatars/teacher-rachel.png", state: "uploading" })),
+        fixture("upload", "avatar-filled", ui.upload({ id: "fixture-upload-avatar-filled", variant: "avatar", label: "Profile photo", avatar: "Assets/Images/faces/01.jpg", avatarAlt: "Elena Ruiz profile photo" })),
+        fixture("upload", "avatar-uploading", ui.upload({ id: "fixture-upload-avatar-uploading", variant: "avatar", label: "Profile photo", avatar: "Assets/Images/faces/01.jpg", state: "uploading" })),
         fixture("upload", "avatar-error", ui.upload({ id: "fixture-upload-avatar-error", variant: "avatar", label: "Profile photo", state: "error", error: "Photo must be smaller than 5 MB." })),
         fixture("upload", "hover", ui.upload({ id: "fixture-upload-hover", label: "Add lesson material", state: "hover" })),
         fixture("upload", "focus", ui.upload({ id: "fixture-upload-focus", label: "Add lesson material", state: "focus" })),

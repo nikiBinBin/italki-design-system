@@ -1781,6 +1781,14 @@
         "searchFilterLabel",
         "actionLabel",
         "actionIcon",
+        "links",
+        "localeLabel",
+        "localeOptions",
+        "mobileActionLabel",
+        "menuOpen",
+        "menuActionLabel",
+        "menuLocale",
+        "menuCurrency",
         "ariaLabel",
         "sticky",
         "demo"
@@ -1798,6 +1806,14 @@
         "searchFilterLabel": "\"Filter\"",
         "actionLabel": "\"Book lessons\"",
         "actionIcon": "\"nav-plus\"",
+        "links": "[]",
+        "localeLabel": "\"\"",
+        "localeOptions": "[]",
+        "mobileActionLabel": "\"Open in App\"",
+        "menuOpen": "false",
+        "menuActionLabel": "\"\"",
+        "menuLocale": "null",
+        "menuCurrency": "null",
         "ariaLabel": "\"Top navigation\"",
         "sticky": "true",
         "demo": "\"\""
@@ -1810,7 +1826,12 @@
         "variant": [
           "custom",
           "global-default",
-          "teacher-search"
+          "teacher-search",
+          "logged-out"
+        ],
+        "menuOpen": [
+          true,
+          false
         ]
       },
       "states": [
@@ -1818,7 +1839,10 @@
         "teacher-search",
         "context-open",
         "search-query",
-        "filtered"
+        "filtered",
+        "logged-out",
+        "logged-out-mobile",
+        "logged-out-menu-open"
       ],
       "subcomponents": {
         "context": {
@@ -1834,7 +1858,8 @@
           "props": {
             "mode": [
               "labelled",
-              "compact"
+              "compact",
+              "plain"
             ],
             "open": [
               true,
@@ -2204,6 +2229,8 @@
         "open",
         "placement",
         "size",
+        "stage",
+        "titleHidden",
         "closable",
         "maskClosable",
         "keyboardClosable",
@@ -2219,6 +2246,8 @@
         "open": "false",
         "placement": "\"right\"",
         "size": "\"default\"",
+        "stage": "\"demo\"",
+        "titleHidden": "false",
         "closable": "true",
         "maskClosable": "true",
         "keyboardClosable": "true",
@@ -2233,6 +2262,14 @@
         "size": [
           "default",
           "wide"
+        ],
+        "stage": [
+          "demo",
+          "inline"
+        ],
+        "titleHidden": [
+          true,
+          false
         ]
       },
       "states": [

@@ -371,7 +371,12 @@ for (const [sourcePath, assets] of [["index.html", catalogRenderedAssets], ["mai
 {
   const manifestSource = read("catalog-runtime/icon-manifest.js");
   const listed = new Set(Array.from(manifestSource.matchAll(/"(Assets\/Icons\/[^"]+)"/g), (match) => match[1]));
-  const excluded = new Set(["Assets/Icons/back.svg", "Assets/Icons/arrow-right-1.svg", "Assets/Icons/arrow-up-1.svg"]);
+  /* Read out of the generator rather than restated here. The two lists were
+     the same three names for as long as nothing was added to either; the first
+     addition failed this check against a copy that had never heard of it. */
+  const excludedBlock = read("maintenance/scripts/build-icon-manifest.mjs").match(/const EXCLUDED = new Set\(\[([\s\S]*?)\]\);/);
+  assert(excludedBlock, "build-icon-manifest.mjs no longer declares EXCLUDED as a literal Set, so this check cannot read it");
+  const excluded = new Set(Array.from(excludedBlock[1].matchAll(/"([^"]+)"/g), (match) => match[1]));
   /* Same skip as build-icon-manifest.mjs: a folder under Assets/Icons is not
      automatically part of the library. Without it this check reads a parked
      backup set as icons the manifest forgot, and the honest fix looks like
@@ -388,6 +393,30 @@ for (const [sourcePath, assets] of [["index.html", catalogRenderedAssets], ["mai
   }
   for (const asset of listed) {
     assert(fs.existsSync(path.join(root, asset)), `icon-manifest.js lists a file not on disk: ${asset}`);
+  }
+}
+
+// The Image foundation card renders the generated manifest; regenerate with
+// maintenance/scripts/build-image-manifest.mjs whenever Assets/Images changes.
+{
+  const listed = new Set(Array.from(read("catalog-runtime/image-manifest.js").matchAll(/"(Assets\/Images\/[^"]+)"/g), (match) => match[1]));
+  /* The same allow-list the generator uses, for the same reason: a `.DS_Store`
+     is not a missing image. */
+  const extensions = new Set([".png", ".jpg", ".jpeg", ".webp", ".svg"]);
+  /* Same skip as the generator: `faces/` holds derived crops of `covers/`, not
+     assets of their own. Without it this check reads them as images the
+     manifest forgot. */
+  const unpublishedDirs = new Set(["faces"]);
+  const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) return unpublishedDirs.has(entry.name) ? [] : walk(full);
+    return extensions.has(path.extname(entry.name).toLowerCase()) ? [path.relative(root, full)] : [];
+  });
+  for (const asset of walk(path.join(root, "Assets", "Images"))) {
+    assert(listed.has(asset), `Image on disk but missing from image-manifest.js (run build-image-manifest.mjs): ${asset}`);
+  }
+  for (const asset of listed) {
+    assert(fs.existsSync(path.join(root, asset)), `image-manifest.js lists a file not on disk: ${asset}`);
   }
 }
 
