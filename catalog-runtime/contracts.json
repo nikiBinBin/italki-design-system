@@ -1284,6 +1284,14 @@
         "searchFilterLabel",
         "actionLabel",
         "actionIcon",
+        "links",
+        "localeLabel",
+        "localeOptions",
+        "mobileActionLabel",
+        "menuOpen",
+        "menuActionLabel",
+        "menuLocale",
+        "menuCurrency",
         "ariaLabel",
         "sticky",
         "demo"
@@ -1302,7 +1310,8 @@
           "props": {
             "mode": [
               "labelled",
-              "compact"
+              "compact",
+              "plain"
             ],
             "open": [
               true,
@@ -1359,7 +1368,12 @@
         "variant": [
           "custom",
           "global-default",
-          "teacher-search"
+          "teacher-search",
+          "logged-out"
+        ],
+        "menuOpen": [
+          true,
+          false
         ]
       },
       "requiredStates": [
@@ -1367,7 +1381,10 @@
         "teacher-search",
         "context-open",
         "search-query",
-        "filtered"
+        "filtered",
+        "logged-out",
+        "logged-out-mobile",
+        "logged-out-menu-open"
       ]
     },
     "slider": {
@@ -1581,6 +1598,8 @@
         "open",
         "placement",
         "size",
+        "stage",
+        "titleHidden",
         "closable",
         "maskClosable",
         "keyboardClosable",
@@ -1595,6 +1614,14 @@
         "size": [
           "default",
           "wide"
+        ],
+        "stage": [
+          "demo",
+          "inline"
+        ],
+        "titleHidden": [
+          true,
+          false
         ]
       },
       "requiredStates": [

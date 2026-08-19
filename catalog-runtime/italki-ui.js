@@ -1612,10 +1612,14 @@
       contextLabel = "", contextFlag = "", contextOptions = [],
       searchPlaceholder = "Search", searchFilterLabel = "Filter",
       actionLabel = "Book lessons", actionIcon = "nav-plus",
+      links = [], localeLabel = "", localeOptions = [],
+      mobileActionLabel = "Open in App", menuOpen = false,
+      menuActionLabel = "", menuLocale = null, menuCurrency = null,
       ariaLabel = "Top navigation", sticky = true, demo = "",
     } = props;
     enumValue("top-nav", "sticky", sticky);
     enumValue("top-nav", "variant", variant);
+    enumValue("top-nav", "menuOpen", menuOpen);
     /* The two bars italki actually ships have names — the Catalog lists
        global-default and teacher-search among this component's required states
        — but they existed only as a recipe the Catalog route followed by hand:
@@ -1639,10 +1643,50 @@
     const hasBarData = Boolean(contextLabel || contextOptions.length || searchPlaceholder !== "Search" || actionLabel !== "Book lessons");
     const composed = variant !== "custom" || (hasBarData && !leading && !center && !trailing);
     const searchBar = variant === "teacher-search";
+    const visitor = variant === "logged-out";
     const contextSelected = contextOptions.find((option) => option && option.label === contextLabel)
       || contextOptions[0]
       || (contextLabel ? { id: "context", label: contextLabel, flag: contextFlag } : null);
-    const leadingContent = leading || (composed && contextSelected
+    /* The logged-out bar. It is a different shape from the two signed-in ones,
+       not a trimmed version of them: no search in the middle, the whole row
+       collected at the end, and the action deliberately quiet — a visitor who
+       has not chosen anything yet is not being pushed at. Below 744px the same
+       variant becomes the phone bar from the reference: hamburger, mark, one
+       32px action, and the destinations move into a left Drawer. That Drawer is
+       the shared `drawer` component with its inline stage, so its focus trap,
+       Escape handling and mask behaviour are not written a second time here. */
+    const menuName = "Menu";
+    const visitorLinks = links.filter(Boolean);
+    const visitorAction = actionLabel === "Book lessons" && visitor ? "Sign up / Log in" : actionLabel;
+    const visitorMenuAction = menuActionLabel || visitorAction;
+    const menuRow = (link) => {
+      const { id: linkId = "", label = "", icon: linkIcon = "", href = "" } = link || {};
+      if (!label) throw new Error("top-nav.links require a label");
+      if (linkIcon && !approvedAsset(linkIcon)) throw new Error(`Unapproved asset: ${linkIcon}`);
+      return `<a class="ui-top-nav-menu__item" href="${escapeHTML(href || "#")}"${linkId ? ` data-nav-link="${escapeHTML(linkId)}"` : ""}>${linkIcon ? icon(linkIcon, "ui-top-nav-menu__item-icon") : ""}<span>${escapeHTML(label)}</span></a>`;
+    };
+    const menuField = (field, fieldId) => (field
+      ? select({ id: `${navId}-${fieldId}`, label: field.label || fieldId, options: field.options || [], selected: field.selected || "", size: 48, shape: "rounded" })
+      : "");
+    const visitorMenu = visitorLinks.length
+      ? drawer({
+          id: `${navId}-menu`,
+          title: menuName,
+          titleHidden: true,
+          placement: "left",
+          stage: "inline",
+          open: menuOpen,
+          trigger: button({ label: menuName, ariaLabel: menuName, variant: "text", size: 40, iconOnly: true, leadingIcon: "hamburger", demo: "ui-drawer-open" }),
+          /* One column that owns its own height, rather than a Drawer footer:
+             the reference floats the action and the two selects on the panel
+             floor with no rule above them, and reaching into `.ui-drawer__body`
+             from here to get that would be this component restyling another. */
+          body: `<div class="ui-top-nav-menu"><nav class="ui-top-nav-menu__list" aria-label="${escapeHTML(menuName)}">${visitorLinks.map(menuRow).join("")}</nav><div class="ui-top-nav-menu__foot">${button({ label: visitorMenuAction, ariaLabel: visitorMenuAction, variant: "red", size: 48 })}<div class="ui-top-nav-menu__options">${menuField(menuLocale, "menu-language")}${menuField(menuCurrency, "menu-currency")}</div></div></div>`,
+        })
+      : "";
+    const visitorLeading = `${visitorMenu ? `<div class="ui-top-nav__menu">${visitorMenu}</div>` : ""}<a class="ui-top-nav__brand" href="#" aria-label="italki">${icon("Assets/Icons/logo-italki-wordmark.svg", "ui-top-nav__brand-mark")}</a>`;
+    const visitorTrailing = `${localeLabel ? topNavContext({ id: `${navId}-locale`, mode: "plain", selected: { id: "locale", label: localeLabel }, options: localeOptions.length ? localeOptions : [{ id: "locale", label: localeLabel }], ariaLabel: "Language and currency" }) : ""}${visitorLinks.length ? `<nav class="ui-top-nav__links" aria-label="${escapeHTML(ariaLabel)}">${visitorLinks.map((link) => `<a class="ui-top-nav__link" href="${escapeHTML(link.href || "#")}"${link.id ? ` data-nav-link="${escapeHTML(link.id)}"` : ""}>${escapeHTML(link.label)}</a>`).join("")}</nav>` : ""}<span class="ui-top-nav__action">${button({ label: visitorAction, ariaLabel: visitorAction, variant: "secondary", size: 40, shape: "pill" })}</span><span class="ui-top-nav__action-compact">${button({ label: mobileActionLabel, ariaLabel: mobileActionLabel, variant: "secondary", size: 32, shape: "pill" })}</span>`;
+    const leadingContent = visitor ? (leading || visitorLeading) : leading || (composed && contextSelected
       ? topNavContext({
           /* Same reason as the search field below: this derived its id from its
              aria-label, which is the same on every nav, so two navs on one page
@@ -1658,16 +1702,16 @@
        navs asking for the same placeholder produced the same id twice on one
        page — id has to be unique, and a duplicate breaks label association and
        fragment links. Derived from the nav that owns it instead. */
-    const centerContent = center || (composed
+    const centerContent = visitor ? center : center || (composed
       ? topNavSearch({ id: `${navId}-search`, placeholder: searchPlaceholder, filter: searchBar, filterLabel: searchFilterLabel })
       : "");
     /* Named as well as labelled: when the bar runs out of room the CSS drops the
        written label and leaves the icon, and a button whose only text is hidden
        has no accessible name left. The aria-label is what survives that. */
-    const trailingContent = trailing || (composed
+    const trailingContent = visitor ? (trailing || visitorTrailing) : trailing || (composed
       ? button({ label: actionLabel, ariaLabel: actionLabel, variant: "emphasis", size: 40, shape: "pill", leadingIcon: actionIcon })
       : "");
-    return `<header class="ui-top-nav${sticky ? "" : " is-flow"}" id="${escapeHTML(navId)}" data-component="top-nav" data-ui-top-nav aria-label="${escapeHTML(ariaLabel)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}><div class="ui-top-nav__leading">${leadingContent}</div><div class="ui-top-nav__center">${centerContent}</div><div class="ui-top-nav__trailing">${trailingContent}</div></header>`;
+    return `<header class="ui-top-nav${visitor ? " ui-top-nav--logged-out" : ""}${sticky ? "" : " is-flow"}" id="${escapeHTML(navId)}" data-component="top-nav" data-ui-top-nav aria-label="${escapeHTML(ariaLabel)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}><div class="ui-top-nav__leading">${leadingContent}</div><div class="ui-top-nav__center">${centerContent}</div><div class="ui-top-nav__trailing">${trailingContent}</div></header>`;
   }
 
   function topNavContext(props = {}) {
@@ -1677,16 +1721,24 @@
     enumValue("top-nav", "open", open, "context");
     if (!Array.isArray(options) || options.length === 0) throw new Error("top-nav.context.options must be a non-empty array");
     const contextId = id || `top-nav-context-${String(ariaLabel).toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+    /* `plain` is the flagless context: the logged-out bar's control reads
+       "English · USD $", which is a language and a currency together and has no
+       one country behind it. Demanding a flag there forced a page to pick a
+       nation for a currency — so the flag is required in the two flagged modes
+       and refused in this one, rather than quietly optional in all three. */
+    const flagless = mode === "plain";
     const current = typeof selected === "string" ? { id: selected, label: selected, flag: "" } : selected;
-    if (!current?.label || !current?.flag) throw new Error("top-nav.context.selected requires label and flag");
-    if (!approvedAsset(current.flag)) throw new Error(`Unapproved asset: ${current.flag}`);
+    if (!current?.label) throw new Error("top-nav.context.selected requires a label");
+    if (!flagless && !current.flag) throw new Error("top-nav.context.selected requires label and flag");
+    if (current.flag && !approvedAsset(current.flag)) throw new Error(`Unapproved asset: ${current.flag}`);
     const contextOptions = options.map((option) => {
       const { id: optionId = "", label = "", flag = "" } = option || {};
-      if (!optionId || !label || !flag) throw new Error("top-nav.context options require id, label, and flag");
-      if (!approvedAsset(flag)) throw new Error(`Unapproved asset: ${flag}`);
-      return `<button class="ui-top-nav-context__option" type="button" role="menuitem" data-demo="ui-top-nav-context-option" data-context-label="${escapeHTML(label)}" data-context-flag="${escapeHTML(flag)}">${icon(flag, "ui-top-nav-context__option-flag")}<span>${escapeHTML(label)}</span></button>`;
+      if (!optionId || !label) throw new Error("top-nav.context options require id and label");
+      if (!flagless && !flag) throw new Error("top-nav.context options require id, label, and flag");
+      if (flag && !approvedAsset(flag)) throw new Error(`Unapproved asset: ${flag}`);
+      return `<button class="ui-top-nav-context__option" type="button" role="menuitem" data-demo="ui-top-nav-context-option" data-context-label="${escapeHTML(label)}"${flag ? ` data-context-flag="${escapeHTML(flag)}"` : ""}>${flag ? icon(flag, "ui-top-nav-context__option-flag") : ""}<span>${escapeHTML(label)}</span></button>`;
     }).join("");
-    return `<div class="ui-top-nav-context ui-top-nav-context--${mode}" id="${escapeHTML(contextId)}" data-ui-top-nav-context data-component="top-nav-context"><button class="ui-top-nav-context__trigger" type="button" data-demo="ui-top-nav-context" aria-expanded="${open}" aria-haspopup="menu" aria-controls="${escapeHTML(contextId)}-menu" aria-label="${escapeHTML(ariaLabel)}">${icon(current.flag, "ui-top-nav-context__flag")}${mode === "compact" ? "" : `<span class="ui-top-nav-context__label">${escapeHTML(current.label)}</span>`}${icon("Assets/Icons/arrow-down-sm.svg", "ui-top-nav-context__arrow")}</button><div class="ui-top-nav-context__menu${open ? " is-open" : ""}" id="${escapeHTML(contextId)}-menu" role="menu" aria-label="${escapeHTML(ariaLabel)}"${open ? "" : " aria-hidden=\"true\""}>${contextOptions}</div></div>`;
+    return `<div class="ui-top-nav-context ui-top-nav-context--${mode}" id="${escapeHTML(contextId)}" data-ui-top-nav-context data-component="top-nav-context"><button class="ui-top-nav-context__trigger" type="button" data-demo="ui-top-nav-context" aria-expanded="${open}" aria-haspopup="menu" aria-controls="${escapeHTML(contextId)}-menu" aria-label="${escapeHTML(ariaLabel)}">${current.flag ? icon(current.flag, "ui-top-nav-context__flag") : ""}${mode === "compact" ? "" : `<span class="ui-top-nav-context__label">${escapeHTML(current.label)}</span>`}${icon("Assets/Icons/arrow-down-sm.svg", "ui-top-nav-context__arrow")}</button><div class="ui-top-nav-context__menu${open ? " is-open" : ""}" id="${escapeHTML(contextId)}-menu" role="menu" aria-label="${escapeHTML(ariaLabel)}"${open ? "" : " aria-hidden=\"true\""}>${contextOptions}</div></div>`;
   }
 
   function setTopNavContextOpen(control, open) {
@@ -1711,7 +1763,9 @@
     if (!root) return;
     const label = control.dataset.contextLabel || "";
     const flag = control.dataset.contextFlag || "";
-    if (!label || !flag || !approvedAsset(flag)) return;
+    /* A flagless option is the `plain` mode's normal case, not a malformed one:
+       requiring a flag here made every selection in the logged-out bar a no-op. */
+    if (!label || (flag && !approvedAsset(flag))) return;
     const trigger = root.querySelector("[data-demo=ui-top-nav-context]");
     const triggerLabel = root.querySelector(".ui-top-nav-context__label");
     const triggerFlag = root.querySelector(".ui-top-nav-context__flag");
@@ -2783,9 +2837,21 @@
        and `trigger = ""` answered that question before it could be asked — so the
        default button never rendered and triggerLabel was dead. Modal reads the
        same way; the two dialogs now behave alike. */
-    const { id = "", title = "Drawer", body = "", footer = "", trigger, triggerLabel = "Open drawer", open = false, placement = "right", size = "default", closable = true, maskClosable = true, keyboardClosable = true, demo = "" } = props;
+    const { id = "", title = "Drawer", body = "", footer = "", trigger, triggerLabel = "Open drawer", open = false, placement = "right", size = "default", stage = "demo", titleHidden = false, closable = true, maskClosable = true, keyboardClosable = true, demo = "" } = props;
     enumValue("drawer", "placement", placement);
     enumValue("drawer", "size", size);
+    /* Same two stages the Modal already has, and for the same reason: the
+       bounded grey box is the Catalog's preview surface, and a real page needs
+       the panel over the viewport instead. Without `inline` the only way to put
+       a Drawer in a page was to hand-write one, which is exactly what the
+       layering, focus and dismiss rules exist to prevent. */
+    enumValue("drawer", "stage", stage);
+    /* A panel whose contents name themselves still needs an accessible name, and
+       the reference for the visitor menu shows only a close control above the
+       list. `titleHidden` keeps the name on the dialog and takes the heading —
+       and the rule it was separating — out of the picture. It never removes the
+       name; a Drawer without one is not offered. */
+    enumValue("drawer", "titleHidden", titleHidden);
     const drawerId = id || `drawer-${String(title).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "panel"}`;
     /* An empty trigger means the page supplies its own; only an absent one asks
        for the default button. Modal had the same bug: passing trigger="" still
@@ -2795,7 +2861,7 @@
       : trigger;
     const close = closable ? `<button class="ui-drawer__close" type="button" data-demo="ui-drawer-close" aria-label="Close drawer">${icon("Assets/Icons/cross.svg", "ui-drawer__close-icon")}</button>` : "";
     const footerMarkup = footer ? `<footer class="ui-drawer__footer">${footer}</footer>` : "";
-    return `<div class="ui-drawer-stage${open ? " is-open" : ""}" id="${escapeHTML(drawerId)}" data-component="drawer" data-ui-drawer data-mask-closable="${maskClosable}" data-keyboard-closable="${keyboardClosable}">${triggerMarkup}<div class="ui-drawer__layer"${open ? "" : " aria-hidden=\"true\""}><button class="ui-drawer__mask" type="button" data-demo="ui-drawer-mask" aria-label="Close drawer"></button><aside class="ui-drawer ui-drawer--${placement} ui-drawer--${size}" id="${escapeHTML(drawerId)}-dialog" role="dialog" aria-modal="true" aria-labelledby="${escapeHTML(drawerId)}-title" tabindex="-1"><div class="ui-drawer__content"><header class="ui-drawer__header"><h3 id="${escapeHTML(drawerId)}-title">${escapeHTML(title)}</h3>${close}</header><div class="ui-drawer__body">${body}</div>${footerMarkup}</div></aside></div></div>`;
+    return `<div class="ui-drawer-stage ui-drawer-stage--${stage}${open ? " is-open" : ""}" id="${escapeHTML(drawerId)}" data-component="drawer" data-ui-drawer data-mask-closable="${maskClosable}" data-keyboard-closable="${keyboardClosable}">${triggerMarkup}<div class="ui-drawer__layer"${open ? "" : " aria-hidden=\"true\""}><button class="ui-drawer__mask" type="button" data-demo="ui-drawer-mask" aria-label="Close drawer"></button><aside class="ui-drawer ui-drawer--${placement} ui-drawer--${size}" id="${escapeHTML(drawerId)}-dialog" role="dialog" aria-modal="true" aria-labelledby="${escapeHTML(drawerId)}-title" tabindex="-1"><div class="ui-drawer__content"><header class="ui-drawer__header${titleHidden ? " is-title-hidden" : ""}"><h3 id="${escapeHTML(drawerId)}-title">${escapeHTML(title)}</h3>${close}</header><div class="ui-drawer__body">${body}</div>${footerMarkup}</div></aside></div></div>`;
   }
 
   function formField(props = {}) {

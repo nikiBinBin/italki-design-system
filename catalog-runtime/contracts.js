@@ -941,6 +941,14 @@ window.ITalkiUIContracts = {
         "searchFilterLabel",
         "actionLabel",
         "actionIcon",
+        "links",
+        "localeLabel",
+        "localeOptions",
+        "mobileActionLabel",
+        "menuOpen",
+        "menuActionLabel",
+        "menuLocale",
+        "menuCurrency",
         "ariaLabel",
         "sticky",
         "demo"
@@ -953,7 +961,12 @@ window.ITalkiUIContracts = {
         "variant": [
           "custom",
           "global-default",
-          "teacher-search"
+          "teacher-search",
+          "logged-out"
+        ],
+        "menuOpen": [
+          true,
+          false
         ]
       },
       "subcomponents": {
@@ -970,7 +983,8 @@ window.ITalkiUIContracts = {
           "props": {
             "mode": [
               "labelled",
-              "compact"
+              "compact",
+              "plain"
             ],
             "open": [
               true,
@@ -1191,6 +1205,8 @@ window.ITalkiUIContracts = {
         "open",
         "placement",
         "size",
+        "stage",
+        "titleHidden",
         "closable",
         "maskClosable",
         "keyboardClosable",
@@ -1205,6 +1221,14 @@ window.ITalkiUIContracts = {
         "size": [
           "default",
           "wide"
+        ],
+        "stage": [
+          "demo",
+          "inline"
+        ],
+        "titleHidden": [
+          true,
+          false
         ]
       }
     },

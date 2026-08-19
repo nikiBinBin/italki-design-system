@@ -596,6 +596,9 @@
       .top-nav-detail .component-doc-header { border: 0; padding: 0 0 var(--space-3); }
       .top-nav-detail .component-doc-content { min-height: 0; display: block; padding: 0; }
       .top-nav-frame { width: 100%; }
+      /* The bar reads its own width, so the phone form is shown by giving it a
+         phone's width here rather than by asking the reader to resize a window. */
+      .top-nav-frame--phone { width: 375px; max-width: 100%; border: 1px solid var(--ui-color-divider); border-radius: var(--ui-radius-lg); overflow: hidden; }
       .search-detail .component-doc-content { min-height: 120px; }
       .search-detail .component-doc-block.full .component-doc-content { min-height: 136px; }
       .search-global-controls { width: max-content; max-width: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-lg); margin: 0 0 var(--space-6); padding: var(--space-2) var(--space-3); background: var(--card); }
@@ -657,8 +660,12 @@
       .image-asset-group h3 { margin: 0; color: var(--title); font-size: var(--ui-font-size-16); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-24); }
       .image-asset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--space-4); }
       .image-asset-tile { min-width: 0; display: grid; gap: var(--space-2); position: relative; margin: 0; }
-      .image-asset-preview { aspect-ratio: 16 / 9; display: grid; place-items: center; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--hover); }
-      .image-asset-preview img { width: 100%; height: 100%; object-fit: cover; }
+      .image-asset-preview { aspect-ratio: 16 / 9; display: block; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--hover); }
+      /* The frame is filled, not fitted: a tile that letterboxes its own
+         asset makes the reader guess whether the pale band is the image or the
+         card. The grid used to centre the image as a grid item, which let it
+         size itself and leave a seam down both sides. */
+      .image-asset-preview img { display: block; width: 100%; height: 100%; object-fit: cover; }
       .image-asset-tile figcaption { overflow: hidden; color: var(--secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-16); text-overflow: ellipsis; white-space: nowrap; }
       .image-asset-tile:hover .icon-copy, .image-asset-tile:focus-within .icon-copy { opacity: 1; }
       .image-asset-tile.copied::after { position: absolute; right: 8px; bottom: 28px; padding: var(--space-1) var(--space-2); border-radius: 4px; color: var(--ui-color-on-primary); background: var(--title); content: "Copied"; font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-16); }

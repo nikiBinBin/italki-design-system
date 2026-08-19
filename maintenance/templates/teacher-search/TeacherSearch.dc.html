@@ -38,11 +38,14 @@
 <div style="max-width:1216px;margin:0 auto;padding:32px 24px 20px">
 
 <div style="display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:20px">
-<h1 style="margin:0;color:var(--ui-color-title);font-size:28px;font-weight:700;line-height:36px">Choose from 1,284 teachers!</h1>
+<div><h1 style="margin:0;color:var(--ui-color-title);font-size:28px;font-weight:700;line-height:36px">Find your English teacher</h1><p style="margin:4px 0 0;color:var(--ui-color-secondary);font-size:14px;line-height:20px">Compare teaching styles, watch introductions, and book a trial when you are ready.</p></div>
+<div style="display:flex;align-items:center;gap:12px">
+<span onClick="{{ toggleCompareTray }}" style="display:inline-flex;cursor:pointer"><x-import component-from-global-scope="SafeUI.Button" label="{{ compareLabel }}" variant="secondary" size="{{ 32 }}" shape="pill" hint-size="148px,32px"></x-import></span>
 <label style="display:inline-flex;flex:0 0 auto;align-items:center;gap:8px;white-space:nowrap">
-<span onClick="{{ toggleBeginner }}" style="display:inline-flex;cursor:pointer"><x-import component-from-global-scope="SafeUI.Switch" checked="{{ beginnerMode }}" label="Show A1 teachers" hint-size="44px,24px"></x-import></span>
-<span style="color:var(--ui-color-text);font-size:14px;font-weight:500;line-height:20px">A1 teachers</span>
+<span onClick="{{ toggleBeginner }}" style="display:inline-flex;cursor:pointer"><x-import component-from-global-scope="SafeUI.Switch" checked="{{ beginnerMode }}" label="Show beginner teachers" hint-size="44px,24px"></x-import></span>
+<span style="color:var(--ui-color-text);font-size:14px;font-weight:500;line-height:20px">Beginner teachers</span>
 </label>
+</div>
 </div>
 
 <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
@@ -50,6 +53,14 @@
 <x-import component-from-global-scope="SafeUI.Tag" label="Beginner friendly" size="{{ 32 }}" removable="{{ true }}" hint-size="150px,32px"></x-import>
 <x-import component-from-global-scope="SafeUI.Tag" label="Trial available" size="{{ 32 }}" removable="{{ true }}" hint-size="135px,32px"></x-import>
 </div>
+<p role="status" aria-live="polite" style="min-height:20px;margin:12px 0 0;color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ comparisonStatus }}</p>
+<sc-if value="{{ compareTrayOpen }}" hint-placeholder-val="{{ true }}">
+<section aria-label="Teacher comparison" style="display:grid;gap:12px;margin-top:16px;border-top:1px solid var(--ui-color-divider);padding-top:16px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:16px"><strong style="color:var(--ui-color-title);font-size:14px;line-height:20px">Teacher comparison</strong><span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">Up to 3 teachers</span></div>
+<sc-if value="{{ hasCompared }}" hint-placeholder-val="{{ true }}"><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"><sc-for list="{{ compareRows }}" as="c" hint-placeholder-count="3"><div style="min-width:0;display:grid;gap:2px;border:1px solid var(--ui-color-border);border-radius:8px;padding:10px 12px;background:var(--ui-color-card)"><strong style="overflow:hidden;color:var(--ui-color-title);font-size:13px;line-height:18px;text-overflow:ellipsis;white-space:nowrap">{{ c.name }}</strong><span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ c.rating }} rating · {{ c.lessons }}</span><span style="color:var(--ui-color-info);font-size:12px;line-height:18px">{{ c.price }} · {{ c.availability }}</span></div></sc-for></div></sc-if>
+<sc-if value="{{ comparisonEmpty }}" hint-placeholder-val="{{ true }}"><span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">Choose teachers with the save button to see their price, ratings, and next available time side by side.</span></sc-if>
+</section>
+</sc-if>
 
 </div>
 </div>
@@ -97,7 +108,7 @@
 <span class="teacher-pattern-availability">{{ t.availability }}</span>
 </div>
 <div class="teacher-pattern-actions">
-<x-import component-from-global-scope="SafeUI.Button" variant="text" size="{{ 32 }}" shape="pill" iconOnly="{{ true }}" leadingIcon="favorite-outline" ariaLabel="Save teacher" hint-size="32px,32px"></x-import>
+<span onClick="{{ t.toggleCompare }}" style="display:inline-flex;cursor:pointer"><x-import component-from-global-scope="SafeUI.Button" variant="text" size="{{ 32 }}" shape="pill" iconOnly="{{ true }}" leadingIcon="favorite-outline" ariaLabel="{{ t.compareLabel }}" hint-size="32px,32px"></x-import></span>
 <x-import component-from-global-scope="SafeUI.Button" label="Book lesson" variant="secondary" size="{{ 32 }}" shape="pill" hint-size="110px,32px"></x-import>
 <x-import component-from-global-scope="SafeUI.Button" variant="text" size="{{ 32 }}" shape="pill" iconOnly="{{ true }}" leadingIcon="more" ariaLabel="More actions" hint-size="32px,32px"></x-import>
 </div>
@@ -128,6 +139,8 @@
 </div>
 
 <div style="display:grid"><x-import component-from-global-scope="SafeUI.Button" label="{{ previewBookLabel }}" variant="red" size="{{ 40 }}" shape="pill" hint-size="100%,40px"></x-import></div>
+<div style="display:grid"><span onClick="{{ openProfile }}" style="display:grid;cursor:pointer"><x-import component-from-global-scope="SafeUI.Button" label="View full profile" variant="secondary" size="{{ 40 }}" shape="pill" hint-size="100%,40px"></x-import></span></div>
+<p role="status" aria-live="polite" style="min-height:18px;margin:0;color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ previewStatus }}</p>
 
 </aside>
 
@@ -149,58 +162,33 @@
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
   static TEACHERS = {
-    "Lucía Fernández": { photo: "https://randomuser.me/api/portraits/women/44.jpg", initials: "LF", tone: "info", price: "US$14.00", duration: "1:24" },
-    "Mateo Rojas": { photo: "https://randomuser.me/api/portraits/men/32.jpg", initials: "MR", tone: "primary", price: "US$12.00", duration: "0:58" },
-    "Valentina Cruz": { photo: "https://randomuser.me/api/portraits/women/68.jpg", initials: "VC", tone: "success", price: "US$25.00", duration: "2:10" },
-    "Sofía Herrera": { photo: "https://randomuser.me/api/portraits/women/21.jpg", initials: "SH", tone: "warning", price: "US$18.00", duration: "1:47" },
-    "Diego Morales": { photo: "https://randomuser.me/api/portraits/men/75.jpg", initials: "DM", tone: "info", price: "US$9.50", duration: "1:05" },
-    "Carmen Ortiz": { photo: "https://randomuser.me/api/portraits/women/57.jpg", initials: "CO", tone: "success", price: "US$22.00", duration: "2:32" },
-    "Andrés Vidal": { photo: "https://randomuser.me/api/portraits/men/18.jpg", initials: "AV", tone: "primary", price: "US$11.00", duration: "1:16" },
-    "Elena Ruiz": { photo: "https://randomuser.me/api/portraits/women/12.jpg", initials: "ER", tone: "info", price: "US$20.00", duration: "1:53" },
-    "Javier Cano": { photo: "https://randomuser.me/api/portraits/men/54.jpg", initials: "JC", tone: "warning", price: "US$8.00", duration: "0:44" },
-    "Marta Delgado": { photo: "https://randomuser.me/api/portraits/women/33.jpg", initials: "MD", tone: "success", price: "US$16.00", duration: "1:38" },
+    "Rachel Kim": { photo: "../../Assets/Images/faces/01.jpg", initials: "RK", tone: "info", price: "US$16.00", duration: "1:24" },
+    "James Wilson": { photo: "../../Assets/Images/faces/03.jpg", initials: "JW", tone: "primary", price: "US$12.00", duration: "0:58" },
+    "Maya Chen": { photo: "../../Assets/Images/faces/03.jpg", initials: "MC", tone: "success", price: "US$22.00", duration: "2:10" },
+    "Ava Thompson": { photo: "../../Assets/Images/faces/04.jpg", initials: "AT", tone: "warning", price: "US$18.00", duration: "1:47" },
+    "Noah Williams": { photo: "../../Assets/Images/faces/04.jpg", initials: "NW", tone: "info", price: "US$10.00", duration: "1:05" },
   };
   static ROSTER = [
-    { name: "Lucía Fernández", country: "Spain", flag: "es", pro: true, rating: "4.98", lessons: "2,431 lessons",
-      speaks: "Spanish", alsoSpeaks: "English C2 · Portuguese B1", price: "US$14.00", availability: "Available now",
-      summary: "DELE examiner with 8 years of classroom experience. Every lesson is built around what you need to say next week.",
-      tags: [["success", "Beginner experienced"], ["success", "Structured lessons"]] },
-    { name: "Mateo Rojas", country: "Mexico", flag: "mx", pro: false, rating: "4.92", lessons: "1,876 lessons",
-      speaks: "Spanish", alsoSpeaks: "English B2", price: "US$12.00", availability: "Available now",
-      summary: "Relaxed, everyday Mexican Spanish. We talk about your week and fix the mistakes that actually get in the way.",
-      tags: [["success", "Patient"], ["info", "Latin American Spanish"]] },
-    { name: "Valentina Cruz", country: "Peru", flag: "pe", pro: true, rating: "5.00", lessons: "3,102 lessons",
-      speaks: "Spanish", alsoSpeaks: "English C1 · French B1", price: "US$25.00", availability: "Available tomorrow",
-      summary: "University lecturer turned full-time tutor. Strong on grammar foundations and exam technique.",
-      tags: [["warning", "DELE certificate"], ["success", "Structured lessons"]] },
-    { name: "Sofía Herrera", country: "Spain", flag: "es", pro: true, rating: "4.95", lessons: "1,207 lessons",
-      speaks: "Spanish", alsoSpeaks: "English C1 · Italian B2", price: "US$18.00", availability: "Available now",
-      summary: "Conversation coach for busy professionals. We spend the hour talking; corrections go in the chat.",
-      tags: [["success", "Conversation focused"], ["info", "Business Spanish"]] },
-    { name: "Diego Morales", country: "Mexico", flag: "mx", pro: false, rating: "4.89", lessons: "3,842 lessons",
-      speaks: "Spanish", alsoSpeaks: "English B2", price: "US$9.50", availability: "Available tomorrow",
-      summary: "Great if you have studied before and just need someone patient to talk with. Notes after every lesson.",
-      tags: [["success", "Patient"], ["info", "Latin American Spanish"]] },
-    { name: "Carmen Ortiz", country: "Spain", flag: "es", pro: true, rating: "5.00", lessons: "612 lessons",
-      speaks: "Spanish", alsoSpeaks: "French B1", price: "US$22.00", availability: "Available now",
-      summary: "Exam preparation, DELE A1 through C1. Structured curriculum with homework and mock exams.",
-      tags: [["warning", "DELE certificate"], ["success", "Homework included"]] },
-    { name: "Andrés Vidal", country: "Argentina", flag: "ar", pro: false, rating: "4.91", lessons: "1,988 lessons",
-      speaks: "Spanish", alsoSpeaks: "English C1 · German A2", price: "US$11.00", availability: "Available this week",
-      summary: "Conversations with a purpose — films, football, food. I fix grammar quietly as we go.",
-      tags: [["success", "Conversation focused"], ["info", "Argentinian Spanish"]] },
-    { name: "Elena Ruiz", country: "Spain", flag: "es", pro: true, rating: "4.97", lessons: "2,106 lessons",
-      speaks: "Spanish", alsoSpeaks: "English C2 · Catalan native", price: "US$20.00", availability: "Available now",
-      summary: "Ten years teaching absolute beginners. We build from sounds to sentences and you speak from lesson one.",
-      tags: [["success", "Beginner experienced"], ["success", "Patient"]] },
-    { name: "Javier Cano", country: "Colombia", flag: "co", pro: false, rating: "4.86", lessons: "944 lessons",
-      speaks: "Spanish", alsoSpeaks: "English B2 · Portuguese B1", price: "US$8.00", availability: "Available tomorrow",
-      summary: "Short daily lessons beat one long one. Book a few in a row and you will hear the difference in a month.",
-      tags: [["info", "Colombian Spanish"], ["success", "Flexible schedule"]] },
-    { name: "Marta Delgado", country: "Spain", flag: "es", pro: true, rating: "4.94", lessons: "1,530 lessons",
-      speaks: "Spanish", alsoSpeaks: "English C1", price: "US$16.00", availability: "Available this week",
-      summary: "Spanish for work: emails, meetings, calls. Bring a real agenda and we rehearse it together.",
-      tags: [["info", "Business Spanish"], ["success", "Structured lessons"]] },
+    { name: "Rachel Kim", country: "United States", flag: "us", pro: true, rating: "4.98", lessons: "2,431 lessons",
+      speaks: "English", alsoSpeaks: "Korean · Spanish B1", price: "US$16.00", availability: "Available now",
+      summary: "Certified English teacher helping busy adults speak with confidence in meetings, travel, and everyday life.",
+      tags: [["success", "Beginner friendly"], ["info", "Business English"]] },
+    { name: "James Wilson", country: "United Kingdom", flag: "gb", pro: true, rating: "4.92", lessons: "1,876 lessons",
+      speaks: "English", alsoSpeaks: "French B2", price: "US$12.00", availability: "Available now",
+      summary: "Relaxed conversation lessons built around your week, with clear corrections you can use right away.",
+      tags: [["success", "Conversation focused"], ["info", "IELTS preparation"]] },
+    { name: "Maya Chen", country: "Canada", flag: "ca", pro: false, rating: "5.00", lessons: "3,102 lessons",
+      speaks: "English", alsoSpeaks: "Mandarin · Japanese B1", price: "US$22.00", availability: "Available tomorrow",
+      summary: "Patient tutor for thoughtful learners who want natural pronunciation, better grammar, and more ease speaking.",
+      tags: [["success", "Patient"], ["info", "Pronunciation"]] },
+    { name: "Ava Thompson", country: "Australia", flag: "au", pro: true, rating: "4.95", lessons: "1,207 lessons",
+      speaks: "English", alsoSpeaks: "Italian B2", price: "US$18.00", availability: "Available now",
+      summary: "Conversation coach for professionals. Bring a real presentation, interview, or email and we will practise it together.",
+      tags: [["success", "Business English"], ["info", "Interview prep"]] },
+    { name: "Noah Williams", country: "United States", flag: "us", pro: false, rating: "4.89", lessons: "3,842 lessons",
+      speaks: "English", alsoSpeaks: "Portuguese B1", price: "US$10.00", availability: "Available tomorrow",
+      summary: "Friendly, practical lessons for travel and everyday confidence, with a short recap after every class.",
+      tags: [["success", "Patient"], ["info", "Travel English"]] },
   ];
   static ROW_LABELS = ["00 – 04", "04 – 08", "08 – 12", "12 – 16", "16 – 20", "20 – 24"];
   static DAYS = [
@@ -215,9 +203,12 @@ class Component extends DCLogic {
   state = {
     ready: !!Component.kit?.(),
     filterOpen: false,
-    preview: "Lucía Fernández",
+    preview: "Rachel Kim",
     previewOffset: 0,
     beginnerMode: false,
+    compared: [],
+    compareTrayOpen: false,
+    previewStatus: "Select a teacher to compare, view their profile, or book a trial.",
   };
 
   previewRef = React.createRef();
@@ -306,6 +297,8 @@ class Component extends DCLogic {
       role: t.pro ? "Professional Teacher" : "Community Tutor",
       roleIcon: "../../Assets/Icons/certified-solid-" + (t.pro ? "red" : "teal") + ".svg",
       tags: t.tags.map(([tone, label]) => ({ tone, label })),
+      compareLabel: this.state.compared.includes(t.name) ? `Remove ${t.name} from comparison` : `Add ${t.name} to comparison`,
+      toggleCompare: () => this.toggleCompare(t.name),
     }));
   }
 
@@ -315,6 +308,29 @@ class Component extends DCLogic {
      which one the host happened to install — when it was missing the sidebar
      rendered empty, or fell through to a second, half-maintained code path. */
   static kit() { return window.ITalkiUI || (window.ItalkiUI || {}).raw || null; }
+
+  toggleCompare(name) {
+    this.setState((state) => {
+      const compared = state.compared.includes(name)
+        ? state.compared.filter((teacher) => teacher !== name)
+        : state.compared.length < 3 ? [...state.compared, name] : state.compared;
+      const reachedLimit = !state.compared.includes(name) && state.compared.length === 3;
+      return {
+        compared,
+        previewStatus: reachedLimit
+          ? "You can compare up to three teachers at once."
+          : compared.includes(name)
+            ? `${name} added to your comparison.`
+            : `${name} removed from your comparison.`,
+      };
+    });
+  }
+
+  compareRows() {
+    return this.constructor.ROSTER
+      .filter((teacher) => this.state.compared.includes(teacher.name))
+      .map((teacher) => ({ name: teacher.name, rating: teacher.rating, lessons: teacher.lessons, price: teacher.price, availability: teacher.availability }));
+  }
 
   /* If neither name shows up, say so instead of rendering an empty rail. */
   static warnMissingKit() {
@@ -329,7 +345,7 @@ class Component extends DCLogic {
   previewVals() {
     const C = this.constructor;
     const name = this.state.preview;
-    const t = C.TEACHERS[name] || C.TEACHERS["Lucía Fernández"];
+    const t = C.TEACHERS[name] || C.TEACHERS["Rachel Kim"];
     return {
       previewRef: this.previewRef,
       previewName: name,
@@ -475,13 +491,13 @@ class Component extends DCLogic {
     });
     const navSections = [
       { id: "chats", label: "Chats", open: true, items: [
-        { id: "chat-lucia", label: "Lucía Fernández", secondary: "2m", leading: portrait("Lucía Fernández") },
-        { id: "chat-mateo", label: "Mateo Rojas", secondary: "1h", leading: portrait("Mateo Rojas") },
-        { id: "chat-valentina", label: "Valentina Cruz", secondary: "Yesterday", leading: portrait("Valentina Cruz") },
+        { id: "chat-rachel", label: "Rachel Kim", secondary: "2m", leading: portrait("Rachel Kim") },
+        { id: "chat-james", label: "James Wilson", secondary: "1h", leading: portrait("James Wilson") },
+        { id: "chat-maya", label: "Maya Chen", secondary: "Yesterday", leading: portrait("Maya Chen") },
       ] },
       { id: "lessons", label: "Lessons", items: [
-        { id: "lesson-today", prefix: "12", divider: true, label: "Spanish B1", secondary: "Today 18:00" },
-        { id: "lesson-thu", prefix: "13", divider: true, label: "Spanish B1", secondary: "Thu 18:00" },
+        { id: "lesson-today", prefix: "12", divider: true, label: "English conversation", secondary: "Today 18:00" },
+        { id: "lesson-thu", prefix: "13", divider: true, label: "Business English", secondary: "Thu 18:00" },
       ] },
     ];
 
@@ -496,8 +512,8 @@ class Component extends DCLogic {
        the component composes the context picker, the search field and the
        action. It used to build all three by hand and pass them in as markup. */
     const languageOptions = [
-      { id: "spanish", label: "Spanish teachers", flag: "Assets/Flags/es.svg" },
       { id: "english", label: "English teachers", flag: "Assets/Flags/gb.svg" },
+      { id: "spanish", label: "Spanish teachers", flag: "Assets/Flags/es.svg" },
       { id: "japanese", label: "Japanese teachers", flag: "Assets/Flags/jp.svg" },
       { id: "french", label: "French teachers", flag: "Assets/Flags/fr.svg" },
     ];
@@ -516,6 +532,22 @@ class Component extends DCLogic {
       beginnerMode: this.state.beginnerMode,
       beginnerClass: this.state.beginnerMode ? "is-checked" : "",
       toggleBeginner: () => this.setState((s) => ({ beginnerMode: !s.beginnerMode })),
+      toggleCompareTray: () => this.setState((s) => ({
+        compareTrayOpen: !s.compareTrayOpen,
+        previewStatus: s.compared.length
+          ? `Comparing ${s.compared.join(", ")}.`
+          : "Choose up to three teachers with the save button to compare them.",
+      })),
+      compareLabel: this.state.compared.length ? `Compare ${this.state.compared.length} teachers` : "Compare teachers",
+      comparisonStatus: this.state.compared.length
+        ? `Selected for comparison: ${this.state.compared.join(", ")}.`
+        : "Use the save button on a teacher card to add up to three teachers for comparison.",
+      compareTrayOpen: this.state.compareTrayOpen,
+      compareRows: this.compareRows(),
+      hasCompared: this.state.compared.length > 0,
+      comparisonEmpty: this.state.compared.length === 0,
+      openProfile: () => this.setState({ previewStatus: `Opening ${this.state.preview}'s full profile.` }),
+      previewStatus: this.state.previewStatus,
       resultPages: [1, 2, 3, "ellipsis", 64],
       previewPlayLabel: `Play ${this.state.preview}'s introduction video`,
       previewBookLabel: `Book trial · ${this.previewVals().previewPrice}`,

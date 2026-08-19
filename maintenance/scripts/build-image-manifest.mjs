@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
    Same reason as the icon manifest: the Catalog is a static page and cannot
    list a directory. Until now nothing listed these files at all — the Image
    foundation card documented the two approved crop ratios and stopped there,
-   so the only way to learn that `Assets/Images/avatars/teacher-lucia.png`
+   so the only way to learn that `Assets/Images/covers/04.jpg`
    exists was to read a template that already used it. An asset nobody can find
    is not a resource, and the ones that were found got reused by copy-paste
    from whichever page happened to reference them.
@@ -26,10 +26,19 @@ const root = path.resolve(here, "..", "..");
    tool leaves something behind. */
 const EXTENSIONS = new Set([".png", ".jpg", ".jpeg", ".webp", ".svg"]);
 
+/* Directories that hold a derived crop rather than a resource of their own.
+   `faces/` is the square head-and-shoulders cut of the wide photographs in
+   `covers/` — the Avatar needs it because a half-body portrait squeezed into a
+   40px circle is a shirt with a head on it. Listing both would put the same
+   person on the card twice and make the reader choose between two files that
+   are one photograph. The crops stay reachable by path; they are just not
+   presented as separate assets. */
+const UNPUBLISHED_DIRS = new Set(["faces"]);
+
 const walk = (dir) =>
   fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) return walk(full);
+    if (entry.isDirectory()) return UNPUBLISHED_DIRS.has(entry.name) ? [] : walk(full);
     return EXTENSIONS.has(path.extname(entry.name).toLowerCase()) ? [path.relative(root, full)] : [];
   });
 
