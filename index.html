@@ -27,6 +27,7 @@
       </main>
     </div>
     <script src="catalog-runtime/icon-manifest.js"></script>
+    <script src="catalog-runtime/image-manifest.js"></script>
     <script src="catalog-runtime/contracts.js"></script>
     <script src="catalog-runtime/italki-ui.js?v=20260811-breadcrumb-separator-size"></script>
     <script>
@@ -329,7 +330,29 @@
       function imageDetail() {
         const block = (title, content) => `<section class="component-doc-block full"><header class="component-doc-header"><h2>${title}</h2></header><div class="component-doc-content">${content}</div></section>`;
         const ratio = (title, value, copy, use) => `<article class="image-ratio-card"><div class="image-ratio-preview" style="--image-ratio:${value}" aria-label="${title} image ratio"><img src="Assets/Icons/logo-italki-logomark-white.svg" alt="" /></div><div><h3>${title}</h3><p>${copy}</p><small>${use}</small></div></article>`;
-        return `<div class="component-doc-grid foundation-detail image-detail">${block("Approved image ratios", `<div class="image-ratio-grid">${ratio("16:9", "16 / 9", "Standard content imagery.", "Use for card media, teacher introductions, and editorial content.")}${ratio("3:1", "3 / 1", "Wide, shallow banner imagery.", "Use for page banners and promotional strips.")}</div>`)}${block("Usage rule", `<p class="image-rule-copy">Use only 16:9 or 3:1 image crops. Select the closest approved ratio before delivery; do not introduce one-off image ratios in product surfaces. Avatars, flags, and icons are component primitives, not content imagery.</p>`)}</div>`;
+        /* The ratios were the whole card, which documented how to crop an image
+           and never said which images exist. `Assets/Images/` has been an
+           approved asset root all along — the only way to learn a path was to
+           find a template already using it, so the same four avatars travelled
+           by copy-paste. Listed from the generated manifest, the same way the
+           Icon library is listed, and grouped by the folder that gives each set
+           its meaning. */
+        const groupLabels = { avatars: "Avatars", covers: "Covers" };
+        const grouped = window.ITalkiImageManifest.reduce((groups, asset) => {
+          const folder = asset.split("/")[2] || "other";
+          (groups[folder] = groups[folder] || []).push(asset);
+          return groups;
+        }, {});
+        const assetTile = (asset) => {
+          const name = asset.split("/").pop();
+          return `<figure class="image-asset-tile"><button class="icon-copy" type="button" data-copy-icon="${asset}" aria-label="Copy ${name} asset path" title="Copy asset path"><img src="Assets/Icons/copy.svg" alt="" /></button><span class="image-asset-preview"><img src="${asset}" alt="" loading="lazy" /></span><figcaption title="${asset}">${name}</figcaption></figure>`;
+        };
+        const assetGroups = Object.keys(grouped).sort().map((folder) => `<section class="image-asset-group"><h3>${groupLabels[folder] || folder}</h3><div class="image-asset-grid">${grouped[folder].map(assetTile).join("")}</div></section>`).join("");
+        /* One child, not three: the block's content area is a flex row, so a
+           paragraph and two sections handed to it side by side came out as
+           three columns. */
+        const library = `<div class="image-library"><p class="image-rule-copy">Reference photography shipped with the kit, under the approved <code>Assets/Images/</code> root. Pass the path to the component that takes it — <code>avatar</code>'s <code>image</code>, <code>card</code>'s media slot — exactly as shown; there is no bare-name lookup for images. These are for composing and reviewing a screen. Replace them with the product's own imagery before anything ships.</p>${assetGroups}</div>`;
+        return `<div class="component-doc-grid foundation-detail image-detail">${block("Approved image ratios", `<div class="image-ratio-grid">${ratio("16:9", "16 / 9", "Standard content imagery.", "Use for card media, teacher introductions, and editorial content.")}${ratio("3:1", "3 / 1", "Wide, shallow banner imagery.", "Use for page banners and promotional strips.")}</div>`)}${block("Image library", library)}${block("Usage rule", `<p class="image-rule-copy">Use only 16:9 or 3:1 image crops. Select the closest approved ratio before delivery; do not introduce one-off image ratios in product surfaces. Avatars, flags, and icons are component primitives, not content imagery.</p>`)}</div>`;
       }
       function shadowDetail() {
         const elevation = [
@@ -1638,7 +1661,9 @@
         }
         const iconCopy = event.target.closest("[data-copy-icon]");
         if (iconCopy) {
-          copyIconAsset(iconCopy.dataset.copyIcon, iconCopy.closest(".icon-tile"));
+          /* The Image card copies a path the same way the Icon library does, so
+             it reuses this hook and only the tile it flashes differs. */
+          copyIconAsset(iconCopy.dataset.copyIcon, iconCopy.closest(".icon-tile, .image-asset-tile"));
           return;
         }
         const navigationLink = event.target.closest("[data-route], #overview-link");
