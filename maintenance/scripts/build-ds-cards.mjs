@@ -298,8 +298,6 @@ for (const target of TARGETS) {
      a result, a segmented control and a timeline all sit on a card in real use,
      so showing them on the page grey misreads their contrast and their edges.
      They get the card colour instead. */
-  const ON_CARD = new Set(['Timeline', 'Tag', 'Badge', 'Progress', 'Result', 'SegmentedControl', 'Radio', 'Tabs', 'Avatar', 'Stepper', 'Divider', 'Pagination', 'Tooltip']);
-  const stageColour = ON_CARD.has(name) ? 'var(--ui-color-card)' : 'var(--ui-color-page)';
 
   const depth = isPattern ? '../../' : '../../../';
   const rebase = (html) => html.replaceAll('="Assets/', `="${depth}Assets/`);
@@ -333,11 +331,20 @@ for (const target of TARGETS) {
 <script src="${depth}_cards.js" defer></script>
 <style>
   *{box-sizing:border-box}
-  body{margin:0;padding:var(--ui-space-6,24px);background:${stageColour};font-family:var(--ui-font-family);color:var(--ui-color-text)}
+  /* The card is a page-coloured field of framed rows, which is how italki
+     React DS draws the same demos — see ds/build.mjs's .ds-card / .ds-card__row.
+     A demo used to sit directly on the body, so a group's boundary was a 32px
+     gap and nothing else: on a card with seven of them, where each group ends
+     was a guess. The frame also retires a white-stage exception list. Thirteen
+     components were forced onto a white body because their own demo would
+     otherwise float on grey; now every row carries its own card surface, so no
+     component needs an exception. */
+  body{margin:0;padding:var(--ui-space-6,24px);background:var(--ui-color-page);font-family:var(--ui-font-family);color:var(--ui-color-text)}
   /* A demo is a page-level slice of the Catalog, so each takes a full row. */
-  .ds-grid{display:flex;flex-direction:column;gap:var(--ui-space-8,32px)}
-  .cell{min-width:0}
-  .cell-label{font-size:12px;line-height:16px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ui-color-secondary);margin:0 0 var(--ui-space-2,8px)}
+  .ds-grid{display:flex;flex-direction:column;gap:var(--ui-space-6,24px)}
+  .cell{min-width:0;border:1px solid var(--ui-color-border);border-radius:var(--ui-radius-lg,12px);background:var(--ui-color-card)}
+  .cell-label{font-size:12px;line-height:16px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ui-color-secondary);margin:0;padding:var(--ui-space-4,16px) var(--ui-space-6,24px) 0}
+  .cell-body{padding:var(--ui-space-4,16px) var(--ui-space-6,24px) var(--ui-space-6,24px)}
   /* An open anchored overlay is positioned absolutely, so it reserves no height
      and simply covers the cell below it. On TimePicker that hid the Open and
      Disabled demos completely, and the two menus left showing read as one
