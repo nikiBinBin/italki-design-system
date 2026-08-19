@@ -25,11 +25,26 @@ const PINNED = [
    pixel-identical to an asset the library already publishes, so listing it
    would show the same glyph twice. back.svg duplicates arrow-left.svg;
    arrow-right-1.svg and arrow-up-1.svg are stray thin-stroke exports of the
-   removed backup set. The files stay on disk for anything pointing at them. */
+   removed backup set. The files stay on disk for anything pointing at them.
+
+   The second group is the other half of the adopted set's 20 name collisions:
+   these five are the same drawing at both paths, so the Catalog showed one
+   glyph on both boards — once as italki's own and once as a general one — and
+   it read as the general set leaking into the library. It is the reverse. The
+   library's copy is the published one because that is the path the contracts
+   name: number-stepper's plus and minus, List's marker, Sidebar's section
+   arrow, Footer's YouTube, Breadcrumb's home. The adopted twin is dropped from
+   the manifest, not from disk, and bare-name resolution is unaffected —
+   resolveIcon already prefers the library's own over anything under ui/. */
 const EXCLUDED = new Set([
   "Assets/Icons/back.svg",
   "Assets/Icons/arrow-right-1.svg",
   "Assets/Icons/arrow-up-1.svg",
+  "Assets/Icons/ui/plus-circle.svg",
+  "Assets/Icons/ui/minus-circle.svg",
+  "Assets/Icons/ui/chevron-right.svg",
+  "Assets/Icons/ui/home-01.svg",
+  "Assets/Icons/ui/youtube.svg",
 ]);
 
 /* Directories that sit under Assets/Icons without being part of the library.
