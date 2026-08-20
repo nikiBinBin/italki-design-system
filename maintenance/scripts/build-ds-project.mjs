@@ -1611,7 +1611,23 @@ is the machine-readable contract the assertions come from.
        the risk was not worth it: a card is rendered by a host that decides how
        relative URLs resolve, and declaring a base overrides whatever that host
        had arranged. Explicit prefixes cannot be overridden by anything. */
-    return `<li><img src="../../../${asset}" alt="" width="${w}" height="${h}" loading=lazy><span>${escape(label(asset))}</span></li>`;
+    const name = label(asset);
+    /* Two brand marks the plain grid gets wrong, and the Catalog and the React
+       DS both already handle — see paintIconGrid in index.html and
+       ds/foundation/Logo.html, which agree tile for tile.
+
+       A `-white` mark on the grid's grey tile is white on near-white: the card
+       showed two captions with nothing above them. It takes the brand red
+       instead, which is the surface those files exist for.
+
+       `logo-italki-plus` is not the lockup, it is the Plus mark alone — shown
+       by itself it reads as a stray word. Composed with the wordmark it is what
+       the brand actually ships. */
+    if (name === 'logo-italki-plus') {
+      return `<li><span class="brand-lockup"><img src="../../../Assets/Icons/logo-italki-wordmark.svg" alt=""><img class="brand-lockup__mark" src="../../../${asset}" alt=""></span><span>${escape(name)}</span></li>`;
+    }
+    const inverse = /^logo-italki-(logomark|wordmark)-white$/.test(name);
+    return `<li${inverse ? ' class="is-inverse"' : ''}><img src="../../../${asset}" alt="" width="${w}" height="${h}" loading=lazy><span>${escape(name)}</span></li>`;
   };
   /* Sections, not one grid. The two sizes are different sets — 248 glyphs exist
      only at 24, 67 only at 16, and 25 in both — and the rule that matters is
@@ -1638,6 +1654,11 @@ is the machine-readable contract the assertions come from.
   .icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:var(--ui-space-3,12px);margin:0;padding:0;list-style:none}
   .icon-grid li{display:grid;justify-items:center;gap:var(--ui-space-2,8px);padding:var(--ui-space-4,16px) var(--ui-space-2,8px);border-radius:var(--ui-radius-lg,12px);background:var(--ui-color-divider)}
   .icon-grid span{color:var(--ui-color-secondary);font-size:12px;line-height:16px;text-align:center;overflow-wrap:anywhere}
+  .icon-grid li.is-inverse{background:var(--ui-color-primary)}
+  .icon-grid li.is-inverse span{color:var(--ui-color-on-primary)}
+  .brand-lockup{display:inline-flex;align-items:center;gap:var(--ui-space-1,4px)}
+  .brand-lockup img{display:block;width:42px;height:auto}
+  .brand-lockup .brand-lockup__mark{width:38px;height:10px}
 </style>
 </head><body>
 ${groups.map((g) => `${g.heading ? `<h2 class="icon-section">${g.heading}</h2>\n` : ''}${g.hint ? `<p class="icon-hint">${g.hint}</p>\n` : ''}<ul class="icon-grid">
