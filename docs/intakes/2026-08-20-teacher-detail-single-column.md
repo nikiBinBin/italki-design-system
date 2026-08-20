@@ -1,5 +1,5 @@
 ---
-target: teacher-detail-single-column
+target: teacher-detail
 date: 2026-08-20
 ---
 
