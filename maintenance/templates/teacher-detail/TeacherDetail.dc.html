@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<script src="./ds-base.js"></script>
+<script src="./ds-safe.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:var(--ui-color-divider);color:var(--ui-color-text);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;font-weight:500;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:var(--ui-color-link);text-decoration:none}
+a:hover{color:var(--ui-color-link-hover);text-decoration:underline}
+@keyframes video-progress{from{width:0}to{width:100%}}
+.ui-top-nav.ui-top-nav{position:sticky;top:0;z-index:var(--ui-layer-top-nav,40)}
+#tp-availability .ui-time-slot.ui-time-slot--option{padding:4px 12px;height:auto}
+[data-card-row]::-webkit-scrollbar{display:none}
+/* The section heading and the calendar's own control row were two stacked
+   headers — the controls sit on one line with no band of their own. */
+#tp-availability .ui-calendar__controls{height:auto;padding:0}
+/* The kit's masked icons resolve their URL against the bundle's own folder,
+   where Assets/ does not live — repoint them at this page's copy. */
+.ui-calendar__timezone-icon{-webkit-mask-image:url("Assets/Icons/16px/location-sm.svg") !important;mask-image:url("Assets/Icons/16px/location-sm.svg") !important}
+</style>
+</helmet>
+
+<div style="min-height:100vh">
+<x-import component-from-global-scope="SafeUI.TopNav" variant="custom" aria-label="Page" leading="{{ navLogo }}" sticky="{{ true }}" hint-size="100%,72px"></x-import>
+
+<div data-screen-label="Sticky teacher bar" aria-hidden="{{ stickyHidden }}" style="position:fixed;top:0;right:0;left:0;z-index:41;height:72px;background:var(--ui-color-card);border-bottom:1px solid var(--ui-color-divider);transition:opacity .2s ease;opacity:{{ stickyOpacity }};pointer-events:{{ stickyPointer }}">
+<div style="height:100%;padding:0 24px;display:flex;align-items:center;gap:20px">
+<a href="#" aria-label="italki home" style="display:inline-flex;align-items:center;flex:0 0 auto"><img src="Assets/Icons/logo-italki-wordmark.svg" alt="italki" style="height:24px"></a>
+<div style="width:1px;height:28px;background:var(--ui-color-divider)"></div>
+<x-import component-from-global-scope="SafeUI.Avatar" image="https://randomuser.me/api/portraits/women/44.jpg" flag="es" size="{{ 40 }}" ariaLabel="Lucía Fernández, Spain" hint-size="40px,40px"></x-import>
+<div style="min-width:0;display:grid;gap:1px">
+<div style="display:flex;align-items:center;gap:6px">
+<strong style="color:var(--ui-color-title);font-size:15px;font-weight:700;line-height:20px">Lucía Fernández</strong>
+<img src="Assets/Icons/verified-badge.svg" alt="ID verified" style="width:14px;height:14px">
+</div>
+<span style="display:flex;align-items:center;gap:8px;color:var(--ui-color-secondary);font-size:12px;line-height:18px">
+<span style="display:inline-flex;align-items:center;gap:2px;color:var(--ui-color-title);font-weight:600">4.98<img src="Assets/Icons/star-solid.svg" alt="" style="width:11px;height:11px"></span>
+<span>612 reviews</span>
+<span>·</span>
+<span>2,431 lessons</span>
+</span>
+</div>
+</div>
+</div>
+
+<div style="max-width:800px;margin:0 auto;padding:24px 24px 128px;display:flex;flex-direction:column;gap:16px">
+
+<section data-screen-label="Teacher information" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;gap:20px;align-items:flex-start">
+<x-import component-from-global-scope="SafeUI.Avatar" image="https://randomuser.me/api/portraits/women/44.jpg" flag="es" size="{{ 96 }}" ariaLabel="Lucía Fernández, Spain" hint-size="96px,96px"></x-import>
+<div style="min-width:0;flex:1;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+<h1 style="margin:0;color:var(--ui-color-title);font-size:28px;font-weight:700;line-height:36px">Lucía Fernández</h1>
+<img src="Assets/Icons/verified-badge.svg" alt="ID verified" style="width:20px;height:20px">
+<sc-if value="{{ superTutor }}" hint-placeholder-val="{{ true }}">
+<img src="Assets/Icons/Plustag.svg" alt="italki Plus" style="height:20px">
+</sc-if>
+<div style="display:flex;align-items:center;gap:4px;margin-left:auto">
+<span onClick="{{ toggleFavorite }}" style="display:inline-flex;cursor:pointer"><x-import component-from-global-scope="SafeUI.Button" variant="text" size="{{ 32 }}" iconOnly="{{ true }}" leadingIcon="{{ favIcon }}" ariaLabel="{{ favAria }}" hint-size="32px,32px"></x-import></span>
+<x-import component-from-global-scope="SafeUI.Button" variant="text" size="{{ 32 }}" iconOnly="{{ true }}" leadingIcon="share" ariaLabel="Share profile" hint-size="32px,32px"></x-import>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;color:var(--ui-color-text);font-size:14px;line-height:20px">
+<span style="display:inline-flex;align-items:center;gap:4px"><img src="Assets/Icons/certified-solid-teal.svg" alt="" style="width:16px;height:16px">Professional Teacher</span>
+<span style="display:inline-flex;align-items:center;gap:4px"><img src="Assets/Icons/16px/location-sm.svg" alt="" style="width:16px;height:16px">Madrid, Spain</span>
+<span style="display:inline-flex;align-items:center;gap:4px"><img src="Assets/Icons/16px/earth-sm.svg" alt="" style="width:16px;height:16px">On italki since 2018</span>
+</div>
+<sc-if value="{{ onlineNow }}" hint-placeholder-val="{{ true }}">
+<span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-success);font-size:14px;font-weight:600;line-height:18px"><span style="width:8px;height:8px;border-radius:9999px;background:var(--ui-color-success)"></span>Online now · usually replies within 1 hour</span>
+</sc-if>
+</div>
+</div>
+
+<div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
+<span style="color:var(--ui-color-secondary);font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-right:4px">Speaks</span>
+<sc-for list="{{ speaksTags }}" as="s" hint-placeholder-count="3">
+<x-import component-from-global-scope="SafeUI.Tag" label="{{ s.text }}" size="{{ 24 }}" tone="{{ s.tone }}" hint-size="120px,24px"></x-import>
+</sc-for>
+</div>
+<div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
+<span style="color:var(--ui-color-secondary);font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-right:4px">Teaches</span>
+<sc-for list="{{ interests }}" as="tag" hint-placeholder-count="5">
+<x-import component-from-global-scope="SafeUI.Tag" label="{{ tag }}" size="{{ 24 }}" hint-size="80px,24px"></x-import>
+</sc-for>
+</div>
+
+<div style="display:flex;gap:40px;flex-wrap:wrap;padding-top:16px;border-top:1px solid var(--ui-color-divider)">
+<sc-for list="{{ stats }}" as="st" hint-placeholder-count="4">
+<div style="display:grid;gap:2px">
+<strong style="display:inline-flex;align-items:center;gap:4px;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">{{ st.value }}<sc-if value="{{ st.star }}" hint-placeholder-val="{{ false }}"><img src="Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"></sc-if></strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ st.label }}</span>
+</div>
+</sc-for>
+</div>
+
+<p style="margin:0;color:var(--ui-color-text);font-size:14px;line-height:22px;text-wrap:pretty">¡Hola! I'm Lucía, a DELE examiner with 8 years of classroom experience in Madrid and 6 years teaching online. Every lesson is built around what you need to say next week — a job interview, a trip, a conversation with your in-laws — not around a textbook chapter.</p>
+<sc-if value="{{ readMore }}" hint-placeholder-val="{{ false }}">
+<p style="margin:0;color:var(--ui-color-text);font-size:14px;line-height:22px;text-wrap:pretty">I hold a degree in Hispanic Philology from Universidad Complutense and a DELE examiner accreditation (A1–C1). My students range from complete beginners to diplomats preparing for postings in Latin America. Classes are relaxed but never improvised — you'll always leave with notes, corrections and homework you can actually finish.</p>
+</sc-if>
+<button onClick="{{ toggleReadMore }}" style="display:inline-flex;align-items:center;gap:4px;width:max-content;border:0;padding:0;background:transparent;color:var(--ui-color-title);font-family:inherit;font-size:14px;font-weight:600;line-height:20px;cursor:pointer">{{ readMoreLabel }}<img src="{{ readMoreIcon }}" alt="" style="width:16px;height:16px"></button>
+
+<div style="display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:20px;align-items:start;padding-top:16px;border-top:1px solid var(--ui-color-divider)">
+<div style="display:flex;flex-direction:column;gap:8px">
+<div onClick="{{ toggleVideo }}" style="position:relative;cursor:pointer">
+<x-import component-from-global-scope="SafeUI.Video" poster="Assets/Images/covers/teacher-intro.jpg" poster-alt="Lucía's introduction video" title="Introduction · Spanish for real conversations" duration="1:24" play-label="{{ videoAria }}" hint-size="100%,170px"></x-import>
+<sc-if value="{{ videoPlaying }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;right:0;bottom:0;left:0;height:4px;overflow:hidden;border-radius:0 0 8px 8px;background:var(--ui-color-divider)"><div style="height:100%;background:var(--ui-color-link);animation:video-progress 84s linear forwards"></div></div>
+</sc-if>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ insights }}" as="ins" hint-placeholder-count="4">
+<div style="display:flex;align-items:flex-start;gap:10px">
+<img src="{{ ins.icon }}" alt="" style="width:24px;height:24px;flex:0 0 24px">
+<div style="min-width:0;display:grid;gap:1px">
+<strong style="color:var(--ui-color-title);font-size:14px;font-weight:600;line-height:20px">{{ ins.title }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ ins.caption }}</span>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+
+<section data-screen-label="Lessons" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px;display:flex;flex-direction:column;gap:4px">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px">
+<div style="min-width:0;display:grid;gap:2px">
+<h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">Lessons</h2>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:12px;line-height:18px">All lessons are 1-on-1 in the italki Classroom. Free cancellation up to 24 hours before.</p>
+</div>
+<div style="display:flex;align-items:center;gap:8px;flex:0 0 auto">
+<span onClick="{{ lessonsBack }}" style="display:inline-flex;cursor:pointer"><x-import component-from-global-scope="SafeUI.Button" variant="secondary" size="{{ 32 }}" iconOnly="{{ true }}" leadingIcon="arrow-left-sm" ariaLabel="Previous lessons" hint-size="32px,32px"></x-import></span>
+<span onClick="{{ lessonsNext }}" style="display:inline-flex;cursor:pointer"><x-import component-from-global-scope="SafeUI.Button" variant="secondary" size="{{ 32 }}" iconOnly="{{ true }}" leadingIcon="arrow-right-sm" ariaLabel="More lessons" hint-size="32px,32px"></x-import></span>
+</div>
+</div>
+<div style="position:relative;margin:0 -24px;padding:0 24px">
+<div style="position:absolute;top:0;right:0;bottom:12px;width:56px;z-index:2;pointer-events:none;background:linear-gradient(to right,transparent,var(--ui-color-card) 70%)"></div>
+<div ref="{{ lessonsRef }}" data-card-row="true" style="display:flex;gap:12px;overflow-x:auto;padding:4px 24px 12px 0;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none">
+<sc-for list="{{ lessons }}" as="l" hint-placeholder-count="5">
+<article onClick="{{ l.onPick }}" style="flex:0 0 232px;scroll-snap-align:start;display:flex;flex-direction:column;gap:8px;border:1px solid var(--ui-color-border);border-radius:12px;padding:16px;cursor:pointer;transition:box-shadow .18s ease" style-hover="box-shadow:var(--ui-shadow-md)">
+<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:24px">
+<sc-if value="{{ l.tag }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="SafeUI.Tag" label="{{ l.tag }}" size="{{ 24 }}" tone="info" hint-size="130px,24px"></x-import></sc-if>
+<sc-if value="{{ l.selected }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="SafeUI.Tag" label="Selected" size="{{ 24 }}" tone="success" hint-size="80px,24px"></x-import></sc-if>
+</div>
+<h3 style="margin:0;color:var(--ui-color-title);font-size:16px;font-weight:600;line-height:22px;text-wrap:pretty">{{ l.name }}</h3>
+<p style="margin:0;color:var(--ui-color-text);font-size:13px;line-height:19px;text-wrap:pretty">{{ l.desc }}</p>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ l.meta }}</span>
+<div style="display:flex;align-items:baseline;gap:4px;margin-top:auto;padding-top:12px;border-top:1px solid var(--ui-color-divider)">
+<strong style="color:var(--ui-color-title);font-size:16px;line-height:24px">{{ l.price }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">/ {{ l.per }}</span>
+</div>
+<span style="display:grid;pointer-events:none"><x-import component-from-global-scope="SafeUI.Button" label="{{ l.btnLabel }}" variant="{{ l.btnVariant }}" size="{{ 32 }}" hint-size="100%,32px"></x-import></span>
+</article>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:16px;border-top:1px solid var(--ui-color-divider);color:var(--ui-color-secondary);font-size:12px;line-height:18px">
+<img src="Assets/Icons/teacher-trending.svg" alt="" style="width:20px;height:20px">Buy 5 lessons and save 5%, or 10 and save 10% — packages stay valid for 6 months.
+</div>
+</section>
+
+<section id="tp-availability" data-screen-label="Availability" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px;display:flex;flex-direction:column;gap:16px">
+<h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">Availability</h2>
+<x-import component-from-global-scope="SafeUI.Calendar" variant="availability" week-label="3 – 9 August 2026" today-label="This week" dates="{{ weekDates }}" rows="{{ weekRows }}" timezone="Asia/Shanghai (UTC+8)" ariaLabel="Lucía's weekly availability" hint-size="100%,440px"></x-import>
+</section>
+
+<section data-screen-label="Student feedback" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px;display:flex;flex-direction:column;gap:16px">
+<h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">Student feedback</h2>
+<div style="display:flex;align-items:center;gap:12px">
+<strong style="color:var(--ui-color-title);font-size:40px;font-weight:700;line-height:48px">4.98</strong>
+<div style="display:grid;gap:2px">
+<div role="img" aria-label="Average rating 4.98 out of 5" style="display:flex;gap:2px"><img src="Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"><img src="Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"><img src="Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"><img src="Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"><img src="Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"></div>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">612 reviews · 99% attendance</span>
+</div>
+</div>
+<div style="display:grid;gap:6px">
+<sc-for list="{{ breakdown }}" as="b" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="display:inline-flex;align-items:center;gap:4px;width:28px;color:var(--ui-color-text);font-size:12px;font-weight:600">{{ b.star }}<img src="Assets/Icons/star-solid.svg" alt="" style="width:12px;height:12px"></span>
+<div style="flex:1"><x-import component-from-global-scope="SafeUI.Progress" value="{{ b.pct }}" max="{{ 100 }}" ariaLabel="{{ b.aria }}" hint-size="100%,8px"></x-import></div>
+<span style="width:36px;color:var(--ui-color-secondary);font-size:12px;text-align:right">{{ b.count }}</span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<sc-for list="{{ reviewFilters }}" as="f" hint-placeholder-count="5">
+<button onClick="{{ f.onPick }}" class="{{ f.cls }}" type="button" data-component="chip" aria-pressed="{{ f.pressed }}">{{ f.label }}</button>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px">
+<sc-for list="{{ visibleReviews }}" as="r" hint-placeholder-count="3">
+<div style="display:contents">
+<sc-if value="{{ r.divider }}" hint-placeholder-val="{{ true }}"><div style="height:1px;background:var(--ui-color-divider)"></div></sc-if>
+<article style="display:flex;flex-direction:column;gap:8px;padding:16px 0">
+<header style="display:flex;align-items:center;gap:12px">
+<x-import component-from-global-scope="SafeUI.Avatar" image="{{ r.photo }}" flag="{{ r.flag }}" size="{{ 40 }}" ariaLabel="{{ r.name }}" hint-size="40px,40px"></x-import>
+<div style="min-width:0;flex:1;display:grid;gap:0">
+<strong style="color:var(--ui-color-title);font-size:14px;font-weight:600;line-height:20px">{{ r.name }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ r.meta }}</span>
+</div>
+<x-import component-from-global-scope="SafeUI.Tag" label="{{ r.type }}" size="{{ 24 }}" hint-size="140px,24px"></x-import>
+</header>
+<div style="display:flex;gap:2px">
+<sc-for list="{{ r.stars }}" as="s" hint-placeholder-count="5"><img src="{{ s }}" alt="" style="width:14px;height:14px"></sc-for>
+</div>
+<p style="margin:0;color:var(--ui-color-text);font-size:14px;line-height:22px;text-wrap:pretty">{{ r.text }}</p>
+</article>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{ hasMoreReviews }}" hint-placeholder-val="{{ true }}">
+<span onClick="{{ showMoreReviews }}" style="display:grid;cursor:pointer"><x-import component-from-global-scope="SafeUI.Button" label="{{ moreReviewsLabel }}" variant="secondary" size="{{ 40 }}" trailingIcon="arrow-down-sm" hint-size="100%,40px"></x-import></span>
+</sc-if>
+</section>
+
+<section data-screen-label="Similar teachers" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px">
+<div style="min-width:0;display:grid;gap:2px">
+<h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">Students also booked</h2>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:12px;line-height:18px">Spanish teachers with similar availability and prices.</p>
+</div>
+<div style="display:flex;align-items:center;gap:8px;flex:0 0 auto">
+<span onClick="{{ similarBack }}" style="display:inline-flex;cursor:pointer"><x-import component-from-global-scope="SafeUI.Button" variant="secondary" size="{{ 32 }}" iconOnly="{{ true }}" leadingIcon="arrow-left-sm" ariaLabel="Previous teachers" hint-size="32px,32px"></x-import></span>
+<span onClick="{{ similarNext }}" style="display:inline-flex;cursor:pointer"><x-import component-from-global-scope="SafeUI.Button" variant="secondary" size="{{ 32 }}" iconOnly="{{ true }}" leadingIcon="arrow-right-sm" ariaLabel="More teachers" hint-size="32px,32px"></x-import></span>
+</div>
+</div>
+<div style="position:relative;margin:0 -24px;padding:0 24px">
+<div style="position:absolute;top:0;right:0;bottom:12px;width:56px;z-index:2;pointer-events:none;background:linear-gradient(to right,transparent,var(--ui-color-card) 70%)"></div>
+<div ref="{{ similarRef }}" data-card-row="true" style="display:flex;gap:12px;overflow-x:auto;padding:4px 24px 12px 0;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none">
+<sc-for list="{{ similar }}" as="t" hint-placeholder-count="4">
+<article style="flex:0 0 232px;scroll-snap-align:start;display:flex;flex-direction:column;gap:10px;border:1px solid var(--ui-color-border);border-radius:12px;padding:16px;cursor:pointer;transition:box-shadow .18s ease" style-hover="box-shadow:var(--ui-shadow-md)">
+<div style="display:flex;align-items:center;gap:10px">
+<x-import component-from-global-scope="SafeUI.Avatar" image="{{ t.photo }}" flag="{{ t.flag }}" size="{{ 48 }}" ariaLabel="{{ t.aria }}" hint-size="48px,48px"></x-import>
+<div style="min-width:0;display:grid;gap:0">
+<strong style="overflow:hidden;color:var(--ui-color-title);font-size:14px;font-weight:700;line-height:20px;text-overflow:ellipsis;white-space:nowrap">{{ t.name }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ t.role }}</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:6px;color:var(--ui-color-secondary);font-size:12px;line-height:18px">
+<strong style="display:inline-flex;align-items:center;gap:2px;color:var(--ui-color-title);font-weight:600">{{ t.rating }}<img src="Assets/Icons/star-solid.svg" alt="" style="width:12px;height:12px"></strong>
+<span>{{ t.lessons }}</span>
+</div>
+<span style="color:var(--ui-color-text);font-size:12px;line-height:18px;text-wrap:pretty">{{ t.speaks }}</span>
+<div style="display:flex;align-items:baseline;gap:4px;margin-top:auto;padding-top:12px;border-top:1px solid var(--ui-color-divider)">
+<strong style="color:var(--ui-color-title);font-size:16px;line-height:24px">{{ t.price }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">/ 60 min</span>
+</div>
+<x-import component-from-global-scope="SafeUI.Button" label="View profile" variant="secondary" size="{{ 32 }}" hint-size="100%,32px"></x-import>
+</article>
+</sc-for>
+</div>
+</div>
+</section>
+
+</div>
+</div>
+
+<div data-screen-label="Booking bar" style="position:fixed;right:0;bottom:0;left:0;z-index:50;background:var(--ui-color-card);border-top:1px solid var(--ui-color-border);box-shadow:var(--ui-shadow-lg)">
+<div style="max-width:800px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap">
+<div style="min-width:0;display:grid;gap:2px">
+<div style="display:flex;align-items:baseline;gap:6px">
+<strong style="color:var(--ui-color-title);font-size:24px;font-weight:700;line-height:32px">{{ barPrice }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ barUnit }}</span>
+</div>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ barNote }}</span>
+</div>
+<div style="display:flex;align-items:center;gap:12px">
+<x-import component-from-global-scope="SafeUI.Button" label="Message" variant="secondary" size="{{ 40 }}" leadingIcon="message" hint-size="132px,40px"></x-import>
+<x-import component-from-global-scope="SafeUI.Button" label="{{ bookLabel }}" variant="red" size="{{ 40 }}" hint-size="200px,40px"></x-import>
+</div>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;superTutor&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Teacher status&quot;},&quot;onlineNow&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Teacher status&quot;},&quot;trialPrice&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;US$8.00&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Pricing&quot;},&quot;initialReviews&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:3,&quot;min&quot;:2,&quot;max&quot;:7,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Student feedback&quot;}}">
+class Component extends DCLogic {
+  static REVIEWS = [
+    { name: "Hannah M.", photo: "https://randomuser.me/api/portraits/women/65.jpg", flag: "us", lessons: 34, date: "July 2026", type: "Conversation Practice", rating: 5,
+      text: "Lucía notices exactly which mistakes matter and which to let go. After three months I finally stopped translating in my head — we just talk, and the corrections arrive quietly in the chat." },
+    { name: "Ken T.", photo: "https://randomuser.me/api/portraits/men/41.jpg", flag: "jp", lessons: 21, date: "June 2026", type: "DELE Exam Prep", rating: 5,
+      text: "Passed DELE B2 on the first try. The mock exams were harder than the real thing, which is exactly what you want. Every session ended with a clear list of what to drill next." },
+    { name: "Jonas K.", photo: "https://randomuser.me/api/portraits/men/22.jpg", flag: "de", lessons: 12, date: "June 2026", type: "Conversation Practice", rating: 5,
+      text: "Very patient with my slow sentences but never lets the hour drift. We talk about my week and she rebuilds my grammar around it. Notes after every single lesson." },
+    { name: "Ana P.", photo: "https://randomuser.me/api/portraits/women/29.jpg", flag: "br", lessons: 45, date: "May 2026", type: "Business Spanish", rating: 5,
+      text: "I brought real agendas from work and we rehearsed them — a salary negotiation, a client call, a conference talk. My colleagues in Mexico City noticed the difference within weeks." },
+    { name: "Oliver R.", photo: "https://randomuser.me/api/portraits/men/67.jpg", flag: "uk", lessons: 8, date: "May 2026", type: "Grammar Foundations", rating: 4,
+      text: "Structured and thorough. As a complete beginner I sometimes wanted more free talking, but the foundations are solid — I can already build my own sentences instead of memorising phrases." },
+    { name: "Chloé D.", photo: "https://randomuser.me/api/portraits/women/50.jpg", flag: "fr", lessons: 27, date: "April 2026", type: "Conversation Practice", rating: 5,
+      text: "The homework is small enough that I actually do it. Lucía remembers everything I've ever gotten wrong and brings it back until it sticks." },
+    { name: "Marco B.", photo: "https://randomuser.me/api/portraits/men/85.jpg", flag: "it", lessons: 15, date: "April 2026", type: "DELE Exam Prep", rating: 5,
+      text: "As an Italian speaker I thought Spanish would be easy — Lucía found every false friend I leaned on. The exam technique sessions on the oral part made the difference." },
+  ];
+  static TYPES = ["Conversation Practice", "DELE Exam Prep", "Business Spanish", "Grammar Foundations"];
+  static DAYS = [
+    { label: "Mo", date: "03" }, { label: "Tu", date: "04" }, { label: "We", date: "05" },
+    { label: "Th", date: "06" }, { label: "Fr", date: "07" }, { label: "Sa", date: "08" }, { label: "Su", date: "09" },
+  ];
+  static ROWS = ["09:00", "10:00", "11:00", "12:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
+
+  state = { readMore: false, favorite: false, videoPlaying: false, filter: "All", shown: null, lesson: null, slot: null, stuck: false };
+
+  onScroll = () => {
+    const stuck = window.scrollY > 220;
+    if (stuck !== this.state.stuck) this.setState({ stuck });
+  };
+
+  componentDidMount() {
+    document.getElementById("ds-kit-missing")?.remove();
+    window.addEventListener("scroll", this.onScroll, { passive: true });
+    this.onScroll();
+    // First render can beat the bundle; poll until the kit lands, then re-render.
+    if (typeof Component.kit?.()?.avatar !== "function") {
+      this.timer = setInterval(() => {
+        if (typeof Component.kit?.()?.avatar !== "function") return;
+        clearInterval(this.timer);
+        this.forceUpdate();
+      }, 50);
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+    window.removeEventListener("scroll", this.onScroll);
+  }
+
+  lessonsRef = React.createRef();
+  similarRef = React.createRef();
+
+  scrollRow = (ref, dir) => {
+    const el = ref.current;
+    if (el) el.scrollBy({ left: dir * 244, behavior: "smooth" });
+  };
+
+  static availability() {
+    let seed = 20260803;
+    const rand = (n) => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed % n; };
+    return Component.ROWS.map((label, i) => ({
+      label,
+      slots: Component.DAYS.map(() => {
+        const roll = rand(10);
+        const open = roll < (i === 0 || i === Component.ROWS.length - 1 ? 4 : 7);
+        return { state: open ? "available" : (roll > 8 ? "booked-by-others" : "unavailable") };
+      }),
+    }));
+  }
+
+  lessonList() {
+    const trial = this.props.trialPrice ?? "US$8.00";
+    return [
+      { id: "trial", name: "Trial Lesson", tag: "New students only", desc: "A 30-minute first meeting to set goals and check your level.", meta: "30 min · one per student", price: trial, per: "30 min", divider: false },
+      { id: "conversation", name: "Conversation Practice", tag: "", desc: "Everyday speaking with corrections delivered in the chat.", meta: "A2 – C2 · 1,214 lessons taught", price: "US$14.00", per: "60 min", divider: true },
+      { id: "dele", name: "DELE Exam Prep", tag: "Most booked", desc: "Mock exams, marking criteria and technique from a DELE examiner.", meta: "A2 – C1 · 642 lessons taught", price: "US$18.00", per: "60 min", divider: true },
+      { id: "business", name: "Business Spanish", tag: "", desc: "Meetings, emails and calls — rehearsed with your real agenda.", meta: "B1 – C2 · 318 lessons taught", price: "US$16.00", per: "60 min", divider: true },
+      { id: "grammar", name: "Grammar Foundations", tag: "", desc: "From sounds to sentences, built in the right order.", meta: "A1 – B1 · 257 lessons taught", price: "US$12.00", per: "60 min", divider: true },
+    ];
+  }
+
+  reviewVals() {
+    const C = this.constructor;
+    const filter = this.state.filter;
+    const filtered = filter === "All" ? C.REVIEWS : C.REVIEWS.filter((r) => r.type === filter);
+    const step = Math.max(1, this.props.initialReviews ?? 3);
+    const shown = Math.min(this.state.shown ?? step, filtered.length);
+    const solid = "Assets/Icons/star-solid.svg", outline = "Assets/Icons/star-outline.svg";
+    const rest = filtered.length - shown;
+    return {
+      reviewFilters: ["All", ...C.TYPES].map((label) => ({
+        label,
+        cls: "ui-chip ui-chip--32 ui-chip--default" + (label === filter ? " is-selected" : ""),
+        pressed: label === filter,
+        onPick: () => this.setState({ filter: label, shown: null }),
+      })),
+      visibleReviews: filtered.slice(0, shown).map((r, i) => ({
+        ...r,
+        divider: i > 0,
+        meta: r.lessons + " lessons · " + r.date,
+        stars: [1, 2, 3, 4, 5].map((n) => (n <= r.rating ? solid : outline)),
+      })),
+      hasMoreReviews: rest > 0,
+      moreReviewsLabel: `Show ${Math.min(rest, step)} more ${rest === 1 ? "review" : "reviews"}`,
+      showMoreReviews: () => this.setState({ shown: shown + step }),
+      breakdown: [
+        { star: "5", pct: 93, count: "571", aria: "5 stars, 571 reviews" },
+        { star: "4", pct: 5, count: "31", aria: "4 stars, 31 reviews" },
+        { star: "3", pct: 1, count: "6", aria: "3 stars, 6 reviews" },
+        { star: "2", pct: 0.5, count: "2", aria: "2 stars, 2 reviews" },
+        { star: "1", pct: 0.5, count: "2", aria: "1 star, 2 reviews" },
+      ],
+    };
+  }
+
+  renderVals() {
+    const C = this.constructor;
+    const trial = this.props.trialPrice ?? "US$8.00";
+    const picked = this.lessonList().find((l) => l.id === this.state.lesson);
+    const slots = [
+      { id: "t-1800", label: "Today 18:00" },
+      { id: "t-1930", label: "Today 19:30" },
+      { id: "tm-0900", label: "Tomorrow 09:00" },
+      { id: "tm-1700", label: "Tomorrow 17:00" },
+      { id: "mon-1000", label: "Mon 10:00" },
+    ];
+    const slot = slots.find((s) => s.id === this.state.slot);
+    return {
+      ...this.reviewVals(),
+      stickyHidden: !this.state.stuck,
+      stickyOpacity: this.state.stuck ? "1" : "0",
+      stickyTransform: this.state.stuck ? "translateY(0)" : "translateY(-8px)",
+      stickyPointer: this.state.stuck ? "auto" : "none",
+      superTutor: this.props.superTutor ?? true,
+      onlineNow: this.props.onlineNow ?? true,
+      navLogo: '<a href="#" aria-label="italki home" style="display:inline-flex;align-items:center"><img src="Assets/Icons/logo-italki-wordmark.svg" alt="italki" style="height:24px"></a>',
+      speaksTags: [
+        { text: "Spanish · Native", tone: "info" },
+        { text: "English · C2", tone: "neutral" },
+        { text: "Portuguese · B1", tone: "neutral" },
+      ],
+      interests: ["Conversation", "DELE prep", "Business Spanish", "Grammar", "Beginners"],
+      stats: [
+        { value: "4.98", label: "Rating", star: true },
+        { value: "512", label: "Students", star: false },
+        { value: "2,431", label: "Lessons", star: false },
+        { value: "99%", label: "Attendance", star: false },
+      ],
+      readMore: this.state.readMore,
+      readMoreLabel: this.state.readMore ? "Show less" : "Read more",
+      readMoreIcon: this.state.readMore ? "Assets/Icons/arrow-up-sm.svg" : "Assets/Icons/arrow-down-sm.svg",
+      toggleReadMore: () => this.setState((s) => ({ readMore: !s.readMore })),
+      insights: [
+        { icon: "Assets/Icons/teacher-steady.svg", title: "Reliable schedule", caption: "99% attendance across 2,431 lessons" },
+        { icon: "Assets/Icons/teacher-like.svg", title: "Great with beginners", caption: "Mentioned in 214 student reviews" },
+        { icon: "Assets/Icons/teacher-students.svg", title: "Long-term students", caption: "68% book again after 5 lessons" },
+        { icon: "Assets/Icons/teacher-lessons.svg", title: "Structured lessons", caption: "Notes and homework after every lesson" },
+      ],
+      favIcon: this.state.favorite ? "favorite-solid" : "favorite-outline",
+      favAria: this.state.favorite ? "Remove from favourites" : "Save to favourites",
+      toggleFavorite: () => this.setState((s) => ({ favorite: !s.favorite })),
+      videoPlaying: this.state.videoPlaying,
+      videoAria: this.state.videoPlaying ? "Pause introduction video" : "Play introduction video",
+      videoStatus: this.state.videoPlaying ? "Playing · 1:24" : "1 min 24 sec",
+      toggleVideo: () => this.setState((s) => ({ videoPlaying: !s.videoPlaying })),
+      similarRef: this.similarRef,
+      similarBack: () => this.scrollRow(this.similarRef, -1),
+      similarNext: () => this.scrollRow(this.similarRef, 1),
+      similar: [
+        { name: "Mateo Rojas", photo: "https://randomuser.me/api/portraits/men/32.jpg", flag: "mx", aria: "Mateo Rojas, Mexico", role: "Community Tutor", rating: "4.92", lessons: "1,876 lessons", speaks: "Spanish · English B2", price: "US$12.00" },
+        { name: "Sofía Herrera", photo: "https://randomuser.me/api/portraits/women/21.jpg", flag: "es", aria: "Sofía Herrera, Spain", role: "Professional Teacher", rating: "4.95", lessons: "1,207 lessons", speaks: "Spanish · English C1 · Italian B2", price: "US$18.00" },
+        { name: "Elena Ruiz", photo: "https://randomuser.me/api/portraits/women/12.jpg", flag: "es", aria: "Elena Ruiz, Spain", role: "Professional Teacher", rating: "4.97", lessons: "2,106 lessons", speaks: "Spanish · Catalan · English C2", price: "US$20.00" },
+        { name: "Diego Salas", photo: "https://randomuser.me/api/portraits/men/54.jpg", flag: "ar", aria: "Diego Salas, Argentina", role: "Community Tutor", rating: "4.89", lessons: "764 lessons", speaks: "Spanish · English B1", price: "US$10.00" },
+      ],
+      lessonsRef: this.lessonsRef,
+      lessonsBack: () => this.scrollRow(this.lessonsRef, -1),
+      lessonsNext: () => this.scrollRow(this.lessonsRef, 1),
+      lessons: this.lessonList().map((l) => ({
+        ...l,
+        selected: this.state.lesson === l.id,
+        btnLabel: this.state.lesson === l.id ? "Chosen" : "Choose",
+        btnVariant: this.state.lesson === l.id ? "emphasis" : "secondary",
+        onPick: () => this.setState((s) => ({ lesson: s.lesson === l.id ? null : l.id })),
+      })),
+      weekDates: C.DAYS.map((d) => d.label + " " + d.date),
+      weekRows: C.availability(),
+      nextSlots: slots.map((s) => ({
+        ...s,
+        aria: "Book " + s.label,
+        state: this.state.slot === s.id ? "selected" : "available",
+        onPick: () => this.setState((st) => ({ slot: st.slot === s.id ? null : s.id })),
+      })),
+      barPrice: picked ? picked.price : trial,
+      barUnit: picked ? "per " + picked.per + " lesson" : "trial lesson · 30 min",
+      barNote: slot
+        ? (picked ? `${picked.name} · ${slot.label}` : `Trial lesson · ${slot.label}`)
+        : (picked ? `${picked.name} — pick a time below` : "Start with a trial, or choose a lesson above"),
+      bookLabel: picked ? `Book ${picked.name.replace(" Lesson", "")}` : `Book trial · ${trial}`,
+    };
+  }
+}
+
+</script>
+</body>
+</html>
