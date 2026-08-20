@@ -26,11 +26,11 @@ Three rules bound it:
 
 - **Stop after the questions.** When the intake identifies one or more open decisions, the agent must present the question block and stop before creating or modifying implementation files. Silence is not authorization to use defaults. Defaults may be applied only when the requester explicitly says "你来决定", "decide for me", or otherwise clearly authorizes the listed defaults. An agent that reads a silent turn as "assume and proceed" has inverted this rule, and the first thing it will get wrong is whose view the page is for.
 - **Never ask twice.** A decision the prompt settled is echoed back as settled, not re-asked. The echo is how a wrong reading gets corrected cheaply.
-- **Never exceed the cap.** At most `maxQuestions` (currently five) are asked. Lower-impact gaps are reported in one line with the default each *would* take. Disclosing a default is not applying it: the stop above covers them too, and they are applied on the same authorization as everything else.
+- **Never exceed the cap.** At most `maxQuestions` (currently eight) are asked. Lower-impact gaps are reported in one line with the default each *would* take. Disclosing a default is not applying it: the stop above covers them too, and they are applied on the same authorization as everything else.
 
 ## 2. The Slot Catalog
 
-`docs/intake.slots.json` is the source of truth. Each slot is one decision this system cannot execute without, and carries:
+`maintenance/kit-source/intake/intake.slots.json` is the source of truth. Each slot is one decision this system cannot execute without, and carries:
 
 | Field | Meaning |
 | --- | --- |
@@ -52,7 +52,7 @@ Add a slot when a delivery has gone wrong for want of an answer nobody thought t
 ### 3.1 The Scan Is The Floor; The Questions Are Yours
 
 ```bash
-node maintenance/scripts/intake.mjs --brief "<the request, verbatim>"
+node maintenance/kit-source/intake/intake.mjs --brief "<the request, verbatim>"
 ```
 
 This prints a brief, not a question block. It names every decision this request leaves open, the default each one takes, what consumes it, and whether the object has a documented contract. Then you write the questions.
@@ -71,11 +71,11 @@ That division is the whole design. The scan cannot write a good question; it can
 
 ### 3.2 Without It
 
-An agent that cannot run a script reads `docs/intake.slots.json` and performs the same four steps by hand:
+An agent that cannot run a script reads `maintenance/kit-source/intake/intake.slots.json` and performs the same four steps by hand:
 
 1. Discard every slot whose `applies` signals are absent from the request.
 2. For each remaining slot, decide whether the request settles it. Quote the words that settle it.
-3. Sort the unsettled slots by `impact`, then by catalog order. Ask the first five.
+3. Sort the unsettled slots by `impact`, then by catalog order. Ask the first eight.
 4. Report the rest as taking their defaults.
 
 ### 3.3 When Judgement And The Scan Disagree

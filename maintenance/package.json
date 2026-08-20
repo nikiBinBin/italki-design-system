@@ -7,9 +7,9 @@
     "build:api": "node scripts/generate-component-api.mjs",
     "component:check": "node scripts/check-component.mjs",
     "serve:catalog": "node scripts/serve-catalog.mjs",
-    "intake": "node scripts/intake.mjs",
-    "test:intake": "node scripts/intake.mjs --selftest",
-    "test:contract": "npm run build:contracts && npm run build:api && npm run build:icons && npm run build:images && node scripts/validate-contracts.mjs && npm run lint:foundation && npm run lint:type && npm run test:intake && npm run check:intake",
+    "intake": "node kit-source/intake/intake.mjs",
+    "test:intake": "node kit-source/intake/intake.mjs --selftest",
+    "test:contract": "npm run build:contracts && npm run build:api && npm run build:icons && npm run build:images && node scripts/validate-contracts.mjs && npm run lint:foundation && npm run lint:type && npm run test:intake && npm run lint:enforcement",
     "pretest:visual": "npm run build:contracts",
     "test:visual": "playwright test",
     "test": "npm run test:contract && npm run audit:coverage && npm run test:visual",
@@ -27,7 +27,8 @@
     "serve:templates": "node scripts/serve-templates.mjs",
     "audit:adherence": "node scripts/audit-adherence.mjs",
     "audit:coverage": "node scripts/audit-coverage.mjs",
-    "check:intake": "node scripts/check-intake.mjs"
+    "check:intake": "node kit-source/intake/check-intake.mjs",
+    "lint:enforcement": "node --check kit-source/intake/check-intake.mjs && node --check kit-source/intake/intake-gate.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",

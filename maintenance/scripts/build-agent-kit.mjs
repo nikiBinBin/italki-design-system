@@ -21,7 +21,7 @@
 // reading something nobody rebuilt — is the shape of most of what went wrong in
 // this repository on 2026-08-17.
 
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, resolve } from 'node:path';
@@ -35,6 +35,8 @@ const flag = (n, d) => { const i = argv.indexOf(`--${n}`); return i < 0 ? d : ar
    build output sitting in the tree is a thing that gets committed by accident,
    edited instead of its source, or handed over stale. --out moves it anywhere. */
 const OUT = resolve(flag('out', join(HERE, '../italki-ui-kit')));
+const REMOTE_ASSET_BASE = 'https://design.italkiux.com/';
+const LOCAL_ASSETS = argv.includes('--local-assets');
 
 // ── 1. rebuild the design payload into scratch ────────────────────────────
 const scratch = mkdtempSync(join(tmpdir(), 'italki-kit-'));
@@ -63,9 +65,70 @@ for (const f of FILES) {
   mkdirSync(dirname(join(OUT, f)), { recursive: true });
   cpSync(from, join(OUT, f));
 }
+if (!LOCAL_ASSETS) {
+  const bundlePath = join(OUT, '_ds_bundle.js');
+  const bundle = readFileSync(bundlePath, 'utf8');
+  writeFileSync(bundlePath, bundle.replace(
+    'if (window.ITalkiUIAssetBase) return;          // a host that already decided wins',
+    `if (window.ITalkiUIAssetBase) return;          // a host that already decided wins\n  window.ITalkiUIAssetBase = '${REMOTE_ASSET_BASE}';\n  return;`,
+  ));
+}
 
 // guidelines/ entire: the four documents, INTAKE.md, and the slot catalog.
 cpSync(join(scratch, 'guidelines'), join(OUT, 'guidelines'), { recursive: true });
+
+/* The source guidelines deliberately name repository paths. A vendored kit has
+   a different layout: the runtime bundle and tokens live at its root, and the
+   intake sits beside this script. Adapt only the generated copy so the source
+   repository remains truthful while the hand-over remains runnable. */
+const rewriteKitPaths = (root) => {
+  const replacements = [
+    ['catalog-runtime/italki-ui.js', '_ds_bundle.js'],
+    ['catalog-runtime/italki-ui.css', '_ds_bundle.css'],
+    ['catalog-runtime/tokens.css', 'tokens/tokens.css'],
+    ['maintenance/kit-source/intake/intake.mjs', 'intake.mjs'],
+    ['maintenance/kit-source/intake/intake.slots.json', 'guidelines/intake.slots.json'],
+    ['npm --prefix maintenance run build:contracts', 'the source build process'],
+    ['npm --prefix maintenance run build:api', 'the source build process'],
+    ['npm --prefix maintenance run component:check -- <component-name>', 'the matching component contract'],
+    ['npm --prefix maintenance run test:contract', 'the source contract test'],
+    ['npm --prefix maintenance run test:visual', 'the source visual test'],
+    ['npm --prefix maintenance run test', 'the source test suite'],
+    ["const defaults = { pages: 'maintenance/templates', records: 'docs/intakes', intake: 'maintenance/kit-source/intake/intake.mjs' };", "const defaults = { pages: 'src/app', records: 'docs/intakes', intake: 'italki-ui-kit/intake.mjs' };"],
+    ["const defaults = { pages: 'maintenance/templates', records: 'docs/intakes', intake: 'intake.mjs' };", "const defaults = { pages: 'src/app', records: 'docs/intakes', intake: 'italki-ui-kit/intake.mjs' };"],
+    ['maintenance/templates/<name>/', 'src/app/<name>/'],
+    ["design system's own repository it is maintenance/templates.", "a consuming project defaults to src/app."],
+    ['maintenance/scripts/build-ds-project.mjs', 'the source build process'],
+    /* Paths a recipient has no copy of. Left in, they read as instructions to
+       run something in a repository they were never given. */
+    ['maintenance/scripts/build-icon-manifest.mjs', 'the source build process'],
+    ['maintenance/fixtures/fixtures.js', "the design system's own fixtures"],
+    ['maintenance/scripts/validate-contracts.mjs', 'the source contract validation'],
+    ['maintenance/tests/catalog-runtime.visual.spec.mjs', 'the source visual tests'],
+    ['node maintenance/kit-source/intake/check-intake.mjs', 'node italki-ui-kit/enforcement/check-intake.mjs'],
+    ['maintenance/kit-source/intake/,', 'a kit under enforcement/,'],
+    ['in maintenance/kit-source/intake.', 'in ./guidelines.'],
+    ["join(HERE, 'maintenance/kit-source/intake/intake.slots.json'),", "join(HERE, 'guidelines/intake.slots.json'),"],
+    ['- `index.html` is the visual browser for reviewed design-principle content, Foundations, components, and documented product patterns. It keeps components and patterns in separate navigation groups and is not an additional prose specification.', '- The hosted Catalog at https://design.italkiux.com/ is the visual browser for reviewed design-principle content, Foundations, components, and documented product patterns.'],
+    ['Every functional pictogram in `index.html` must render', 'Every functional pictogram in the hosted Catalog must render'],
+  ];
+  const rewriteOne = (full) => {
+    let text = readFileSync(full, 'utf8');
+    for (const [from, to] of replacements) text = text.replaceAll(from, to);
+    writeFileSync(full, text);
+  };
+  if (statSync(root).isFile()) { rewriteOne(root); return; }
+  const visit = (dir) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) { visit(full); continue; }
+      if (!/\.(md|json|js|mjs)$/.test(entry.name)) continue;
+      rewriteOne(full);
+    }
+  };
+  visit(root);
+};
+rewriteKitPaths(join(OUT, 'guidelines'));
 
 /* skills/ — the review pass, adapted from Anthropic's design plugin so its
    consistency and token sections cite this kit's contracts instead of generic
@@ -96,7 +159,7 @@ writeFileSync(readmePath, `# italki UI Kit
 >
 > Skip it and \`AGENTS.md\` is only picked up when this folder *is* the working
 > directory root; otherwise paste *"follow AGENTS.md in the kit folder"* into every
-> request. The two things an agent gets wrong without those rules are below.
+> request. The rules an agent needs most are below.
 
 ## 1. A design request starts with the intake, not with components
 
@@ -104,29 +167,44 @@ writeFileSync(readmePath, `# italki UI Kit
 node intake.mjs "<the request, verbatim>"
 \`\`\`
 
-It prints the few decisions the request left open — at most five, each with a
+It prints the few decisions the request left open — at most eight, each with a
 default — and nothing else. Send that block, take whatever is answered, then
 build, stating \`Confirmed / Answered / Assumed\`. Skipping it is how a page gets
 built for the wrong role, in the wrong viewport, covering one state out of six.
 
 ## 2. Every icon broken means the asset base was not found
 
-The runtime emits \`Assets/Icons/x.svg\` and resolves it against **the bundle's
-own URL**, worked out from the \`<script src>\` that loaded it. Inline the bundle
-into a single-file page and there is no URL to read, so the paths fall back to
-page-relative — and \`Assets/\` is in this folder, not beside your page.
+The runtime emits \`Assets/Icons/x.svg\` and resolves it against the configured
+asset base. This kit defaults that base to **${REMOTE_ASSET_BASE}**; override
+\`window.ITalkiUIAssetBase\` before loading the bundle when your product hosts
+its own mirrored assets.
 
 Set the base yourself, before anything renders. This always works:
 
 \`\`\`html
-<script>window.ITalkiUIAssetBase = "/italki-ui-kit/";</script>  <!-- wherever this folder sits -->
+<script>window.ITalkiUIAssetBase = "${REMOTE_ASSET_BASE}";</script>
 <script src="/italki-ui-kit/_ds_bundle.js"></script>
 \`\`\`
 
 Or keep \`Assets/\` next to the page. Either is fine; guessing is not.
 
-\`open example.html\` from a local server is the check: two buttons, a tag, an
-avatar with a flag. If those icons render, your wiring is right.
+For visual reference, use the hosted Catalog at
+https://design.italkiux.com/. This hand-over package intentionally contains no
+local Catalog or sample page; it is packaged for AI-assisted product work.
+
+## 3. Start component lookup from the machine-readable indexes
+
+Before guessing a prop or state, read the matching file under
+\`catalog-runtime/\`:
+
+- \`component-api.json\` — component names, accepted props, values, defaults,
+  and documented states.
+- \`contracts.json\` — the runtime contract registry used to validate props.
+- \`foundation-api.json\` — token and foundation references.
+- \`icon-manifest.js\` — the approved icon vocabulary and asset paths.
+
+Then check the exact \`components/<group>/<Name>/<Name>.d.ts\` contract before
+composing a component.
 
 ---
 
@@ -152,15 +230,10 @@ const walk = (dir) => {
 };
 walk(join(scratch, 'components'));
 
-/* All three approved asset roots. Icons and Flags are vocabulary — components
-   name them and the manifest decides which exist. Images are content, and were
-   left out of the first build of this kit on the grounds that no rule
-   references them: true, and beside the point. An agent asked for a teacher
-   card with nothing to put in the avatar renders initials, and the intake's own
-   default asks for content that looks like italki. Shipping the reference
-   photography is what makes that possible; --no-images drops it for a handover
-   that has to stay small. */
-const ASSET_DIRS = argv.includes('--no-images') ? ['Icons', 'Flags'] : ['Icons', 'Flags', 'Images'];
+/* Assets are vocabulary in the default hand-over, not payload. The hosted
+   Catalog serves the approved icons, flags and reference images. Use
+   --local-assets when an offline or air-gapped copy is required. */
+const ASSET_DIRS = LOCAL_ASSETS ? ['Icons', 'Flags', 'Images'] : [];
 for (const dir of ASSET_DIRS) {
   cpSync(join(HERE, 'Assets', dir), join(OUT, 'Assets', dir), {
     recursive: true,
@@ -178,7 +251,7 @@ for (const dir of ASSET_DIRS) {
    keeps its pages and its records. */
 mkdirSync(join(OUT, 'enforcement'), { recursive: true });
 for (const f of ['check-intake.mjs', 'intake-gate.mjs']) {
-  cpSync(join(HERE, 'maintenance/scripts', f), join(OUT, 'enforcement', f));
+  cpSync(join(HERE, 'maintenance/kit-source/intake', f), join(OUT, 'enforcement', f));
 }
 writeFileSync(join(OUT, 'enforcement/intake.config.example.json'), `{
   "pages": "src/app",
@@ -433,51 +506,22 @@ short of watching the conversation can. The record is a claim; these two make
 the claim mandatory and legible, and a reviewer can read \`## Answered\` and see
 whether anyone was actually asked.
 `);
+rewriteKitPaths(join(OUT, 'enforcement'));
 
-// ── 4. the Catalog, so the reference is readable without a network ────────
-/* README.md and AGENTS.md point at design.italkiux.com for "what does this
-   component look like", which is a dependency on that site being up and on the
-   reader being online — and on it still describing the revision they were
-   handed. The Catalog is three files plus the runtime it already loads by
-   relative path, so it travels. It is the same source these contracts were
-   generated from, so it cannot describe a different version of them. */
-for (const f of ['index.html', 'catalog.css']) cpSync(join(HERE, f), join(OUT, f));
-cpSync(join(HERE, 'catalog-runtime'), join(OUT, 'catalog-runtime'), {
-  recursive: true,
-  filter: (src) => !src.endsWith('.DS_Store'),
-});
-
-// ── 5. a page that proves the kit loads ───────────────────────────────────
-/* Opened in a browser, this is the whole acceptance test for "did I wire the
-   kit in correctly": if the button is red and the icon is not a broken image,
-   the stylesheet, the bundle and the asset paths are all resolving. */
-writeFileSync(join(OUT, 'example.html'), `<!doctype html>
-<meta charset="utf-8">
-<title>italki UI Kit — does it load?</title>
-<link rel="stylesheet" href="./styles.css">
-<body style="margin:0;padding:var(--ui-space-8,40px);background:var(--ui-color-bg,#faf9f7);font-family:var(--ui-font-family)">
-<div id="app"></div>
-<script src="./_ds_bundle.js"></script>
-<script>
-  /* .raw is the same component set returning HTML strings — no React needed. */
-  var ui = window.ItalkiUI.raw;
-  document.getElementById('app').innerHTML =
-    ui.sectionIntro({ title: 'italki UI Kit', description: 'If this row is styled and the icon renders, the kit is wired in.' }) +
-    '<div style="display:flex;gap:var(--ui-space-3);align-items:center;margin-top:var(--ui-space-6)">' +
-      /* Icon props are asserted against the approved asset roots before any
-         name lookup happens, so they take the path — 'calendar' alone throws. */
-      ui.button({ label: 'Book trial', variant: 'red', leadingIcon: 'Assets/Icons/calendar.svg' }) +
-      ui.button({ label: 'Message', variant: 'secondary' }) +
-      ui.tag({ label: 'Professional Teacher', tone: 'info', leadingIcon: 'Assets/Icons/teacher-professional.svg' }) +
-    '</div>' +
-    /* The third asset root. "image" takes a path like the icons do; "flag" is
-       the exception — an ISO 3166-1 alpha-2 code, not a file. */
-    '<div style="margin-top:var(--ui-space-6)">' +
-      ui.avatar({ image: 'Assets/Images/avatars/teacher-lucia.png', size: 96, name: 'Lucia', flag: 'es', variant: 'with-flag' }) +
-    '</div>';
-</script>
-</body>
-`);
+// ── 4. machine-readable lookup data ──────────────────────────────────────
+/* The full catalog runtime contains a browser renderer and stylesheets that
+   are already shipped at the kit root as _ds_bundle.*. Keep only the data an
+   agent needs to answer "which props, values, and icons are approved?". */
+const LOOKUP_FILES = ['component-api.json', 'contracts.json', 'foundation-api.json', 'icon-manifest.js'];
+for (const f of LOOKUP_FILES) {
+  const from = join(HERE, 'catalog-runtime', f);
+  if (!existsSync(from)) throw new Error(`catalog-runtime/${f} is missing — the kit lookup index is incomplete`);
+  mkdirSync(join(OUT, 'catalog-runtime'), { recursive: true });
+  cpSync(from, join(OUT, 'catalog-runtime', f));
+}
+rewriteKitPaths(join(OUT, 'catalog-runtime'));
+rewriteKitPaths(join(OUT, 'components'));
+rewriteKitPaths(join(OUT, 'intake.mjs'));
 
 // ── 6. stamp what this copy is ────────────────────────────────────────────
 /* A kit is read months after it was handed over, in a repository that has no
@@ -497,30 +541,26 @@ const SOURCES = ['catalog-runtime', 'docs', 'Assets', 'maintenance/prompt-notes'
 const dirty = git('status', '--porcelain', '--', ...SOURCES) !== '';
 const built = new Date().toISOString().slice(0, 10);
 const componentCount = readdirSync(join(OUT, 'components'), { recursive: true }).filter((f) => String(f).endsWith('.d.ts')).length;
-const iconCount = execFileSync('find', [join(OUT, 'Assets/Icons'), '-name', '*.svg']).toString().trim().split('\n').length;
+const iconCount = LOCAL_ASSETS
+  ? execFileSync('find', [join(OUT, 'Assets/Icons'), '-name', '*.svg']).toString().trim().split('\n').length
+  : execFileSync('find', [join(HERE, 'Assets/Icons'), '-name', '*.svg']).toString().trim().split('\n').length;
 
 writeFileSync(join(OUT, 'VERSION'), `italki UI Kit
 built       ${built}
 commit      ${commit}${dirty ? '  (+ uncommitted changes — this copy matches no revision)' : ''}
 source      github.com/nikiBinBin/italki-design-system
-catalog     index.html — open it from a local server, not file://
-            (the hosted copy is https://design.italkiux.com/, which tracks
-             the source and may be ahead of this folder)
+catalog     https://design.italkiux.com/ (hosted visual reference; no local copy)
 
 components  ${componentCount}
 icons       ${iconCount}
 guidelines  ${readdirSync(join(OUT, 'guidelines')).length} files, including INTAKE.md and its slot catalog
 skills      ${readdirSync(join(OUT, 'skills'), { withFileTypes: true }).filter((e) => e.isDirectory()).length} review skills — installed into the host by enforcement/install.mjs
-assets      ${ASSET_DIRS.join(', ')} under Assets/
+assets      ${LOCAL_ASSETS ? `${ASSET_DIRS.join(', ')} under Assets/` : `remote: ${REMOTE_ASSET_BASE}`}
 
-Assets/Icons and Assets/Flags are vocabulary: a component names one and the
-runtime resolves it, so a name that is not there throws. Assets/Images is
-reference photography — the avatars and covers the Catalog uses to show a
-teacher card as it really reads. Use them to compose and review; replace them
-with the product's own imagery before anything ships.
-
-Rebuild a current copy from the source repository:
-  node maintenance/scripts/build-agent-kit.mjs --zip
+Assets/Icons, Assets/Flags and Assets/Images are resolved from the hosted
+Catalog in the default kit. The icon manifest and component contracts remain
+local so agents can still choose only approved paths. Build with
+\`--local-assets\` when the consuming project must work offline.
 
 Everything in this folder is generated. Edit the design system, not this.
 `);
@@ -537,8 +577,10 @@ if (argv.includes('--zip')) {
 // ── 8. report, and refuse to look healthy while incomplete ────────────────
 rmSync(scratch, { recursive: true, force: true });
 const size = (p) => execFileSync('du', ['-sh', p]).toString().split('\t')[0].trim();
-const icons = readdirSync(join(OUT, 'Assets/Icons')).filter((f) => f.endsWith('.svg')).length;
+const icons = LOCAL_ASSETS
+  ? readdirSync(join(OUT, 'Assets/Icons')).filter((f) => f.endsWith('.svg')).length
+  : iconCount;
 if (kept < 100) throw new Error(`only ${kept} contract files reached the kit; expected two per component`);
 console.log(`✓ ${OUT}  (${size(OUT)})`);
 console.log(`  contracts: ${kept} files · icons: ${icons} at the root + subdirectories`);
-console.log(`  open example.html in a browser to confirm it loads`);
+console.log(`  lookup data: ${LOOKUP_FILES.join(', ')}`);

@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "maxQuestions": 5,
-  "note": "Decision slots the italki design system needs filled before it can execute a request. An agent asks only about the slots a prompt leaves open — see docs/INTAKE.md for the protocol and maintenance/scripts/intake.mjs for the reference implementation. `applies` decides whether a slot is relevant to this request at all; `answered` decides whether the prompt already settles it. Patterns are JavaScript regular expressions, matched case-insensitively against the raw prompt.",
+  "maxQuestions": 8,
+  "note": "Decision slots the italki design system needs filled before it can execute a request. An agent asks only about the slots a prompt leaves open — see INTAKE.md beside it for the protocol and maintenance/scripts/intake.mjs for the reference implementation. `applies` decides whether a slot is relevant to this request at all; `answered` decides whether the prompt already settles it. Patterns are JavaScript regular expressions, matched case-insensitively against the raw prompt.",
   "objectsNote": "A slot asks the same question of every request; an object decides what its answers can be. `must-have-data` asked of a teacher profile should offer the sections PATTERNS.md gives that page, not a blank line — and asked of an object this system has never documented, it should say so rather than invent a plausible list. `pattern: null` is that case, and it is the more useful answer: it tells the requester the thing they asked for has no contract yet.",
   "objects": [
     {
@@ -10,7 +10,7 @@
       "pattern": "teacher-detail — PATTERNS.md § Teacher Detail",
       "overrides": {
         "actor": ["a student evaluating this teacher", "the teacher previewing their own page", "logged-out visitor"],
-        "must-have-data": ["detail-hero: identity, location, teaching focus, introduction", "trust evidence: rating, lessons taught, response time", "local section navigation (tabs)", "about / teaching fit", "lesson offerings — lesson-option group + pricing-row", "availability — calendar + time-slot", "student reviews — review-card", "similar teachers", "booking rail — booking-panel"]
+        "must-have-data": ["detail-hero: identity, location, teaching focus, introduction", "trust evidence: rating, lessons taught, response time", "about / teaching fit", "lesson offerings — lesson-option group + pricing-row", "availability — calendar + time-slot", "student reviews — review-card", "similar teachers", "the booking commitment — detail-booking-bar in the single-column layout, booking-panel in the two-column one"]
       }
     },
     {
@@ -27,7 +27,7 @@
       "match": ["预订|预约|下单|结算", "\\bbooking|checkout|payment\\b"],
       "pattern": "booking-panel, order-summary, payment-method — PATTERNS.md § Booking And Payment",
       "overrides": {
-        "must-have-data": ["lesson choice and duration", "date, time and timezone", "price and any discount or credit", "final amount due", "payment route — payment-method", "the single next action"]
+        "must-have-data": ["lesson choice and its length", "lesson quantity and any package pricing", "the first lesson's time in the learner's timezone", "price and any discount or credit", "final amount due", "payment route — payment-method", "a step indicator covering every step of the real flow", "the single next action"]
       }
     },
     {

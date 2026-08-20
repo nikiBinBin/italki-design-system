@@ -14,9 +14,9 @@
 // on maintenance/templates/<name>/ — the pages this system builds — and nothing
 // else.
 //
-//   node maintenance/scripts/check-intake.mjs                 committed vs origin/main
-//   node maintenance/scripts/check-intake.mjs --since HEAD~3
-//   node maintenance/scripts/check-intake.mjs --working       include uncommitted work
+//   node maintenance/kit-source/intake/check-intake.mjs                 committed vs origin/main
+//   node maintenance/kit-source/intake/check-intake.mjs --since HEAD~3
+//   node maintenance/kit-source/intake/check-intake.mjs --working       include uncommitted work
 //
 // Committed history is the default on purpose: work in progress is allowed to
 // be half-done, and half of it belongs to whoever else has this tree open.
@@ -31,7 +31,7 @@ const flag = (n, d) => { const i = argv.indexOf(`--${n}`); return i < 0 ? d : ar
 
 /* The project this file is enforcing for. Never "this file three directories
    up" — that is the repository root only because the script lives in
-   maintenance/scripts/, and vendored into a kit's enforcement/ the same
+   maintenance/kit-source/intake/, and vendored into a kit's enforcement/ the same
    arithmetic lands in the user's Downloads folder. Resolution, in order: the
    nearest ancestor of the working directory holding an intake.config.json;
    else the repository this script belongs to, if it is laid out like one;
@@ -42,11 +42,11 @@ const PROJECT = (() => {
     if (dir === resolve(dir, '..')) break;
   }
   const own = resolve(fileURLToPath(import.meta.url), '../../..');
-  if (existsSync(join(own, 'docs', 'intake.slots.json'))) return own;
+  if (existsSync(join(own, 'maintenance', 'kit-source', 'intake', 'intake.slots.json'))) return own;
   return process.cwd();
 })();
 const CONFIG = (() => {
-  const defaults = { pages: 'maintenance/templates', records: 'docs/intakes', intake: 'maintenance/scripts/intake.mjs' };
+  const defaults = { pages: 'maintenance/templates', records: 'docs/intakes', intake: 'maintenance/kit-source/intake/intake.mjs' };
   const file = join(PROJECT, 'intake.config.json');
   if (!existsSync(file)) return defaults;
   try { return { ...defaults, ...JSON.parse(readFileSync(file, 'utf8')) }; } catch { return defaults; }

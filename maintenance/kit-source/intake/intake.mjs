@@ -8,19 +8,19 @@
 // anyway reads as a form to fill in rather than as someone who read what you
 // wrote.
 //
-// So the questions are computed. docs/intake.slots.json lists every decision
+// So the questions are computed. The catalog beside this file lists every decision
 // this system needs before it can execute, each with the signals that mean the
 // prompt already settled it and the default to take when nobody answers. This
 // script matches a prompt against that catalog and prints only the gaps, most
 // consequential first. Same prompt in, same questions out — which is why an
 // agent that cannot reason about the catalog can still run the intake.
 //
-//   node maintenance/scripts/intake.mjs "a lesson detail page"
-//   node maintenance/scripts/intake.mjs --brief "..."    the floor; you write the questions
-//   node maintenance/scripts/intake.mjs --json "..."      machine-readable
-//   node maintenance/scripts/intake.mjs --defaults "..."  skip asking, list the assumptions
-//   node maintenance/scripts/intake.mjs --catalog         the whole slot catalog
-//   node maintenance/scripts/intake.mjs --selftest        the detection cases below
+//   node intake.mjs "a lesson detail page"
+//   node intake.mjs --brief "..."    the floor; you write the questions
+//   node intake.mjs --json "..."      machine-readable
+//   node intake.mjs --defaults "..."  skip asking, list the assumptions
+//   node intake.mjs --catalog         the whole slot catalog
+//   node intake.mjs --selftest        the detection cases below
 //
 // Reads stdin when no prompt argument is given, so it composes with a pipe.
 
@@ -40,29 +40,22 @@ const flag = (n, d) => { const i = argv.indexOf(`--${n}`); return i < 0 ? d : ar
 const SELF = dirname(fileURLToPath(import.meta.url));
 const CATALOG_PATH = [
   process.env.INTAKE_SLOTS,
-  join(HERE, 'docs/intake.slots.json'),
+  join(HERE, 'maintenance/kit-source/intake/intake.slots.json'),
   join(SELF, 'intake.slots.json'),
   join(SELF, 'guidelines/intake.slots.json'),
 ].find((p) => p && existsSync(p));
 if (!CATALOG_PATH) {
-  console.error('intake.slots.json not found. Looked beside this script, in ./guidelines, and in ../../docs.\nSet INTAKE_SLOTS=<path> to point at it.');
+  console.error('intake.slots.json not found. Looked beside this script, in ./guidelines, and in maintenance/kit-source/intake.\nSet INTAKE_SLOTS=<path> to point at it.');
   process.exit(2);
 }
 const CATALOG = JSON.parse(readFileSync(CATALOG_PATH, 'utf8'));
 
-/* Where a record gets written. HERE is this file three directories up, which is
-   the repository root only because the script lives in maintenance/scripts/.
-   Vendored into a kit the script sits at that kit's root, so the same
-   arithmetic walked out of the project entirely and --record wrote to the
-   user's home directory, reporting success. Resolved the way the gates resolve
-   it instead: the project that has an intake.config.json, else the repository
-   this catalog belongs to, else wherever the command was run. */
 const PROJECT = (() => {
   for (let dir = process.cwd(); ; dir = resolve(dir, '..')) {
     if (existsSync(join(dir, 'intake.config.json'))) return dir;
     if (dir === resolve(dir, '..')) break;
   }
-  if (CATALOG_PATH.endsWith(join('docs', 'intake.slots.json'))) return resolve(CATALOG_PATH, '../..');
+  if (CATALOG_PATH.endsWith(join('kit-source', 'intake', 'intake.slots.json'))) return resolve(CATALOG_PATH, '../../..');
   return process.cwd();
 })();
 const RECORDS = (() => {
@@ -375,10 +368,10 @@ ${result.deferred.map((s) => `- ${pick(s, 'title', lang)} → ${pick(s, 'default
 
 State \`Confirmed / Answered / Assumed\`, then write the record:
 
-    node maintenance/scripts/intake.mjs --record <target> "<the request, verbatim>"
+    node intake.mjs --record <target> "<the request, verbatim>"
 
-Writing a page under maintenance/templates/ is blocked until that record exists
-with the answers in it.
+Writing a page under the configured pages directory is blocked until that record
+exists with the answers in it.
 `;
 };
 
@@ -423,7 +416,7 @@ else if (has('catalog')) { console.log(renderCatalog()); }
 else {
   const prompt = readPrompt().trim();
   if (!prompt) {
-    console.error('Give the request as an argument, --file <path>, or on stdin.\n  node maintenance/scripts/intake.mjs "a lesson detail page"');
+    console.error('Give the request as an argument, --file <path>, or on stdin.\n  node intake.mjs "a lesson detail page"');
     process.exit(2);
   }
   const lang = flag('lang', 'auto') === 'auto' ? (zh(prompt) ? 'zh' : 'en') : flag('lang', 'en');

@@ -2,7 +2,8 @@
 
 This directory contains validation-only tooling for the local design-system Catalog. It is not required to view or distribute `index.html`.
 
-- `scripts/` builds the browser-readable component and Foundation API indexes, and checks tokens, props, ARIA, asset roots, production mappings, and Catalog consumption. `build-ds-project.mjs` builds the claude.ai/design payload from the catalog runtime. `intake.mjs` reads a design request and prints the decisions it left open — see `docs/INTAKE.md`.
+- `scripts/` builds the browser-readable component and Foundation API indexes, and checks tokens, props, ARIA, asset roots, production mappings, and Catalog consumption. `build-ds-project.mjs` builds the claude.ai/design payload from the catalog runtime.
+- `kit-source/intake/` is the intake system: the protocol, its slot catalog, the runnable gap scan, and the two enforcement gates. Nothing in this repository runs it — it exists to be packaged into the shareable kit by `scripts/build-agent-kit.mjs`, which is the one flavour whose reader puts questions to a requester.
 - `fixtures/` contains visual regression inputs.
 - `tests/` contains the Playwright checks and their snapshots.
 
