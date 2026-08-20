@@ -2222,6 +2222,8 @@
       "props": [
         "id",
         "title",
+        "titleLeading",
+        "subtitle",
         "body",
         "footer",
         "trigger",
@@ -2239,6 +2241,8 @@
       "defaults": {
         "id": "\"\"",
         "title": "\"Drawer\"",
+        "titleLeading": "\"\"",
+        "subtitle": "\"\"",
         "body": "\"\"",
         "footer": "\"\"",
         "trigger": "required or context-provided",

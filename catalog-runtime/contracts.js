@@ -1198,6 +1198,8 @@ window.ITalkiUIContracts = {
       "acceptedProps": [
         "id",
         "title",
+        "titleLeading",
+        "subtitle",
         "body",
         "footer",
         "trigger",

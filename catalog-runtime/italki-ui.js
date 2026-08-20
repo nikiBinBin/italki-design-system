@@ -2153,6 +2153,40 @@
     if (!list) return false;
     const card = control.closest("[data-lesson-course-card]");
     const shouldExpand = !card?.classList.contains("is-expanded");
+    /* Two lesson-options groups can be one choice. The reference splits the
+       trial from the regular courses with a divider, which a single group
+       cannot draw — so it is two groups, and each was its own radiogroup:
+       picking a course left the trial selected and the step reported two
+       lessons chosen at once. A wrapper marked data-lesson-exclusive says the
+       groups inside it are alternatives, and picking in one clears the rest.
+       Opt-in, so a page with genuinely independent groups is unaffected. */
+    const exclusive = control.closest("[data-lesson-exclusive]");
+    if (exclusive && shouldExpand) {
+      exclusive.querySelectorAll("[data-ui-lesson-options]").forEach((group) => {
+        if (group === list) return;
+        group.querySelectorAll("[data-lesson-course-card]").forEach((item) => {
+          item.classList.remove("is-expanded", "is-preview-expanded");
+          const toggle = item.querySelector("[data-demo=ui-lesson-toggle]");
+          toggle?.classList.remove("is-selected");
+          toggle?.setAttribute("aria-expanded", "false");
+          toggle?.setAttribute("aria-checked", "false");
+          const options = item.querySelector("[data-ui-selection-group]");
+          if (options) {
+            options.classList.add("is-collapsed");
+            options.setAttribute("aria-hidden", "true");
+            options.inert = true;
+          }
+          /* The lengths inside a cleared course stop being a selection too,
+             or stepping back would show a course collapsed with a length
+             still chosen inside it. */
+          item.querySelectorAll(".ui-selection__lesson-option").forEach((o) => {
+            o.classList.remove("is-selected");
+            o.setAttribute("aria-checked", "false");
+            o.tabIndex = -1;
+          });
+        });
+      });
+    }
     list.querySelectorAll("[data-lesson-course-card]").forEach((item) => {
       const expanded = shouldExpand && item === card;
       item.classList.toggle("is-expanded", expanded);
@@ -2166,6 +2200,35 @@
         options.classList.toggle("is-collapsed", !expanded);
         options.setAttribute("aria-hidden", String(!expanded));
         options.inert = !expanded;
+      }
+      /* A collapsed course keeps no chosen length. Only the cross-group branch
+         cleared these, so picking a second course inside the same group left the
+         first one's duration selected and the group reported two lessons. */
+      if (!expanded) {
+        item.querySelectorAll(".ui-selection__lesson-option").forEach((o) => {
+          o.classList.remove("is-selected");
+          o.setAttribute("aria-checked", "false");
+          o.tabIndex = -1;
+        });
+      }
+      /* Expanding a course now lands on a length instead of on nothing. A
+         lesson-options card is a duration control: opening one with no duration
+         chosen leaves the consumer unable to name a price, which is exactly
+         where the booking flow got stuck — the card was open, nothing was
+         selected, and Continue had nothing to become available for. 60 minutes
+         is the product default; a course without it falls back to its first
+         length. An already-chosen length is never overwritten. */
+      if (expanded && options) {
+        const lengths = [...options.querySelectorAll(".ui-selection__lesson-option")];
+        if (lengths.length && !lengths.some((o) => o.getAttribute("aria-checked") === "true")) {
+          const preferred = lengths.find((o) => o.dataset.selectionValue === "60") || lengths[0];
+          lengths.forEach((o) => {
+            const chosen = o === preferred;
+            o.classList.toggle("is-selected", chosen);
+            o.setAttribute("aria-checked", String(chosen));
+            o.tabIndex = chosen ? 0 : -1;
+          });
+        }
       }
     });
     return true;
@@ -2741,6 +2804,7 @@
     return checkingParent;
   }
 
+
   /* The Filter pattern shows the chosen price beside the range as two pills. They
      were static markup — the slider moved, its own value box was hidden, and the
      numbers people actually read never changed. The slider works in its own 0–100
@@ -2837,7 +2901,7 @@
        and `trigger = ""` answered that question before it could be asked — so the
        default button never rendered and triggerLabel was dead. Modal reads the
        same way; the two dialogs now behave alike. */
-    const { id = "", title = "Drawer", body = "", footer = "", trigger, triggerLabel = "Open drawer", open = false, placement = "right", size = "default", stage = "demo", titleHidden = false, closable = true, maskClosable = true, keyboardClosable = true, demo = "" } = props;
+    const { id = "", title = "Drawer", titleLeading = "", subtitle = "", body = "", footer = "", trigger, triggerLabel = "Open drawer", open = false, placement = "right", size = "default", stage = "demo", titleHidden = false, closable = true, maskClosable = true, keyboardClosable = true, demo = "" } = props;
     enumValue("drawer", "placement", placement);
     enumValue("drawer", "size", size);
     /* Same two stages the Modal already has, and for the same reason: the
@@ -2860,8 +2924,19 @@
       ? button({ label: triggerLabel, variant: "secondary", size: 32, shape: "pill", demo: demo || "ui-drawer-open", ariaExpanded: open, ariaControls: `${drawerId}-dialog` })
       : trigger;
     const close = closable ? `<button class="ui-drawer__close" type="button" data-demo="ui-drawer-close" aria-label="Close drawer">${icon("Assets/Icons/cross.svg", "ui-drawer__close-icon")}</button>` : "";
+    /* A booking drawer names the person you are booking with, not just the task:
+       the reference carries an avatar and a one-line summary beside the heading.
+       Both are slots because a subtitle can hold a coloured rating mark, and a
+       leading element is a component (an Avatar), not a string. The plain
+       heading is emitted unchanged when neither is supplied, so no existing
+       Drawer moves. */
+    const headingId = `${escapeHTML(drawerId)}-title`;
+    const heading = `<h3 id="${headingId}">${escapeHTML(title)}</h3>`;
+    const titleBlock = (titleLeading || subtitle)
+      ? `<div class="ui-drawer__identity">${titleLeading}<div class="ui-drawer__titles">${heading}${subtitle ? `<span class="ui-drawer__subtitle">${subtitle}</span>` : ""}</div></div>`
+      : heading;
     const footerMarkup = footer ? `<footer class="ui-drawer__footer">${footer}</footer>` : "";
-    return `<div class="ui-drawer-stage ui-drawer-stage--${stage}${open ? " is-open" : ""}" id="${escapeHTML(drawerId)}" data-component="drawer" data-ui-drawer data-mask-closable="${maskClosable}" data-keyboard-closable="${keyboardClosable}">${triggerMarkup}<div class="ui-drawer__layer"${open ? "" : " aria-hidden=\"true\""}><button class="ui-drawer__mask" type="button" data-demo="ui-drawer-mask" aria-label="Close drawer"></button><aside class="ui-drawer ui-drawer--${placement} ui-drawer--${size}" id="${escapeHTML(drawerId)}-dialog" role="dialog" aria-modal="true" aria-labelledby="${escapeHTML(drawerId)}-title" tabindex="-1"><div class="ui-drawer__content"><header class="ui-drawer__header${titleHidden ? " is-title-hidden" : ""}"><h3 id="${escapeHTML(drawerId)}-title">${escapeHTML(title)}</h3>${close}</header><div class="ui-drawer__body">${body}</div>${footerMarkup}</div></aside></div></div>`;
+    return `<div class="ui-drawer-stage ui-drawer-stage--${stage}${open ? " is-open" : ""}" id="${escapeHTML(drawerId)}" data-component="drawer" data-ui-drawer data-mask-closable="${maskClosable}" data-keyboard-closable="${keyboardClosable}">${triggerMarkup}<div class="ui-drawer__layer"${open ? "" : " aria-hidden=\"true\""}><button class="ui-drawer__mask" type="button" data-demo="ui-drawer-mask" aria-label="Close drawer"></button><aside class="ui-drawer ui-drawer--${placement} ui-drawer--${size}" id="${escapeHTML(drawerId)}-dialog" role="dialog" aria-modal="true" aria-labelledby="${escapeHTML(drawerId)}-title" tabindex="-1"><div class="ui-drawer__content"><header class="ui-drawer__header${titleHidden ? " is-title-hidden" : ""}">${titleBlock}${close}</header><div class="ui-drawer__body">${body}</div>${footerMarkup}</div></aside></div></div>`;
   }
 
   function formField(props = {}) {
