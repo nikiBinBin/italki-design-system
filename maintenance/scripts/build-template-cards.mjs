@@ -40,7 +40,8 @@ const OUT = resolve(flag('out', join(HERE, 'maintenance/ds-project')));
    `props` is applied to the template's own prop defaults, so opening the
    booking flow is a value rather than a second copy of the page. */
 const CARDS = [
-  { template: 'app-shell', file: 'AppShell.dc.html', name: 'WorkspaceShell', title: 'Workspace shell' },
+  { template: 'logged-in-shell', file: 'LoggedInShell.dc.html', name: 'LoggedInShell', title: 'Logged-in shell' },
+  { template: 'logged-out-shell', file: 'LoggedOutShell.dc.html', name: 'LoggedOutShell', title: 'Logged-out shell' },
   { template: 'teacher-detail', file: 'TeacherDetail.dc.html', name: 'TeacherDetail', title: 'Teacher detail' },
   { template: 'teacher-search', file: 'TeacherSearch.dc.html', name: 'TeacherDiscovery', title: 'Teacher discovery' },
   { template: 'teacher-profile', file: 'TeacherProfile.dc.html', name: 'BookingCommitment', title: 'Booking commitment', props: { startOnBooking: true } },

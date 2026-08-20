@@ -1391,16 +1391,22 @@ and safer, than assembling a page out of the component list:
   booking bar.
 - \`patterns/BookingCommitment\` — the same profile with the booking flow open:
   lesson, package, time, platform, payment, confirmation.
-- \`patterns/WorkspaceShell\` — the frame on its own: sidebar, top nav, footer.
+- \`patterns/LoggedInShell\` — the signed-in frame: sidebar and workspace header,
+  no footer.
+- \`patterns/LoggedOutShell\` — the signed-out frame: visitor bar and footer, no
+  sidebar.
 
 They share one runtime under \`patterns/_dc/\`, which is why they need nothing
 else in the project to render. Open one and read it; its props are real switches.
 
-**Starting a page that is none of those**, take
-\`templates/app-shell/AppShell.dc.html\` instead. It is the same shell as the
-WorkspaceShell card with the body left empty and marked, so it is the one to copy
-when you are building rather than referring — the cards are references, and a
-reference is a poor place to start deleting from.
+**Starting a page that is none of those**, take the shell your page belongs in:
+\`templates/logged-in-shell/LoggedInShell.dc.html\` inside the product,
+\`templates/logged-out-shell/LoggedOutShell.dc.html\` for a visitor. Each is the
+same frame as its card with the body left empty and marked, so it is the one to
+copy when you are building rather than referring — the cards are references, and
+a reference is a poor place to start deleting from. Which one you take is not a
+style choice: the two shells never appear together, and only the signed-out one
+carries a footer.
 
 The other three cards under \`patterns/\` are still spec only. Each names a
 pattern and points back at \`guidelines/PATTERNS.md\`; there is no composition on

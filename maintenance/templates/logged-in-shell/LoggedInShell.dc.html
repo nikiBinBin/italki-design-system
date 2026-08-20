@@ -7,7 +7,7 @@
 </head>
 <body>
 <x-dc>
-<!-- @template name="App Shell" description="The empty italki frame — sidebar, top nav and footer, with the page body left for you to fill in." -->
+<!-- @template name="Logged-in shell" description="The signed-in italki frame — workspace header and sidebar, with the page body left for you to fill in. No footer: a page inside the product ends at its own content." -->
 <helmet>
 <script src="./ds-base.js"></script>
 <script src="./ds-safe.js"></script>
@@ -27,9 +27,9 @@ a:hover{color:var(--ui-color-link-hover);text-decoration:underline}
 /* The three rules the page body needs, and nothing else. Width and rhythm are
    set here so what you add inherits them instead of each block inventing its
    own gutter. */
-.shell-main{flex:1;width:100%;max-width:1216px;margin:0 auto;padding:var(--ui-space-7) var(--ui-space-6) var(--ui-space-10)}
+.shell-main{display:flex;flex-direction:column;flex:1;width:100%;max-width:1216px;margin:0 auto;padding:var(--ui-space-7) var(--ui-space-6) var(--ui-space-10)}
 
-.shell-placeholder{border:1px dashed var(--ui-color-border);border-radius:var(--ui-radius-xl);background:var(--ui-color-card);padding:var(--ui-space-10) var(--ui-space-6);text-align:center}
+.shell-placeholder{min-height:60vh;flex:1;display:grid;place-content:center;border:1px dashed var(--ui-color-border);border-radius:var(--ui-radius-xl);background:var(--ui-color-card);padding:var(--ui-space-10) var(--ui-space-6);text-align:center}
 .shell-placeholder__title{margin:0;color:var(--ui-color-title);font-size:20px;font-weight:600}
 .shell-placeholder__note{margin:var(--ui-space-2) auto 0;max-width:52ch;color:var(--ui-color-secondary);font-weight:400;line-height:1.6}
 .shell-placeholder code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--ui-color-text);background:var(--ui-color-divider);border-radius:var(--ui-radius-xs);padding:1px 5px}
@@ -48,10 +48,11 @@ a:hover{color:var(--ui-color-link-hover);text-decoration:underline}
 <!-- ─────────────────────────────────────────────────────────────────────
      Your page goes here.
 
-     Delete the placeholder below and build inside <main>. The sidebar, the
-     top nav and the footer are the parts you keep; they are the same three
-     components every italki page carries, wired to the same roster the rest
-     of the design system uses, so they stay in step on their own.
+     Delete the placeholder below and build inside <main>. The sidebar and the
+     top nav are the parts you keep; they are wired to the same roster the rest
+     of the design system uses, so they stay in step on their own. There is no
+     footer here on purpose — a page inside the product ends at its own content.
+     The signed-out shell is where the footer lives.
      ───────────────────────────────────────────────────────────────────── -->
 <main class="shell-main">
   <div class="shell-placeholder">
@@ -60,7 +61,6 @@ a:hover{color:var(--ui-color-link-hover);text-decoration:underline}
   </div>
 </main>
 
-<x-import component-from-global-scope="SafeUI.Footer" id="app-shell-footer" columns="{{ footerColumns }}" utilities="{{ footerUtilities }}" copyright="© 2026 italki HK Limited." legal-links="{{ footerLegalLinks }}" social-links="{{ footerSocialLinks }}" aria-label="italki footer" hint-size="100%,560px"></x-import>
 </div>
 </div>
 
@@ -135,42 +135,9 @@ class Component extends DCLogic {
     };
   }
 
-  footerVals() {
-    const UI = Component.kit?.();
-    return {
-      footerColumns: [
-        { groups: [{ heading: "Language teachers", links: ["English teachers", "Spanish teachers", "French teachers", "Japanese teachers", "German teachers", "Chinese teachers", "Korean teachers", "Italian teachers", "Russian teachers", "Portuguese teachers", "Arabic teachers", "Hindi teachers", "All teachers"] }] },
-        { groups: [{ heading: "Learn a language", links: ["Learn English", "Learn Spanish", "Learn Japanese", "Learn French", "Learn German", "Learn Chinese", "Learn Korean", "Learn Italian", "Learn Russian", "Learn Portuguese", "Learn Arabic", "Learn Hindi"] }] },
-        { groups: [
-          { heading: "Lessons", links: ["1-on-1 Lessons", "Group Class"] },
-          { heading: "Teaching", links: ["Become a teacher", "Teaching Code of Conduct"] },
-          { heading: "Learning resources", links: ["italki Language Test", "italki Language Challenge", "italki Podcasts", "italki Quiz", "italki Community"] },
-        ] },
-        { groups: [
-          { heading: "Promotions", links: ["Refer a Friend", "Buy a Gift Card", "italki Business", "Affiliate Program", "Partnership Program"] },
-          { heading: "More", links: ["FAQ", "italki Blog", "Download App"] },
-        ] },
-      ],
-      /* Markup, not elements — the utilities strip is a container prop, so the
-         two pickers are built with the same components and concatenated.
-         `shape` is left off: 40 resolves to rounded on its own. */
-      footerUtilities: UI
-        ? UI.select({ id: "footer-language", label: "Language", options: ["English", "Spanish", "French"], selected: "English", size: 40 })
-          + UI.select({ id: "footer-currency", label: "Currency", options: ["CNY ¥", "USD $", "EUR €"], selected: "CNY ¥", size: 40 })
-        : "",
-      footerLegalLinks: ["About us", "Careers", "Press", "Support", "Legal", "Privacy", "Contact"],
-      /* One mark, as the Footer card shows it. A second was here briefly and
-         had to come out: social-linkedin.svg is a filled blue disc where
-         youtube.svg is an outline, so the pair read as two different sets. */
-      footerSocialLinks: [{ label: "YouTube", icon: "Assets/Icons/youtube.svg" }],
-    };
-  }
 
   renderVals() {
-    return {
-      ...this.navVals(),
-      ...this.footerVals(),
-    };
+    return { ...this.navVals() };
   }
 }
 </script>

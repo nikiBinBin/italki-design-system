@@ -29,6 +29,8 @@ Use a calm, familiar learning workspace with purposeful variation in density. A 
 
 The resting desktop frame is light and compact. New authenticated specifications use `workspace-header` with `sidebar-navigation`; they do not recreate legacy global text navigation such as `Teachers`, `Lessons`, or `Community`.
 
+**The authenticated shell carries no footer.** A page inside the product ends at its own content: the learner arrived to do something, and a directory of language links under it is a way out of the task, not part of it. The footer belongs to the signed-out shell, where the reader is still deciding whether to be here at all. A signed-in page needing a link the shell does not carry puts it in the page's own task area.
+
 An authenticated workspace is **assembled from this pattern, not composed per page**. Neither the top navigation nor the sidebar — including the header's right-side utility and account cluster — may be substituted, reordered, or trimmed because a page appears to need something different. The reusable `top-nav` and `sidebar` contracts in `COMPONENTS.md` own their anatomy, dimensions and states; this pattern owns which product data fills them. A departure from either is valid on exactly two grounds: an explicit component contract that permits it, or a product rule in `DESIGN.md` or `EXECUTION.md` that requires it. Page-level convenience is neither, and a supplied reference that shows a different shell does not settle it — `EXECUTION.md §0.5` source precedence decides, and the deviation protocol in `DESIGN.md` applies. Where a page genuinely needs an action the cluster does not carry, that action belongs in the page's own task area, not in the shell.
 
 ### sidebar-navigation
@@ -46,6 +48,8 @@ An authenticated workspace is **assembled from this pattern, not composed per pa
 ### visitor-header
 
 `visitor-header` is the signed-out counterpart to `workspace-header`, and the two never appear together. It composes the reusable `top-nav` surface in its `logged-out` variant with product-supplied destinations, one combined language-and-currency choice, and one way in. It carries no sidebar: a visitor has no workspace to navigate, so `sidebar-navigation` belongs to the authenticated shell alone.
+
+**The signed-out shell carries the footer**, and it is the only shell that does. A visitor is still deciding, so the ways further in — languages, courses, teaching, resources, promotions — are part of the frame rather than a distraction from a task. It composes the reusable `footer` contract with product-supplied columns, one combined language and currency pair in its utilities strip, the legal row, and one social mark; it does not invent a second navigation of its own.
 
 The destinations this pattern supplies are the public ones — `1-on-1 teacher`, `Group Class`, `Community`, `Become a teacher` — in that order. This is the one shell where global text navigation is correct; `workspace-header` still may not recreate it, because a signed-in learner reaches the same places through the sidebar.
 
