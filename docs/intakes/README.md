@@ -2,10 +2,20 @@
 
 One file per page this system builds, written before the page and kept beside it.
 
-`maintenance/kit-source/intake/check-intake.mjs` fails a change under
-`maintenance/templates/<name>/` that arrives without a record naming that
-`<name>`. It runs in `test:contract`, so it covers whoever wrote the page —
-Claude, Codex, or a person.
+**Nothing in this repository enforces that any more, and nothing here writes
+one.** On 2026-08-20 the intake moved to `maintenance/kit-source/intake/` and
+became the packaged kit's alone: an agent working here is handed a request and
+builds it, so it has nobody to put questions to. The write gate is gone from
+`.claude/settings.json` and `check-intake.mjs` left `test:contract`.
+
+Both gates still ship, and in a project that installed the kit they do exactly
+what the rest of this file describes — `check-intake.mjs` fails a change under
+the project's pages directory that arrives without a record naming it, and the
+`PreToolUse` hook refuses the write before it lands. Read the rest as the
+contract those gates enforce **there**.
+
+The records already in this directory stay. They are why the pages beside them
+look the way they do, and that does not expire with the tooling.
 
 ## Why a file rather than a rule in AGENTS.md
 
