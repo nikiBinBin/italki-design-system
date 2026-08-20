@@ -1051,7 +1051,13 @@ assert(!iconSteps.includes("confirm-sm.svg"), "A completed icon step must keep i
 assert.match(iconSteps, /ui-stepper__step-icon[^>]*aria-hidden="true"/, "The step glyph must stay out of the accessible name, which the label already carries");
 assert.throws(() => ui.stepper({ id: "stepper-icon-unapproved", items: [{ id: "x", label: "X", icon: "https://example.com/step.svg" }] }), /Unapproved asset/, "An icon step must go through the same approval as every other icon");
 assert(componentCSS.includes(".ui-stepper__step-icon { width: 16px; height: 16px; display: block; background: currentColor;"), "The step glyph must take currentColor so it follows the marker through its states");
-assert(catalog.includes('const filterModal = filterPattern({') && !catalog.includes('teacher-discovery-filter__options'), "Teacher discovery must reuse the Filter Pattern instead of recreating a local filter panel");
+/* The rule has not changed; where it applies has. Teacher discovery's rendering
+   moved out of the Catalog and into templates/teacher-search, so the check reads
+   the template — the file that is now the pattern — instead of a route that no
+   longer exists. A local filter panel would show up as its own option list; the
+   Filter Pattern's own category markup is what should be there. */
+const teacherSearch = read("maintenance/templates/teacher-search/TeacherSearch.dc.html");
+assert(teacherSearch.includes('data-filter-category') && !teacherSearch.includes('teacher-discovery-filter__options'), "Teacher discovery must reuse the Filter Pattern instead of recreating a local filter panel");
 assert.match(ui.progress({ value: 62, ariaLabel: "Profile progress" }), /role="progressbar"[^>]*aria-label="Profile progress"/, "Progress must expose a named progressbar");
 assert.match(ui.progress({ value: 62, type: "circle" }), /--ui-progress-ring-stroke:12px/, "Circle Progress must compensate for its SVG scale with a 12px source stroke");
 assert.match(ui.progress({ value: 62, type: "semicircle" }), /--ui-progress-ring-stroke:8px/, "Semicircle Progress must use an 8px source stroke to match the Circle's rendered line weight");

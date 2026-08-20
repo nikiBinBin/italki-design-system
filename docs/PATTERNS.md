@@ -125,11 +125,26 @@ The card is a summary and destination context, not a command surface. A parent m
 
 ## Teacher Detail
 
+The reference rendering for the patterns in this section is the template, not a
+composition rebuilt from it. `patterns/TeacherDetail` in the kit is
+`templates/teacher-detail/TeacherDetail.dc.html` and `patterns/BookingCommitment`
+is `templates/teacher-profile/TeacherProfile.dc.html` with `startOnBooking` set,
+each loaded through its own `support.js`. Nothing is re-expressed by hand, so a
+card cannot drift from the page the product ships; the contract below says what
+the composition owns, and the template says what it looks like. Where the two
+disagree, the template is the rendering and this document is the rule.
+
 ### teacher-detail
 
-`teacher-detail` is the product-level teacher profile composition. It presents supplied identity and trust evidence, local section navigation, about and teaching-fit information, lesson offerings, supplied availability, student review evidence, similar-teacher links, and a bounded booking rail. It composes `avatar`, `tag`, `tabs`, `time-slot`, `calendar`, `rate`, `video`, `link`, and Button contracts rather than creating profile-specific variants of them.
+`teacher-detail` is the product-level teacher profile composition. It presents supplied identity and trust evidence, about and teaching-fit information, lesson offerings, supplied availability, student review evidence, similar-teacher links, and one bounded booking commitment. It composes `avatar`, `tag`, `chip`, `progress`, `time-slot`, `calendar`, `rate`, `video`, `link`, and Button contracts rather than creating profile-specific variants of them. It is a page inside the authenticated product: `workspace-header` and `sidebar-navigation` carry it, and the Pattern draws no top bar, logo, or navigation of its own.
 
-The parent supplies every identity field, role, language and interest tag, introduction, insight, lesson, price, time-zone-aware availability, review, recommendation, online status, response-time, and booking state. The Pattern does not calculate ratings, infer availability or teacher suitability, rank similar teachers, reserve a slot, price a lesson, or submit a booking. On narrow layouts the booking rail follows the detail content as a normal section; a product-owned sticky booking action may be introduced only with its full behavior contract.
+Two layouts are documented and both are legal. **Single column** is the default and the form the product ships: one content column at a maximum of 936px, each topic on its own card surface, in the order identity → lessons → availability → reviews → similar teachers, with the booking commitment in `detail-booking-bar`. **Two column** places the same content column beside a bounded `booking-panel` rail and adds `tabs` as local section navigation above both; use it only where the viewport can hold the rail without squeezing the content column. The layout decides where the booking commitment sits and whether local section navigation exists at all. It does not change what the Pattern owns, which information is required, or the action hierarchy. `tabs` belongs to the two-column layout, not to the Pattern.
+
+The parent supplies every identity field, role, language and interest tag, introduction, insight, lesson, price, time-zone-aware availability, review, recommendation, online status, response-time, and booking state. The Pattern does not calculate ratings, infer availability or teacher suitability, rank similar teachers, reserve a slot, price a lesson, or submit a booking.
+
+`detail-summary-band` is the teacher identity re-entering after the identity card has left the viewport. It carries supplied identity, one trust figure, and volume evidence — no logo, no navigation, and no action, because the booking action stays in `detail-booking-bar` and the two must not compete. It appears only once the identity card has scrolled out and leaves again on the way back up. It is a summary, not a second header.
+
+`detail-booking-bar` is the single-column layout's booking commitment: supplied price, what that price buys, the current lesson and time selection, and one primary action. It is pinned to the bottom of the viewport for the whole page rather than revealed on scroll, and it carries the page's only `variant="red"` action. It holds at most one secondary action, contacting the teacher. It restates the current selection and never becomes a second place to choose a lesson or a time. On the two-column layout the same commitment lives in `booking-panel`; the two never appear together.
 
 `detail-hero` presents supplied identity, location, teaching focus, introduction, and core trust evidence before deeper detail. It may compose teacher identity, language summary, and trust metrics but does not own saved state, booking, price calculation, or data retrieval.
 
@@ -141,7 +156,13 @@ The parent supplies every identity field, role, language and interest tag, intro
 
 ## Booking And Payment
 
-`booking-panel` is the bounded booking commitment pattern. It keeps supplied lesson choice, date/time context, price and duration, booking state, and one next action together. Desktop may use a constrained sticky side surface; mobile uses the documented sticky action-bar handoff. It does not decide availability, hold inventory, calculate price, or submit the booking.
+`booking-panel` is the bounded booking commitment pattern. It keeps supplied lesson choice, date/time context, price and duration, booking state, and one next action together. The two-column `teacher-detail` layout carries it as a constrained sticky side surface; the single-column layout hands the same commitment to `detail-booking-bar`, and narrow viewports use that bar rather than a rail of their own. It does not decide availability, hold inventory, calculate price, or submit the booking.
+
+The commitment has two parts, and they are not interchangeable. The **panel** is where it starts, on the teacher’s own page: supplied price range, trial price, and the page’s one primary action. It states what a lesson costs and nothing more — it does not choose a lesson, show availability, or hold a selection. It is drawn by `teacher-detail`, on the page it belongs to. The **commitment surface** is where the decisions are made, one per step, in an invoked surface chosen through `EXECUTION.md §6.11`, and it is what this Pattern renders.
+
+Three steps belong to this Pattern: lesson choice with its length, lesson quantity with any package pricing, and the first lesson's time in the learner's own timezone. Platform choice, payment, and confirmation belong to `payment-checkout`; the step after time is the handoff, and this Pattern does not own what happens there. The step indicator still shows every step of the real flow — a surface that hides how much is left misrepresents the commitment — but only the three named here are its own.
+
+Every step keeps the selections made before it. Moving back is not a reset: a learner who returns from time to package finds the package still chosen. One decision per step, one visible price for the current selection, and one forward action whose label names where it goes.
 
 `booking-offer-summary` keeps supplied price, duration or trial meaning, and optional availability together without owning the booking CTA.
 
