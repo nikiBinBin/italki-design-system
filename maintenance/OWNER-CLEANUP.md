@@ -22,6 +22,24 @@ B 组的 9 个 pattern 目录仍在，待定。
 `unregister_assets` 移除。`CheckboxGroup` 是同一批注册的，文件还在所以正常显示，
 但构建也已经不产出它了。下面 A 组的清单保留作记录。
 
+**2026-08-20 状态**：
+
+- `CheckboxGroup.html` 已由所有者删除。它正是上一段预告过的那种情况 ——
+  文件删掉，服务端注册还在，面板上就变成一张 `file not found` 的卡。已用
+  `unregister_assets` 移除（返回 `unregistered: 1`，确认注册确实存在）。
+  **规律**：删这一批早年 `register_assets` 注册过的卡片，删文件和取消注册
+  是两步，缺一步就留一张坏卡。目前已知同批的还有 Combobox（已处理）。
+- B 组的九个 pattern 目录**现在是构建产出的**，不再是历史遗留 —— 见
+  `build-template-cards.mjs`。那一节已过时。
+- 下面 D 表「不要删」里的 `templates/teacher-profile/`、`templates/teacher-search/`
+  已经被删除（外壳拆成 `logged-in-shell` / `logged-out-shell`，manifest 也只登记
+  这两个）。`templates/app-shell/` 是同期遗留，仍在云端但已不在 manifest 里。
+- `_catalog.css` 仍列在 D 表。2026-08-20 复核：`styles.css` 只 import
+  `tokens/tokens.css` 和 `_ds_bundle.css`，卡片各自 link `styles.css` + `_cards.css`，
+  仓库和产物里都搜不到对它的引用。判断是已断链，但因为删了也没有收益，保留原状。
+
+---
+
 ## A. 确定要删（已中和的空壳，留着只是占位）
 
 | 路径 | 为什么 |
