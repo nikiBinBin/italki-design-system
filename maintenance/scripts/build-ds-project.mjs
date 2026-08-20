@@ -1381,21 +1381,30 @@ did not read still applies to what you ship.`;
 
 const README_TEMPLATES = KIT ? '' : `## Start from a page that already follows them
 
-\`templates/\` in this project holds finished pages built to these rules. Copying
-the nearest one is faster, and safer, than assembling a page out of the
-component list:
+Four cards under \`patterns/\` are not descriptions of a pattern — they are the
+page itself, running with its real behaviour. Copying the nearest one is faster,
+and safer, than assembling a page out of the component list:
 
-- \`templates/app-shell/AppShell.dc.html\` — the authenticated shell, assembled
-  from \`workspace-header\` and \`sidebar-navigation\` with nothing hand-drawn.
-- \`templates/teacher-profile/TeacherProfile.dc.html\` — a teacher detail page
-  with its booking rail.
-- \`templates/teacher-search/TeacherSearch.dc.html\` — discovery: result list,
-  filter sheet, preview rail.
+- \`patterns/TeacherDiscovery\` — discovery: result list, filter sheet, preview
+  rail, inside the authenticated shell.
+- \`patterns/TeacherDetail\` — a teacher detail page, single column, with its
+  booking bar.
+- \`patterns/BookingCommitment\` — the same profile with the booking flow open:
+  lesson, package, time, platform, payment, confirmation.
+- \`patterns/WorkspaceShell\` — the frame on its own: sidebar, top nav, footer.
 
-The cards under \`patterns/\` are not that. Each names a pattern and points back
-at \`guidelines/PATTERNS.md\`; there is no composition on them to copy. The
-pattern is the prose in that document, and a template is where you can see one
-built.`;
+They share one runtime under \`patterns/_dc/\`, which is why they need nothing
+else in the project to render. Open one and read it; its props are real switches.
+
+**Starting a page that is none of those**, take
+\`templates/app-shell/AppShell.dc.html\` instead. It is the same shell as the
+WorkspaceShell card with the body left empty and marked, so it is the one to copy
+when you are building rather than referring — the cards are references, and a
+reference is a poor place to start deleting from.
+
+The other three cards under \`patterns/\` are still spec only. Each names a
+pattern and points back at \`guidelines/PATTERNS.md\`; there is no composition on
+them to copy. For those, the pattern is the prose in that document.`;
 
 write('README.md', `# italki UI Kit
 

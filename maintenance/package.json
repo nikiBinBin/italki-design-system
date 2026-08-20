@@ -16,7 +16,7 @@
     "lint:foundation": "node scripts/lint-foundation.mjs",
     "build:icons": "node scripts/build-icon-manifest.mjs",
     "build:images": "node scripts/build-image-manifest.mjs",
-    "build:ds": "node scripts/build-ds-project.mjs && node scripts/build-ds-cards.mjs",
+    "build:ds": "node scripts/build-ds-project.mjs && node scripts/build-ds-cards.mjs && node scripts/build-template-cards.mjs",
     "kit": "node scripts/build-agent-kit.mjs --zip",
     "audit:ds": "node scripts/audit-ds-cards.mjs .. ds-project",
     "lint:type": "node scripts/migrate-type-tokens.mjs --check",
@@ -28,7 +28,8 @@
     "audit:adherence": "node scripts/audit-adherence.mjs",
     "audit:coverage": "node scripts/audit-coverage.mjs",
     "check:intake": "node kit-source/intake/check-intake.mjs",
-    "lint:enforcement": "node --check kit-source/intake/check-intake.mjs && node --check kit-source/intake/intake-gate.mjs"
+    "lint:enforcement": "node --check kit-source/intake/check-intake.mjs && node --check kit-source/intake/intake-gate.mjs",
+    "build:template-cards": "node scripts/build-template-cards.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",

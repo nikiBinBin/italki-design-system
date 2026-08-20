@@ -35,6 +35,13 @@
 .bf-stage.ui-drawer-stage{position:fixed;inset:0;z-index:120;min-height:0;display:block;overflow:visible;border-radius:0;background:transparent;pointer-events:none}
 .bf-stage .ui-drawer__layer{position:fixed;inset:0;align-items:flex-end;justify-content:center}
 .bf-stage.is-open .ui-drawer__layer{pointer-events:auto}
+/* A modal surface over the page has to hold the page still — the profile behind
+   the booking flow scrolled, which moves the thing you were reading out from
+   under a dialog you cannot see past. The lock sits with this geometry, not in
+   the Drawer component: the kit's own stage is a bounded box inside a page and
+   must not freeze it, and it is these rules that turn that box into a viewport
+   overlay. */
+html:has(.bf-stage.is-open),body:has(.bf-stage.is-open){overflow:hidden}
 .bf-stage .ui-drawer--bottom{max-height:none}
 /* The open drawer's transform makes it the containing block for position:fixed,
    so the calendar's tooltips — which the kit places in viewport coordinates —
@@ -633,7 +640,7 @@
 </div>
 
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;superTutor&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Teacher status&quot;},&quot;onlineNow&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Teacher status&quot;},&quot;trialPrice&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;US$8.00&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Pricing&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;superTutor&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Teacher status&quot;},&quot;onlineNow&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Teacher status&quot;},&quot;trialPrice&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;US$8.00&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Pricing&quot;},&quot;startOnBooking&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Booking&quot;}}">
 class Component extends DCLogic {
   static REVIEWS = [
     { name: "Hannah M.", photo: "https://randomuser.me/api/portraits/women/65.jpg", flag: "us", lessons: 34, date: "July 2026", type: "Conversation Practice", rating: 5,
@@ -720,7 +727,10 @@ class Component extends DCLogic {
     activeTab: "about", readMore: false, favorite: false, moreOpen: false,
     videoPlaying: false, reviewFilter: "All", reviewPage: 0, pickedSlot: null,
     /* ── the booking flow's own state ── */
-    open: false, step: 1, typeId: null, duration: null, count: 5,
+    /* Seeded from a prop so one file can open on the profile or on the booking
+       flow. The Booking commitment card in the kit is this page with the drawer
+       already open — a value, not a second copy of the page. */
+    open: Boolean(this.props?.startOnBooking), step: 1, typeId: null, duration: null, count: 5,
     week: 0, dayIdx: 0, picks: [], platform: "classroom", payment: "credits",
     conflictOpen: true, done: false, handles: {},
   };
