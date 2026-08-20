@@ -1307,32 +1307,12 @@ const axisTable = [
 /* The intake, in the two forms its two readers need. `KIT` gets the procedure
    and the runner; the design surface gets the same knowledge as a list of
    decisions, because the asking is already its own. */
-const DECISIONS = `## What an italki page turns on
-
-You have your own way of finding out what a request left open. This is not a
-procedure — it is the list of decisions italki pages actually turn on, the ones
-a general clarifying question does not reach. \`guidelines/intake.slots.json\`
-holds all fifteen with their options. The five that most often arrive unstated:
-
-- **shell** — inside the signed-in product, or a standalone page? This decides
-  whether the page is built on \`workspace-header\` + \`sidebar-navigation\`.
-- **actor** — the student's view, the teacher's, or both. The same object makes
-  a different page.
-- **primary-action** — the one action this surface must make possible. It is the
-  single \`variant="red"\`.
-- **status-set** — which statuses of the object the surface handles. One of them
-  is the resting state.
-- **must-have-data** — what has to be visible for the task to work.
-
-A page built with any of these guessed is usually wrong in a way that only shows
-once it is built.`;
-
 const README_INTAKE = KIT ? `## Before you build: run the intake
 
 A request to design a page does not start with components. It starts with the
 gap scan in \`guidelines/INTAKE.md\`: read \`guidelines/intake.slots.json\`, drop
 every decision the request does not touch, drop every decision the request
-already settles, and put the most consequential of what is left — at most five
+already settles, and put the most consequential of what is left — at most eight
 — to the requester as questions you write yourself.
 
 **Then stop.** Silence is not an answer and the catalog's defaults are not
@@ -1340,7 +1320,7 @@ permission: they may be taken only when the requester says "你来决定", "deci
 for me", or otherwise authorizes them out loud. Present the questions and wait
 — do not open a file in the meantime.
 
-State \`Confirmed / Answered / Assumed\` before the first component goes down.` : DECISIONS;
+State \`Confirmed / Answered / Assumed\` before the first component goes down.` : '';
 
 const AGENTS_INTRO = KIT
   ? `The italki UI Kit, vendored. ${report.ok.length} components, their contracts, and
@@ -1360,7 +1340,7 @@ node intake.mjs "<the request, verbatim>"
 
 It reads \`guidelines/intake.slots.json\`, drops every decision the request does
 not touch, drops every decision the request already settles, and prints the few
-that are left — at most five, each with a default. Send that block and wait for
+that are left — at most eight, each with a default. Send that block and wait for
 the answers; build from what comes back.
 
 - **Stop after the questions.** When the intake identifies one or more open decisions, the agent must present the question block and stop before creating or modifying implementation files. Silence is not authorization to use defaults. Defaults may be applied only when the requester explicitly says "你来决定", "decide for me", or otherwise clearly authorizes the listed defaults.
@@ -1371,16 +1351,60 @@ No Node here? Read \`guidelines/intake.slots.json\` and do the same four steps b
 hand — \`guidelines/INTAKE.md §3.2\`.
 
 Skip the intake only when the request is not a build: a question about the kit,
-a rename, a typo.` : DECISIONS;
+a rename, a typo.` : '';
+
+/* The four documents are the rules; this file is the vocabulary. AGENTS.md has
+   said so since it existed, and on the design surface AGENTS.md is not the door —
+   README.md is, so a reader arriving through it met the prop tables and never
+   learned there were rules to read. Templates are named for the same reason:
+   the project ships three pages that already obey the shell rule, and nothing
+   pointed at them. They exist only in the design-system project, so the kit
+   flavour gets the reading order without them. */
+const README_RULES = `## The rules are not in this file
+
+This file is the vocabulary: what a component accepts, which props are slots,
+which tokens exist. What makes a page *right* is in \`guidelines/\`, and a page is
+reviewed against it:
+
+1. \`guidelines/DESIGN.md\` — product direction and the non-negotiable rules.
+2. \`guidelines/COMPONENTS.md\` — foundations, content style, component contracts.
+3. \`guidelines/PATTERNS.md\` — italki product compositions: the authenticated and
+   signed-out shells, teacher and lesson cards, discovery, booking, Mira.
+4. \`guidelines/EXECUTION.md\` — how a request becomes a page: hierarchy, states,
+   responsive behaviour, validation.
+
+Read the sections that own what you are about to build — the shell, the object,
+the states the page handles — rather than all four end to end. On conflict the
+owning document wins, \`guidelines/EXECUTION.md §1.5\`. Composing correctly from
+the component list is not the same as building an italki page, and a rule you
+did not read still applies to what you ship.`;
+
+const README_TEMPLATES = KIT ? '' : `## Start from a page that already follows them
+
+\`templates/\` in this project holds finished pages built to these rules. Copying
+the nearest one is faster, and safer, than assembling a page out of the
+component list:
+
+- \`templates/app-shell/AppShell.dc.html\` — the authenticated shell, assembled
+  from \`workspace-header\` and \`sidebar-navigation\` with nothing hand-drawn.
+- \`templates/teacher-profile/TeacherProfile.dc.html\` — a teacher detail page
+  with its booking rail.
+- \`templates/teacher-search/TeacherSearch.dc.html\` — discovery: result list,
+  filter sheet, preview rail.
+
+The cards under \`patterns/\` are not that. Each names a pattern and points back
+at \`guidelines/PATTERNS.md\`; there is no composition on them to copy. The
+pattern is the prose in that document, and a template is where you can see one
+built.`;
 
 write('README.md', `# italki UI Kit
 
-The italki design system, published from the framework-neutral catalog runtime
-(\`catalog-runtime/italki-ui.js\`). ${report.ok.length} components.
+The italki design system, published as a framework-neutral runtime bundle for
+AI-assisted product work. ${report.ok.length} components.
 
-${README_INTAKE}
+${README_INTAKE}${README_INTAKE ? '\n\n' : ''}${README_RULES}
 
-## A page inside the product is built on the shell
+${README_TEMPLATES}${README_TEMPLATES ? '\n\n' : ''}## A page inside the product is built on the shell
 
 \`TopNav\` and \`Sidebar\` are not two components to pick off the list. An
 authenticated page composes \`workspace-header\` and \`sidebar-navigation\` from
@@ -1742,10 +1766,93 @@ Tiled above are italki's own ${glyphs.length} glyphs — **search these first**.
 // knowledge no reader can derive. INTAKE.md, the protocol, travels only with the
 // kit: the design surface collects a requester's answers through its own form,
 // and a second procedure written here would compete with one that already works.
-for (const doc of [...(KIT ? ['INTAKE.md'] : []), 'COMPONENTS.md', 'DESIGN.md', 'EXECUTION.md', 'PATTERNS.md', 'intake.slots.json']) {
-  const source = join(REPO, 'docs', doc);
-  if (!existsSync(source)) throw new Error(`docs/${doc} is missing — the project's guidelines would ship stale`);
-  write(`guidelines/${doc}`, readFileSync(source));
+/* docs/*.md are the source both flavours are cut from, and the two need
+   different things from the same three sentences.
+
+   The repository itself never puts questions to anybody: an agent working here
+   is handed a request and builds it. So the protocol lives in
+   maintenance/kit-source/intake/, which nothing in this repository references
+   except the two build scripts, and the four documents in docs/ read
+   neutrally — §2 owns the fields a request establishes, intake.slots.json
+   catalogues the decisions, and neither tells a reader to interrogate anyone.
+
+   The packaged kit is the one flavour with a reader who asks: it goes to
+   colleagues with no Claude Design and no surface to collect answers through,
+   so KIT_INTAKE puts the three passages back, pointing at the INTAKE.md the kit
+   does ship. This used to run the other way — the protocol lived in docs/ and
+   was stripped for the cloud — which left the repository asserting a procedure
+   it does not run.
+
+   SHARED is unrelated housekeeping: the map names `docs/`, and neither payload
+   has a docs/ — both carry the same files under `guidelines/`. It is a separate
+   table because two lines take a different replacement per flavour, and one
+   table had them fighting over the same source text: the kit rule consumed the
+   line the path rule then failed to find. SHARED touches only lines neither
+   flavour rule mentions, so the overlap is gone by construction.
+
+   Every rule asserts it matched exactly once. A silent no-op is how this comes
+   back: a sentence is reworded upstream, the rule stops firing, and the kit
+   ships without the gate or the cloud ships with it. */
+const SHARED = ['COMPONENTS', 'PATTERNS', 'EXECUTION'].map((name) => ({
+  doc: 'DESIGN.md',
+  from: '- \`docs/' + name + ".md\`",
+  to: '- \`guidelines/' + name + ".md\`",
+}));
+
+/* The kit is the only flavour that ships INTAKE.md and the catalog, so it is the
+   only one whose documents may point at them. SHARED has already run by the time
+   these do, which is why the DESIGN.md rule anchors on the guidelines/ spelling:
+   the bullet is inserted above COMPONENTS.md rather than replacing anything,
+   because docs/DESIGN.md no longer carries a line about the intake at all. */
+const KIT_INTAKE = [
+  {
+    doc: 'EXECUTION.md',
+    from: '1. establish the request (\`§2\`)',
+    to: '1. collect a request intake (\`guidelines/INTAKE.md\`)',
+  },
+  {
+    doc: 'EXECUTION.md',
+    from: 'Most requests do not arrive as one. This section owns the fields an intake establishes — what the request is for, whose view it is, what it must make possible, and which states it covers. A decision the request leaves open is settled explicitly and stated, not guessed at.',
+    to: 'Most requests do not arrive as one. \`guidelines/INTAKE.md\` owns how an agent gets there: it scans the request against the decision catalog in \`guidelines/intake.slots.json\`, treats what the request already settles as settled, and asks only about the gaps that apply, each with a default. This section owns the fields that intake collects; \`guidelines/INTAKE.md\` owns how they are obtained.',
+  },
+  {
+    doc: 'DESIGN.md',
+    from: '- \`guidelines/COMPONENTS.md\`',
+    to: '- \`guidelines/INTAKE.md\` defines what an agent must establish before it builds anything, and how it asks only for what a request left open. It runs before the documents below.\n- \`guidelines/COMPONENTS.md\`',
+  },
+];
+
+/* The cloud needs no flavour rules any more. docs/ is neutral at source and the
+   catalog does not travel with it, so there is nothing left to strip or repoint
+   — SHARED's path fixes are the whole of it. */
+const REWRITE = [...SHARED, ...(KIT ? KIT_INTAKE : [])];
+
+/* The four authored documents come from docs/. The intake protocol and its slot
+   catalog no longer live there: they moved to maintenance/kit-source/intake/
+   when the repository stopped running an intake on itself, and they travel with
+   the kit alone — the design surface collects a requester's answers through its
+   own form, and the catalog is no use to a reader who is not asking. */
+const GUIDELINES = [
+  ...['COMPONENTS.md', 'DESIGN.md', 'EXECUTION.md', 'PATTERNS.md'].map((d) => ['docs/' + d, d]),
+  ...(KIT ? [
+    ['maintenance/kit-source/intake/INTAKE.md', 'INTAKE.md'],
+    ['maintenance/kit-source/intake/intake.slots.json', 'intake.slots.json'],
+  ] : []),
+];
+
+for (const [from, doc] of GUIDELINES) {
+  const source = join(REPO, from);
+  if (!existsSync(source)) throw new Error(`${from} is missing — the project's guidelines would ship stale`);
+  let body = readFileSync(source, 'utf8');
+  for (const rule of REWRITE.filter((r) => r.doc === doc)) {
+    const needle = rule.re ?? rule.from;
+    const hits = rule.re
+      ? (body.match(new RegExp(rule.re.source, 'g')) ?? []).length
+      : body.split(rule.from).length - 1;
+    if (hits !== 1) throw new Error(`guidelines/${doc}: ${String(needle).slice(0, 64)}… matched ${hits} times, expected 1 — the passage moved, and this flavour would ship the intake protocol or a pointer to a file it does not have`);
+    body = body.replace(needle, rule.to);
+  }
+  write(`guidelines/${doc}`, body);
 }
 
 // ── AGENTS.md + a runnable intake — so the payload describes itself ───────
@@ -1756,14 +1863,12 @@ for (const doc of [...(KIT ? ['INTAKE.md'] : []), 'COMPONENTS.md', 'DESIGN.md', 
    AGENTS.md and would otherwise find no rules at all — including the intake.
    The repository's own AGENTS.md is the wrong file to copy: it talks about
    rebuilding indexes and where index.html lives, which is not this reader's job. */
-if (KIT) write('intake.mjs', readFileSync(join(REPO, 'maintenance/scripts/intake.mjs')));
+if (KIT) write('intake.mjs', readFileSync(join(REPO, 'maintenance/kit-source/intake/intake.mjs')));
 write('AGENTS.md', `# AGENTS.md
 
 ${AGENTS_INTRO}
 
-${AGENTS_INTAKE}
-
-## Then read, in this order
+${AGENTS_INTAKE}${AGENTS_INTAKE ? '\n\n' : ''}## Then read, in this order
 
 1. \`guidelines/DESIGN.md\` — product direction and the non-negotiable rules.
 2. \`guidelines/COMPONENTS.md\` — foundations, content style, component contracts.
@@ -1781,6 +1886,11 @@ On conflict, the owning document wins — \`EXECUTION.md §1.5\`.
 - **Props are asserted at runtime.** An unknown prop throws. Each
   \`components/<group>/<Name>/<Name>.d.ts\` is exhaustive, not indicative; do not
   carry prop names over from another design system.
+- **Use the lookup indexes before guessing.** Read \`catalog-runtime/component-api.json\`
+  for component props and states, \`catalog-runtime/contracts.json\` for the
+  runtime contract registry, \`catalog-runtime/foundation-api.json\` for token
+  references, and \`catalog-runtime/icon-manifest.js\` for approved icon names.
+  Then confirm the exact component \`.d.ts\` contract.
 - **Content is passed as props, not children.** Slots take JSX or a markup
   string — README.md lists which props are slots.
 - **Tokens, never hex.** Style your own containers with the custom properties in

@@ -10,7 +10,7 @@ This repository is the framework-neutral (pure JS) italki Design Catalog: the ex
 
 - `AGENTS.md`: the single instruction file for any agent working here, whichever assistant is reading it. `CLAUDE.md` and `.github/copilot-instructions.md` are two-line pointers to it.
 - `index.html` and `catalog.css`: the shareable visual Catalog. Keep both at the repository root because the deployed static site loads them directly.
-- `docs/`: the authored system documents. `INTAKE.md` runs first — it decides what to ask before anything is built. Then read `DESIGN.md`, `COMPONENTS.md`, `PATTERNS.md`, and `EXECUTION.md` in that order for a product implementation.
+- `docs/`: the authored system documents. Read `DESIGN.md`, `COMPONENTS.md`, `PATTERNS.md`, and `EXECUTION.md` in that order for a product implementation.
 - `catalog-runtime/`: framework-neutral renderer, tokens, contracts, and generated API indexes used only by the Catalog and its validation tooling.
 - `Assets/`: approved icons, flags, and images.
 - `maintenance/`: contract generation, validation, local Catalog serving, and visual regression tests.

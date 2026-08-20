@@ -2,7 +2,7 @@
 
 One file per page this system builds, written before the page and kept beside it.
 
-`maintenance/scripts/check-intake.mjs` fails a change under
+`maintenance/kit-source/intake/check-intake.mjs` fails a change under
 `maintenance/templates/<name>/` that arrives without a record naming that
 `<name>`. It runs in `test:contract`, so it covers whoever wrote the page —
 Claude, Codex, or a person.
@@ -19,7 +19,7 @@ can, and it is the same check for every agent.
 ## Writing one
 
 ```bash
-node maintenance/scripts/intake.mjs --record teacher-profile "<the request, verbatim>"
+node maintenance/kit-source/intake/intake.mjs --record teacher-profile "<the request, verbatim>"
 ```
 
 That writes `docs/intakes/<date>-<target>.md` with `Confirmed` and `Assumed`

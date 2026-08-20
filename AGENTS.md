@@ -2,55 +2,7 @@
 
 Instructions for any agent working in this repository or building product UI with this design system. Vendor-neutral by design: nothing here depends on which assistant is reading it.
 
-## Before you build: run the intake
-
-A request to design or build something does not start with code. It starts with the gap scan in `docs/INTAKE.md`:
-
-```bash
-node maintenance/scripts/intake.mjs --brief "<the request, verbatim>"
-```
-
-It prints a brief, not a question block. **You write the questions** — the scan
-knows which decisions are open; only you, reading this request, know how to ask
-about them. A slot asks "whose view is this"; on a profile page the real question
-is whether someone is evaluating this person or looking at their own page. Draw
-the options from the object's contract in `PATTERNS.md` when it has one.
-
-Then send your block, wait for whatever the requester answers, and proceed.
-Rules that matter more than the mechanism:
-
-- Ask only what the request left open. The scan already discards decisions the request settled and decisions that do not apply to it.
-- The brief is a floor. Rewrite the wording, replace the options, merge two decisions into one question, add up to two of your own — but do not drop an open decision, and do not invent a default.
-- **Stop after the questions.** When the intake identifies one or more open decisions, the agent must present the question block and stop before creating or modifying implementation files. Silence is not authorization to use defaults. Defaults may be applied only when the requester explicitly says "你来决定", "decide for me", or otherwise clearly authorizes the listed defaults. Taking the defaults without asking is not the fast path, it is the failure this exists to prevent.
-- State `Confirmed / Answered / Assumed` before building, and keep `Assumed` in the delivery record.
-
-No Node available, or a surface where you cannot run a command? Read `docs/intake.slots.json` and perform the same scan by hand — `docs/INTAKE.md §3.2` has the four steps.
-
-Skip the intake only when the request is not a build: a question about the system, a rename, a typo, a file move.
-
-### This one is enforced, not advised
-
-Writing a page without its record does not work here, and the reason it is a
-gate rather than a paragraph is that this paragraph did not work: two agents
-were handed this system and neither ran the intake.
-
-- **Writing** into `maintenance/templates/<name>/` is blocked by a `PreToolUse`
-  hook (`.claude/settings.json` → `maintenance/scripts/intake-gate.mjs`) until
-  `docs/intakes/` holds a record naming that page with its answers filled in.
-  Claude Code only — no other agent has an equivalent hook.
-- **Committing** one is blocked by `maintenance/scripts/check-intake.mjs`,
-  which runs in `test:contract`. That one is agent-neutral: it reads the diff,
-  not who produced it.
-
-Codex, Cursor and anything else: the write side cannot be enforced from inside
-the repository, so it belongs to whatever hands you the task. Run
-`node maintenance/scripts/intake.mjs --brief "<request>"` before the task starts,
-have the agent turn it into questions, and put those in front of the requester. The commit check catches
-what gets through.
-
-`docs/intakes/README.md` is the record's own documentation.
-
-## Then read, in this order
+## Read, in this order
 
 1. `docs/DESIGN.md` — product direction and the non-negotiable rules.
 2. `docs/COMPONENTS.md` — foundations, content style, component contracts.
@@ -67,7 +19,7 @@ Each document names what it owns. On conflict, the owning document wins — `EXE
 - **One `variant="red"` action per page or task step.** It is the booking/conversion action.
 - **Assets resolve against the runtime**: `Assets/Icons/<name>.svg`, `Assets/Flags/<iso-2>.svg`, no leading slash and no `../` prefix.
 - **Icons come from italki's own set first**: search `Assets/Icons/` (24px) and `Assets/Icons/16px/`; only when nothing there carries the meaning, fall back to the vendored general set at `Assets/Icons/ui/`. Never invent a name — `COMPONENTS.md § Icon Library` has the full rule.
-- **The authenticated shell is assembled, never hand-written.** A page inside the signed-in product carries `workspace-header` and `sidebar-navigation` from `docs/PATTERNS.md`; do not draw a top bar or a left rail of your own beside them. Whether a page is inside the product at all is the intake's `shell` decision — read it off the answers rather than inferring it from the layout.
+- **The authenticated shell is assembled, never hand-written.** A page inside the signed-in product carries `workspace-header` and `sidebar-navigation` from `docs/PATTERNS.md`; do not draw a top bar or a left rail of your own beside them. Whether a page is inside the product at all is a decision the request settles — read it off what was asked for rather than inferring it from the layout you had in mind.
 - **Never expose component names or internal rule names in a product screen.**
 
 ## Repository rules
@@ -81,8 +33,8 @@ Each document names what it owns. On conflict, the owning document wins — `EXE
 
 ```bash
 npm --prefix maintenance run test:contract     # contracts, tokens, assets, runtime, consumption
-npm --prefix maintenance run intake -- --selftest
+npm --prefix maintenance run test:intake        # the intake script the kit ships
 npm --prefix maintenance run serve:catalog     # http://127.0.0.1:4173/index.html
 ```
 
-`test:contract` and the intake run on plain Node with nothing installed. Only `test:visual` needs Playwright — install it just before you need it and remove it afterwards.
+`test:contract` runs on plain Node with nothing installed. Only `test:visual` needs Playwright — install it just before you need it and remove it afterwards.

@@ -48,7 +48,7 @@ These remain in `COMPONENTS.md`.
 
 Use this order:
 
-1. collect a request intake (`INTAKE.md`)
+1. establish the request (`§2`)
 2. interpret the user story and task
 3. define the object scope
 4. determine the primary action
@@ -250,7 +250,7 @@ AI should not respond directly to vague requests such as:
 
 Every execution request should begin with a structured intake.
 
-Most requests do not arrive as one. `INTAKE.md` owns how an agent gets there: it scans the request against the decision catalog in `docs/intake.slots.json`, treats what the request already settles as settled, and asks only about the gaps that apply — at most five, each with a default so no request is ever blocked on an answer. This section owns the fields that intake collects; `INTAKE.md` owns how they are obtained.
+Most requests do not arrive as one. This section owns the fields an intake establishes — what the request is for, whose view it is, what it must make possible, and which states it covers. A decision the request leaves open is settled explicitly and stated, not guessed at.
 
 ### 2.2 When To Use This Intake
 

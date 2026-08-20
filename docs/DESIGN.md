@@ -67,7 +67,6 @@ A good design decision should make at least one principle stronger without serio
 
 This file is the product and design-direction source of truth. It defines why an experience should exist, which tradeoffs are acceptable, and the visual and behavioral character it must preserve.
 
-- `docs/INTAKE.md` defines what an agent must establish before it builds anything, and how it asks only for what a request left open. It runs before the documents below.
 - `docs/COMPONENTS.md` defines Foundations, Content Style, and reusable UI component contracts.
 - `docs/PATTERNS.md` defines italki product compositions and object relationships using those components.
 - `docs/EXECUTION.md` defines page-level responsive behavior, interaction, state, accessibility behavior, and implementation constraints.
