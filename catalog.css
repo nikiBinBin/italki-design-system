@@ -1,6 +1,5 @@
 /* Catalog shell and preview composition only. Shared component visuals live in catalog-runtime/italki-ui.css. */
 
-
       :root {
         /* Catalog aliases only. Values are defined once in catalog-runtime/tokens.css. */
         --page: var(--ui-color-page);
@@ -117,8 +116,6 @@
         border-right: 1px solid var(--divider);
         background: var(--card);
       }
-      /* On desktop, the catalog uses two independent scroll areas: the navigation
-         remains in place while only the document content on the right scrolls. */
       @media (min-width: 861px) {
         html, body { height: 100%; overflow: hidden; }
         .app-shell { height: 100%; min-height: 0; }
@@ -1162,17 +1159,17 @@
       .flow i { width: 24px; height: 1px; background: var(--divider); }
 
       /* Product patterns use the same catalog tokens while retaining their page-level hierarchy. */
-      .teacher-discovery-pattern, .teacher-detail-pattern { width: 100%; display: grid; gap: var(--space-6); }
+      .teacher-discovery-pattern { width: 100%; display: grid; gap: var(--space-6); }
       .teacher-discovery-pattern { overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--divider); }
       .teacher-discovery-pattern__header { display: grid; gap: var(--space-4); padding: var(--space-6); background: var(--card); }
-      .teacher-discovery-pattern__title, .teacher-discovery-pattern__toolbar, .teacher-discovery-pattern__results-head, .teacher-pattern-head, .teacher-pattern-offer, .teacher-detail-hero, .teacher-detail-hero__identity, .teacher-detail-hero__name, .teacher-detail-hero__tags, .teacher-detail-reviews-head, .teacher-detail-review, .teacher-detail-similar > header { display: flex; align-items: center; }
-      .teacher-discovery-pattern__title, .teacher-discovery-pattern__results-head, .teacher-pattern-head, .teacher-pattern-offer, .teacher-detail-hero, .teacher-detail-reviews-head, .teacher-detail-similar > header { justify-content: space-between; gap: var(--space-4); }
-      .teacher-discovery-pattern__title h2, .teacher-detail-hero h2, .teacher-detail-section h2, .teacher-detail-similar h2 { margin: 0; color: var(--title); font-size: var(--ui-font-size-20); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-28); }
-      .teacher-discovery-pattern__title p, .teacher-detail-section > p, .teacher-detail-section p, .teacher-detail-lesson p { margin: var(--space-1) 0 0; color: var(--secondary); font-size: var(--ui-font-size-14); line-height: var(--ui-line-height-20); }
+      .teacher-discovery-pattern__title, .teacher-discovery-pattern__toolbar, .teacher-discovery-pattern__results-head, .teacher-pattern-head, .teacher-pattern-offer { display: flex; align-items: center; }
+      .teacher-discovery-pattern__title, .teacher-discovery-pattern__results-head, .teacher-pattern-head, .teacher-pattern-offer { justify-content: space-between; gap: var(--space-4); }
+      .teacher-discovery-pattern__title h2 { margin: 0; color: var(--title); font-size: var(--ui-font-size-20); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-28); }
+      .teacher-discovery-pattern__title p { margin: var(--space-1) 0 0; color: var(--secondary); font-size: var(--ui-font-size-14); line-height: var(--ui-line-height-20); }
       .teacher-discovery-pattern__toggle { display: inline-flex; align-items: center; flex: 0 0 auto; gap: var(--space-2); color: var(--text); font-size: var(--ui-font-size-14); white-space: nowrap; }
       .teacher-discovery-pattern__toolbar { justify-content: space-between; gap: var(--space-4); }
       .teacher-discovery-pattern__toolbar .ui-search { width: min(100%, 360px); }
-      .teacher-discovery-pattern__tags, .teacher-discovery-pattern .teacher-pattern-tags, .teacher-detail-slot-row { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+      .teacher-discovery-pattern__tags, .teacher-discovery-pattern .teacher-pattern-tags { display: flex; flex-wrap: wrap; gap: var(--space-2); }
       .teacher-discovery-pattern__content { display: grid; grid-template-columns: minmax(0, 1fr) 304px; align-items: start; gap: var(--space-6); padding: var(--space-6); }
       .teacher-discovery-pattern__results { min-width: 0; display: grid; gap: var(--space-3); }
       .teacher-discovery-pattern__results-head { color: var(--secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
@@ -1212,77 +1209,62 @@
       .teacher-discovery-preview__price { display: flex; align-items: baseline; justify-content: space-between; color: var(--secondary); font-size: var(--ui-font-size-12); }
       .teacher-discovery-preview__price strong { color: var(--title); font-size: var(--ui-font-size-18); line-height: var(--ui-line-height-24); }
 
-      .teacher-detail-pattern { max-width: 1216px; grid-template-columns: minmax(0, 1fr) 348px; align-items: start; column-gap: var(--space-6); row-gap: var(--space-4); margin: 0 auto; }
-      .teacher-detail-hero, .teacher-detail-section, .teacher-detail-similar, .teacher-detail-booking { border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--card); }
-      .teacher-detail-hero { display: grid; gap: var(--space-4); padding: var(--space-6); }
-      .teacher-detail-hero, .teacher-detail-pattern__tabs, .teacher-detail-pattern__main { grid-column: 1; }
-      .teacher-detail-hero__identity { min-width: 0; align-items: start; gap: var(--space-4); }
-      .teacher-detail-hero__identity > div:last-child { min-width: 0; display: grid; gap: var(--space-2); }
-      .teacher-detail-hero__name { flex-wrap: wrap; gap: var(--space-2); }
-      .teacher-detail-hero__name img { width: 20px; height: 20px; object-fit: contain; }
-      .teacher-detail-hero__identity p { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin: 0; color: var(--secondary); font-size: var(--ui-font-size-14); line-height: var(--ui-line-height-20); }
-      .teacher-detail-hero__identity p img { width: 16px; height: 16px; }
-      .teacher-detail-hero__identity p span + span::before { content: "·"; margin-right: var(--space-2); }
-      .teacher-detail-hero__tags { flex-wrap: wrap; gap: var(--space-2); }
-      .teacher-detail-hero__tags em { color: var(--secondary); font-size: var(--ui-font-size-12); font-style: normal; line-height: var(--ui-line-height-18); }
-      .teacher-detail-hero__stats { width: 100%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-6); border-top: 1px solid var(--divider); padding-top: var(--space-4); }
-      .teacher-detail-hero__stats span { display: grid; gap: 2px; text-align: left; }
-      .teacher-detail-hero__stats strong { color: var(--title); font-size: var(--ui-font-size-18); line-height: var(--ui-line-height-24); }
-      .teacher-detail-hero__stats small { color: var(--secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
-      .teacher-detail-pattern__tabs { overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-card); padding: 0 var(--space-4); background: var(--card); }
-      .teacher-detail-pattern__tabs .ui-tabs__panel { display: none; }
-      .teacher-detail-pattern__layout { display: contents; }
-      .teacher-detail-pattern__main { min-width: 0; display: grid; gap: var(--space-4); }
-      .teacher-detail-section, .teacher-detail-similar { display: grid; gap: var(--space-4); padding: var(--space-6); }
-      .teacher-detail-section h3 { margin: 0; color: var(--title); font-size: var(--ui-font-size-16); line-height: var(--ui-line-height-24); }
-      .teacher-detail-muted { color: var(--secondary) !important; }
-      .teacher-detail-section__divider { height: 1px; background: var(--divider); }
-      .teacher-detail-insights { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); margin: 0; padding: 0; list-style: none; }
-      .teacher-detail-insights li { display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: start; gap: var(--space-2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); background: var(--card); }
-      .teacher-detail-insights img { width: 24px; height: 24px; }
-      .teacher-detail-insights strong, .teacher-detail-insights span { display: block; }
-      .teacher-detail-insights strong { color: var(--title); font-size: var(--ui-font-size-14); line-height: var(--ui-line-height-20); }
-      .teacher-detail-insights span { color: var(--secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
-      .teacher-detail-lesson { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--space-4); padding-top: var(--space-4); }
-      .teacher-detail-lesson.has-divider { border-top: 1px solid var(--divider); }
-      .teacher-detail-lesson h3 { margin: 0; }
-      .teacher-detail-lesson small { display: block; margin-top: var(--space-2); color: var(--secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
-      .teacher-detail-lesson > div:last-child { display: grid; justify-items: end; gap: var(--space-2); }
-      .teacher-detail-lesson > div:last-child > strong { color: var(--title); font-size: var(--ui-font-size-16); line-height: var(--ui-line-height-24); white-space: nowrap; }
-      .teacher-detail-slot-row { padding-top: var(--space-1); }
-      .teacher-detail-section .ui-calendar { margin-top: var(--space-1); }
-      .teacher-detail-reviews-head { align-items: stretch; }
-      .teacher-detail-review-score { display: grid; align-content: start; gap: var(--space-1); min-width: 128px; }
-      .teacher-detail-review-score > strong { color: var(--title); font-size: var(--ui-font-size-32); line-height: var(--ui-line-height-40); }
-      .teacher-detail-review-score > span { color: var(--secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
-      .teacher-detail-review-bars { display: grid; flex: 1; align-content: center; gap: var(--space-1); }
-      .teacher-detail-review-bars > span { display: grid; grid-template-columns: 32px minmax(0, 1fr) 32px; align-items: center; gap: var(--space-2); color: var(--secondary); font-size: var(--ui-font-size-12); }
-      .teacher-detail-review-bars b { display: inline-flex; align-items: center; gap: 2px; font-weight: var(--ui-font-weight-regular); }
-      .teacher-detail-review-bars b img { width: 12px; height: 12px; }
-      .teacher-detail-review-bars > span > i { height: 6px; display: block; overflow: hidden; border-radius: var(--radius-full); background: var(--divider); }
-      .teacher-detail-review-bars > span > i > i { height: 100%; display: block; border-radius: inherit; background: var(--emphasis); }
-      .teacher-detail-review { align-items: start; gap: var(--space-3); padding-top: var(--space-4); border-top: 1px solid var(--divider); }
-      .teacher-detail-review > div { display: grid; gap: 2px; }
-      .teacher-detail-review strong { color: var(--title); font-size: var(--ui-font-size-14); line-height: var(--ui-line-height-20); }
-      .teacher-detail-review small { color: var(--secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
-      .teacher-detail-review p { margin: var(--space-2) 0 0; }
-      .teacher-detail-similar > div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); }
-      .teacher-detail-similar-card { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: var(--space-2); border: 1px solid var(--divider); border-radius: var(--radius-md); padding: var(--space-3); }
-      .teacher-detail-similar-card > div { min-width: 0; display: grid; align-content: start; gap: 2px; }
-      .teacher-detail-similar-card > div strong { color: var(--title); font-size: var(--ui-font-size-14); line-height: var(--ui-line-height-20); }
-      .teacher-detail-similar-card > div span, .teacher-detail-similar-card > div small { overflow: hidden; color: var(--secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); text-overflow: ellipsis; white-space: nowrap; }
-      .teacher-detail-similar-card footer { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
-      .teacher-detail-similar-card footer > strong { color: var(--title); font-size: var(--ui-font-size-14); }
-      .teacher-detail-similar-card footer small { color: var(--secondary); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-regular); }
-      .teacher-detail-booking { grid-column: 2; grid-row: 1 / span 3; position: sticky; top: var(--space-6); display: grid; gap: var(--space-3); padding: var(--space-4); }
-      .teacher-detail-booking .ui-video { border-radius: var(--radius-md); }
-      .teacher-detail-booking__price { display: grid; gap: 2px; }
-      .teacher-detail-booking__price strong { color: var(--title); font-size: var(--ui-font-size-20); line-height: var(--ui-line-height-28); }
-      .teacher-detail-booking__price span, .teacher-detail-booking__price small { color: var(--secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
-      .teacher-detail-booking__meta { display: grid; gap: var(--space-2); padding-top: var(--space-3); border-top: 1px solid var(--divider); color: var(--secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
-      .teacher-detail-booking__meta span { display: flex; align-items: center; gap: var(--space-2); }
-      .teacher-detail-booking__meta img { width: 16px; height: 16px; }
-      .teacher-detail-booking__meta i { width: 8px; height: 8px; display: block; border-radius: var(--radius-full); background: var(--success); }
+         them; each form names itself, so nothing reads as the only right
+         answer. */
+      /* The Calendar paints its timezone pin with an inline mask whose URL is
+         page-relative, so whether it survives depends on how the host rebased
+         it. Pin it from the stylesheet instead: catalog.css and the generated
+         _cards.css both sit at their root, so one path is right in both places.
+         !important because it has an inline declaration to beat. */
+      /* scroll-padding, not just padding: a snap container aligns a child to the
+         scrollport edge, so mandatory snapping scrolled the row 24px and the first
+         card sat flush against the section edge while the heading above it was
+         indented. The padding was there all along — the snap position was not. */
+      /* Direct descendants of the copy side only. As a bare descendant selector
+         this also caught .ui-button__label, so the red CTA rendered its text in
+         the secondary grey — unreadable, and a component restyled from a page. */
+
+      /* Only the active step is in flow; the other two keep their selections in
+         the DOM, which is why stepping back does not reset a choice. */
+      /* The package grid auto-fits, so in a 760px step it packed three cards on
+         the first row and orphaned the fourth. The reference pairs them 2×2 —
+         four options read as two comparisons, not a row of three and a stray. */
+      /* The preview stage is 272px tall, which is right for a Drawer demo and
+         far too short for a booking step: the body scrolled and the flow read as
+         a header with nothing under it. A step is the unit being documented, so
+         the stage is sized to hold one. */
+      /* One frame for all three steps, so what changes between them is the
+         decision and nothing else — a bottom drawer otherwise sizes to its own
+         content and the package grid left 470px of mask above it. But the panel
+         takes the component's own 95%, not the whole stage: a bottom drawer is
+         over a page, and covering the mask completely loses the one thing that
+         says so. */
+      /* [hidden] is display:none from the UA sheet, which a component class
+         setting display loses to — so Back rendered on step 1, where there is
+         nothing to go back to. */
+
+      /* A pattern page shows the template running, not a rebuilt copy of it. The
+         frame is a viewport: the thing inside is a whole product page, so it
+         scrolls on its own rather than stretching this page to its height. */
+      .pattern-live { display: grid; gap: var(--space-3); }
+      /* Whatever width the column gives it. Forcing 1180px to guarantee the
+         desktop layout bought a horizontal scrollbar on every screen narrower
+         than that, and bought it for nothing: the page inside is responsive —
+         measured at 900px and 1600px with scrollWidth equal to clientWidth and
+         no overflowing element — and the doc column is already 1308px on a
+         normal desktop. So the frame takes the room it has and the page inside
+         decides what to do with it, which is what it was built to do. */
+      /* Height follows the reader's screen, not the page's own length. Sizing the
+         frame to its content is the obvious move and it is wrong here: these
+         pages are 1820px, 3100px and 3449px tall and carry three to six
+         position:fixed or sticky elements between them — a top bar, a sidebar, a
+         sticky booking bar, a drawer pinned inset:0. Inside an iframe those
+         anchor to the iframe's own viewport, so a frame grown to 3449px would
+         put the booking bar 3400px down the page and stretch the drawer to
+         3400px tall. The fixed height IS the viewport those designs are drawn
+         against; what it should not be is a constant, so it scales with the
+         window and stops at both ends. */
+      .pattern-live iframe { width: 100%; height: clamp(520px, 76vh, 940px); display: block; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--card); }
 
       @media (max-width: 860px) {
         html, body { height: auto; overflow-y: auto; }
@@ -1333,19 +1315,14 @@
         .teacher-pattern-avatar, .teacher-pattern-avatar > img:first-child { width: 100px; height: 100px; }
         .teacher-pattern-avatar .avatar-flag { width: 24px; height: 24px; }
         .teacher-pattern-side { justify-items: start; }
-        .teacher-discovery-pattern__header, .teacher-discovery-pattern__content, .teacher-detail-hero, .teacher-detail-section, .teacher-detail-similar { padding: var(--space-4); }
-        .teacher-discovery-pattern__title, .teacher-discovery-pattern__toolbar, .teacher-detail-hero { align-items: flex-start; flex-direction: column; }
+        .teacher-discovery-pattern__header, .teacher-discovery-pattern__content { padding: var(--space-4); }
+        .teacher-discovery-pattern__title, .teacher-discovery-pattern__toolbar { align-items: flex-start; flex-direction: column; }
         .teacher-discovery-pattern__toolbar .ui-search { width: 100%; }
         .teacher-discovery-pattern__content { grid-template-columns: 1fr; }
-        .teacher-detail-pattern { grid-template-columns: 1fr; }
-        .teacher-discovery-preview, .teacher-detail-booking { position: static; }
-        .teacher-detail-booking { grid-column: 1; grid-row: auto; }
+        .teacher-discovery-preview { position: static; }
         .teacher-discovery-pattern .teacher-discovery-result { grid-template-columns: 1fr; gap: var(--space-3); }
         .teacher-discovery-pattern .teacher-discovery-result .teacher-pattern-side { grid-template-columns: 100px minmax(0, 1fr); align-items: center; }
         .teacher-discovery-pattern .teacher-discovery-result .teacher-pattern-side .ui-avatar { width: 100px; height: 100px; }
-        .teacher-detail-hero__stats { width: 100%; flex: none; }
-        .teacher-detail-insights, .teacher-detail-similar > div { grid-template-columns: 1fr; }
-        .teacher-detail-reviews-head { display: grid; grid-template-columns: 1fr; }
         .teacher-recommendation-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .result-semantic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .filter-pattern__body { grid-template-columns: 1fr; padding: var(--space-4); }
@@ -1362,9 +1339,7 @@
         .flag-library-tools, .flag-library-tools .ui-search { width: 100%; }
         .teacher-recommendation-grid { grid-template-columns: 1fr; }
         .result-semantic-grid { grid-template-columns: 1fr; }
-        .teacher-discovery-pattern .teacher-pattern-offer, .teacher-detail-similar > header { align-items: flex-start; flex-direction: column; }
-        .teacher-detail-lesson { grid-template-columns: 1fr; }
-        .teacher-detail-lesson > div:last-child { width: 100%; grid-template-columns: minmax(0, 1fr) auto; align-items: center; justify-items: stretch; }
+        .teacher-discovery-pattern .teacher-pattern-offer { align-items: flex-start; flex-direction: column; }
       }
 
       @media (max-width: 760px) {

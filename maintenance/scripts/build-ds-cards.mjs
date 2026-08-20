@@ -59,8 +59,6 @@ const PATTERNS = [
   ['lesson-card', 'LessonCard', 'Lesson card'],
   ['teacher-detail', 'TeacherDetail', 'Teacher detail'],
   ['booking-commitment', 'BookingCommitment', 'Booking commitment'],
-  ['payment-checkout', 'PaymentCheckout', 'Payment checkout'],
-  ['mira-module', 'MiraModule', 'Mira module'],
 ];
 
 /* Components: discovered from what build-ds-project.mjs wrote, so the two
