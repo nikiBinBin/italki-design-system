@@ -27,9 +27,15 @@ a:hover{color:var(--ui-color-link-hover);text-decoration:underline}
    set here so what you add inherits them instead of each block inventing its
    own gutter. Wider than the signed-in shell's column by the sidebar's width:
    there is no rail taking that space here. */
-.shell-main{display:flex;flex-direction:column;flex:1;width:100%;max-width:1216px;margin:0 auto;padding:var(--ui-space-7) var(--ui-space-6) var(--ui-space-10)}
+.shell-main{flex:1;width:100%;max-width:1216px;margin:0 auto;padding:var(--ui-space-7) var(--ui-space-6) var(--ui-space-10)}
 
-.shell-placeholder{min-height:60vh;flex:1;display:grid;place-content:center;border:1px dashed var(--ui-color-border);border-radius:var(--ui-radius-xl);background:var(--ui-color-card);padding:var(--ui-space-10) var(--ui-space-6);text-align:center}
+/* The placeholder stands in for a page, so it is page-sized: a floor rather
+   than content height, or the empty shell reads as unfinished. 60vh also keeps
+   the signed-out footer — 560px on its own — below the fold on an empty page.
+   A floor and not flex:1, because filling would have meant making .shell-main a
+   flex column, and that is where every page built from this shell lives: their
+   own adjacent margins would stop collapsing to give an empty state its height. */
+.shell-placeholder{min-height:60vh;display:grid;place-content:center;border:1px dashed var(--ui-color-border);border-radius:var(--ui-radius-xl);background:var(--ui-color-card);padding:var(--ui-space-10) var(--ui-space-6);text-align:center}
 .shell-placeholder__title{margin:0;color:var(--ui-color-title);font-size:20px;font-weight:600}
 .shell-placeholder__note{margin:var(--ui-space-2) auto 0;max-width:52ch;color:var(--ui-color-secondary);font-weight:400;line-height:1.6}
 .shell-placeholder code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--ui-color-text);background:var(--ui-color-divider);border-radius:var(--ui-radius-xs);padding:1px 5px}
