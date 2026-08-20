@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Logged-out shell" description="The signed-out italki frame — visitor bar and footer, with the page body left for you to fill in. No sidebar: a visitor has no workspace to navigate." -->
+<helmet>
+<script src="./ds-base.js"></script>
+<script src="./ds-safe.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:var(--ui-color-divider);color:var(--ui-color-text);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;font-weight:500;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:var(--ui-color-link);text-decoration:none}
+a:hover{color:var(--ui-color-link-hover);text-decoration:underline}
+/* Duplicates the kit default on purpose — same reasoning as the other
+   templates: whichever copy wins, wins the same values, so a bundle one
+   version behind cannot leave the bar unpositioned. */
+.ui-top-nav.ui-top-nav{position:sticky;top:0;z-index:var(--ui-layer-top-nav,40)}
+
+/* The three rules the page body needs, and nothing else. Width and rhythm are
+   set here so what you add inherits them instead of each block inventing its
+   own gutter. Wider than the signed-in shell's column by the sidebar's width:
+   there is no rail taking that space here. */
+.shell-main{display:flex;flex-direction:column;flex:1;width:100%;max-width:1216px;margin:0 auto;padding:var(--ui-space-7) var(--ui-space-6) var(--ui-space-10)}
+
+.shell-placeholder{min-height:60vh;flex:1;display:grid;place-content:center;border:1px dashed var(--ui-color-border);border-radius:var(--ui-radius-xl);background:var(--ui-color-card);padding:var(--ui-space-10) var(--ui-space-6);text-align:center}
+.shell-placeholder__title{margin:0;color:var(--ui-color-title);font-size:20px;font-weight:600}
+.shell-placeholder__note{margin:var(--ui-space-2) auto 0;max-width:52ch;color:var(--ui-color-secondary);font-weight:400;line-height:1.6}
+.shell-placeholder code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--ui-color-text);background:var(--ui-color-divider);border-radius:var(--ui-radius-xs);padding:1px 5px}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column">
+<!-- logged-out, not global-default: the signed-out bar is a different variant,
+     not the signed-in one with the sidebar taken away. It removes the centre
+     column rather than emptying it, so there is no search here — a visitor
+     looking for teachers does that on the page, not in the shell. -->
+<x-import component-from-global-scope="SafeUI.TopNav" variant="logged-out" links="{{ visitorLinks }}" locale-label="{{ localeLabel }}" locale-options="{{ localeOptions }}" action-label="Sign up / Log in" mobile-action-label="Open in App" menu-locale="{{ menuLocale }}" menu-currency="{{ menuCurrency }}" ariaLabel="Top navigation" hint-size="100%,72px"></x-import>
+
+<!-- ─────────────────────────────────────────────────────────────────────
+     Your page goes here.
+
+     Delete the placeholder below and build inside <main>. The visitor bar and
+     the footer are the parts you keep. This is the one shell where global text
+     navigation is correct; the signed-in shell still may not recreate it,
+     because a signed-in learner reaches the same places through the sidebar.
+
+     The bar's way in is deliberately quiet — `Sign up / Log in` is one
+     secondary control, not two. A landing page therefore keeps its own red CTA
+     as the page's single conversion action.
+     ───────────────────────────────────────────────────────────────────── -->
+<main class="shell-main">
+  <div class="shell-placeholder">
+    <p class="shell-placeholder__title">Your page goes here</p>
+    <p class="shell-placeholder__note">Replace this block with your own content inside <code>&lt;main class="shell-main"&gt;</code>. It already carries the page width and the top and bottom spacing, so a section you drop in lines up with the shell without any layout of its own.</p>
+  </div>
+</main>
+
+<x-import component-from-global-scope="SafeUI.Footer" id="logged-out-shell-footer" columns="{{ footerColumns }}" utilities="{{ footerUtilities }}" copyright="© 2026 italki HK Limited." legal-links="{{ footerLegalLinks }}" social-links="{{ footerSocialLinks }}" aria-label="italki footer" hint-size="100%,560px"></x-import>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    ready: !!Component.kit?.(),
+  };
+
+  componentDidMount() {
+    if (this.state.ready) return;
+    // ds-base.js loads the kit asynchronously; re-render once it is available.
+    this.timer = setInterval(() => {
+      if (!Component.kit?.()) return;
+      clearInterval(this.timer);
+      this.setState({ ready: true });
+    }, 50);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
+  /* The kit is reachable under two names and they are the same object:
+     window.ITalkiUI is the vanilla runtime, and the React bundle re-exports it
+     as window.ItalkiUI.raw. Reading only one makes the shell depend on which
+     the host happens to install. */
+  static kit() { return window.ITalkiUI || (window.ItalkiUI || {}).raw || null; }
+
+  navVals() {
+    /* The public destinations, in the order PATTERNS.md supplies them. Not the
+       signed-in roster: a visitor has no lessons, calendar or progress to
+       reach, and appShellNav() is that roster. */
+    return {
+      visitorLinks: [
+        { id: "one-on-one", label: "1-on-1 teacher", icon: "Assets/Icons/teacher.svg" },
+        { id: "group-class", label: "Group Class", icon: "Assets/Icons/group.svg" },
+        { id: "community", label: "Community", icon: "Assets/Icons/community.svg" },
+        { id: "become-teacher", label: "Become a teacher", icon: "Assets/Icons/teacher.svg" },
+      ],
+      /* Language and currency are one decision on the bar and two in the phone
+         menu, because the menu has room for two 48px Selects and the bar does
+         not. Neither reads or persists the choice. */
+      localeLabel: "English · USD $",
+      localeOptions: [
+        { id: "en-usd", label: "English · USD $" },
+        { id: "zh-cny", label: "中文 · CNY ¥" },
+      ],
+      menuLocale: { label: "Language", options: ["English", "中文"], selected: "English" },
+      menuCurrency: { label: "Currency", options: ["USD $", "CNY ¥"], selected: "USD $" },
+    };
+  }
+
+  footerVals() {
+    const UI = Component.kit?.();
+    return {
+      footerColumns: [
+        { groups: [{ heading: "Language teachers", links: ["English teachers", "Spanish teachers", "French teachers", "Japanese teachers", "German teachers", "Chinese teachers", "Korean teachers", "Italian teachers", "Russian teachers", "Portuguese teachers", "Arabic teachers", "Hindi teachers", "All teachers"] }] },
+        { groups: [{ heading: "Learn a language", links: ["Learn English", "Learn Spanish", "Learn Japanese", "Learn French", "Learn German", "Learn Chinese", "Learn Korean", "Learn Italian", "Learn Russian", "Learn Portuguese", "Learn Arabic", "Learn Hindi"] }] },
+        { groups: [
+          { heading: "Lessons", links: ["1-on-1 Lessons", "Group Class"] },
+          { heading: "Teaching", links: ["Become a teacher", "Teaching Code of Conduct"] },
+          { heading: "Learning resources", links: ["italki Language Test", "italki Language Challenge", "italki Podcasts", "italki Quiz", "italki Community"] },
+        ] },
+        { groups: [
+          { heading: "Promotions", links: ["Refer a Friend", "Buy a Gift Card", "italki Business", "Affiliate Program", "Partnership Program"] },
+          { heading: "More", links: ["FAQ", "italki Blog", "Download App"] },
+        ] },
+      ],
+      /* Markup, not elements — the utilities strip is a container prop, so the
+         two pickers are built with the same components and concatenated.
+         `shape` is left off: 40 resolves to rounded on its own. */
+      footerUtilities: UI
+        ? UI.select({ id: "footer-language", label: "Language", options: ["English", "中文"], selected: "English", size: 40 })
+          + UI.select({ id: "footer-currency", label: "Currency", options: ["USD $", "CNY ¥"], selected: "USD $", size: 40 })
+        : "",
+      footerLegalLinks: ["About us", "Careers", "Press", "Support", "Legal", "Privacy", "Contact"],
+      /* One mark, as the Footer card shows it. A second was tried on the other
+         shell and had to come out: social-linkedin.svg is a filled blue disc
+         where youtube.svg is an outline, so the pair read as two different sets. */
+      footerSocialLinks: [{ label: "YouTube", icon: "Assets/Icons/youtube.svg" }],
+    };
+  }
+
+  renderVals() {
+    return {
+      ...this.navVals(),
+      ...this.footerVals(),
+    };
+  }
+}
+</script>
+</body>
+</html>

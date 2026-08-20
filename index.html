@@ -51,7 +51,7 @@
         { id: "feedback", title: "Feedback", description: "", data: parse("Alert|Persistent local status message and recovery action.;Toast|Temporary global acknowledgement.;Notification|Persistent product-level update with optional action and dismissal.;Result|Full-task confirmed outcome with explicit next action.;Progress|Bounded task completion feedback.;Skeleton|Layout-preserving loading placeholder.") }
       ];
       const navigationComponents = parse("Top nav|Persistent top-level context, search, and action slots.;Breadcrumb|Current location within a supplied navigation hierarchy.;Sidebar|Persistent authenticated workspace navigation.;Footer|Supplied page-end navigation and utility region.;Pagination|Collection-local page navigation.;Side nav|Sections within one area, as a column.");
-        const patternComponents = parse("Workspace shell|Authenticated navigation composition with product-owned destinations and account context.;Teacher discovery|Search, refinement, and teacher-evaluation composition.;Filter|;Teacher card|;Lesson card|Supplied lesson, teacher, timing, package, and status composition.;Teacher detail|Evidence-led teacher profile composition before booking.;Booking commitment|Lesson, time, price, and booking-action composition.");
+        const patternComponents = parse("Logged-in shell|Authenticated navigation composition with product-owned destinations and account context.;Logged-out shell|Signed-out shell composition: the visitor bar with public destinations, one combined language and currency choice, one way in, and the footer.;Teacher discovery|Search, refinement, and teacher-evaluation composition.;Filter|;Teacher card|;Lesson card|Supplied lesson, teacher, timing, package, and status composition.;Teacher detail|Evidence-led teacher profile composition before booking.;Booking commitment|Lesson, time, price, and booking-action composition.");
       const sidebarNavigationCategories = [
         { id: "foundation", title: "Foundation", groups: [{ id: "foundation-items", title: "", data: groups[1].data }] },
         {
@@ -1395,7 +1395,8 @@
       }
       function patternDetail(entry) {
         const references = {
-          "workspace shell": ["workspace-header", "sidebar-navigation"],
+          "logged-in shell": ["workspace-header", "sidebar-navigation"],
+          "logged-out shell": ["visitor-header"],
           "teacher discovery": ["teacher-discovery-search", "filter", "teacher-card"],
           "teacher detail": ["detail-hero", "detail-section", "review-card", "pricing-row"],
           "booking commitment": ["booking-panel", "booking-offer-summary"]
@@ -1407,13 +1408,14 @@
            default and a whole radiogroup. So the route stops pretending to be
            the rendering and says where the rendering is. */
         const templates = {
-          "workspace shell": "templates/app-shell/AppShell.dc.html",
+          "logged-in shell": "templates/logged-in-shell/LoggedInShell.dc.html",
+          "logged-out shell": "templates/logged-out-shell/LoggedOutShell.dc.html",
           "teacher detail": "templates/teacher-detail/TeacherDetail.dc.html",
           "teacher discovery": "templates/teacher-search/TeacherSearch.dc.html",
           "booking commitment": "templates/teacher-profile/TeacherProfile.dc.html"
         };
         const template = templates[byName(entry)];
-        const card = { "workspace shell": "WorkspaceShell", "teacher detail": "TeacherDetail", "teacher discovery": "TeacherDiscovery", "booking commitment": "BookingCommitment" }[byName(entry)];
+        const card = { "logged-in shell": "LoggedInShell", "logged-out shell": "LoggedOutShell", "teacher detail": "TeacherDetail", "teacher discovery": "TeacherDiscovery", "booking commitment": "BookingCommitment" }[byName(entry)];
         /* An iframe, not a re-render. The card is the template, and this is that
            card — so the page a reader sees here is the page the Design pane
            shows and the page the product ships, one file for all three. It is
