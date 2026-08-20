@@ -1635,7 +1635,7 @@ is the machine-readable contract the assertions come from.
      into a single grid there is nothing to match against: the sizes interleave
      by alphabet and the reader cannot see which set a glyph belongs to, which
      is the one thing they came to the card to learn. */
-  const sheet = (name, title, group, groups, size, note) => {
+  const sheet = (name, title, group, groups, size, note, extraCSS = '') => {
     const entries = groups.flatMap((g) => g.items);
     const dir = `components/foundations/${name}`;
     write(`${dir}/${name}.html`, `<!-- @dsCard group="${group}" -->
@@ -1658,7 +1658,7 @@ is the machine-readable contract the assertions come from.
   .icon-grid li.is-inverse span{color:var(--ui-color-on-primary)}
   .brand-lockup{display:inline-flex;align-items:center;gap:var(--ui-space-1,4px)}
   .brand-lockup img{display:block;width:42px;height:auto}
-  .brand-lockup .brand-lockup__mark{width:38px;height:10px}
+  .brand-lockup .brand-lockup__mark{width:38px;height:10px}${extraCSS}
 </style>
 </head><body>
 ${groups.map((g) => `${g.heading ? `<h2 class="icon-section">${g.heading}</h2>\n` : ''}${g.hint ? `<p class="icon-hint">${g.hint}</p>\n` : ''}<ul class="icon-grid">
@@ -1690,8 +1690,19 @@ Generated from \`catalog-runtime/icon-manifest.js\`; run
   const isGeneral = (a) => a.includes('/ui/');
   const general = icons.filter((a) => isGeneral(a) && !isLogo(a));
   const glyphs = icons.filter((a) => !isLogo(a) && !isGeneral(a));
+  /* The two sheets are not the same card and the React DS does not draw them
+     the same either: Icon is 1,500 grey chips you scan, Logo is seven marks you
+     inspect one at a time. Seven grey blocks on a grey field have no edges —
+     the tile and the page are the same colour — so Logo takes the framed
+     treatment from ds/foundation/Logo.html: a white panel, white tiles with a
+     boundary, and the room between them that a mark needs to be read as one
+     thing. Icon keeps the chips; a border on 1,500 of them is a mesh. */
   const logoCount = sheet('Logo', 'Logo', 'Foundation', [{ items: logos }], 40,
-    'Brand marks. Use the wordmark where the brand is being asserted and the logomark where space is constrained; the -white variants are for dark surfaces.');
+    'Brand marks. Use the wordmark where the brand is being asserted and the logomark where space is constrained; the -white variants are for dark surfaces.',
+    `
+  .icon-grid{gap:var(--ui-space-6,24px);padding:var(--ui-space-6,24px);border-radius:var(--ui-radius-lg,12px);background:var(--ui-color-card)}
+  .icon-grid li{gap:var(--ui-space-3,12px);padding:var(--ui-space-4,16px) var(--ui-space-3,12px);border:1px solid var(--ui-color-border);background:var(--ui-color-card)}
+  .icon-grid li.is-inverse{padding:var(--ui-space-4,16px) var(--ui-space-2,8px);border-color:var(--ui-color-primary)}`);
   /* Split where the contract splits. 16px is not a scaled 24 — the two sets
      barely overlap, and each carries drawings the other does not have. */
   const small = glyphs.filter((a) => a.includes('/16px/'));
