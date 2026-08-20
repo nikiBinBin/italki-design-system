@@ -210,8 +210,16 @@ for (const target of TARGETS) {
           '[data-demo="ui-timeline-reverse"]', '.timeline-tone-switch',
         ].join(', ')).forEach((n) => (n.closest('.ds-page-controls, .tag-global-controls') ?? n).remove());
         /* The dialog that "When To Use" button opened. The button is gone, so
-           nothing can reveal it and it renders as nothing either way. */
-        clone.querySelectorAll('[hidden]').forEach((n) => n.remove());
+           nothing can reveal it and it renders as nothing either way.
+
+           Named, not `[hidden]` wholesale. That swept up every collapsed thing
+           on the page as well, and a collapsed thing is not dead weight — it is
+           the closed half of a disclosure the card is supposed to be able to
+           open. On Filter it deleted the children of five of the six lesson
+           categories, so clicking them on the card did nothing: the runtime
+           toggled a group whose contents the capture had thrown away, and no
+           error said so. */
+        clone.querySelectorAll('[class$="-usage-modal"][hidden]').forEach((n) => n.remove());
 
         /* One cell per section, labelled with the section's own h2.
            Color, Typography and Button are pages of three to six h2 sections;
@@ -300,7 +308,18 @@ for (const target of TARGETS) {
      They get the card colour instead. */
 
   const depth = isPattern ? '../../' : '../../../';
-  const rebase = (html) => html.replaceAll('="Assets/', `="${depth}Assets/`);
+  /* Two ways an asset is addressed, and this used to rewrite only the first.
+     An `="Assets/…"` is a src or href; a `url(Assets/…)` is a mask on an inline
+     style, which is how a glyph that has to take currentColor is drawn — the
+     Calendar's timezone pin, the Selection card's category mark, the Stepper's
+     markers. Those came through untouched, so three folders down they resolved
+     against the card's own directory and the mask silently matted to nothing:
+     no broken-image icon, no console error, just a label with a gap where its
+     pin should be. The url() form carries no quotes by contract — see
+     cssUrl() in the runtime — so matching the bare form is enough. */
+  const rebase = (html) => html
+    .replaceAll('="Assets/', `="${depth}Assets/`)
+    .replaceAll('url(Assets/', `url(${depth}Assets/`);
   const body = blocks
     .map(({ label, html }) => `  <div class="cell"><div class="cell-label">${escape(label)}</div><div class="cell-body">${rebase(html)}</div></div>`)
     .join('\n');
