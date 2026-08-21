@@ -1408,11 +1408,11 @@
            default and a whole radiogroup. So the route stops pretending to be
            the rendering and says where the rendering is. */
         const templates = {
-          "logged-in shell": "templates/logged-in-shell/LoggedInShell.dc.html",
-          "logged-out shell": "templates/logged-out-shell/LoggedOutShell.dc.html",
-          "teacher detail": "templates/teacher-detail/TeacherDetail.dc.html",
-          "teacher discovery": "templates/teacher-search/TeacherSearch.dc.html",
-          "booking commitment": "templates/teacher-profile/TeacherProfile.dc.html"
+          "logged-in shell": "maintenance/templates/logged-in-shell/LoggedInShell.dc.html",
+          "logged-out shell": "maintenance/templates/logged-out-shell/LoggedOutShell.dc.html",
+          "teacher detail": "maintenance/templates/teacher-detail/TeacherDetail.dc.html",
+          "teacher discovery": "maintenance/templates/teacher-search/TeacherSearch.dc.html",
+          "booking commitment": "maintenance/templates/teacher-profile/TeacherProfile.dc.html"
         };
         const template = templates[byName(entry)];
         const card = { "logged-in shell": "LoggedInShell", "logged-out shell": "LoggedOutShell", "teacher detail": "TeacherDetail", "teacher discovery": "TeacherDiscovery", "booking commitment": "BookingCommitment" }[byName(entry)];
