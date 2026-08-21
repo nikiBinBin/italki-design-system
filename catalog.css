@@ -956,8 +956,12 @@
       /* The whole card is the destination — the teacher profile — so it carries
          the affordance. Buttons inside it stay separate targets and must stop
          their own clicks from reaching the card. */
-      .teacher-pattern-card { cursor: pointer; transition: border-color 120ms ease, box-shadow 120ms ease; }
-      .teacher-pattern-card:hover { border-color: var(--title); box-shadow: var(--ui-shadow-md); }
+      .teacher-pattern-card { cursor: pointer; transition: box-shadow 120ms ease; }
+      /* Hover is a step up the shadow ladder, not a change of border. Darkening
+         the border to --title made a hovered card look like a selected one,
+         which in discovery it sits right next to. Same rung .ui-card.is-interactive
+         uses, so a teacher card lifts the way every other interactive card does. */
+      .teacher-pattern-card:hover { box-shadow: var(--ui-shadow-card-hover); }
       .teacher-pattern-side { display: grid; justify-items: center; gap: var(--space-3); }
       .teacher-pattern-avatar { width: 120px; height: 120px; position: relative; }
       .teacher-pattern-avatar > img:first-child { width: 120px; height: 120px; display: block; border-radius: var(--radius-full); object-fit: cover; }
@@ -994,6 +998,12 @@
       [id^="teacher-card-more"].is-open [data-demo="ui-dropdown-toggle"] .ui-button__icon { transform: rotate(90deg); }
       .teacher-recommendation-grid { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
       .teacher-recommendation-card { min-width: 0; min-height: 260px; display: flex; flex-direction: column; gap: var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-card); padding: var(--space-4); background: var(--card); text-align: left; }
+      /* Same affordance the wide card carries: the whole card is the teacher's
+         profile, and the shadow steps up one rung on hover. The Book lesson
+         button inside is a separate target and goes somewhere else — booking,
+         not the profile — which is why both may exist on one card. */
+      .teacher-recommendation-card { cursor: pointer; transition: box-shadow 120ms ease; }
+      .teacher-recommendation-card:hover { box-shadow: var(--ui-shadow-card-hover); }
       .teacher-recommendation-head { display: flex; align-items: center; gap: var(--space-3); }
       .teacher-recommendation-avatar { width: 56px; height: 56px; flex: 0 0 56px; position: relative; }
       .teacher-recommendation-copy { min-width: 0; display: grid; gap: var(--space-1); }
@@ -1176,7 +1186,11 @@
       .teacher-discovery-pattern__results-head span:first-child { color: var(--title); font-weight: var(--ui-font-weight-semibold); }
       .teacher-discovery-pattern__list { display: grid; gap: var(--space-3); }
       .teacher-discovery-pattern .teacher-pattern-card { width: auto; min-height: 0; display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-card); padding: var(--space-4); background: var(--card); cursor: pointer; transition: border-color 160ms ease, box-shadow 160ms ease; }
-      .teacher-discovery-pattern .teacher-pattern-card:hover, .teacher-discovery-pattern .teacher-pattern-card.is-previewed { border-color: var(--title); box-shadow: var(--ui-shadow-md); }
+      .teacher-discovery-pattern .teacher-pattern-card:hover { box-shadow: var(--ui-shadow-card-hover); }
+      /* Selected keeps the border. It is the one card the preview rail is
+         showing, which is a state the list holds, not a state the pointer makes
+         — and the two must not read the same. */
+      .teacher-discovery-pattern .teacher-pattern-card.is-previewed { border-color: var(--title); box-shadow: var(--ui-shadow-md); }
       .teacher-discovery-pattern .teacher-pattern-card:focus-visible { outline: 2px solid var(--title); outline-offset: 2px; }
       .teacher-discovery-pattern .teacher-pattern-card[hidden] { display: none; }
       .teacher-discovery-pattern .teacher-pattern-side { display: grid; align-content: start; justify-items: center; gap: var(--space-2); }
