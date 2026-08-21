@@ -961,7 +961,11 @@
          the border to --title made a hovered card look like a selected one,
          which in discovery it sits right next to. Same rung .ui-card.is-interactive
          uses, so a teacher card lifts the way every other interactive card does. */
-      .teacher-pattern-card:hover { box-shadow: var(--ui-shadow-card-hover); }
+      .teacher-pattern-card:hover, .teacher-pattern-card:focus-visible { box-shadow: var(--ui-shadow-card-hover); }
+      /* Focus takes the same lift and an outline on top. The lift alone is a 4%
+         shadow, which is not a focus indicator anyone can find; the outline is
+         what makes it one. Same pairing .ui-card.is-interactive uses. */
+      .teacher-pattern-card:focus-visible { outline: 2px solid var(--ui-color-title); outline-offset: 2px; }
       .teacher-pattern-side { display: grid; justify-items: center; gap: var(--space-3); }
       .teacher-pattern-avatar { width: 120px; height: 120px; position: relative; }
       .teacher-pattern-avatar > img:first-child { width: 120px; height: 120px; display: block; border-radius: var(--radius-full); object-fit: cover; }
@@ -1003,7 +1007,8 @@
          button inside is a separate target and goes somewhere else — booking,
          not the profile — which is why both may exist on one card. */
       .teacher-recommendation-card { cursor: pointer; transition: box-shadow 120ms ease; }
-      .teacher-recommendation-card:hover { box-shadow: var(--ui-shadow-card-hover); }
+      .teacher-recommendation-card:hover, .teacher-recommendation-card:focus-visible { box-shadow: var(--ui-shadow-card-hover); }
+      .teacher-recommendation-card:focus-visible { outline: 2px solid var(--ui-color-title); outline-offset: 2px; }
       .teacher-recommendation-head { display: flex; align-items: center; gap: var(--space-3); }
       .teacher-recommendation-avatar { width: 56px; height: 56px; flex: 0 0 56px; position: relative; }
       .teacher-recommendation-copy { min-width: 0; display: grid; gap: var(--space-1); }
@@ -1186,12 +1191,17 @@
       .teacher-discovery-pattern__results-head span:first-child { color: var(--title); font-weight: var(--ui-font-weight-semibold); }
       .teacher-discovery-pattern__list { display: grid; gap: var(--space-3); }
       .teacher-discovery-pattern .teacher-pattern-card { width: auto; min-height: 0; display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-card); padding: var(--space-4); background: var(--card); cursor: pointer; transition: border-color 160ms ease, box-shadow 160ms ease; }
-      .teacher-discovery-pattern .teacher-pattern-card:hover { box-shadow: var(--ui-shadow-card-hover); }
+      .teacher-discovery-pattern .teacher-pattern-card:hover, .teacher-discovery-pattern .teacher-pattern-card:focus-visible { box-shadow: var(--ui-shadow-card-hover); }
       /* Selected keeps the border. It is the one card the preview rail is
          showing, which is a state the list holds, not a state the pointer makes
          — and the two must not read the same. */
-      .teacher-discovery-pattern .teacher-pattern-card.is-previewed { border-color: var(--title); box-shadow: var(--ui-shadow-md); }
-      .teacher-discovery-pattern .teacher-pattern-card:focus-visible { outline: 2px solid var(--title); outline-offset: 2px; }
+      /* The previewed card carries no mark of its own. A teacher card is content
+         — read it, compare it, follow it — and "selected" is the vocabulary of a
+         surface where someone is choosing among options. The preview rail already
+         says whose profile it is showing, and hover and focus both light the card
+         under the pointer or the caret, which is the card the rail is following.
+         `is-previewed` stays on the element: the list reads it as state. */
+      .teacher-discovery-pattern .teacher-pattern-card:focus-visible { outline: 2px solid var(--ui-color-title); outline-offset: 2px; }
       .teacher-discovery-pattern .teacher-pattern-card[hidden] { display: none; }
       .teacher-discovery-pattern .teacher-pattern-side { display: grid; align-content: start; justify-items: center; gap: var(--space-2); }
       .teacher-discovery-pattern .teacher-pattern-side .ui-avatar { width: 120px; height: 120px; }
