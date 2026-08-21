@@ -52,8 +52,6 @@ const FOUNDATIONS = [
 ];
 
 const PATTERNS = [
-  ['logged-in-shell', 'LoggedInShell', 'Logged-in shell'],
-  ['logged-out-shell', 'LoggedOutShell', 'Logged-out shell'],
   ['teacher-discovery', 'TeacherDiscovery', 'Teacher discovery'],
   ['filter', 'Filter', 'Filter'],
   ['teacher-card', 'TeacherCard', 'Teacher card'],

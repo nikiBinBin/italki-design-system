@@ -1415,7 +1415,7 @@
           "booking commitment": "maintenance/templates/teacher-profile/TeacherProfile.dc.html"
         };
         const template = templates[byName(entry)];
-        const card = { "logged-in shell": "LoggedInShell", "logged-out shell": "LoggedOutShell", "teacher detail": "TeacherDetail", "teacher discovery": "TeacherDiscovery", "booking commitment": "BookingCommitment" }[byName(entry)];
+        const card = { "teacher detail": "TeacherDetail", "teacher discovery": "TeacherDiscovery", "booking commitment": "BookingCommitment" }[byName(entry)];
         /* An iframe, not a re-render. The card is the template, and this is that
            card — so the page a reader sees here is the page the Design pane
            shows and the page the product ships, one file for all three. It is

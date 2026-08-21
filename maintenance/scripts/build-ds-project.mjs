@@ -1381,9 +1381,22 @@ did not read still applies to what you ship.`;
 
 const README_TEMPLATES = KIT ? '' : `## Start from a page that already follows them
 
-Four cards under \`patterns/\` are not descriptions of a pattern — they are the
-page itself, running with its real behaviour. Copying the nearest one is faster,
-and safer, than assembling a page out of the component list:
+Two places to start, and they answer different questions.
+
+**\`templates/\`** holds the two shells — the frame with the body left empty and
+marked. Take the one your page belongs in:
+
+- \`templates/logged-in-shell/LoggedInShell.dc.html\` — inside the product:
+  sidebar and workspace header, no footer.
+- \`templates/logged-out-shell/LoggedOutShell.dc.html\` — for a visitor: the
+  visitor bar and the footer, no sidebar.
+
+Which one is not a style choice. The two never appear together, and only the
+signed-out shell carries a footer.
+
+**Three cards under \`patterns/\`** are not descriptions of a pattern — they are
+the page itself, running with its real behaviour. Where one is close to what you
+are building, copying it beats assembling a page out of the component list:
 
 - \`patterns/TeacherDiscovery\` — discovery: result list, filter sheet, preview
   rail, inside the authenticated shell.
@@ -1391,26 +1404,14 @@ and safer, than assembling a page out of the component list:
   booking bar.
 - \`patterns/BookingCommitment\` — the same profile with the booking flow open:
   lesson, package, time, platform, payment, confirmation.
-- \`patterns/LoggedInShell\` — the signed-in frame: sidebar and workspace header,
-  no footer.
-- \`patterns/LoggedOutShell\` — the signed-out frame: visitor bar and footer, no
-  sidebar.
 
 They share one runtime under \`patterns/_dc/\`, which is why they need nothing
 else in the project to render. Open one and read it; its props are real switches.
 
-**Starting a page that is none of those**, take the shell your page belongs in:
-\`templates/logged-in-shell/LoggedInShell.dc.html\` inside the product,
-\`templates/logged-out-shell/LoggedOutShell.dc.html\` for a visitor. Each is the
-same frame as its card with the body left empty and marked, so it is the one to
-copy when you are building rather than referring — the cards are references, and
-a reference is a poor place to start deleting from. Which one you take is not a
-style choice: the two shells never appear together, and only the signed-out one
-carries a footer.
-
-The other three cards under \`patterns/\` are still spec only. Each names a
-pattern and points back at \`guidelines/PATTERNS.md\`; there is no composition on
-them to copy. For those, the pattern is the prose in that document.`;
+A shell is not among them on purpose: it is a frame to start from, not a product
+pattern. The remaining cards under \`patterns/\` are spec only — each names a
+pattern and points back at \`guidelines/PATTERNS.md\`, and for those the pattern
+is the prose in that document.`;
 
 write('README.md', `# italki UI Kit
 
