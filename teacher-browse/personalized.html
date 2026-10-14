@@ -650,6 +650,11 @@ a{text-decoration:none;color:inherit}
 .c .a.theme strong{position:absolute;left:12px;right:12px;bottom:12px;z-index:3;color:#fff;font-size:var(--ui-font-size-18);font-weight:var(--ui-font-weight-bold);line-height:1.16;letter-spacing:-.4px}
 
 @media (max-width:1180px){.page,.top{padding-left:24px;padding-right:24px}.strip{grid-template-columns:repeat(4,minmax(0,1fr));margin-right:-110px}}
+/* the band behind the hero. #FFF1F1 rather than the page grey: it is the one full-bleed
+   surface on the page, so it is the one place a brand tint does not have to compete with
+   a shelf of photographs for attention. */
+.hero{background:#FFF1F1}
+
 
 /* ---- the state switch ----
    Both states carry the same shelves in the same order, so this flips the hero and
@@ -688,8 +693,9 @@ a{text-decoration:none;color:inherit}
   contain:layout paint}
 
 
+/* 72px, white, one hairline under it: the live bar's own numbers */
 .prof .ptop{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:16px;
-  height:56px;padding:0 24px;background:var(--card);border-bottom:1px solid var(--border)}
+  height:72px;padding:0 24px;background:var(--card);border-bottom:1px solid var(--border)}
 .prof .plogo{flex:0 0 auto;border:1.5px solid #FF4338;border-radius:999px;padding:1px 8px;
   color:#FF4338;font-size:var(--ui-font-size-14);font-weight:var(--ui-font-weight-bold);
   line-height:18px}
@@ -721,8 +727,10 @@ a{text-decoration:none;color:inherit}
 .prof .pclose svg{width:14px;height:14px;display:block}
 
 /* who, with the languages they teach and speak */
-.prof .phead{background:var(--card);padding:20px 24px 16px}
-.prof .phead .in{max-width:1000px;margin:0 auto;display:flex;align-items:center;gap:16px}
+/* full-width white, 144 tall, its contents on the same 936 column as everything else */
+.prof .phead{display:block;background:var(--card);height:144px;padding:0 24px}
+.prof .phead .in{max-width:936px;height:100%;margin:0 auto;display:flex;align-items:center;
+  gap:16px}
 .prof .phead .av{position:relative;flex:0 0 64px;width:64px;height:64px;border-radius:999px;
   overflow:hidden;background:var(--divider)}
 .prof .phead .av img{width:100%;height:100%;object-fit:cover}
@@ -741,9 +749,9 @@ a{text-decoration:none;color:inherit}
 .prof .plangs u b.f{background:var(--title)}
 
 /* the four numbers */
-.prof .pstats{background:var(--card);border-top:1px solid var(--divider);
-  border-bottom:1px solid var(--divider)}
-.prof .pstats .in{max-width:1000px;margin:0 auto;display:flex;padding:14px 24px}
+.prof .pstats{display:block;background:var(--card);border-bottom:1px solid var(--divider)}
+.prof .pstats .in{max-width:936px;height:76px;margin:0 auto;display:flex;
+  align-items:center;padding:0 24px}
 .prof .pstats .st{flex:1;display:flex;align-items:center;gap:10px}
 .prof .pstats .st .ic{flex:0 0 24px;width:24px;height:24px;display:block}
 .prof .pstats .st .ic.tt{width:26px;height:26px}
@@ -752,13 +760,21 @@ a{text-decoration:none;color:inherit}
 .prof .pstats .st em{display:block;font-style:normal;color:var(--muted);
   font-size:var(--ui-font-size-12);line-height:16px}
 
-.prof .pwrap{max-width:1000px;margin:0 auto;padding:16px 24px 64px}
-.prof .card{background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px}
+/* 936, the live column. Each card carries the padding the live one carries rather than
+   one number for all of them, and the schedule carries none because on the live page it
+   is not in a card at all. */
+.prof .pwrap{max-width:936px;margin:0 auto;padding:24px 0 48px}
+.prof .card{background:var(--card);border-radius:12px;padding:16px 24px 12px;
+  margin-bottom:24px}
+/* the live schedule sits in a white card like the rest; an earlier reading of the DOM
+   caught the transparent wrapper around it rather than the card inside */
+.prof .card.psched{padding:16px 24px}
 .prof h2.ph{margin:0 0 12px;color:var(--title);font-size:var(--ui-font-size-16,16px);
   font-weight:var(--ui-font-weight-bold);line-height:24px}
 
 /* about, with the intro beside it */
-.prof .pabout{display:flex;gap:24px}
+.prof .pabout{display:block}
+.prof .pabout .acols{display:flex;gap:24px}
 .prof .pabout .l{flex:1;min-width:0}
 .prof .pabout .meta{color:var(--muted);font-size:var(--ui-font-size-14);line-height:22px}
 .prof .pabout .bio{margin-top:10px;color:var(--title);font-size:var(--ui-font-size-14);
@@ -770,11 +786,18 @@ a{text-decoration:none;color:inherit}
 .prof .pabout .rm{margin-top:6px;padding:0;border:0;background:none;cursor:pointer;
   color:var(--title);font-family:inherit;font-size:var(--ui-font-size-14);
   font-weight:var(--ui-font-weight-semibold);line-height:20px;text-decoration:underline}
-.prof .pabout .tags{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:16px;
+.prof .pabout .tags{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:18px;
   color:var(--muted);font-size:var(--ui-font-size-14);line-height:20px}
 .prof .pabout .tags i{font-style:normal;border-radius:999px;padding:3px 10px;
   background:var(--divider);color:var(--body);font-size:var(--ui-font-size-12);
   font-weight:var(--ui-font-weight-semibold);line-height:16px}
+/* 40 tall, grey, bold, with the bubble: the live button's own measurements */
+.prof .pabout .contact{display:inline-flex;align-items:center;gap:8px;margin-left:auto;
+  border:0;border-radius:40px;padding:8px 20px;background:#F5F6F9;color:var(--title);
+  font-family:inherit;font-size:var(--ui-font-size-14);font-weight:700;line-height:24px;
+  cursor:pointer;transition:background .14s ease;white-space:nowrap}
+.prof .pabout .contact:hover{background:#E5E8ED}
+.prof .pabout .contact svg{width:20px;height:20px;display:block}
 .prof .pabout .r{flex:0 0 360px}
 .prof .pvid{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;
   background:var(--divider)}
@@ -785,13 +808,23 @@ a{text-decoration:none;color:inherit}
 .prof .pvid .play svg{width:14px;height:16px;margin-left:3px;display:block}
 
 /* the lessons they sell */
-.prof .ptabs{display:flex;gap:20px;border-bottom:1px solid var(--divider);margin-bottom:16px}
-.prof .ptabs span{padding-bottom:10px;color:var(--muted);font-size:var(--ui-font-size-14);
+/* the lessons card sits tighter at the top because its tab row carries the space */
+.prof .card.plessons{padding:12px 24px 24px}
+.prof .card.prevcard{padding:16px 24px 0}
+.prof .ptabrow{display:flex;align-items:center;gap:16px;
+  border-bottom:1px solid var(--divider);margin-bottom:16px}
+.prof .ptabs{display:flex;gap:20px;flex:1;min-width:0}
+.prof .ppage{display:flex;gap:8px;padding:10px 0}
+.prof .ppage i{width:24px;height:24px;border-radius:999px;background:#F5F6F9;
+  display:grid;place-items:center;font-style:normal;color:var(--body);
+  font-size:var(--ui-font-size-12);line-height:1;cursor:pointer}
+.prof .ptabs span{padding:10px 0;color:var(--muted);font-size:var(--ui-font-size-14);
   font-weight:var(--ui-font-weight-semibold);line-height:20px;cursor:pointer}
 .prof .ptabs span.on{color:var(--title);box-shadow:inset 0 -2px 0 #FF4338}
-.prof .plist{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
-.prof .les{border:1px solid var(--divider);border-radius:12px;padding:16px;
-  display:flex;flex-direction:column;min-height:132px}
+/* the live row scrolls sideways at a fixed card width rather than dividing the space */
+.prof .plist{display:flex;gap:16px;overflow-x:auto;padding-bottom:4px}
+.prof .les{flex:0 0 337px;background:#F5F6F9;border-radius:12px;padding:16px;
+  display:flex;flex-direction:column;min-height:167px}
 .prof .les b{color:var(--title);font-size:var(--ui-font-size-14);
   font-weight:var(--ui-font-weight-bold);line-height:20px}
 .prof .les em{display:block;margin-top:8px;font-style:normal;color:var(--muted);
@@ -907,6 +940,9 @@ a{text-decoration:none;color:inherit}
   font-size:var(--ui-font-size-14);font-weight:var(--ui-font-weight-semibold);line-height:20px}
 
 /* three more like this one */
+/* the band the live page closes on: white, full width, its own 936 column inside */
+.prof .psimband{background:var(--card);padding:24px}
+.prof .psimband .in{max-width:936px;margin:0 auto}
 .prof .psim{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
 .prof .psim .c{display:block}
 .prof .psim .a{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;
@@ -1593,13 +1629,13 @@ a{text-decoration:none;color:inherit}
         '<span class="pacts"><button class="ghost" type="button">Contact teacher</button>' +
           '<button class="book" type="button">Book lesson</button></span>' +
       '</div>' +
-      '<div class="phead"><div class="in">' +
+      '<section class="phead"><div class="in">' +
         '<span class="av"><img src="' + avatarSrc + '" alt="">' +
         '<span class="fl"><svg style="width:100%;height:100%"><use href="#fl-' + d.flag +
         '"></use></svg></span></span>' +
         '<div><h1>' + esc2(d.name) + '</h1><div class="plangs">' + langs + '</div></div>' +
-      '</div></div>' +
-      '<div class="pstats"><div class="in">' +
+      '</div></section>' +
+      '<section class="pstats"><div class="in">' +
         '<div class="st">' + ICON.trend + '<span><b>Steady choice</b>' +
           '<em>Regular bookings lately</em></span></div>' +
         '<div class="st">' + ICON.book + '<span><b>' + d.lessons + '</b>' +
@@ -1609,21 +1645,32 @@ a{text-decoration:none;color:inherit}
         '<div class="st"><svg class="ic tt" viewBox="0 0 22 22"><use href="#tt-' + d.tt +
           '"></use></svg><span><b>' + d.type + '</b>' +
           '<em>' + (d.tt === 'pro' ? 'Certified teacher' : 'Verified tutor') + '</em></span></div>' +
-      '</div></div>' +
+      '</div></section>' +
       '<div class="pwrap">' +
-        '<div class="card pabout"><div class="l">' +
+        '<div class="card pabout"><div class="acols"><div class="l">' +
           '<div class="meta">From ' + country + '<br>Living in ' + city + ', ' + country +
           '<br>italki teacher since ' + since + '</div>' +
           '<div class="bio">' + longbio + '</div>' +
           '<button class="rm" type="button">Read more</button>' +
-          '<div class="tags">Interests' + ints.map(function (x) {
-            return '<i>' + x + '</i>'; }).join('') + '</div>' +
         '</div><div class="r"><div class="pvid"><img src="' + coverSrc + '" alt="">' +
           '<span class="play">' + PLAYSVG + '</span></div></div></div>' +
+          /* a row of its own across the whole card, below the video: the live one is
+             888 wide with the button pushed to the far edge */
+          '<div class="tags">Interests' + ints.map(function (x) {
+            return '<i>' + x + '</i>'; }).join('') +
+            '<button class="contact" type="button">' +
+            '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true">' +
+            '<path d="M17 9.2c0 3.1-3.1 5.6-7 5.6-.86 0-1.69-.12-2.45-.35L4 16l.86-2.6' +
+            'C3.7 12.37 3 10.86 3 9.2 3 6.1 6.1 3.6 10 3.6s7 2.5 7 5.6Z" ' +
+            'stroke="#313140" stroke-width="1.5" stroke-linejoin="round"/></svg>' +
+            'Contact teacher</button></div>' +
+        '</div>' +
 
-        '<div class="card"><h2 class="ph">Lessons</h2>' +
-          '<div class="ptabs"><span class="on">English</span><span>' +
-            (subs[1] || 'Conversation') + '</span></div>' +
+        /* no heading: the live card opens straight on its tabs */
+        '<div class="card plessons">' +
+          '<div class="ptabrow"><div class="ptabs"><span class="on">English</span>' +
+            '<span>' + (subs[1] || 'Conversation') + '</span></div>' +
+            '<div class="ppage"><i>‹</i><i>›</i></div></div>' +
           '<div class="plist">' + les + '</div></div>' +
 
         '<div class="card psched"><div class="pcal">' +
@@ -1636,7 +1683,7 @@ a{text-decoration:none;color:inherit}
             '<div class="wscroll"><div class="wb">' + wb + '</div></div></div>' +
             '<div class="leg"><span><i class="on"></i>Available</span></div></div></div>' +
 
-        '<div class="card"><div class="prevhead">' +
+        '<div class="card prevcard"><div class="prevhead">' +
           '<div class="big">' + d.rating + '<em>' + stars(5) + '</em></div>' +
           '<div class="n"><b>' + d.reviews + '</b><em>Reviews</em></div>' +
           '<div class="n"><b>100%</b><em>Attendance</em></div>' +
@@ -1649,9 +1696,11 @@ a{text-decoration:none;color:inherit}
           '<div class="prevs">' + revs + '</div>' +
           '<button class="showmore" type="button">Show more ∨</button></div>' +
 
-        '<div class="card"><h2 class="ph">Similar teachers for you</h2>' +
-          '<div class="psim">' + sim + '</div></div>' +
       '</div>' +
+      /* a full-width white band under the column, the way the live page ends */
+      '<div class="psimband"><div class="in">' +
+        '<h2 class="ph">Similar teachers for you</h2>' +
+        '<div class="psim">' + sim + '</div></div></div>' +
     '</div></div>';
   }
 
