@@ -973,9 +973,15 @@ a{text-decoration:none;color:inherit}
     var bits = d.week || '';
     var ints = [INTERESTS[seed % 9], INTERESTS[(seed + 3) % 9], INTERESTS[(seed + 6) % 9]];
     var price = parseInt((d.price || 'US$20').replace(/\D/g, ''), 10) || 20;
+    var SUBKEYS = Object.keys(BYSUBJECT);
     var subs = card ? [].slice.call(card.querySelectorAll('.m .tags i'))
       .map(function (n) { return n.textContent; }) : [];
-    if (!subs.length) subs = ['Conversation'];
+    if (subs.length < 2) {
+      var k = seed % SUBKEYS.length;
+      [SUBKEYS[k], SUBKEYS[(k + 3) % SUBKEYS.length]].forEach(function (x) {
+        if (subs.indexOf(x) < 0) subs.push(x);
+      });
+    }
     var longbio = LONGBIO[seed % LONGBIO.length]
       .replace(/\{s\}/g, (subs[0] || 'conversation').toLowerCase())
       .replace(/\{y\}/g, String(4 + (seed % 12)))
@@ -990,8 +996,14 @@ a{text-decoration:none;color:inherit}
       langs += '<span>' + esc2(nm) + '<u>' + bars + '</u></span>';
     });
     var list = [['Trial Lesson', 'A1-C2 | ' + subs[0], 0.5]];
-    subs.forEach(function (x) { if (BYSUBJECT[x]) list.push(BYSUBJECT[x]); });
-    if (list.length < 3) list.push(BYSUBJECT['Conversation']);
+    var used = {};
+    subs.forEach(function (x) {
+      if (BYSUBJECT[x] && !used[x]) { used[x] = 1; list.push(BYSUBJECT[x]); }
+    });
+    for (var fi = 0; list.length < 3 && fi < SUBKEYS.length; fi++) {
+      var key = SUBKEYS[(seed + fi * 5) % SUBKEYS.length];
+      if (!used[key]) { used[key] = 1; list.push(BYSUBJECT[key]); }
+    }
     var les = list.slice(0, 3).map(function (l, i) {
       var pr = Math.max(5, Math.round(price * l[2]));
       return '<div class="les"><b>' + l[0] + '</b><em>' + l[1] + ' | ' +
