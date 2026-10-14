@@ -1469,10 +1469,18 @@ a{text-decoration:none;color:inherit}
     var price = parseInt((d.price || 'US$20').replace(/\D/g, ''), 10) || 20;
 
     /* the subjects this teacher's own card is showing, in the order it shows them. Read
-       first, because the bio and the lesson list are both built out of them. */
+       first, because the bio and the lesson list are both built out of them. Three of the
+       shelves carry no subject tags at all, so for those teachers two are drawn from the
+       name: one subject repeated was putting the same lesson on the page twice. */
+    var SUBKEYS = Object.keys(BYSUBJECT);
     var subs = card ? [].slice.call(card.querySelectorAll('.m .tags i'))
       .map(function (n) { return n.textContent; }) : [];
-    if (!subs.length) subs = ['Conversation'];
+    if (subs.length < 2) {
+      var k = seed % SUBKEYS.length;
+      [SUBKEYS[k], SUBKEYS[(k + 3) % SUBKEYS.length]].forEach(function (x) {
+        if (subs.indexOf(x) < 0) subs.push(x);
+      });
+    }
 
     var longbio = LONGBIO[seed % LONGBIO.length]
       .replace(/\{s\}/g, (subs[0] || 'conversation').toLowerCase())
@@ -1490,8 +1498,15 @@ a{text-decoration:none;color:inherit}
     });
 
     var list = [['Trial Lesson', 'A1-C2 | ' + subs[0], 0.5]];
-    subs.forEach(function (x) { if (BYSUBJECT[x]) list.push(BYSUBJECT[x]); });
-    if (list.length < 3) list.push(BYSUBJECT['Conversation']);
+    var used = {};
+    subs.forEach(function (x) {
+      if (BYSUBJECT[x] && !used[x]) { used[x] = 1; list.push(BYSUBJECT[x]); }
+    });
+    /* top up from the subjects this teacher is not already selling, never by repeating */
+    for (var fi = 0; list.length < 3 && fi < SUBKEYS.length; fi++) {
+      var key = SUBKEYS[(seed + fi * 5) % SUBKEYS.length];
+      if (!used[key]) { used[key] = 1; list.push(BYSUBJECT[key]); }
+    }
     var les = list.slice(0, 3).map(function (l, i) {
       var pr = Math.max(5, Math.round(price * l[2]));
       return '<div class="les"><b>' + l[0] + '</b><em>' + l[1] + ' | ' +
