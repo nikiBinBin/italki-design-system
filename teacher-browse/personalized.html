@@ -761,11 +761,12 @@ a{text-decoration:none;color:inherit}
 
 /* who, with the languages they teach and speak */
 /* full-width white, 144 tall, its contents on the same 936 column as everything else */
-/* The live band pads 24 top and bottom and lets its two columns set the height: the
-   photo with how long ago they were here under it, and the name with the languages. The
-   band was a fixed 144 with only 66 of content centred in it, which left 39 of nothing
-   above the name and 39 more under the languages. */
-.prof .phead{display:block;background:var(--card);min-height:144px;padding:24px}
+/* The two columns set the height: the photo with how long ago they were here under it,
+   and the name with the languages. The bottom pad is 8 rather than the live page's 24.
+   "Visited 12 hours ago" wraps to two lines in a 64 column, so the photo's column runs
+   14 lower than the name's, and with a matching 24 under it the band ended on a band of
+   nothing that nothing was ever going to fill. */
+.prof .phead{display:block;background:var(--card);padding:24px 24px 8px}
 .prof .phead .in{max-width:936px;margin:0 auto;display:flex;align-items:flex-start;
   gap:16px}
 .prof .phead .avcol{flex:0 0 64px;display:flex;flex-direction:column;align-items:center;
@@ -803,7 +804,7 @@ a{text-decoration:none;color:inherit}
 
 /* the four numbers */
 .prof .pstats{display:block;background:var(--card);border-bottom:1px solid var(--divider)}
-.prof .pstats .in{max-width:936px;height:76px;margin:0 auto;display:flex;
+.prof .pstats .in{max-width:936px;height:56px;margin:0 auto;display:flex;
   align-items:center;padding:0 24px}
 .prof .pstats .st{flex:1;display:flex;align-items:center;gap:10px}
 .prof .pstats .st .ic{flex:0 0 24px;width:24px;height:24px;display:block;
