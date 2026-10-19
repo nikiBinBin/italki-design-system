@@ -1,0 +1,575 @@
+<!-- @dsCard group="Patterns" -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.ITalkiUIAssetBase="../../"</script>
+<script src="../_dc/support.js"></script>
+<title>Teacher discovery — italki UI Kit</title>
+</head>
+<body>
+<x-dc>
+<!-- Not a starting point: this page backs the TeacherDiscovery card, and the card is the
+     reference. A page you start from is one of the two shells. -->
+<helmet>
+<script src="../_dc/ds-base.js"></script>
+<script src="../_dc/ds-safe.js"></script>
+<link rel="stylesheet" href="../_dc/filter-pattern.css">
+<link rel="stylesheet" href="../_dc/teacher-card-pattern.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>body{margin:0;color:var(--ui-color-text);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;font-weight:500}#teacher-filter-modal{position:fixed;inset:0;z-index:var(--ui-layer-overlay,60);min-height:0;display:block;background:transparent;pointer-events:none}#teacher-filter-modal.is-open{pointer-events:auto}#teacher-filter-modal .ui-modal{max-height:calc(100vh - 32px)}body{margin:0;background:var(--ui-color-divider);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}*{box-sizing:border-box}a{color:var(--ui-color-link);text-decoration:none}a:hover{color:var(--ui-color-link-hover);text-decoration:underline}/* Duplicates the kit default on purpose. These used to live only here, then
+   only in the kit; either way the template depended on the other side being
+   in step, and a bundle one version behind left the shell unpositioned.
+   Same values as .ui-sidebar / .ui-top-nav, so whichever wins, wins the same.
+   The rungs come from the --ui-layer-* scale in tokens.css; the literals are
+   only the fallback for a bundle that predates it. */
+.ui-sidebar.ui-sidebar{height:100dvh;position:sticky;top:0;z-index:var(--ui-layer-sidebar,41);align-self:flex-start}
+.ui-top-nav.ui-top-nav{position:sticky;top:0;z-index:var(--ui-layer-top-nav,40)}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;align-items:flex-start">
+
+<x-import component-from-global-scope="SafeUI.Sidebar" variant="plus" items="{{ navItems }}" sections="{{ navSections }}" more-items="{{ moreItems }}" footer="{{ sidebarFooter }}" hint-size="324px,100vh"></x-import>
+
+<div style="flex:1;min-width:0">
+
+<x-import component-from-global-scope="SafeUI.TopNav" variant="teacher-search" context-options="{{ languageOptions }}" search-placeholder="Search topics" action-label="Book lessons" hint-size="100%,72px"></x-import>
+
+<div style="padding:0 0 64px">
+<div style="background:var(--ui-color-card);border-bottom:1px solid var(--ui-color-border)">
+<div style="max-width:1216px;margin:0 auto;padding:32px 24px 20px">
+
+<div style="display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:20px">
+<div><h1 style="margin:0;color:var(--ui-color-title);font-size:28px;font-weight:700;line-height:36px">Find your English teacher</h1><p style="margin:4px 0 0;color:var(--ui-color-secondary);font-size:14px;line-height:20px">Compare teaching styles, watch introductions, and book a trial when you are ready.</p></div>
+<div style="display:flex;align-items:center;gap:12px">
+<span onClick="{{ toggleCompareTray }}" style="display:inline-flex;cursor:pointer"><x-import component-from-global-scope="SafeUI.Button" label="{{ compareLabel }}" variant="secondary" size="{{ 32 }}" shape="pill" hint-size="148px,32px"></x-import></span>
+<label style="display:inline-flex;flex:0 0 auto;align-items:center;gap:8px;white-space:nowrap">
+<span onClick="{{ toggleBeginner }}" style="display:inline-flex;cursor:pointer"><x-import component-from-global-scope="SafeUI.Switch" checked="{{ beginnerMode }}" label="Show beginner teachers" hint-size="44px,24px"></x-import></span>
+<span style="color:var(--ui-color-text);font-size:14px;font-weight:500;line-height:20px">Beginner teachers</span>
+</label>
+</div>
+</div>
+
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
+<x-import component-from-global-scope="SafeUI.Tag" label="Instant lessons" size="{{ 32 }}" removable="{{ true }}" hint-size="140px,32px"></x-import>
+<x-import component-from-global-scope="SafeUI.Tag" label="Beginner friendly" size="{{ 32 }}" removable="{{ true }}" hint-size="150px,32px"></x-import>
+<x-import component-from-global-scope="SafeUI.Tag" label="Trial available" size="{{ 32 }}" removable="{{ true }}" hint-size="135px,32px"></x-import>
+</div>
+<p role="status" aria-live="polite" style="min-height:20px;margin:12px 0 0;color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ comparisonStatus }}</p>
+<sc-if value="{{ compareTrayOpen }}" hint-placeholder-val="{{ true }}">
+<section aria-label="Teacher comparison" style="display:grid;gap:12px;margin-top:16px;border-top:1px solid var(--ui-color-divider);padding-top:16px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:16px"><strong style="color:var(--ui-color-title);font-size:14px;line-height:20px">Teacher comparison</strong><span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">Up to 3 teachers</span></div>
+<sc-if value="{{ hasCompared }}" hint-placeholder-val="{{ true }}"><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"><sc-for list="{{ compareRows }}" as="c" hint-placeholder-count="3"><div style="min-width:0;display:grid;gap:2px;border:1px solid var(--ui-color-border);border-radius:8px;padding:10px 12px;background:var(--ui-color-card)"><strong style="overflow:hidden;color:var(--ui-color-title);font-size:13px;line-height:18px;text-overflow:ellipsis;white-space:nowrap">{{ c.name }}</strong><span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ c.rating }} rating · {{ c.lessons }}</span><span style="color:var(--ui-color-info);font-size:12px;line-height:18px">{{ c.price }} · {{ c.availability }}</span></div></sc-for></div></sc-if>
+<sc-if value="{{ comparisonEmpty }}" hint-placeholder-val="{{ true }}"><span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">Choose teachers with the save button to see their price, ratings, and next available time side by side.</span></sc-if>
+</section>
+</sc-if>
+
+</div>
+</div>
+
+<div style="max-width:1216px;margin:0 auto;padding:0 24px 24px">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,348px);gap:24px;align-items:start">
+
+<div style="grid-column:1;grid-row:2;min-width:0">
+<div style="display:flex;flex-direction:column;gap:16px">
+
+<sc-for list="{{ teachers }}" as="t" hint-placeholder-count="10">
+<article class="teacher-pattern-card" data-teacher="{{ t.name }}" data-screen-label="{{ t.label }}">
+<aside class="teacher-pattern-side">
+<x-import component-from-global-scope="SafeUI.Avatar" image="{{ t.photo }}" flag="{{ t.flag }}" size="{{ 120 }}" ariaLabel="{{ t.avatarLabel }}" hint-size="120px,120px"></x-import>
+<div class="teacher-pattern-evidence">
+<strong>{{ t.rating }}<img src="../../Assets/Icons/star-solid.svg" alt=""></strong>
+<span>{{ t.lessons }}</span>
+</div>
+</aside>
+<div class="teacher-pattern-main">
+<header class="teacher-pattern-head">
+<div class="teacher-pattern-copy"><h3>{{ t.name }}</h3></div>
+<span class="teacher-pattern-role"><img src="{{ t.roleIcon }}" alt="">{{ t.role }}</span>
+</header>
+<div class="teacher-pattern-language">
+<strong>Speaks</strong>
+<span>{{ t.speaks }}</span>
+<x-import component-from-global-scope="SafeUI.Tag" label="Native" size="{{ 24 }}" tone="info" hint-size="56px,24px"></x-import>
+<span>{{ t.alsoSpeaks }}</span>
+</div>
+<div class="teacher-pattern-summary-wrap"><p class="teacher-pattern-summary">{{ t.summary }}</p></div>
+<sc-if value="{{ beginnerMode }}" hint-placeholder-val="{{ true }}">
+<div class="teacher-pattern-tags">
+<sc-for list="{{ t.tags }}" as="tag" hint-placeholder-count="2">
+<x-import component-from-global-scope="SafeUI.Tag" label="{{ tag.label }}" size="{{ 24 }}" tone="{{ tag.tone }}" hint-size="120px,24px"></x-import>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ beginnerMode }}" hint-placeholder-val="{{ true }}">
+<x-import component-from-global-scope="SafeUI.Link" label="See beginner lessons" href="#teacher-card" size="{{ 14 }}" trailingIcon="chevron" hint-size="170px,20px"></x-import>
+</sc-if>
+<footer class="teacher-pattern-offer">
+<div class="teacher-pattern-price">
+<strong>{{ t.price }}<span>/ Hour</span></strong>
+<span class="teacher-pattern-availability">{{ t.availability }}</span>
+</div>
+<div class="teacher-pattern-actions">
+<span onClick="{{ t.toggleCompare }}" style="display:inline-flex;cursor:pointer"><x-import component-from-global-scope="SafeUI.Button" variant="text" size="{{ 32 }}" shape="pill" iconOnly="{{ true }}" leadingIcon="favorite-outline" ariaLabel="{{ t.compareLabel }}" hint-size="32px,32px"></x-import></span>
+<x-import component-from-global-scope="SafeUI.Button" label="Book lesson" variant="secondary" size="{{ 32 }}" shape="pill" hint-size="110px,32px"></x-import>
+<x-import component-from-global-scope="SafeUI.Button" variant="text" size="{{ 32 }}" shape="pill" iconOnly="{{ true }}" leadingIcon="more" ariaLabel="More actions" hint-size="32px,32px"></x-import>
+</div>
+</footer>
+</div>
+</article>
+</sc-for>
+
+</div>
+</div>
+
+<!-- Pagination sits in its own row, not inside the results column: row 2 then
+     measures the card list alone, so the sticky preview stops with its bottom
+     flush against the last card instead of drifting on past it. -->
+<div style="grid-column:1;grid-row:3;display:flex;justify-content:center;margin-top:32px"><x-import component-from-global-scope="SafeUI.Pagination" pages="{{ resultPages }}" current="{{ 1 }}" ariaLabel="Search results pages" hint-size="320px,32px"></x-import></div>
+
+<aside ref="{{ previewRef }}" style="grid-column:2;grid-row:2;margin-top:0;transition:margin-top .18s ease;position:sticky;top:96px;display:flex;flex-direction:column;gap:16px;border-radius:12px;background:var(--ui-color-card);box-shadow:var(--ui-shadow-card);padding:16px" aria-label="Teacher preview">
+
+<div style="display:flex;align-items:center;gap:8px">
+<x-import component-from-global-scope="SafeUI.Avatar" image="{{ previewPhoto }}" size="{{ 32 }}" ariaLabel="{{ previewName }}" hint-size="32px,32px"></x-import>
+<span style="min-width:0;overflow:hidden;color:var(--ui-color-title);font-size:14px;font-weight:700;line-height:20px;text-overflow:ellipsis;white-space:nowrap">{{ previewName }}</span>
+</div>
+
+<x-import component-from-global-scope="SafeUI.Video" poster="Assets/Images/covers/teacher-intro.jpg" poster-alt="" duration="{{ previewDuration }}" play-label="{{ previewPlayLabel }}" hint-size="100%,180px"></x-import>
+
+<div>
+<x-import component-from-global-scope="SafeUI.Calendar" variant="compact-availability" dates="{{ previewDates }}" rows="{{ previewRows }}" timezone="Asia/Shanghai" ariaLabel="Teacher availability" hint-size="100%,150px"></x-import>
+</div>
+
+<div style="display:grid"><x-import component-from-global-scope="SafeUI.Button" label="{{ previewBookLabel }}" variant="red" size="{{ 40 }}" shape="pill" hint-size="100%,40px"></x-import></div>
+<div style="display:grid"><span onClick="{{ openProfile }}" style="display:grid;cursor:pointer"><x-import component-from-global-scope="SafeUI.Button" label="View full profile" variant="secondary" size="{{ 40 }}" shape="pill" hint-size="100%,40px"></x-import></span></div>
+<p role="status" aria-live="polite" style="min-height:18px;margin:0;color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ previewStatus }}</p>
+
+</aside>
+
+</div>
+</div>
+</div>
+
+<!-- The whole drawer is the Modal component now, with its body composed from
+     the kit. Closing is delegated below rather than bound with onClick: the
+     kit renders markup, not React nodes, so there is nothing here to bind a
+     handler to — and the trigger is empty because this one opens from the
+     top nav. -->
+<x-import component-from-global-scope="SafeUI.Modal" id="teacher-filter-modal" title="Filter" size="wide" open="{{ filterOpen }}" trigger="" body="{{ filterBody }}" footer="{{ filterFooter }}" hint-size="744px,780px"></x-import>
+
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  static TEACHERS = {
+    "Rachel Kim": { photo: "../../Assets/Images/faces/01.jpg", initials: "RK", tone: "info", price: "US$16.00", duration: "1:24" },
+    "James Wilson": { photo: "../../Assets/Images/faces/03.jpg", initials: "JW", tone: "primary", price: "US$12.00", duration: "0:58" },
+    "Maya Chen": { photo: "../../Assets/Images/faces/03.jpg", initials: "MC", tone: "success", price: "US$22.00", duration: "2:10" },
+    "Ava Thompson": { photo: "../../Assets/Images/faces/04.jpg", initials: "AT", tone: "warning", price: "US$18.00", duration: "1:47" },
+    "Noah Williams": { photo: "../../Assets/Images/faces/04.jpg", initials: "NW", tone: "info", price: "US$10.00", duration: "1:05" },
+  };
+  static ROSTER = [
+    { name: "Rachel Kim", country: "United States", flag: "us", pro: true, rating: "4.98", lessons: "2,431 lessons",
+      speaks: "English", alsoSpeaks: "Korean · Spanish B1", price: "US$16.00", availability: "Available now",
+      summary: "Certified English teacher helping busy adults speak with confidence in meetings, travel, and everyday life.",
+      tags: [["success", "Beginner friendly"], ["info", "Business English"]] },
+    { name: "James Wilson", country: "United Kingdom", flag: "gb", pro: true, rating: "4.92", lessons: "1,876 lessons",
+      speaks: "English", alsoSpeaks: "French B2", price: "US$12.00", availability: "Available now",
+      summary: "Relaxed conversation lessons built around your week, with clear corrections you can use right away.",
+      tags: [["success", "Conversation focused"], ["info", "IELTS preparation"]] },
+    { name: "Maya Chen", country: "Canada", flag: "ca", pro: false, rating: "5.00", lessons: "3,102 lessons",
+      speaks: "English", alsoSpeaks: "Mandarin · Japanese B1", price: "US$22.00", availability: "Available tomorrow",
+      summary: "Patient tutor for thoughtful learners who want natural pronunciation, better grammar, and more ease speaking.",
+      tags: [["success", "Patient"], ["info", "Pronunciation"]] },
+    { name: "Ava Thompson", country: "Australia", flag: "au", pro: true, rating: "4.95", lessons: "1,207 lessons",
+      speaks: "English", alsoSpeaks: "Italian B2", price: "US$18.00", availability: "Available now",
+      summary: "Conversation coach for professionals. Bring a real presentation, interview, or email and we will practise it together.",
+      tags: [["success", "Business English"], ["info", "Interview prep"]] },
+    { name: "Noah Williams", country: "United States", flag: "us", pro: false, rating: "4.89", lessons: "3,842 lessons",
+      speaks: "English", alsoSpeaks: "Portuguese B1", price: "US$10.00", availability: "Available tomorrow",
+      summary: "Friendly, practical lessons for travel and everyday confidence, with a short recap after every class.",
+      tags: [["success", "Patient"], ["info", "Travel English"]] },
+  ];
+  static ROW_LABELS = ["00 – 04", "04 – 08", "08 – 12", "12 – 16", "16 – 20", "20 – 24"];
+  static DAYS = [
+    { id: "mon", label: "Mo", date: "22" }, { id: "tue", label: "Tu", date: "23" },
+    { id: "wed", label: "We", date: "24" }, { id: "thu", label: "Th", date: "25" },
+    { id: "fri", label: "Fr", date: "26" }, { id: "sat", label: "Sa", date: "27" },
+    { id: "sun", label: "Su", date: "28" },
+  ];
+  // Hours available inside a four-hour band, as shown in the cell tooltip.
+  static BAND_HOURS = [1, 1.5, 2, 2.5, 3, 3.5, 4];
+
+  state = {
+    ready: !!Component.kit?.(),
+    filterOpen: false,
+    preview: "Rachel Kim",
+    previewOffset: 0,
+    beginnerMode: false,
+    compared: [],
+    compareTrayOpen: false,
+    previewStatus: "Select a teacher to compare, view their profile, or book a trial.",
+  };
+
+  previewRef = React.createRef();
+
+  // The offset is a live measurement, so it is written to the node rather than
+  // rendered as a style hole (holes cannot paint until the logic class lands).
+  componentDidUpdate() {
+    const el = this.previewRef.current;
+    if (el) el.style.marginTop = this.state.previewOffset + "px";
+  }
+
+  componentDidMount() {
+    // Hover-to-preview is template behaviour and must not wait on either kit build.
+    this.onOver = (e) => {
+      const card = e.target.closest?.("article[data-teacher]");
+      if (!card) return;
+      const name = card.dataset.teacher;
+      if (!name || name === this.state.preview) return;
+      /* The panel tracks the hovered card, but only as far as the list goes:
+         top-aligning with one of the last cards would hang the panel below the
+         list, so the offset is capped at the point where the panel's bottom sits
+         flush with the last card's bottom. Near the end of the list the panel
+         therefore bottom-aligns instead of top-aligns. */
+      const list = card.parentElement;
+      let offset = 0;
+      if (list) {
+        const wanted = card.getBoundingClientRect().top - list.getBoundingClientRect().top;
+        const panel = this.previewRef.current;
+        const room = list.offsetHeight - (panel ? panel.offsetHeight : 0);
+        offset = Math.max(0, Math.round(Math.min(wanted, room)));
+      }
+      this.setState({ preview: name, previewOffset: offset });
+    };
+    document.addEventListener("mouseover", this.onOver, true);
+
+    /* Registered before the ready check, not after. `ready` starts true whenever
+       the bundle is already cached, and the early return below then skipped
+       this — so the filter button worked on a cold load and was silently dead
+       on a warm one. Listening does not depend on the kit being there. */
+    /* TopNav renders as a static HTML string, so its filter button carries no
+       React handler — delegate instead and open the filter drawer from here. */
+    this.onNavClick = (e) => {
+      if (e.target.closest && e.target.closest(".ui-top-nav-search__filter")) {
+        e.preventDefault();
+        this.setState((s) => ({ filterOpen: !s.filterOpen }));
+        return;
+      }
+      /* The drawer's own dismissals. They used to be onClick bindings on
+         hand-written markup; the markup is the component's now, so the state
+         has to be reached the same way the open does. */
+      const inDrawer = e.target.closest && e.target.closest("#teacher-filter-modal");
+      if (inDrawer && e.target.closest('.ui-modal__mask, .ui-modal__close, [data-demo="filter-apply"]')) {
+        this.setState({ filterOpen: false });
+      }
+    };
+    document.addEventListener("click", this.onNavClick, true);
+
+    const loaded = () => Component.kit?.();
+    const start = () => {};
+    if (this.state.ready) { start(); return; }
+    // ds-base.js loads the kit asynchronously; re-render once it is available.
+    this.timer = setInterval(() => {
+      if (!loaded()) return;
+      clearInterval(this.timer);
+      start();
+      this.setState({ ready: true });
+    }, 50);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+    document.removeEventListener("mouseover", this.onOver, true);
+    document.removeEventListener("click", this.onNavClick, true);
+  }
+
+  // The row shape the results list binds. Both render paths read it from here:
+  // renderVals() and reactVals() each used to build their own view of the
+  // roster, and only one of them was ever kept in step.
+  rosterRows() {
+    const C = this.constructor;
+    return C.ROSTER.map((t, i) => ({
+      ...t,
+      label: "Result " + String(i + 1).padStart(2, "0"),
+      avatarLabel: t.name + ", " + t.country,
+      photo: (C.TEACHERS[t.name] || {}).photo || "",
+      role: t.pro ? "Professional Teacher" : "Community Tutor",
+      roleIcon: "../../Assets/Icons/certified-solid-" + (t.pro ? "red" : "teal") + ".svg",
+      tags: t.tags.map(([tone, label]) => ({ tone, label })),
+      compareLabel: this.state.compared.includes(t.name) ? `Remove ${t.name} from comparison` : `Add ${t.name} to comparison`,
+      toggleCompare: () => this.toggleCompare(t.name),
+    }));
+  }
+
+  /* The kit is reachable under two names and they are the same object:
+     window.ITalkiUI is the vanilla runtime, and the React bundle re-exports it
+     as window.ItalkiUI.raw. Reading only the first made the shell depend on
+     which one the host happened to install — when it was missing the sidebar
+     rendered empty, or fell through to a second, half-maintained code path. */
+  static kit() { return window.ITalkiUI || (window.ItalkiUI || {}).raw || null; }
+
+  toggleCompare(name) {
+    this.setState((state) => {
+      const compared = state.compared.includes(name)
+        ? state.compared.filter((teacher) => teacher !== name)
+        : state.compared.length < 3 ? [...state.compared, name] : state.compared;
+      const reachedLimit = !state.compared.includes(name) && state.compared.length === 3;
+      return {
+        compared,
+        previewStatus: reachedLimit
+          ? "You can compare up to three teachers at once."
+          : compared.includes(name)
+            ? `${name} added to your comparison.`
+            : `${name} removed from your comparison.`,
+      };
+    });
+  }
+
+  compareRows() {
+    return this.constructor.ROSTER
+      .filter((teacher) => this.state.compared.includes(teacher.name))
+      .map((teacher) => ({ name: teacher.name, rating: teacher.rating, lessons: teacher.lessons, price: teacher.price, availability: teacher.availability }));
+  }
+
+  /* If neither name shows up, say so instead of rendering an empty rail. */
+  static warnMissingKit() {
+    if (document.getElementById("ds-kit-missing")) return;
+    const el = document.createElement("div");
+    el.id = "ds-kit-missing";
+    el.textContent = "Design-system bundle not loaded: neither window.ITalkiUI nor window.ItalkiUI.raw is available.";
+    el.style.cssText = "position:fixed;z-index:9999;top:0;left:0;right:0;padding:8px 12px;background:var(--ui-color-error);color:var(--ui-color-on-primary);font:12px/1.5 system-ui";
+    document.body.appendChild(el);
+  }
+
+  previewVals() {
+    const C = this.constructor;
+    const name = this.state.preview;
+    const t = C.TEACHERS[name] || C.TEACHERS["Rachel Kim"];
+    return {
+      previewRef: this.previewRef,
+      previewName: name,
+      previewInitials: t.initials,
+      previewPhoto: t.photo,
+      previewTone: "ui-avatar--tone-" + t.tone,
+      previewPrice: t.price,
+      previewDuration: t.duration,
+      previewDates: C.DAYS,
+      previewRows: C.availabilityFor(name),
+    };
+  }
+
+  // Six four-hour bands × seven days, as in the Calendar catalog card. Derived from the
+  // teacher's name so each roster entry has a stable, distinct week.
+  static availabilityFor(name) {
+    const C = this;
+    let seed = 0;
+    for (let i = 0; i < name.length; i++) seed = (seed * 31 + name.charCodeAt(i)) % 100003;
+    const rand = (n) => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed % n; };
+    return C.ROW_LABELS.map((label, i) => ({
+      id: "band-" + i,
+      label,
+      slots: C.DAYS.map(() => {
+        // Daytime bands are likelier to be open than the small hours.
+        const open = rand(10) < (i === 0 || i === 5 ? 3 : 7);
+        return open
+          ? { state: "available", hours: C.BAND_HOURS[rand(C.BAND_HOURS.length)] }
+          : { state: "unavailable" };
+      }),
+    }));
+  }
+
+  /* No dispatcher here. The kit's behaviours are wired once in ds-safe.js —
+     one table, shared by both templates. Two of them binding the same hooks
+     means every click is handled twice, and a toggle handled twice is a toggle
+     that never moves. */
+  /* The filter drawer, composed from the kit rather than copied out of it.
+
+     This used to be twenty-nine kilobytes of markup on one line — the rendered
+     output of the Catalog's Filter pattern, pasted in. It looked identical and
+     tracked nothing: fifty-eight chips, eight selection cards, seven checkboxes,
+     a slider and a tab set, all frozen at the shape those components had on the
+     day it was copied. Change Chip and the Catalog's card follows; this did not,
+     and nothing would have said so.
+
+     It is the same composition the Catalog performs, calling the same
+     renderers. Icons stay page-relative "Assets/…" paths — ds-safe rewrites
+     them for this folder's depth. */
+  filterBody(UI) {
+    const chip = (label, selected = false) => UI.chip({ label, size: 32, selected, demo: "ds-chip" });
+    const field = (caption, content) =>
+      `<div class="filter-pattern__cluster"><p class="filter-pattern__caption">${caption}</p><div class="filter-pattern__chip-row">${content}</div></div>`;
+    const iconButton = (label) => UI.button({ variant: "text", size: 32, shape: "pill", leadingIcon: "Assets/Icons/search.svg", iconOnly: true, ariaLabel: label });
+    const timeOption = (label, icon, selected = false) =>
+      `<div>${UI.selection({ label, value: label, selected, contentType: "icon-simple", selectionMode: "checkbox", leading: `<img src="${icon}" alt="" />`, demo: "ui-selection-card" })}</div>`;
+    const teacherOption = (label, description, icon) =>
+      `<div class="filter-pattern__teacher-option">${UI.selection({ label, value: label, description, selectedMarker: true, contentType: "icon-simple", selectionMode: "checkbox", leading: `<img src="${icon}" alt="" />`, demo: "ui-selection-card" })}</div>`;
+    /* A category chip carries the group it belongs to, so the disclosure can
+       find its children. The Catalog rewrites the demo hook the same way. */
+    const categoryChip = (categoryId, label, selected = false) =>
+      chip(label, selected).replace('data-demo="ds-chip"', `data-demo="filter-category-child" data-filter-category-child data-filter-category-id="${categoryId}"${label === "All" ? " data-filter-category-all" : ""}`);
+    const categoryGroup = (id, label, children, checked = false) =>
+      `<div class="filter-pattern__category" data-filter-category data-expanded="${checked}">${UI.checkbox({ id: `filter-category-${id}`, label, checked: checked ? "on" : "off", demo: "filter-category-parent" })}<div class="filter-pattern__category-children" data-filter-category-children${checked ? "" : " hidden"}><div class="filter-pattern__chip-row">${children.map((child) => categoryChip(id, child, checked && child === "All")).join("")}</div></div></div>`;
+
+    const histogram = [26, 44, 72, 60, 36, 28, 48, 32, 20, 36, 52, 42, 26, 20, 16, 12, 8, 6]
+      .map((height, index) => `<i class="${index > 1 && index < 5 ? "is-selected" : ""}" style="--filter-bar-height:${height}px"></i>`).join("");
+
+    const availability = UI.tabs({
+      id: "filter-availability-tabs",
+      activeId: "general",
+      ariaLabel: "Availability preference",
+      items: [
+        { id: "general", label: "General", panel:
+          `<div class="filter-pattern__cluster"><div class="filter-pattern__chip-row">${chip("Instant lesson")}${chip("Within 72 hours")}</div></div>`
+          + `<div class="filter-pattern__cluster"><p class="filter-pattern__caption">Days of the week</p><div class="filter-pattern__day-row">${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => chip(day)).join("")}</div></div>`
+          + `<div class="filter-pattern__cluster"><p class="filter-pattern__caption">Time range</p><div class="filter-pattern__time-grid">${timeOption("00:00 - 04:00", "Assets/Icons/morning.svg")}${timeOption("04:00 - 08:00", "Assets/Icons/morning.svg")}${timeOption("08:00 - 12:00", "Assets/Icons/afternoon.svg")}${timeOption("12:00 - 16:00", "Assets/Icons/afternoon.svg")}${timeOption("16:00 - 20:00", "Assets/Icons/evening.svg")}${timeOption("20:00 - 24:00", "Assets/Icons/night.svg")}</div></div>` },
+        { id: "specific", label: "Specific time", panel: `<p class="filter-pattern__caption">Choose an exact date and time with the documented Date picker and Time slot components.</p>` },
+      ],
+    });
+
+    const lessonCategory = `<section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Lesson category</h3></header><div class="filter-pattern__check-list">`
+      + categoryGroup("language-essentials", "Language Essentials", ["All", "Pronunciation", "Grammar", "Spelling", "Reading", "Listening", "Writing", "Speaking"])
+      + categoryGroup("conversation", "Conversation", ["All", "Everyday conversation", "Speaking confidence", "Small talk"])
+      + categoryGroup("business", "Business", ["All", "Meetings", "Presentations", "Interviews"])
+      + categoryGroup("test-preparation", "Test Preparation", ["All", "IELTS", "TOEFL", "TOEIC"])
+      + categoryGroup("medical", "Medical", ["All", "Healthcare", "Nursing", "Medical interviews"])
+      + categoryGroup("technology", "Technology", ["All", "Software engineering", "Product", "Data science"])
+      + `</div></section>`;
+
+    /* The Plus row needs its badge inside the checkbox label, which the
+       component does not model. Rewriting its own output is how the Catalog
+       does it too — the alternative is hand-rolling the checkbox. */
+    const plusCheckbox = UI.checkbox({ id: "filter-plus", label: "Plus features available", demo: "checkbox" })
+      .replace("<span>Plus features available</span>", '<span><img src="Assets/Icons/Plustag.svg" alt="" /><span>Plus features available</span></span>');
+    const teacherType = `<section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Teacher type</h3></header><div class="filter-pattern__teacher-type">`
+      + plusCheckbox
+      + teacherOption("Professional teacher", "Certified teachers with a wealth of experience", "Assets/Icons/teacher-professional.svg")
+      + teacherOption("Community tutor", "Guide language learners with real-world practice", "Assets/Icons/teacher-community.svg")
+      + `</div></section>`;
+
+    return `<div class="filter-pattern__body">`
+      + `<section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Teacher from</h3>${iconButton("Search teacher origin")}</header><div class="filter-pattern__chip-row">${chip("Native speaker")}</div>`
+      + field("Popular countries/regions", ["United States", "United Kingdom", "Canada", "Australia", "South Africa", "Ireland"].map((label) => chip(label)).join(""))
+      + field("Other countries/regions", ["Hong Kong", "United Arab Emirates", "Portugal", "Russia"].map((label) => chip(label)).join(""))
+      + `</section>`
+      + `<section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Also speak</h3>${iconButton("Search additional language")}</header>`
+      + field("My speaking language", ["Chinese (Mandarin)", "Japanese"].map((label) => chip(label)).join(""))
+      + field("Popular languages", ["English", "Spanish", "French", "Korean", "German", "Italian", "Portuguese", "Russian"].map((label) => chip(label)).join(""))
+      + `</section>`
+      + `<section class="filter-pattern__card"><header class="filter-pattern__card-head"><h3>Price range</h3></header><div class="filter-pattern__price-chart" aria-hidden="true">${histogram}</div><div class="filter-pattern__price-range"><div data-price-floor="12" data-price-ceiling="227">${UI.sliderRange({ lower: 20, upper: 70, label: "Lesson price" })}</div><div class="filter-pattern__range-values"><span>Minimum<output data-filter-price="min">$55</output></span><span>Maximum<output data-filter-price="max">$162</output></span></div></div></section>`
+      + `<section class="filter-pattern__card filter-pattern__availability"><header class="filter-pattern__card-head"><h3>Availability</h3></header>${availability}</section>`
+      + lessonCategory + teacherType + `</div>`;
+  }
+
+  renderVals() {
+    // One render path. There used to be a second — reactVals — that ran only
+    // when the vanilla namespace was missing, and it had never been kept in
+    // step: its icons were bare names the asset contract rejects. A path that
+    // runs only when something else has already gone wrong is a path nobody
+    // tests.
+    const UI = Component.kit?.();
+    if (!UI) return {};
+
+    /* italki's shell roster comes from the kit, not from here. Three pages
+       used to write it out by hand and the three had drifted apart: this one
+       carried a Practice and a Vocabulary that were never in the spec, and the
+       profile page's More menu held two entries where this one held five. Same
+       component throughout — the list was just data nobody was keeping in step.
+       Bare icon names on purpose: the renderer resolves them, which is what
+       makes one list correct here and two folders down. */
+    const { items: navItems, moreItems } =
+      UI.appShellNav?.({ active: "search-teachers" }) ?? { items: [], moreItems: [] };
+
+    // Row shapes mirror the Catalog's #sidebar: chat rows lead with a 24px
+    // avatar; lesson rows carry a count prefix, divider and secondary line.
+    // A sidebar row's leading slot takes rendered markup, not a URL: the item
+    // has no `avatar` key, so passing the photo directly dropped it silently.
+    const portrait = (n) => UI.avatar({
+      image: (this.constructor.TEACHERS[n] || {}).photo || "",
+      size: 24,
+      ariaLabel: n,
+    });
+    const navSections = [
+      { id: "chats", label: "Chats", open: true, items: [
+        { id: "chat-rachel", label: "Rachel Kim", secondary: "2m", leading: portrait("Rachel Kim") },
+        { id: "chat-james", label: "James Wilson", secondary: "1h", leading: portrait("James Wilson") },
+        { id: "chat-maya", label: "Maya Chen", secondary: "Yesterday", leading: portrait("Maya Chen") },
+      ] },
+      { id: "lessons", label: "Lessons", items: [
+        { id: "lesson-today", prefix: "12", divider: true, label: "English conversation", secondary: "Today 18:00" },
+        { id: "lesson-thu", prefix: "13", divider: true, label: "Business English", secondary: "Thu 18:00" },
+      ] },
+    ];
+
+
+    const sidebarFooter =
+      '<button class="ui-sidebar__item" type="button" style="width:auto">' +
+      '<img class="ui-sidebar__item-icon" src="../../Assets/Icons/wallet.svg" alt="" />' +
+      "<span>$293.45 USD</span></button>" +
+      UI.avatar({ initials: "NI", size: 32, tone: "primary", interactive: true, ariaLabel: "Your profile" });
+
+    /* The bar is a named variant now, so the template supplies the data and
+       the component composes the context picker, the search field and the
+       action. It used to build all three by hand and pass them in as markup. */
+    const languageOptions = [
+      { id: "english", label: "English teachers", flag: "Assets/Flags/gb.svg" },
+      { id: "spanish", label: "Spanish teachers", flag: "Assets/Flags/es.svg" },
+      { id: "japanese", label: "Japanese teachers", flag: "Assets/Flags/jp.svg" },
+      { id: "french", label: "French teachers", flag: "Assets/Flags/fr.svg" },
+    ];
+
+    return {
+      navItems,
+      navSections,
+      moreItems,
+      sidebarFooter,
+      // The markup binds twenty-one names; this path returned six. The results
+      // list, the preview card, its calendar and the filter drawer all read
+      // from the missing fifteen, so they resolved to undefined and rendered
+      // as nothing — the calendar loudly, the rest silently.
+      ...this.previewVals(),
+      teachers: this.rosterRows(),
+      beginnerMode: this.state.beginnerMode,
+      beginnerClass: this.state.beginnerMode ? "is-checked" : "",
+      toggleBeginner: () => this.setState((s) => ({ beginnerMode: !s.beginnerMode })),
+      toggleCompareTray: () => this.setState((s) => ({
+        compareTrayOpen: !s.compareTrayOpen,
+        previewStatus: s.compared.length
+          ? `Comparing ${s.compared.join(", ")}.`
+          : "Choose up to three teachers with the save button to compare them.",
+      })),
+      compareLabel: this.state.compared.length ? `Compare ${this.state.compared.length} teachers` : "Compare teachers",
+      comparisonStatus: this.state.compared.length
+        ? `Selected for comparison: ${this.state.compared.join(", ")}.`
+        : "Use the save button on a teacher card to add up to three teachers for comparison.",
+      compareTrayOpen: this.state.compareTrayOpen,
+      compareRows: this.compareRows(),
+      hasCompared: this.state.compared.length > 0,
+      comparisonEmpty: this.state.compared.length === 0,
+      openProfile: () => this.setState({ previewStatus: `Opening ${this.state.preview}'s full profile.` }),
+      previewStatus: this.state.previewStatus,
+      resultPages: [1, 2, 3, "ellipsis", 64],
+      previewPlayLabel: `Play ${this.state.preview}'s introduction video`,
+      previewBookLabel: `Book trial · ${this.previewVals().previewPrice}`,
+      filterOpen: this.state.filterOpen,
+      filterBody: this.filterBody(UI),
+      /* Two buttons the kit renders. Neither can carry an onClick — this is a
+         markup string — so the drawer closes through the delegated handler.
+         The treatment follows the Filter pattern's own footer: secondary and
+         red at 40, default shape. It had drifted to text/32/pill here, which
+         is the same failure as every other copied choice — the component was
+         right and the props were a private opinion. */
+      filterFooter:
+        UI.button({ label: "Reset", variant: "secondary", size: 40, shape: "default", demo: "filter-reset" })
+        + UI.button({ label: "Show 1,284 teachers", variant: "red", size: 40, shape: "default", demo: "filter-apply" }),
+      languageOptions,
+    };
+  }
+}
+</script>
+</body>
+</html>
