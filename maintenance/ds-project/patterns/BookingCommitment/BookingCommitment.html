@@ -1,0 +1,1503 @@
+<!-- @dsCard group="Patterns" -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>window.ITalkiUIAssetBase="../../"</script>
+<script src="../_dc/support.js"></script>
+<title>Booking commitment — italki UI Kit</title>
+</head>
+<body>
+<x-dc>
+<!-- Not a starting point: this page backs the BookingCommitment card, and the card is the
+     reference. A page you start from is one of the two shells. -->
+<helmet>
+<script src="../_dc/ds-base.js"></script>
+<script src="../_dc/ds-safe.js"></script>
+<link rel="stylesheet" href="../_dc/booking-flow.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>body{margin:0;background:var(--ui-color-divider);color:var(--ui-color-text);font-family:"Noto Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;font-weight:500;-webkit-font-smoothing:antialiased}*{box-sizing:border-box}a{color:var(--ui-color-link);text-decoration:none}a:hover{color:var(--ui-color-link-hover);text-decoration:underline}@keyframes video-progress{from{width:0}to{width:100%}}#profile-tabs .ui-tabs__panel{display:none}#profile-tabs .ui-tabs__list{border-bottom:0}#profile-tabs .ui-tabs__header{margin:0}#profile-tabs .ui-tabs__extra{display:none}#section-availability .ui-time-slot.ui-time-slot--option{padding:4px 12px;height:auto}
+/* Duplicates the kit default on purpose. These used to live only here, then
+   only in the kit; either way the template depended on the other side being
+   in step, and a bundle one version behind left the shell unpositioned.
+   Same values as .ui-sidebar / .ui-top-nav, so whichever wins, wins the same.
+   The rungs come from the --ui-layer-* scale in tokens.css; the literals are
+   only the fallback for a bundle that predates it. */
+.ui-sidebar.ui-sidebar{height:100dvh;position:sticky;top:0;z-index:var(--ui-layer-sidebar,41);align-self:flex-start}
+.ui-top-nav.ui-top-nav{position:sticky;top:0;z-index:var(--ui-layer-top-nav,40)}
+/* The booking flow is this page's overlay. A drawer stage carries
+   min-height:272px so it can be demonstrated inline, which on a real page is
+   empty space below the fold — fixed and inert until it opens. */
+#booking-drawer{position:fixed;inset:0;z-index:var(--ui-layer-overlay,60);min-height:0;overflow:visible;background:transparent;pointer-events:none}
+#booking-drawer.is-open{pointer-events:auto}
+#booking-drawer .ui-drawer__layer{position:fixed;inset:0}
+/* The kit's drawer stage is a card-sized demo box. A booking flow needs the
+   same drawer pinned to the viewport, so only the stage geometry is restated —
+   the drawer, mask, header, body and footer stay exactly as the kit draws them. */
+.bf-stage.ui-drawer-stage{position:fixed;inset:0;z-index:120;min-height:0;display:block;overflow:visible;border-radius:0;background:transparent;pointer-events:none}
+.bf-stage .ui-drawer__layer{position:fixed;inset:0;align-items:flex-end;justify-content:center}
+.bf-stage.is-open .ui-drawer__layer{pointer-events:auto}
+/* A modal surface over the page has to hold the page still — the profile behind
+   the booking flow scrolled, which moves the thing you were reading out from
+   under a dialog you cannot see past. The lock sits with this geometry, not in
+   the Drawer component: the kit's own stage is a bounded box inside a page and
+   must not freeze it, and it is these rules that turn that box into a viewport
+   overlay. */
+html:has(.bf-stage.is-open),body:has(.bf-stage.is-open){overflow:hidden}
+.bf-stage .ui-drawer--bottom{max-height:none}
+/* The open drawer's transform makes it the containing block for position:fixed,
+   so the calendar's tooltips — which the kit places in viewport coordinates —
+   landed offset from the slot being hovered. `none` still interpolates from
+   translateY(100%), so the slide-up is unaffected. */
+.bf-stage.ui-drawer-stage.is-open .ui-drawer{transform:none}
+/* In scrollable mode the tooltip is fixed and anchored to the slot's centre, so
+   the last column's edge placement — written for the absolute case — left it
+   running past the right edge. Shifting it a full width back re-aligns its right
+   edge with that centre. */
+.bf-stage .ui-calendar--scrollable .ui-calendar__slot:last-child .ui-tooltip{--ui-tooltip-x:-100%}
+.bf-stage .ui-calendar--scrollable .ui-calendar__slot:last-child .ui-tooltip::before{right:16px;left:auto}
+/* The timezone, Today and the week arrows are one line of controls, not a band:
+   the component's 48px floor and its padding go inside the flow. */
+.bf-stage .ui-calendar__controls{height:auto;padding:0}
+/* The week takes the room the removed header gave back: a definite height all
+   the way down, and the component's own 480px cap lifted for this host. */
+/* The reading width is a name, not a measurement passed in as data — the same
+   three cases React expresses with its own modifiers. */
+/* width, not just max-width: as a grid item it would otherwise shrink to its
+   content, which is what narrowed the week. */
+.bf-body{width:100%;max-width:760px;margin:0 auto;padding:24px;box-sizing:border-box}
+.bf-body--wide{max-width:1040px}
+.bf-body--full{max-width:none}
+.bf-stage{--ui-calendar-scroll-max:100%;--bf-top-nav:72px}
+/* The drawer takes the screen minus the top nav, the way the React flow has it.
+   The inline 90vh it carried before was both short of that and without a
+   ceiling of its own, so the week had less room to fill than it should. */
+.bf-stage .ui-drawer--bottom{height:calc(100vh - var(--bf-top-nav));max-height:calc(100vh - var(--bf-top-nav));border-radius:var(--ui-radius-xl) var(--ui-radius-xl) 0 0}
+.bf-stage .ui-drawer__body{display:grid;min-height:0}
+.bf-stage .bf-body{min-height:0}
+.bf-stage [data-screen-label="Step 3 schedule"]{min-height:0;height:100%;position:relative}
+/* The notice answers a click on the week; it should not push the week down to
+   say so. It floats at the top of the step, centred, and above everything the
+   calendar paints there: the sticky date header claims z-index 101 and the slot
+   tooltips 102, which is why a card at the default order came out half buried
+   under the date row. Only the card itself takes clicks. */
+.bf-stage .bf-notices{position:absolute;top:0;left:0;right:0;z-index:103;display:grid;gap:8px;pointer-events:none}
+/* The row stretches and the card centres itself. Centring the row instead put
+   the card 87px to the left: the row is a wrapper whose fit-content width is the
+   copy's natural width, wider than the card's own 400px ceiling, so centring the
+   wrapper left the card sitting at its left edge. */
+.bf-stage .bf-notices > *{pointer-events:auto}
+.bf-stage .bf-notices .ui-notification{margin-inline:auto}
+.bf-stage [data-screen-label="Step 3 schedule"]>div:last-child{min-height:0;display:grid}
+.bf-stage [data-screen-label="Step 3 schedule"] .ui-calendar{min-height:0;height:100%;display:grid;grid-template-rows:auto minmax(0,1fr)}
+
+.bf-stage .ui-drawer__body{padding:0}
+.bf-stage .ui-selection{width:100%}
+/* The ring counts scheduled lessons, so it carries the same colour the calendar
+   paints a chosen slot with, and scales down to sit beside the step heading. */
+.bf-stage .ui-progress--circle .ui-progress__ring-value{stroke:var(--ui-color-info)}
+.bf-stage .ui-progress--circle{--ui-progress-size:56px !important;--ui-progress-ring-stroke:9px !important}
+/* The list heading already says what is being counted, so the schedule meter
+   drops its own label and reads as one line: track, then the count. */
+.bf-stage .ui-stepper--schedule-progress{display:flex;align-items:center;gap:12px}
+.bf-stage .ui-stepper--schedule-progress .ui-stepper__schedule-track{order:1;flex:1}
+.bf-stage .ui-stepper--schedule-progress .ui-stepper__schedule-meta{order:2;flex:0 0 auto}
+.bf-stage .ui-stepper--schedule-progress .ui-stepper__schedule-meta > span{display:none}
+.bf-stage .ui-stepper--schedule-progress .ui-stepper__schedule-track i{background:var(--ui-color-text)}
+.bf-stage .ui-stepper--schedule-progress .ui-stepper__schedule-meta b{color:var(--ui-color-text)}
+.bf-stage .ui-selection-group{width:100%}
+/* A platform that needs an account holds the field inside its own card: the
+   wrapper takes over the selected card's outline so the two read as one. */
+/* Every wrapper carries the ring's geometry from the start — only its colour
+   changes — so switching options crossfades instead of jumping a pixel. */
+/* Two across, as the React step settles it — four in a row squeezed the copy. */
+.bf-stage .ui-selection-group--package-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.bf-stage .bf-platform{border-radius:var(--ui-radius-lg);border:1px solid transparent;box-shadow:0 0 0 1px transparent;transition:border-color 180ms ease,box-shadow 180ms ease,background-color 180ms ease}
+.bf-stage .bf-platform.has-field{border-color:var(--ui-color-text);box-shadow:0 0 0 1px var(--ui-color-text);background:var(--ui-color-card)}
+.bf-stage .bf-platform.has-field .ui-selection{border-color:transparent;box-shadow:none}
+.bf-stage .bf-platform [data-component="text-input"]{width:100%;max-width:none}
+/* The platform logos are the mark itself, not an icon in a tile: the kit's
+   feature box draws a 32px bordered square around a 16px image, which reads as a
+   small logo in a frame. Same override the React step carries — the frame goes
+   and the logo takes the whole 32px. */
+.bf-stage .ui-selection--icon-simple .ui-selection__feature{width:32px;height:32px;flex-basis:32px;border:0;border-radius:0;background:transparent}
+.bf-stage .ui-selection--icon-simple .ui-selection__feature img{width:32px;height:32px}
+/* FormField owns the label, the control and the note, and the gap between them —
+   this was a hand-built stack with a gap of its own, which is why its label read
+   14px where the kit's reads 12px. The wrapper keeps only the geometry that is
+   this flow's: the inset rule, the padding and the reveal. */
+.bf-stage .bf-handle{display:grid;overflow:hidden;margin:0 16px;border-top:1px solid var(--ui-color-divider);padding:12px 0 16px;animation:bf-field-in 200ms ease both}
+/* The animation was named but never defined, so the field appeared instantly. */
+@keyframes bf-field-in{from{max-height:0;opacity:0;transform:translateY(-6px)}to{max-height:200px;opacity:1;transform:none}}
+/* The payment options keep their own cards, as the React step has them: the
+   Panel holds them, it does not absorb them into rows. */
+.bf-stage .ui-stepper--progress-steps,.bf-stage .ui-stepper--top-indicator{width:100%}
+/* The Calendar narrows the Button's icon-to-label gap to 2px, which reads
+   cramped against the 8px leading padding — restore the Button component's own
+   8px so this button matches every other icon+label button in the kit. Delete
+   once the Calendar drops its override. */
+.bf-stage .ui-calendar__actions [data-calendar-action="today"]{gap:var(--ui-space-2);padding-left:var(--ui-space-3)}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;align-items:flex-start">
+
+<x-import component-from-global-scope="SafeUI.Sidebar" variant="plus" collapsed="{{ true }}" items="{{ navItems }}" sections="{{ navSections }}" more-items="{{ moreItems }}" balance="$293.45 USD" avatar-initials="NI" sticky="{{ true }}" hint-size="260px,100vh"></x-import>
+
+<div style="flex:1;min-width:0">
+
+<x-import component-from-global-scope="SafeUI.TopNav" aria-label="Page" context-label="Spanish teachers" context-flag="Assets/Flags/es.svg" context-options="{{ navContextOptions }}" search-placeholder="Search topics" search-filter-label="Filter" action-label="Book lessons" action-icon="nav-plus" hint-size="100%,72px"></x-import>
+
+<div style="max-width:1216px;margin:0 auto;padding:24px 24px 64px">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,348px);gap:24px;align-items:start">
+
+<main style="min-width:0;display:flex;flex-direction:column;gap:16px">
+
+<section id="profile-top" data-screen-label="Profile header" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px">
+<div style="display:flex;gap:24px;align-items:flex-start">
+<div style="position:relative;flex:0 0 auto">
+<x-import component-from-global-scope="SafeUI.Avatar" image="https://randomuser.me/api/portraits/women/44.jpg" flag="es" size="{{ 120 }}" ariaLabel="Lucía Fernández, Spain" hint-size="120px,120px"></x-import>
+</div>
+<div style="min-width:0;flex:1;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+<h1 style="margin:0;color:var(--ui-color-title);font-size:28px;font-weight:700;line-height:36px">Lucía Fernández</h1>
+<img src="../../Assets/Icons/verified-badge.svg" alt="ID verified" style="width:20px;height:20px">
+<sc-if value="{{ superTutor }}" hint-placeholder-val="{{ true }}">
+<img src="../../Assets/Icons/Plustag.svg" alt="italki Plus" style="height:20px">
+</sc-if>
+<div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+<span onClick="{{ toggleFavorite }}" style="display:inline-flex;cursor:pointer"><x-import component-from-global-scope="SafeUI.Button" variant="text" size="{{ 32 }}" shape="pill" iconOnly="{{ true }}" leadingIcon="{{ favIcon }}" ariaLabel="{{ favAria }}" hint-size="32px,32px"></x-import></span>
+<x-import component-from-global-scope="SafeUI.Button" variant="text" size="{{ 32 }}" shape="pill" iconOnly="{{ true }}" leadingIcon="share" ariaLabel="Share profile" hint-size="32px,32px"></x-import>
+<div data-more-menu style="position:relative">
+<span onClick="{{ toggleMore }}" style="display:inline-flex;cursor:pointer"><x-import component-from-global-scope="SafeUI.Button" variant="text" size="{{ 32 }}" shape="pill" iconOnly="{{ true }}" leadingIcon="more" ariaLabel="More actions" ariaExpanded="{{ moreOpen }}" hint-size="32px,32px"></x-import></span>
+<sc-if value="{{ moreOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;right:0;top:calc(100% + 8px);z-index:60;min-width:208px;display:flex;flex-direction:column;background:var(--ui-color-card);border:1px solid var(--ui-color-border);border-radius:12px;box-shadow:var(--ui-shadow-lg);padding:8px">
+<sc-for list="{{ railMoreItems }}" as="mi" hint-placeholder-count="4">
+<button onClick="{{ mi.onPick }}" type="button" style="display:flex;align-items:center;gap:12px;border:0;border-radius:8px;padding:10px 12px;background:transparent;color:var(--ui-color-text);font-family:inherit;font-size:14px;font-weight:500;line-height:20px;text-align:left;cursor:pointer" style-hover="background:var(--ui-color-divider)">
+<img src="{{ mi.icon }}" alt="" style="width:20px;height:20px">{{ mi.label }}
+</button>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;color:var(--ui-color-text);font-size:14px;line-height:20px">
+<span style="display:inline-flex;align-items:center;gap:4px"><img src="../../Assets/Icons/teacher-professional.svg" alt="" style="width:20px;height:20px">Professional Teacher</span>
+<span style="display:inline-flex;align-items:center;gap:4px"><img src="../../Assets/Icons/location.svg" alt="" style="width:16px;height:16px">Madrid, Spain</span>
+<span style="display:inline-flex;align-items:center;gap:4px"><img src="../../Assets/Icons/earth.svg" alt="" style="width:16px;height:16px">On italki since 2018</span>
+</div>
+<div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:4px">
+<span style="color:var(--ui-color-secondary);font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-right:2px">Speaks</span>
+<sc-for list="{{ speaksTags }}" as="s" hint-placeholder-count="3">
+<x-import component-from-global-scope="SafeUI.Tag" label="{{ s.text }}" size="{{ 24 }}" tone="{{ s.tone }}" hint-size="120px,24px"></x-import>
+</sc-for>
+</div>
+<div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
+<span style="color:var(--ui-color-secondary);font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;margin-right:2px">Interests</span>
+<sc-for list="{{ interests }}" as="tag" hint-placeholder-count="5">
+<x-import component-from-global-scope="SafeUI.Tag" label="{{ tag }}" size="{{ 24 }}" hint-size="72px,24px"></x-import>
+</sc-for>
+</div>
+</div>
+</div>
+<div style="display:flex;gap:48px;margin-top:20px;padding-top:16px;border-top:1px solid var(--ui-color-divider)">
+<sc-for list="{{ stats }}" as="st" hint-placeholder-count="4">
+<div style="display:grid;gap:2px">
+<strong style="display:inline-flex;align-items:center;gap:4px;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">{{ st.value }}<sc-if value="{{ st.star }}" hint-placeholder-val="{{ false }}"><img src="../../Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"></sc-if></strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ st.label }}</span>
+</div>
+</sc-for>
+</div>
+</section>
+
+<div ref="{{ tabsAnchorRef }}" style="margin-top:-16px"></div>
+<div id="profile-tabs" ref="{{ tabsBarRef }}" onClick="{{ onTabClick }}" style="position:sticky;top:72px;z-index:var(--ui-layer-content,30);background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:0 16px">
+<x-import component-from-global-scope="SafeUI.Tabs" items="{{ tabItems }}" activeId="{{ activeTab }}" activation="manual" ariaLabel="Profile sections" hint-size="100%,48px"></x-import>
+</div>
+
+<section id="section-about" data-screen-label="About" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px;display:flex;flex-direction:column;gap:16px">
+<h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">About me</h2>
+<p style="margin:0;color:var(--ui-color-text);font-size:14px;line-height:22px;text-wrap:pretty">¡Hola! I'm Lucía, a DELE examiner with 8 years of classroom experience in Madrid and 6 years teaching online. Every lesson is built around what you need to say next week — a job interview, a trip, a conversation with your in-laws — not around a textbook chapter.</p>
+<sc-if value="{{ readMore }}" hint-placeholder-val="{{ false }}">
+<p style="margin:0;color:var(--ui-color-text);font-size:14px;line-height:22px;text-wrap:pretty">I hold a degree in Hispanic Philology from Universidad Complutense and a DELE examiner accreditation (A1–C1). My students range from complete beginners to diplomats preparing for postings in Latin America. Outside class you'll find me cooking my grandmother's recipes, hiking the Sierra de Guadarrama, or arguing about football. Classes are relaxed but never improvised — you'll always leave with notes, corrections and homework you can actually finish.</p>
+</sc-if>
+<button onClick="{{ toggleReadMore }}" style="display:inline-flex;align-items:center;gap:4px;width:max-content;border:0;padding:0;background:transparent;color:var(--ui-color-title);font-family:inherit;font-size:14px;font-weight:600;line-height:20px;cursor:pointer">{{ readMoreLabel }}<img src="{{ readMoreIcon }}" alt="" style="width:16px;height:16px"></button>
+<div style="height:1px;background:var(--ui-color-divider)"></div>
+<div style="display:flex;flex-direction:column;gap:4px">
+<h3 style="margin:0;color:var(--ui-color-title);font-size:16px;font-weight:700;line-height:24px">italki insights</h3>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:12px;line-height:18px">Based on lesson data and student reviews from the last 12 months.</p>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<sc-for list="{{ insights }}" as="ins" hint-placeholder-count="6">
+<div style="display:flex;align-items:flex-start;gap:12px;border:1px solid var(--ui-color-border);border-radius:8px;padding:12px">
+<img src="{{ ins.icon }}" alt="" style="width:28px;height:28px;flex:0 0 28px">
+<div style="min-width:0;display:grid;gap:2px">
+<strong style="color:var(--ui-color-title);font-size:14px;font-weight:600;line-height:20px">{{ ins.title }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ ins.caption }}</span>
+</div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section id="section-lessons" data-screen-label="Lessons" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px;display:flex;flex-direction:column;gap:4px">
+<h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">Lessons</h2>
+<p style="margin:0 0 8px;color:var(--ui-color-secondary);font-size:12px;line-height:18px">All lessons are 1-on-1 in the italki Classroom. Cancel free up to 24 hours before.</p>
+<sc-for list="{{ lessons }}" as="l" hint-placeholder-count="5">
+<div style="display:contents">
+<sc-if value="{{ l.divider }}" hint-placeholder-val="{{ false }}"><div style="height:1px;background:var(--ui-color-divider)"></div></sc-if>
+<article style="display:flex;align-items:center;justify-content:space-between;gap:24px;padding:16px 0">
+<div style="min-width:0;display:grid;gap:4px">
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+<h3 style="margin:0;color:var(--ui-color-title);font-size:16px;font-weight:600;line-height:24px">{{ l.name }}</h3>
+<sc-if value="{{ l.tag }}" hint-placeholder-val="{{ false }}"><x-import component-from-global-scope="SafeUI.Tag" label="{{ l.tag }}" size="{{ 24 }}" tone="info" hint-size="130px,24px"></x-import></sc-if>
+</div>
+<p style="margin:0;color:var(--ui-color-text);font-size:14px;line-height:20px">{{ l.desc }}</p>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ l.meta }}</span>
+</div>
+<div style="display:flex;align-items:center;gap:16px;flex:0 0 auto">
+<div style="display:grid;gap:2px;text-align:right">
+<strong style="color:var(--ui-color-title);font-size:16px;line-height:24px">{{ l.price }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ l.per }}</span>
+</div>
+<span onClick="{{ l.onBook }}" style="display:inline-flex"><x-import component-from-global-scope="SafeUI.Button" label="Book" variant="secondary" size="{{ 32 }}" shape="pill" hint-size="64px,32px"></x-import></span>
+</div>
+</article>
+</div>
+</sc-for>
+</section>
+
+<section id="section-availability" data-screen-label="Availability" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px;display:flex;flex-direction:column;gap:16px">
+<h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">Availability</h2>
+
+<div style="display:flex;flex-direction:column;gap:8px">
+<x-import component-from-global-scope="SafeUI.Calendar" variant="availability" weekLabel="3 – 9 August 2026" dates="{{ weekDates }}" rows="{{ weekRows }}" timezone="Asia/Shanghai" ariaLabel="Teacher availability" hint-size="100%,440px"></x-import>
+</div>
+</section>
+
+<section id="section-reviews" data-screen-label="Reviews" style="background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:24px;display:flex;flex-direction:column;gap:16px">
+<h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">Student reviews</h2>
+<div style="display:flex;gap:40px;align-items:center;flex-wrap:wrap">
+<div style="display:grid;gap:4px;justify-items:center">
+<strong style="color:var(--ui-color-title);font-size:44px;font-weight:700;line-height:52px">4.98</strong>
+<div role="img" aria-label="Average rating 4.98 out of 5" style="display:flex;gap:2px"><img src="../../Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"><img src="../../Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"><img src="../../Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"><img src="../../Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"><img src="../../Assets/Icons/star-solid.svg" alt="" style="width:16px;height:16px"></div>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">612 reviews</span>
+</div>
+<div style="flex:1;min-width:260px;display:grid;gap:4px">
+<sc-for list="{{ breakdown }}" as="b" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:12px">
+<span style="display:inline-flex;align-items:center;gap:4px;width:28px;color:var(--ui-color-text);font-size:12px;font-weight:600">{{ b.star }}<img src="../../Assets/Icons/star-solid.svg" alt="" style="width:12px;height:12px"></span>
+<div style="flex:1"><x-import component-from-global-scope="SafeUI.Progress" value="{{ b.pct }}" max="{{ 100 }}" ariaLabel="{{ b.aria }}" hint-size="100%,8px"></x-import></div>
+<span style="width:36px;color:var(--ui-color-secondary);font-size:12px;text-align:right">{{ b.count }}</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<sc-for list="{{ reviewFilters }}" as="f" hint-placeholder-count="5">
+<button onClick="{{ f.onPick }}" class="{{ f.cls }}" type="button" data-component="chip" aria-pressed="{{ f.pressed }}">{{ f.label }}</button>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:4px">
+<sc-for list="{{ visibleReviews }}" as="r" hint-placeholder-count="4">
+<div style="display:contents">
+<sc-if value="{{ r.divider }}" hint-placeholder-val="{{ false }}"><div style="height:1px;background:var(--ui-color-divider)"></div></sc-if>
+<article style="display:flex;flex-direction:column;gap:8px;padding:16px 0">
+<header style="display:flex;align-items:center;gap:12px">
+<x-import component-from-global-scope="SafeUI.Avatar" image="{{ r.photo }}" flag="{{ r.flag }}" size="{{ 40 }}" ariaLabel="{{ r.name }}" hint-size="40px,40px"></x-import>
+<div style="min-width:0;flex:1;display:grid;gap:0">
+<strong style="color:var(--ui-color-title);font-size:14px;font-weight:600;line-height:20px">{{ r.name }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ r.meta }}</span>
+</div>
+<x-import component-from-global-scope="SafeUI.Tag" label="{{ r.lessonType }}" size="{{ 24 }}" hint-size="140px,24px"></x-import>
+</header>
+<div style="display:flex;gap:2px">
+<sc-for list="{{ r.stars }}" as="s" hint-placeholder-count="5"><img src="{{ s }}" alt="" style="width:14px;height:14px"></sc-for>
+</div>
+<p style="margin:0;color:var(--ui-color-text);font-size:14px;line-height:22px;text-wrap:pretty">{{ r.text }}</p>
+</article>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{ showPagination }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;justify-content:center"><x-import component-from-global-scope="SafeUI.Pagination" pages="{{ reviewPageNumbers }}" current="{{ reviewPage }}" ariaLabel="Review pages" hint-size="200px,32px"></x-import></div>
+</sc-if>
+</section>
+
+<section id="section-similar" data-screen-label="Similar teachers" style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px">
+<h2 style="margin:0;color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">Similar teachers</h2>
+<x-import component-from-global-scope="SafeUI.Button" label="See more Spanish teachers" variant="text" size="{{ 32 }}" shape="pill" trailingIcon="arrow-right-sm" hint-size="220px,32px"></x-import>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">
+<sc-for list="{{ similar }}" as="t" hint-placeholder-count="3">
+<article style="display:flex;flex-direction:column;gap:12px;background:var(--ui-color-card);border:1px solid transparent;border-radius:12px;box-shadow:var(--ui-shadow-card);padding:16px;cursor:pointer;transition:border-color 120ms ease,box-shadow 120ms ease" style-hover="border-color:var(--ui-color-title);box-shadow:var(--ui-shadow-md)">
+<div style="display:flex;align-items:center;gap:12px">
+<x-import component-from-global-scope="SafeUI.Avatar" image="{{ t.photo }}" flag="{{ t.flag }}" size="{{ 56 }}" ariaLabel="{{ t.aria }}" hint-size="56px,56px"></x-import>
+<div style="min-width:0;display:grid;gap:0">
+<strong style="overflow:hidden;color:var(--ui-color-title);font-size:14px;font-weight:700;line-height:20px;text-overflow:ellipsis;white-space:nowrap">{{ t.name }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ t.role }}</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:4px;color:var(--ui-color-secondary);font-size:12px;line-height:18px">
+<strong style="display:inline-flex;align-items:center;gap:2px;color:var(--ui-color-title);font-weight:600">{{ t.rating }}<img src="../../Assets/Icons/star-solid.svg" alt="" style="width:12px;height:12px"></strong>
+<span>{{ t.lessons }}</span>
+</div>
+<span style="color:var(--ui-color-text);font-size:12px;line-height:18px">{{ t.speaks }}</span>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;padding-top:4px;border-top:1px solid var(--ui-color-divider)">
+<strong style="color:var(--ui-color-title);font-size:14px;line-height:20px">{{ t.price }}<span style="color:var(--ui-color-secondary);font-size:12px;font-weight:500"> / hour</span></strong>
+<x-import component-from-global-scope="SafeUI.Button" label="View profile" variant="text" size="{{ 32 }}" shape="pill" hint-size="100px,32px"></x-import>
+</div>
+</article>
+</sc-for>
+</div>
+</section>
+
+</main>
+
+<aside ref="{{ railRef }}" data-screen-label="Booking rail" style="grid-column:2;position:sticky;top:96px;transition:top .18s ease;display:flex;flex-direction:column;gap:16px;background:var(--ui-color-card);border-radius:12px;box-shadow:var(--ui-shadow-card);padding:16px" aria-label="Book Lucía Fernández">
+<div onClick="{{ toggleVideo }}" style="position:relative">
+<x-import component-from-global-scope="SafeUI.Video" poster="Assets/Images/covers/teacher-intro.jpg" poster-alt="Lucía's introduction video" title="Meet Lucía" duration="1:24" play-label="{{ videoAria }}" hint-size="100%,196px"></x-import>
+<sc-if value="{{ videoPlaying }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;right:0;bottom:0;left:0;height:3px;overflow:hidden;border-radius:0 0 8px 8px;background:var(--ui-color-on-primary-muted)"><div style="height:100%;background:var(--ui-color-link);animation:video-progress 84s linear forwards"></div></div>
+</sc-if>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+<div style="display:flex;align-items:baseline;gap:4px">
+<strong style="color:var(--ui-color-title);font-size:24px;font-weight:700;line-height:32px">US$12.00+</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">per lesson</span>
+</div>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">Trial · {{ trialPrice }}</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="display:grid"><span onClick="{{ bookTrial }}" style="display:grid"><x-import component-from-global-scope="SafeUI.Button" label="{{ bookTrialLabel }}" variant="red" size="{{ 40 }}" shape="pill" hint-size="100%,40px"></x-import></span></div>
+<div style="display:grid"><x-import component-from-global-scope="SafeUI.Button" label="Contact teacher" variant="secondary" size="{{ 40 }}" shape="pill" leadingIcon="message" hint-size="100%,40px"></x-import></div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:10px">
+<sc-if value="{{ onlineNow }}" hint-placeholder-val="{{ true }}">
+<span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-success);font-size:14px;font-weight:600;line-height:18px"><span style="width:8px;height:8px;border-radius:9999px;background:var(--ui-color-success)"></span>Online now</span>
+</sc-if>
+<span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-secondary);font-size:14px;line-height:18px"><img src="../../Assets/Icons/message.svg" alt="" style="width:18px;height:18px">Usually responds within 1 hour</span>
+<span style="display:inline-flex;align-items:center;gap:8px;color:var(--ui-color-secondary);font-size:14px;line-height:18px"><img src="../../Assets/Icons/calendar.svg" alt="" style="width:18px;height:18px">23 lessons booked in the last 48 hours</span>
+</div>
+</aside>
+
+</div>
+</div>
+</div>
+</div>
+
+<div class="{{ stageClass }}" data-screen-label="Booking drawer" onClick="{{ onStageClick }}">
+<div class="ui-drawer__layer">
+<button class="ui-drawer__mask" type="button" aria-label="Close booking" onClick="{{ closeDrawer }}"></button>
+<aside class="ui-drawer ui-drawer--bottom ui-drawer--default" role="dialog" aria-modal="true" aria-label="Book a lesson">
+<div class="ui-drawer__content">
+
+<header class="ui-drawer__header" style="min-height:72px;padding:0 24px">
+<div style="min-width:0;display:flex;align-items:center;gap:12px">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Avatar" image="https://randomuser.me/api/portraits/women/44.jpg" flag="es" size="{{ 40 }}" ariaLabel="Lucía Fernández" hint-size="40px,40px"></x-import>
+<div style="min-width:0;display:grid;gap:0">
+<h3 style="margin:0;color:var(--ui-color-title);font-size:16px;font-weight:700;line-height:24px">{{ drawerTitle }}</h3>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px;white-space:nowrap">{{ drawerSubtitle }}<sc-if value="{{ showRating }}" hint-placeholder-val="{{ true }}"><span style="white-space:nowrap"> · 4.98 <span style="color:var(--ui-color-warning)">★</span></span></sc-if></span>
+</div>
+</div>
+<button class="ui-drawer__close" type="button" aria-label="Close booking" onClick="{{ closeDrawer }}"><img class="ui-drawer__close-icon" src="../../Assets/Icons/cross.svg" alt=""></button>
+</header>
+
+<div class="ui-drawer__body">
+<div class="bf-body {{ bodyClass }}">
+
+<sc-if value="{{ isStep1 }}" hint-placeholder-val="{{ true }}">
+<section data-screen-label="Step 1 lesson type" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:grid;gap:2px">
+<h4 style="margin:0;color:var(--ui-color-title);font-size:24px;font-weight:700;line-height:32px">Choose a lesson type</h4>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:14px;line-height:20px">Pick a course, then the length that suits you. A trial lesson is a one-off first meeting.</p>
+</div>
+
+<div class="ui-selection__lesson-card {{ trialCardClass }}">
+<button class="ui-selection__lesson-toggle {{ trialToggleClass }}" type="button" role="radio" aria-checked="{{ isTrial }}" onClick="{{ pickTrial }}">
+<span class="ui-selection__lesson-summary-copy">
+<span class="ui-selection__lesson-summary-title">Trial Lesson</span>
+<span class="ui-selection__lesson-summary-meta">{{ trialMeta }}</span>
+</span>
+<span class="ui-selection__lesson-summary-price">{{ trialPriceLabel }}</span>
+</button>
+</div>
+
+<div style="display:flex;align-items:center;gap:12px;color:var(--ui-color-secondary);font-size:12px;line-height:18px">
+<span style="height:1px;flex:1;background:var(--ui-color-divider)"></span>or book a regular course<span style="height:1px;flex:1;background:var(--ui-color-divider)"></span>
+</div>
+
+<div class="ui-selection-group ui-selection-group--lesson-options-list" role="radiogroup" aria-label="Choose a course and lesson length">
+<sc-for list="{{ courses }}" as="c" hint-placeholder-count="4">
+<section class="ui-selection__lesson-card {{ c.cardClass }}">
+<button class="ui-selection__lesson-toggle {{ c.toggleClass }}" type="button" role="radio" aria-checked="{{ c.selected }}" aria-expanded="{{ c.selected }}" onClick="{{ c.onPick }}">
+<span class="ui-selection__lesson-summary-copy">
+<span class="ui-selection__lesson-summary-title">{{ c.title }}</span>
+<span class="ui-selection__lesson-summary-meta">{{ c.meta }}</span>
+</span>
+<span class="ui-selection__lesson-summary-price">{{ c.fromPrice }}</span>
+</button>
+<div class="ui-selection__lesson-options {{ c.optionsClass }}" role="radiogroup" aria-label="Lesson length">
+<div class="ui-selection__lesson-options-inner">
+<sc-for list="{{ c.options }}" as="o" hint-placeholder-count="3">
+<button class="ui-selection__lesson-option {{ o.cls }}" type="button" role="radio" aria-checked="{{ o.selected }}" onClick="{{ o.onPick }}">
+<span class="ui-selection__lesson-option-label">{{ o.label }}</span>
+<span class="ui-selection__lesson-option-price">{{ o.price }}</span>
+<span class="ui-selection__lesson-option-indicator" aria-hidden="true"></span>
+</button>
+</sc-for>
+</div>
+</div>
+</section>
+</sc-for>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isStep2 }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Step 2 lesson count" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:grid;gap:2px">
+<h4 style="margin:0;color:var(--ui-color-title);font-size:24px;font-weight:700;line-height:32px">How many lessons?</h4>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:14px;line-height:20px">{{ packageIntro }}</p>
+</div>
+<div class="ui-selection-group ui-selection-group--radio ui-selection-group--package-grid" role="radiogroup" aria-label="Choose how many lessons">
+<sc-for list="{{ packages }}" as="p" hint-placeholder-count="4">
+<div onClick="{{ p.onPick }}" style="display:contents">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Selection" contentType="package-card" selectionMode="radio" demo="bf-selection" label="{{ p.aria }}" value="{{ p.value }}" selected="{{ p.selected }}" discount="{{ p.discount }}" price="{{ p.price }}" period="per lesson" description="{{ p.description }}" quantity="{{ p.quantity }}" quantityLabel="{{ p.quantityLabel }}" originalPrice="{{ p.originalPrice }}" totalPrice="{{ p.totalPrice }}" hint-size="100%,280px"></x-import>
+</div>
+</sc-for>
+</div>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:12px;line-height:18px">Package lessons stay valid for 6 months. Unused lessons can be refunded to your italki wallet.</p>
+</section>
+</sc-if>
+
+<sc-if value="{{ isStep3 }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Step 3 schedule" style="display:flex;flex-direction:column;gap:16px">
+
+
+<div class="bf-notices">
+<sc-if value="{{ showNotice }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ dismissNotice }}" style="cursor:pointer">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Notification" tone="warning" closable="{{ true }}" title="{{ noticeTitle }}" description="{{ noticeBody }}" hint-size="400px,76px"></x-import>
+</div>
+</sc-if>
+
+<sc-if value="{{ showConflict }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ dismissConflict }}" style="cursor:pointer">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Notification" tone="error" closable="{{ true }}" title="19:00 on Wed 12 Aug was just booked" description="Another student took that time while you were choosing. Pick a different slot to continue." hint-size="400px,96px"></x-import>
+</div>
+</sc-if>
+</div>
+
+<sc-if value="{{ dayHasSlots }}" hint-placeholder-val="{{ true }}">
+<div onClickCapture="{{ onCalendarClick }}">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Calendar" variant="availability" timezone="{{ timezone }}" weekLabel="{{ weekLabel }}" todayLabel="This week" dates="{{ calendarDates }}" rows="{{ calendarRows }}" ariaLabel="Lucía's weekly availability" hint-size="100%,560px"></x-import>
+</div>
+</sc-if>
+
+<sc-if value="{{ dayIsEmpty }}" hint-placeholder-val="{{ false }}">
+<div style="display:grid;gap:12px;justify-items:center;border:1px dashed var(--ui-color-border);border-radius:12px;padding:32px 24px;text-align:center">
+<img src="../../Assets/Icons/calendar.svg" alt="" style="width:32px;height:32px;opacity:.5">
+<div style="display:grid;gap:4px">
+<strong style="color:var(--ui-color-title);font-size:16px;font-weight:700;line-height:24px">{{ emptyTitle }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:14px;line-height:20px">{{ emptyBody }}</span>
+</div>
+<span onClick="{{ nextWeek }}" style="display:inline-flex;cursor:pointer"><x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Button" label="See next week" variant="secondary" size="{{ 32 }}" shape="pill" trailingIcon="arrow-right-sm" hint-size="150px,32px"></x-import></span>
+</div>
+</sc-if>
+
+
+</section>
+</sc-if>
+
+<sc-if value="{{ isStep4 }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Step 4 platform" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:grid;gap:2px">
+<h4 style="margin:0;color:var(--ui-color-title);font-size:24px;font-weight:700;line-height:32px">Where will the lesson happen?</h4>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:14px;line-height:20px">The teacher will meet you here. You can change this later from the lesson page.</p>
+</div>
+<div class="ui-selection-group" role="radiogroup" aria-label="Choose a video platform">
+<sc-for list="{{ platforms }}" as="pf" hint-placeholder-count="5">
+<div class="bf-platform {{ pf.wrapClass }}">
+<div onClick="{{ pf.onPick }}" style="display:contents">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Selection" contentType="icon-simple" selectionMode="radio" demo="bf-selection" label="{{ pf.label }}" value="{{ pf.id }}" leading="{{ pf.leading }}" subtext="{{ pf.subtext }}" description="{{ pf.description }}" selected="{{ pf.selected }}" hint-size="100%,64px"></x-import>
+</div>
+<sc-if value="{{ pf.showField }}" hint-placeholder-val="{{ false }}">
+<div class="bf-handle" onInput="{{ onHandleInput }}">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.FormField" id="{{ pf.fieldId }}" label="{{ pf.fieldLabel }}" control="{{ pf.fieldControl }}" helper="{{ pf.fieldHelper }}" size="{{ 40 }}" hint-size="100%,86px"></x-import>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isStep5 }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Step 5 checkout" style="display:flex;flex-direction:column;gap:16px">
+<div style="display:grid;gap:2px">
+<h4 style="margin:0;color:var(--ui-color-title);font-size:24px;font-weight:700;line-height:32px">Review and pay</h4>
+<p style="margin:0;color:var(--ui-color-secondary);font-size:14px;line-height:20px">Nothing is charged until you confirm. Free cancellation up to 24 hours before each lesson.</p>
+</div>
+
+<div style="display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:16px;align-items:start">
+
+<div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+<div style="display:flex;flex-direction:column;gap:12px;border-radius:12px;padding:16px;background:var(--ui-color-card);box-shadow:var(--ui-shadow-md)">
+<div style="display:flex;align-items:center;gap:12px">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Avatar" image="https://randomuser.me/api/portraits/women/44.jpg" flag="es" size="{{ 40 }}" ariaLabel="Lucía Fernández" hint-size="40px,40px"></x-import>
+<div style="min-width:0;display:grid;gap:0">
+<strong style="color:var(--ui-color-title);font-size:14px;font-weight:700;line-height:20px">Lucía Fernández</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">Spanish · Professional Teacher</span>
+</div>
+</div>
+<div style="height:1px;background:var(--ui-color-divider)"></div>
+<div style="display:grid;gap:2px">
+<strong title="{{ summaryTitle }}" style="min-width:0;color:var(--ui-color-title);font-size:15px;font-weight:700;line-height:22px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ summaryTitle }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px;text-wrap:pretty">{{ summaryLine }}</span>
+</div>
+<div style="height:1px;background:var(--ui-color-divider)"></div>
+<div style="display:grid;gap:6px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+<span style="color:var(--ui-color-secondary);font-size:12px;font-weight:600;line-height:18px;text-transform:uppercase;letter-spacing:.4px">Schedule</span>
+<span style="color:var(--ui-color-title);font-size:12px;font-weight:600;line-height:18px;white-space:nowrap">{{ scheduleCount }}</span>
+</div>
+<sc-if value="{{ hasPicks }}" hint-placeholder-val="{{ true }}">
+<div style="display:grid;gap:2px">
+<sc-for list="{{ picks }}" as="p" hint-placeholder-count="2">
+<span style="color:var(--ui-color-text);font-size:13px;line-height:20px;text-wrap:pretty">{{ p.label }}</span>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ noPicks }}" hint-placeholder-val="{{ false }}">
+<span style="color:var(--ui-color-secondary);font-size:13px;line-height:20px">No times chosen — schedule later from your lesson page.</span>
+</sc-if>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:8px;border-radius:12px;padding:16px;background:var(--ui-color-card);box-shadow:var(--ui-shadow-md)">
+<div style="display:grid;gap:12px">
+<sc-for list="{{ priceRows }}" as="r" hint-placeholder-count="3">
+<div style="display:grid;gap:0">
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px;text-wrap:pretty">{{ r.label }}</span>
+<span style="color:{{ r.color }};font-size:14px;font-weight:600;line-height:22px">{{ r.value }}</span>
+</div>
+</sc-for>
+</div>
+<div style="height:1px;background:var(--ui-color-divider)"></div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+<strong style="color:var(--ui-color-title);font-size:16px;font-weight:700;line-height:24px">Total</strong>
+<strong style="color:var(--ui-color-title);font-size:20px;font-weight:700;line-height:28px">{{ totalLabel }}</strong>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+<div onClickCapture="{{ onPaymentClick }}">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Panel" title="Payment method" divider="{{ true }}" body="{{ paymentBody }}" hint-size="100%,320px"></x-import>
+</div>
+</div>
+
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Confirmation" onClick="{{ onDoneClick }}" style="display:flex;flex-direction:column;gap:24px;align-items:center;padding:24px 0">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Result" tone="success" title="{{ doneTitle }}" description="{{ doneBody }}" action="{{ doneAction }}" secondaryAction="{{ doneSecondaryAction }}" hint-size="100%,260px"></x-import>
+</section>
+</sc-if>
+
+</div>
+</div>
+
+<sc-if value="{{ showFooter }}" hint-placeholder-val="{{ true }}">
+<footer class="ui-drawer__footer" style="flex-direction:column;align-items:stretch;gap:0;padding:0">
+<div style="padding:12px 24px 10px">
+<x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Stepper" items="{{ stepItems }}" current="{{ stepIndex }}" currentComplete="{{ stepReady }}" variant="top-indicator" ariaLabel="Booking steps" hint-size="100%,8px"></x-import>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 24px 16px">
+<div style="min-width:0;display:grid;gap:2px">
+<span style="color:var(--ui-color-secondary);font-size:11px;font-weight:700;line-height:16px;letter-spacing:.5px;text-transform:uppercase">{{ stepCaption }}</span>
+<div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+<strong style="color:var(--ui-color-title);font-size:24px;font-weight:700;line-height:32px">{{ footerPrice }}</strong>
+<span style="color:var(--ui-color-secondary);font-size:12px;line-height:18px">{{ footerNote }}</span>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:12px">
+<sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}">
+<span onClick="{{ goBack }}" style="display:inline-flex;cursor:pointer"><x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Button" label="Back" variant="secondary" size="{{ 40 }}" shape="rounded" hint-size="80px,40px"></x-import></span>
+</sc-if>
+<span onClick="{{ goNext }}" style="display:inline-flex;cursor:pointer"><x-import from="./ds-safe.js" component-from-global-scope="SafeUI.Button" label="{{ nextLabel }}" variant="red" size="{{ 40 }}" shape="rounded" disabled="{{ nextDisabled }}" hint-size="180px,40px"></x-import></span>
+</div>
+</div>
+</footer>
+</sc-if>
+
+</div>
+</aside>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;superTutor&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Teacher status&quot;},&quot;onlineNow&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Teacher status&quot;},&quot;trialPrice&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;US$8.00&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Pricing&quot;},&quot;startOnBooking&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Booking&quot;}}">
+class Component extends DCLogic {
+  static REVIEWS = [
+    { name: "Hannah M.", photo: "https://randomuser.me/api/portraits/women/65.jpg", flag: "us", lessons: 34, date: "July 2026", type: "Conversation Practice", rating: 5,
+      text: "Lucía notices exactly which mistakes matter and which to let go. After three months I finally stopped translating in my head — we just talk, and the corrections arrive quietly in the chat." },
+    { name: "Ken T.", photo: "https://randomuser.me/api/portraits/men/41.jpg", flag: "jp", lessons: 21, date: "June 2026", type: "DELE Exam Prep", rating: 5,
+      text: "Passed DELE B2 on the first try. The mock exams were harder than the real thing, which is exactly what you want. Every session ended with a clear list of what to drill next." },
+    { name: "Jonas K.", photo: "https://randomuser.me/api/portraits/men/22.jpg", flag: "de", lessons: 12, date: "June 2026", type: "Conversation Practice", rating: 5,
+      text: "Very patient with my slow sentences but never lets the hour drift. We talk about my week and she rebuilds my grammar around it. Notes after every single lesson." },
+    { name: "Ana P.", photo: "https://randomuser.me/api/portraits/women/29.jpg", flag: "br", lessons: 45, date: "May 2026", type: "Business Spanish", rating: 5,
+      text: "I brought real agendas from work and we rehearsed them — a salary negotiation, a client call, a conference talk. My colleagues in Mexico City noticed the difference within weeks." },
+    { name: "Oliver R.", photo: "https://randomuser.me/api/portraits/men/67.jpg", flag: "uk", lessons: 8, date: "May 2026", type: "Grammar Foundations", rating: 4,
+      text: "Structured and thorough. As a complete beginner I sometimes wanted more free talking, but the foundations are solid — I can already build my own sentences instead of memorising phrases." },
+    { name: "Chloé D.", photo: "https://randomuser.me/api/portraits/women/50.jpg", flag: "fr", lessons: 27, date: "April 2026", type: "Conversation Practice", rating: 5,
+      text: "The homework is small enough that I actually do it. Lucía remembers everything I've ever gotten wrong and brings it back until it sticks. Worth every céntimo." },
+    { name: "Marco B.", photo: "https://randomuser.me/api/portraits/men/85.jpg", flag: "it", lessons: 15, date: "April 2026", type: "DELE Exam Prep", rating: 5,
+      text: "As an Italian speaker I thought Spanish would be easy — Lucía found every false friend I leaned on. The exam technique sessions on the oral part were the difference between B2 and C1." },
+    { name: "Sofia L.", photo: "https://randomuser.me/api/portraits/women/90.jpg", flag: "pt", lessons: 9, date: "March 2026", type: "Business Spanish", rating: 5,
+      text: "Booked lessons before a posting to Madrid. We drilled emails, meeting phrases and small talk for the office kitchen. Practical from the first minute." },
+  ];
+  static LESSON_TYPES = ["Conversation Practice", "DELE Exam Prep", "Business Spanish", "Grammar Foundations"];
+  static DAYS = [
+    { id: "mon", label: "Mo", date: "03" }, { id: "tue", label: "Tu", date: "04" },
+    { id: "wed", label: "We", date: "05" }, { id: "thu", label: "Th", date: "06" },
+    { id: "fri", label: "Fr", date: "07" }, { id: "sat", label: "Sa", date: "08" },
+    { id: "sun", label: "Su", date: "09" },
+  ];
+  static ROW_LABELS = ["09:00", "10:00", "11:00", "12:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
+  static PAGE_SIZE = 4;
+
+  /* ── Booking flow ────────────────────────────────────────────────────────
+     Five steps in a bottom drawer, started from the rail or from a lesson row.
+     Two rules from the brief live here rather than in the markup: a trial has
+     the length its teacher set, so its step states the length and the quantity
+     step is not part of the sequence at all; and every regular lesson type
+     offers 60 minutes, which is the length italki promises on every type. */
+  static COURSES = [
+    { id: "conversation", title: "Real-life Conversation (Spanish)", meta: "A2–C2 · Language Essentials · 1,214 lessons completed",
+      durations: [{ m: 30, p: 9 }, { m: 45, p: 13 }, { m: 60, p: 17 }, { m: 90, p: 24 }] },
+    { id: "dele", title: "DELE Exam Prep", meta: "B1–C1 · Test Preparation · 642 lessons completed",
+      durations: [{ m: 45, p: 15 }, { m: 60, p: 19 }, { m: 90, p: 28 }] },
+    { id: "business", title: "Business Spanish", meta: "B1–C2 · Professional · 318 lessons completed",
+      durations: [{ m: 60, p: 18 }, { m: 90, p: 26 }] },
+    { id: "grammar", title: "Grammar Foundations", meta: "A1–B1 · Language Essentials · 257 lessons completed",
+      durations: [{ m: 30, p: 8 }, { m: 60, p: 14 }] },
+  ];
+  static TRIAL = { m: 30, p: 8 };
+  static COUNTS = [{ n: 1, off: 0 }, { n: 5, off: 0.05 }, { n: 10, off: 0.1 }, { n: 20, off: 0.15 }];
+  static PACKAGE_COPY = {
+    1: "Pay as you go — book one lesson at a time.",
+    5: "A short package to settle into a weekly rhythm.",
+    10: "The most popular way to make steady progress.",
+    20: "Best value for a full term of study.",
+  };
+  /* One row per hour across the full day; each row cell carries two half-hour
+     units, which is the granularity a lesson can start on. Twenty-four rows put
+     the calendar past the component's 12-row threshold, so it scrolls with a
+     sticky day header — students in any timezone can reach a teacher's late or
+     early hours. */
+  static HOURS = Array.from({ length: 24 }, (_, i) => i);
+  static DAY_START_HOUR = 8;
+  static PLATFORMS = [
+    { id: "classroom", label: "italki Classroom", icon: "video-classroom", subtext: "Recommended", description: "Nothing to install — opens in the browser, with shared notes and recording." },
+    { id: "zoom", label: "Zoom", icon: "video-zoom", description: "The teacher sends a meeting link before the lesson." },
+    { id: "meet", label: "Google Meet", icon: "video-googleHangouts", description: "The teacher sends a meeting link before the lesson." },
+    { id: "skype", label: "Skype", icon: "video-skype", description: "Add each other before the first lesson." },
+    { id: "wechat", label: "WeChat", icon: "video-wechat", description: "Add each other before the first lesson." },
+  ];
+  static HANDLES = {
+    zoom: { label: "Your email for the Zoom invite", placeholder: "name@example.com" },
+    meet: { label: "Your Google account", placeholder: "name@gmail.com" },
+    skype: { label: "Your Skype ID", placeholder: "live:.cid.xxxxx" },
+    wechat: { label: "Your WeChat ID", placeholder: "wxid_xxxxx" },
+  };
+  static PAYMENTS = [
+    { id: "credits", label: "italki Credits", subtext: "US$293.45 available", description: "" },
+    { id: "visa", label: "Visa ···· 4242", description: "Expires 09/28" },
+    { id: "paypal", label: "PayPal", description: "j.rivera@example.com" },
+    { id: "alipay", label: "Alipay", description: "Redirects to Alipay to confirm" },
+  ];
+  static WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  static MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  state = {
+    activeTab: "about", readMore: false, favorite: false, moreOpen: false,
+    videoPlaying: false, reviewFilter: "All", reviewPage: 0, pickedSlot: null,
+    /* ── the booking flow's own state ── */
+    /* Seeded from a prop so one file can open on the profile or on the booking
+       flow. The Booking commitment card in the kit is this page with the drawer
+       already open — a value, not a second copy of the page. */
+    open: Boolean(this.props?.startOnBooking), step: 1, typeId: null, duration: null, count: 5,
+    week: 0, dayIdx: 0, picks: [], platform: "classroom", payment: "credits",
+    conflictOpen: true, done: false, handles: {},
+  };
+
+  tabsAnchorRef = React.createRef();
+  tabsBarRef = React.createRef();
+  railRef = React.createRef();
+
+  // Full-width pinned tab bar: when the bar reaches the top nav it switches to
+  // fixed and stretches from the sidebar's edge to the viewport's right edge.
+  // Live measurements are written to the nodes directly (not template holes).
+  syncTabsBar = () => {
+    const anchor = this.tabsAnchorRef.current, bar = this.tabsBarRef.current;
+    if (!anchor || !bar) return;
+    const stuck = anchor.getBoundingClientRect().top <= 72;
+    if (stuck && !this.tabsStuck) anchor.style.height = bar.offsetHeight + "px";
+    this.tabsStuck = stuck;
+    // The rail hugs the top nav until the tab bar pins, then drops below it.
+    if (this.railRef.current) this.railRef.current.style.top = stuck ? "144px" : "96px";
+    if (stuck) {
+      const sidebarW = document.querySelector(".ui-sidebar")?.offsetWidth || 0;
+      Object.assign(bar.style, { position: "fixed", top: "72px", left: sidebarW + "px", right: "0", zIndex: "var(--ui-layer-content, 30)", borderRadius: "0", padding: "0 24px", boxShadow: "var(--ui-shadow-thumb)" });
+    } else {
+      Object.assign(bar.style, { position: "sticky", top: "72px", left: "", right: "", borderRadius: "12px", padding: "0 16px", boxShadow: "var(--ui-shadow-card)" });
+      anchor.style.height = "0px";
+    }
+  };
+
+  componentDidMount() {
+    document.getElementById("ds-kit-missing")?.remove();
+    if (typeof Component.kit?.()?.avatar !== "function") {
+      this.timer = setInterval(() => {
+        if (typeof Component.kit?.()?.avatar !== "function") return;
+        clearInterval(this.timer);
+        this.forceUpdate();
+      }, 50);
+    }
+    window.addEventListener("scroll", this.syncTabsBar, { passive: true });
+    window.addEventListener("resize", this.syncTabsBar);
+    this.onDocClick = (e) => {
+      if (this.state.moreOpen && !e.target.closest?.("[data-more-menu]")) this.setState({ moreOpen: false });
+      /* The flow's body is markup the kit builds, so its controls arrive as
+         data-demo hooks with no onClick. ds-safe binds the kit's own behaviours;
+         what is decided here is which step we are on and what has been chosen. */
+      if (e.target.closest?.('[data-demo="ui-drawer-mask"], [data-demo="ui-drawer-close"]')) return this.setState({ bookingOpen: false });
+      if (e.target.closest?.("#booking-drawer")) {
+        if (e.target.closest?.('[data-demo="booking-back"]')) return this.bookingBack();
+        if (e.target.closest?.('[data-demo="booking-next"]')) return this.bookingNext();
+        const segment = e.target.closest?.('[data-demo="ui-segmented-control"]');
+        if (segment) {
+          const value = segment.dataset.segmentValue;
+          if (value === "first" || value === "all") return this.setState({ scope: value, slots: [] });
+          return this.setState(value === "trial"
+            ? { kind: value, quantity: "1", duration: String(this.props.trialMinutes ?? 30), slots: [] }
+            : { kind: value, quantity: "5", duration: "60", slots: [] });
+        }
+        const card = e.target.closest?.("[data-lesson-course-card]");
+        const option = e.target.closest?.('[data-demo="ui-selection-card"]');
+        if (option) {
+          const value = option.dataset.selectionValue;
+          const step = this.bookingStep().id;
+          if (step === "type") return this.setState({ course: card?.dataset.lessonCourseCard ?? this.state.course, duration: value });
+          if (step === "quantity") return this.setState({ quantity: value, slots: [] });
+          if (step === "platform") return this.setState({ platform: value });
+        }
+        if (card) return this.setState({ course: card.dataset.lessonCourseCard });
+        const chip = e.target.closest?.("[data-booking-day-chip]");
+        if (chip) return this.setState({ bookingDay: chip.dataset.bookingDayChip });
+        const slot = e.target.closest?.("[data-booking-slot]");
+        if (slot && !slot.disabled) {
+          const pick = { day: slot.dataset.bookingDay, time: slot.dataset.bookingTime };
+          return this.setState((st) => {
+            const without = st.slots.filter((x) => !(x.day === pick.day && x.time === pick.time));
+            /* One slot per lesson: picking again clears it, and the first-lesson
+               mode holds exactly one. */
+            if (without.length !== st.slots.length) return { slots: without };
+            if (this.bookingScope() === "first") return { slots: [pick] };
+            return st.slots.length >= this.bookingCount() ? {} : { slots: [...st.slots, pick] };
+          });
+        }
+        return;
+      }
+      /* The review pager is the Pagination component now, so its buttons are
+         markup and cannot carry onClick. The page it names is on the button. */
+      const pager = e.target.closest?.("#section-reviews .ui-pagination");
+      if (!pager) return;
+      const page = e.target.closest?.(".ui-pagination__page");
+      if (page) { this.setState({ reviewPage: Number(page.textContent) - 1 }); return; }
+      const arrow = e.target.closest?.(".ui-pagination__arrow");
+      if (arrow && !arrow.disabled) {
+        const back = /Previous/.test(arrow.getAttribute("aria-label") || "");
+        this.setState((st) => ({ reviewPage: Math.max(0, st.reviewPage + (back ? -1 : 1)) }));
+      }
+    };
+    document.addEventListener("click", this.onDocClick, true);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+    clearInterval(this.scrollTimer);
+    clearTimeout(this.noticeTimer);
+    clearTimeout(this.conflictTimer);
+    window.removeEventListener("scroll", this.syncTabsBar);
+    window.removeEventListener("resize", this.syncTabsBar);
+    document.removeEventListener("click", this.onDocClick, true);
+  }
+
+  static availability() {
+    const C = this;
+    let seed = 20260803;
+    const rand = (n) => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed % n; };
+    return C.ROW_LABELS.map((label, i) => ({
+      label,
+      slots: C.DAYS.map(() => {
+        const open = rand(10) < (i === 0 || i === C.ROW_LABELS.length - 1 ? 4 : 7);
+        return { state: open ? "available" : "unavailable" };
+      }),
+    }));
+  }
+
+  /* ── the flow's own logic ───────────────────────────────────────────────── */
+  whyNotFit(day, start, span, coveredBy, rawState) {
+    const length = `${span}-minute`;
+    if (start + span > 24 * 60) return { title: `A ${length} lesson doesn't fit at ${Component.hhmm(start)}`, body: "It would run past the end of the day. Pick an earlier start time." };
+    for (let m = start; m < start + span; m += 15) {
+      const clash = coveredBy(day, m);
+      if (clash) return { title: `That would overlap your ${Component.hhmm(clash.minute)} lesson`, body: `A ${length} lesson starting at ${Component.hhmm(start)} runs into a time you already scheduled.` };
+      if (rawState(day, m) !== "available") return { title: `Not enough room for a ${length} lesson`, body: `Lucía is free at ${Component.hhmm(start)} but busy from ${Component.hhmm(m)}. Try a slot with a longer open run.` };
+    }
+    return { title: "That time isn't available", body: "Pick another open slot." };
+  }
+
+  
+
+  /* The calendar re-renders its own markup on every pass, which wipes the
+     scroll offset. So the position is owned here: whatever the student scrolls
+     to is recorded on an instance field and re-applied after each render, with
+     the morning as the opening default. */
+  restCalendarScroll() {
+    /* Scoped to the drawer: this page has two scrollable weeks — the profile's
+       own Availability section comes first in the document, so an unscoped query
+       restored that one and left the booking week to fall back to the top of the
+       day on every render. Picking a time re-renders, so the week jumped back to
+       00:00 on every click. */
+    const scroll = document.querySelector(".bf-stage .ui-calendar__scroll");
+    const row = scroll && scroll.querySelector(".ui-calendar__row:not(.ui-calendar__row--header)");
+    const unit = row ? row.getBoundingClientRect().height : 0;
+    if (!scroll || !unit) {
+      if (!this.scrollTimer) this.scrollTimer = setInterval(() => this.restCalendarScroll(), 60);
+      return;
+    }
+    clearInterval(this.scrollTimer);
+    this.scrollTimer = null;
+    if (this.scrollTop == null) this.scrollTop = unit * Component.DAY_START_HOUR;
+    if (scroll !== this.scrollNode) {
+      this.scrollNode = scroll;
+      scroll.addEventListener("scroll", () => { this.scrollTop = scroll.scrollTop; }, { passive: true });
+    }
+    if (Math.abs(scroll.scrollTop - this.scrollTop) > 1) scroll.scrollTop = this.scrollTop;
+  }
+
+  componentDidUpdate(prev) {
+    if (prev.startStep !== this.props.startStep && this.props.startStep) {
+      const step = this.props.startStep;
+      this.setState((s) => ({
+        step,
+        done: false,
+        typeId: s.typeId || (step > 1 ? "conversation" : null),
+        duration: s.duration || (step > 1 ? 60 : null),
+        picks: step >= 3 ? s.picks : [],
+      }));
+    }
+    if (prev.openOnLoad !== this.props.openOnLoad) this.setState({ open: Boolean(this.props.openOnLoad) });
+    if (this.state.step === 3 && this.state.open) this.restCalendarScroll();
+    /* The conflict card goes on the same five seconds as the refusal notice —
+       it shares the floating layer with it, and a card that never leaves is the
+       one thing that layer cannot hold. Armed once, not per render. */
+    const conflictUp = Boolean(this.props.conflict) && this.state.conflictOpen && this.state.week === 0;
+    if (conflictUp && !this.conflictTimer) {
+      this.conflictTimer = setTimeout(() => { this.conflictTimer = null; this.setState({ conflictOpen: false }); }, 5000);
+    }
+  }
+
+  /* Deterministic availability: the same teacher week renders identically on
+     every reload, so a screenshot of step 3 is stable. */
+  static slotState(week, day, minute) {
+    const key = `${week}|${day}|${minute}`;
+    let h = 2166136261;
+    for (let i = 0; i < key.length; i += 1) { h ^= key.charCodeAt(i); h = Math.imul(h, 16777619); }
+    const n = (h >>> 0) % 100;
+    if (n < 42) return "unavailable";
+    if (n < 52) return "booked-by-others";
+    return "available";
+  }
+
+  static hhmm(minute) {
+    const m = ((minute % 1440) + 1440) % 1440;
+    return `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+  }
+
+  dayDate(index) {
+    const d = new Date(Date.UTC(2026, 7, 12));
+    d.setUTCDate(d.getUTCDate() + index + this.state.week * 7);
+    return d;
+  }
+
+  usd(n) { return "US$" + n.toFixed(2); }
+
+  unitPrice() {
+    const C = this.constructor;
+    if (this.state.typeId === "trial") return C.TRIAL.p;
+    const course = C.COURSES.find((c) => c.id === this.state.typeId);
+    const d = course && course.durations.find((x) => x.m === this.state.duration);
+    return d ? d.p : 0;
+  }
+
+  lessonCount() { return this.state.typeId === "trial" ? 1 : this.state.count; }
+
+  offer() {
+    const C = this.constructor;
+    return (C.COUNTS.find((c) => c.n === this.lessonCount()) || { off: 0 }).off;
+  }
+
+  totals() {
+    const unit = this.unitPrice();
+    const n = this.lessonCount();
+    const subtotal = unit * n;
+    const discount = subtotal * this.offer();
+    return { unit, n, subtotal, discount, total: subtotal - discount };
+  }
+
+  slotLabel(pick, withDate) {
+    const C = this.constructor;
+    const d = new Date(Date.UTC(2026, 7, 12));
+    d.setUTCDate(d.getUTCDate() + pick.day + pick.week * 7);
+    const end = pick.minute + (this.state.typeId === "trial" ? C.TRIAL.m : this.state.duration || 60);
+    const date = `${C.WEEKDAYS[d.getUTCDay()]} ${d.getUTCDate()} ${C.MONTHS[d.getUTCMonth()]}`;
+    return withDate ? `${date} · ${C.hhmm(pick.minute)}–${C.hhmm(end)}` : `${C.hhmm(pick.minute)}–${C.hhmm(end)}`;
+  }
+
+  emptyWeekNow() { return Boolean(this.props.emptyWeek) && this.state.week === 0; }
+
+  openFlow = (trial) => {
+    this.setState({
+      open: true, done: false, step: 1, picks: [], week: 0, dayIdx: 0, conflictOpen: true,
+      typeId: trial ? "trial" : null,
+      duration: trial ? this.constructor.TRIAL.m : null,
+      count: 5,
+    });
+  };
+
+  steps() {
+    const trial = this.state.typeId === "trial";
+    return trial
+      ? [{ id: 1, label: "Lesson" }, { id: 3, label: "Time" }, { id: 4, label: "Platform" }, { id: 5, label: "Pay" }]
+      : [{ id: 1, label: "Lesson" }, { id: 2, label: "Package" }, { id: 3, label: "Time" }, { id: 4, label: "Platform" }, { id: 5, label: "Pay" }];
+  }
+
+  canContinue() {
+    const st = this.state;
+    if (st.step === 1) return Boolean(st.typeId && st.duration);
+    if (st.step === 2) return Boolean(st.count);
+    if (st.step === 3) return true;
+    return true;
+  }
+
+  go = (dir) => {
+    const order = this.steps().map((s) => s.id);
+    const at = order.indexOf(this.state.step);
+    const next = order[at + dir];
+    if (next === undefined) return;
+    this.setState({ step: next });
+  };
+
+  navVals() {
+    /* First render can beat the bundle: componentDidMount polls for the kit and
+       forces an update once it lands, so an empty rail for one frame is the
+       correct answer — throwing here would take the whole page down instead. */
+    const shell = Component.kit?.()?.appShellNav?.() ?? { items: [], moreItems: [] };
+    const contextOptions = [
+      { id: "spanish", label: "Spanish teachers", flag: "Assets/Flags/es.svg" },
+      { id: "english", label: "English teachers", flag: "Assets/Flags/gb.svg" },
+      { id: "japanese", label: "Japanese teachers", flag: "Assets/Flags/jp.svg" },
+      { id: "french", label: "French teachers", flag: "Assets/Flags/fr.svg" },
+    ];
+    return {
+      /* italki's shell roster comes from the kit, so this page and
+         teacher-search cannot disagree about it — they used to, and the two
+         More menus held different destinations from the same component.
+         Nothing is marked current: on a teacher's profile you are not on the
+         search page. */
+      navItems: shell.items,
+      moreItems: shell.moreItems,
+      navSections: [
+        { id: "chats", label: "Chats", open: true, items: [
+          { id: "chat-lucia", label: "Lucía Fernández", secondary: "2m", avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
+          { id: "chat-mateo", label: "Mateo Rojas", secondary: "1h", avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
+        ] },
+        { id: "lessons", label: "Lessons", items: [
+          { id: "lesson-today", prefix: "12", divider: true, label: "Spanish B1", secondary: "Today 18:00" },
+          { id: "lesson-thu", prefix: "13", divider: true, label: "Spanish B1", secondary: "Thu 18:00" },
+        ] },
+      ],
+      /* TopNav builds its own context picker, search and action button from these.
+         The earlier code passed prebuilt leading/center/trailing nodes made by
+         UI.topNavContext()/UI.topNavSearch(), which the vanilla runtime does not
+         expose — TopNav received undefined for all three and rendered as an
+         empty bar. */
+      navContextOptions: contextOptions,
+    };
+  }
+
+  reviewVals() {
+    const C = this.constructor;
+    const filter = this.state.reviewFilter;
+    const filtered = filter === "All" ? C.REVIEWS : C.REVIEWS.filter((r) => r.type === filter);
+    const pageCount = Math.max(1, Math.ceil(filtered.length / C.PAGE_SIZE));
+    const page = Math.min(this.state.reviewPage, pageCount - 1);
+    const solid = "Assets/Icons/star-solid.svg", outline = "Assets/Icons/star-outline.svg";
+    return {
+      reviewFilters: ["All", ...C.LESSON_TYPES].map((label) => ({
+        label,
+        cls: "ui-chip ui-chip--32 ui-chip--default" + (label === filter ? " is-selected" : ""),
+        pressed: label === filter,
+        onPick: () => this.setState({ reviewFilter: label, reviewPage: 0 }),
+      })),
+      visibleReviews: filtered.slice(page * C.PAGE_SIZE, page * C.PAGE_SIZE + C.PAGE_SIZE).map((r, i) => ({
+        ...r,
+        divider: i > 0,
+        meta: r.lessons + " lessons · " + r.date,
+        lessonType: r.type,
+        stars: [1, 2, 3, 4, 5].map((n) => (n <= r.rating ? solid : outline)),
+      })),
+      breakdown: [
+        { star: "5", pct: 93, count: "571", aria: "5 stars, 571 reviews" },
+        { star: "4", pct: 5, count: "31", aria: "4 stars, 31 reviews" },
+        { star: "3", pct: 1, count: "6", aria: "3 stars, 6 reviews" },
+        { star: "2", pct: 0.5, count: "2", aria: "2 stars, 2 reviews" },
+        { star: "1", pct: 0.5, count: "2", aria: "1 star, 2 reviews" },
+      ],
+      showPagination: pageCount > 1,
+      reviewPageNumbers: Array.from({ length: pageCount }, (_, i) => i + 1),
+      reviewPage: page + 1,
+    };
+  }
+
+bookingVals() {
+    const C = this.constructor;
+    const st = this.state;
+    const trial = st.typeId === "trial";
+    const t = this.totals();
+    const count = this.lessonCount();
+    const order = this.steps().map((s) => s.id);
+    const conflict = Boolean(this.props.conflict) && st.conflictOpen && st.week === 0;
+
+    const empty = this.emptyWeekNow();
+
+    const calendarDates = Array.from({ length: 7 }, (_, i) => {
+      const d = this.dayDate(i);
+      return { id: "d" + i, label: C.WEEKDAYS[d.getUTCDay()], date: String(d.getUTCDate()), current: st.week === 0 && i === 0 };
+    });
+
+    /* A lesson occupies its whole length, so both the paint and the click test
+       run over [start, start + duration): a 60-minute pick fills two units, and
+       a start whose span crosses a busy unit or another lesson is refused. */
+    const span = trial ? C.TRIAL.m : (st.duration || 60);
+    const full = st.picks.length >= (trial ? 1 : st.count);
+    const rawState = (day, minute) => {
+      const block = Math.floor(minute / 30) * 30;
+      if (conflict && day === 0 && block === 19 * 60) return "booked-by-others";
+      return C.slotState(st.week, day, block);
+    };
+    const coveredBy = (day, minute) => st.picks.find((p) => p.week === st.week && p.day === day && minute >= p.minute && minute < p.minute + span);
+    const fits = (day, start) => {
+      if (start + span > 24 * 60) return false;
+      for (let m = start; m < start + span; m += 15) {
+        if (rawState(day, m) !== "available") return false;
+        if (coveredBy(day, m)) return false;
+      }
+      return true;
+    };
+
+    const calendarRows = C.HOURS.map((hour) => ({
+      id: "r" + hour + "n" + (st.noticeSeq || 0),
+      label: C.hhmm(hour * 60),
+      slots: calendarDates.map((_, day) => [0, 15, 30, 45].map((off) => {
+        const minute = hour * 60 + off;
+        const pick = coveredBy(day, minute);
+        if (pick) return { state: "selected", tooltip: `Selected: ${this.slotLabel(pick, false)}` };
+        const state = rawState(day, minute);
+        /* Only the teacher's own calendar greys a slot out. A met quota or a
+           lesson that would not fit are facts about this booking, not about her
+           availability, so those slots keep their open look and answer with a
+           notice when clicked — greying them made her week appear to change
+           every time a time was picked. */
+        return { state, disabled: state !== "available" };
+      })),
+    }));
+
+    const picks = [...st.picks]
+      .sort((a, b) => (a.week - b.week) || (a.day - b.day) || (a.minute - b.minute))
+      .map((p, i) => ({
+        n: i + 1,
+        label: this.slotLabel(p, true),
+        onRemove: () => this.setState((s) => ({ picks: s.picks.filter((x) => !(x.week === p.week && x.day === p.day && x.minute === p.minute)), notice: null })),
+      }));
+
+    const remaining = count - picks.length;
+    const handle = C.HANDLES[st.platform];
+    const platformLabel = (C.PLATFORMS.find((p) => p.id === st.platform) || {}).label;
+    const paymentLabel = (C.PAYMENTS.find((m) => m.id === st.payment) || {}).label;
+    const courseTitle = trial ? "Trial Lesson" : (C.COURSES.find((c) => c.id === st.typeId) || {}).title;
+
+    const weekStart = this.dayDate(0);
+    const weekEnd = this.dayDate(6);
+
+    return {
+      profileLessons: [
+        { name: "Trial Lesson", tag: "New students only", meta: "30 min · one per student", price: this.usd(C.TRIAL.p), per: "30 min", divider: false, onBook: () => this.openFlow(true) },
+        ...C.COURSES.map((c) => ({
+          name: c.title, tag: "", meta: c.meta,
+          price: this.usd((c.durations.find((d) => d.m === 60) || c.durations[0]).p),
+          per: `${(c.durations.find((d) => d.m === 60) || c.durations[0]).m} min`, divider: true,
+          onBook: () => this.setState({ open: true, done: false, step: 1, typeId: c.id, duration: 60, picks: [], count: 5, week: 0, dayIdx: 0, conflictOpen: true }),
+        })),
+      ],
+      trialPriceLabel: this.usd(C.TRIAL.p),
+      bookTrialLabel: `Book trial · ${this.usd(C.TRIAL.p)}`,
+      openTrial: () => this.openFlow(true),
+      openBooking: () => this.openFlow(false),
+
+      stageClass: "ui-drawer-stage bf-stage" + (st.open ? " is-open" : ""),
+      onStageClick: (e) => { if (e.target.classList && e.target.classList.contains("ui-drawer__mask")) this.setState({ open: false }); },
+      closeDrawer: () => this.setState({ open: false }),
+      drawerTitle: st.done ? "Booking confirmed" : (trial ? "Book a trial lesson with Lucía" : "Book lessons with Lucía"),
+      drawerSubtitle: st.done ? `${count} ${count === 1 ? "lesson" : "lessons"} added to your calendar` : "Spanish · Professional Teacher",
+      showRating: !st.done,
+
+      /* The package grid is four 200px columns wide; every other step reads
+         better in a narrower measure. */
+      bodyClass: st.step === 5 ? "bf-body--wide" : (st.step === 3 ? "bf-body--full" : ""),
+      stepItems: this.steps(),
+      stepIndex: Math.max(0, order.indexOf(st.step)),
+      stepCaption: `Step ${Math.max(0, order.indexOf(st.step)) + 1} of ${order.length} · ${(this.steps()[Math.max(0, order.indexOf(st.step))] || {}).label}`,
+      isStep1: !st.done && st.step === 1,
+      isStep2: !st.done && st.step === 2,
+      isStep3: !st.done && st.step === 3,
+      isStep4: !st.done && st.step === 4,
+      isStep5: !st.done && st.step === 5,
+      isDone: st.done,
+      isTrial: trial,
+
+      trialMeta: `${C.TRIAL.m} min · fixed length set by the teacher · one per student`,
+      trialCardClass: trial ? "is-expanded" : "",
+      trialToggleClass: trial ? "is-selected" : "",
+      pickTrial: () => this.setState({ typeId: "trial", duration: C.TRIAL.m, count: 1, picks: [] }),
+      courses: C.COURSES.map((c) => {
+        const selected = st.typeId === c.id;
+        return {
+          title: c.title, meta: c.meta, selected,
+          fromPrice: `from ${this.usd(c.durations[0].p)}`,
+          cardClass: selected ? "is-expanded" : "",
+          toggleClass: selected ? "is-selected" : "",
+          optionsClass: selected ? "" : "is-collapsed",
+          onPick: () => this.setState((s) => ({ typeId: c.id, duration: s.typeId === c.id ? s.duration : 60, count: s.count === 1 ? 5 : s.count, picks: [] })),
+          options: c.durations.map((d) => ({
+            label: `${d.m} mins`,
+            price: this.usd(d.p),
+            selected: selected && st.duration === d.m,
+            cls: selected && st.duration === d.m ? "is-selected" : "",
+            onPick: () => this.setState({ typeId: c.id, duration: d.m, picks: [] }),
+          })),
+        };
+      }),
+
+      packageIntro: `${this.usd(t.unit)} per ${st.duration}-minute lesson. Buy more at once and the price per lesson drops.`,
+      packages: C.COUNTS.map((c) => {
+        const sub = t.unit * c.n;
+        const total = sub * (1 - c.off);
+        return {
+          value: String(c.n),
+          aria: `${c.n} ${c.n === 1 ? "lesson" : "lessons"}`,
+          selected: st.count === c.n,
+          discount: c.off ? `${Math.round(c.off * 100)}% off` : "No discount",
+          price: this.usd(total / c.n),
+          description: C.PACKAGE_COPY[c.n],
+          quantity: String(c.n),
+          quantityLabel: c.n === 1 ? "Lesson" : "Lessons",
+          originalPrice: c.off ? this.usd(sub) : "",
+          totalPrice: this.usd(total),
+          onPick: () => this.setState({ count: c.n, picks: [] }),
+        };
+      }),
+
+      scheduleTitle: count === 1 ? "Pick your lesson time" : `Schedule your ${count} lessons`,
+      scheduleHint: remaining > 0
+        ? (count === 1
+          ? "Pick a slot that works for you, or continue and schedule it later. Free rescheduling up to 24 hours before."
+          : `Book as many of the ${count} as you like now — you can leave the rest and schedule them later from your lesson page.`)
+        : "All set. Remove a time below if you want to change it.",
+      scheduledCount: picks.length,
+      lessonCount: count,
+      scheduleRatio: `${picks.length}/${count}`,
+      showConflict: conflict,
+      dismissConflict: (e) => { if (e.target.closest && e.target.closest(".ui-notification__close, [data-demo='ui-notification-close']")) this.setState({ conflictOpen: false }); },
+      weekLabel: `${weekStart.getUTCDate()} ${C.MONTHS[weekStart.getUTCMonth()]} – ${weekEnd.getUTCDate()} ${C.MONTHS[weekEnd.getUTCMonth()]} ${weekEnd.getUTCFullYear()}`,
+      nextWeek: () => { this.scrollTop = null; this.setState((s) => ({ week: s.week + 1 })); },
+      calendarDates,
+      calendarRows,
+      onCalendarClick: (e) => {
+        const action = e.target.closest && e.target.closest("[data-calendar-action]");
+        if (action) {
+          const a = action.dataset.calendarAction;
+          e.preventDefault();
+          e.stopPropagation();
+          this.scrollTop = null;
+          this.setState((s) => ({ week: a === "today" ? 0 : Math.max(0, s.week + (a === "previous-week" ? -1 : 1)) }));
+          return;
+        }
+        const slot = e.target.closest && e.target.closest(".ui-time-slot");
+        if (!slot) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const day = Number(String(slot.dataset.calendarDay || "").slice(1));
+        const minute = Number(slot.dataset.calendarMinute);
+        if (!Number.isFinite(day) || !Number.isFinite(minute)) return;
+        const covering = coveredBy(day, minute);
+        if (covering) {
+          this.setState((s) => ({ picks: s.picks.filter((p) => !(p.week === covering.week && p.day === covering.day && p.minute === covering.minute)) }));
+          return;
+        }
+        /* The notice takes itself away: a message about one click should not
+           still be on screen several clicks later, and closing it by hand to
+           carry on picking times is work the notice can do itself. Long enough
+           to read two lines; the close button is still there for anyone who
+           wants it gone sooner. Re-armed per refusal, so a second refusal gets
+           its own five seconds rather than inheriting what is left of the
+           first. */
+        const refuse = (notice) => {
+          clearTimeout(this.noticeTimer);
+          this.noticeTimer = setTimeout(() => this.setState({ notice: null }), 5000);
+          this.setState((s) => ({ notice, noticeSeq: (s.noticeSeq || 0) + 1 }));
+        };
+        if (full) {
+          refuse({
+            title: count === 1 ? "Your lesson is already scheduled" : `All ${count} lessons are already scheduled`,
+            body: "Remove one of the times below, then pick this slot instead.",
+          });
+          return;
+        }
+        if (!fits(day, minute)) {
+          refuse(this.whyNotFit(day, minute, span, coveredBy, rawState));
+          return;
+        }
+        this.setState((s) => ({ picks: [...s.picks, { week: s.week, day, minute }], notice: null }));
+      },
+      showNotice: !!st.notice,
+      noticeTitle: (st.notice || {}).title,
+      noticeBody: (st.notice || {}).body,
+      dismissNotice: () => this.setState({ notice: null }),
+      dayHasSlots: !empty,
+      dayIsEmpty: empty,
+      emptyTitle: "No open times this week",
+      emptyBody: "Lucía is fully booked from 12 to 18 August. Her calendar opens up again next week.",
+      hasPicks: picks.length > 0,
+      picks,
+      timezone: "Asia/Shanghai (UTC+8)",
+
+      /* leading is a raw HTML slot; ds-safe rewrites the page-relative Assets
+         path to this template's depth once the node lands. */
+      platforms: C.PLATFORMS.map((p) => {
+        const field = C.HANDLES[p.id];
+        const selected = st.platform === p.id;
+        return {
+          ...p,
+          subtext: p.subtext || "",
+          leading: `<img src="Assets/Icons/${p.icon}.svg" alt="">`,
+          selected,
+          showField: Boolean(field) && selected,
+          wrapClass: field && selected ? "has-field" : "",
+          /* FormField renders its control from markup, so the input is built by
+             the kit's own builder rather than nested as a second component —
+             that is what lets the field associate its label and note with it. */
+          fieldId: field ? `bf-handle-${p.id}` : "",
+          fieldLabel: field ? field.label : "",
+          fieldHelper: field ? "Only shared with Lucía, and only for these lessons." : "",
+          fieldControl: field
+            ? (C.kit?.()?.textInput?.({ id: `bf-handle-${p.id}`, placeholder: field.placeholder, size: 40 }) ?? "")
+            : "",
+          onPick: () => this.setState({ platform: p.id }),
+        };
+      }),
+      needsHandle: Boolean(handle),
+      handleLabel: handle ? handle.label : "",
+      handlePlaceholder: handle ? handle.placeholder : "",
+      onHandleInput: (e) => { this.handle = e.target.value; },
+
+      summaryTitle: courseTitle,
+      summaryLine: `${trial ? C.TRIAL.m : st.duration} min · ${count} ${count === 1 ? "lesson" : "lessons"} · ${platformLabel}`,
+      scheduleCount: `${picks.length} of ${count}`,
+      noPicks: picks.length === 0,
+      /* Panel + SelectionGroup — the same two components the React step composes,
+         instead of four cards stripped of their borders and re-drawn as rows of a
+         hand-built block. The group renders as markup, so the choice comes back
+         from the card's own data-selection-value rather than a handler per row. */
+      /* `C.kit?.()`, not `C.kit()`: ds-safe installs the static on the base class
+         while the first render may already be running, and calling it a moment
+         too early throws through React and takes the page down. */
+      paymentBody: C.kit?.()?.selectionGroup?.({
+        label: "How you are paying",
+        contentType: "standard",
+        selectionMode: "radio",
+        selected: st.payment,
+        /* Credits say their balance beside the name; the rest explain themselves
+           on a second line. */
+        options: C.PAYMENTS.map((m) => ({ value: m.id, label: m.label, subtext: m.subtext || "", description: m.subtext ? "" : m.description })),
+      }) ?? "",
+      onPaymentClick: (e) => {
+        const card = e.target.closest?.("[data-selection-value]");
+        if (card) this.setState({ payment: card.dataset.selectionValue });
+      },
+      priceRows: [
+        { label: `${this.usd(t.unit)} × ${count} ${count === 1 ? "lesson" : "lessons"}`, value: this.usd(t.subtotal), color: "var(--ui-color-secondary)" },
+        ...(t.discount > 0 ? [{ label: `Package discount (${Math.round(this.offer() * 100)}%)`, value: `− ${this.usd(t.discount)}`, color: "var(--ui-color-success)" }] : []),
+      ],
+      totalLabel: this.usd(t.total),
+
+      /* The confirmation the React step settles on: what was bought, what it
+         cost and what paid for it — one line, with the way on inside Result's
+         own action slots rather than a row of buttons built under it. */
+      doneTitle: "Booking confirmed",
+      doneBody: `${count} ${count === 1 ? "lesson" : "lessons"} with Lucía Fernández · ${this.usd(t.total)} paid with ${paymentLabel}.`,
+      /* Both slots take markup, so the buttons come from the kit's own builder
+         and the click is read back off the shared demo hook. */
+      doneAction: C.kit?.()?.button?.({ label: "Open my calendar", size: 40, shape: "pill", demo: "bf-done" }) ?? "",
+      doneSecondaryAction: C.kit?.()?.button?.({ label: "Back to profile", variant: "secondary", size: 40, shape: "pill", demo: "bf-done" }) ?? "",
+      onDoneClick: (e) => { if (e.target.closest?.("[data-demo='bf-done']")) this.setState({ open: false }); },
+
+      showFooter: !st.done,
+      footerPrice: st.typeId && st.duration ? this.usd(t.total) : "—",
+      footerNote: st.typeId && st.duration
+        ? (count > 1 ? `${count} lessons · ${this.usd(t.total / count)} per lesson` : `${trial ? C.TRIAL.m : st.duration} min lesson`)
+        : "Choose a lesson type to see the price",
+      showBack: order.indexOf(st.step) > 0,
+      goBack: () => this.go(-1),
+      nextLabel: st.step === 5 ? `Confirm and pay ${this.usd(t.total)}` : "Continue",
+      nextDisabled: !this.canContinue(),
+      /* Chosen, not just reached: the bar fills the current step as soon as it
+         has an answer, and stays pale while it is still waiting for one. Same
+         prop the React step passes — this template was leaving it at its
+         default, so the current step never filled. */
+      stepReady: this.canContinue(),
+      goNext: () => {
+        if (!this.canContinue()) return;
+        if (st.step === 5) { this.setState({ done: true }); return; }
+        this.go(1);
+      },
+    };
+  }
+
+  renderVals() {
+    const C = this.constructor;
+    const trialPrice = this.props.trialPrice ?? "US$8.00";
+    const scrollTo = (id) => {
+      const el = document.getElementById("section-" + id);
+      if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 152, behavior: "smooth" });
+    };
+    return {
+      ...this.navVals(),
+      ...this.reviewVals(),
+      ...this.bookingVals(),
+      superTutor: this.props.superTutor ?? true,
+      onlineNow: this.props.onlineNow ?? true,
+      trialPrice,
+      bookTrialLabel: `Book trial · ${trialPrice}`,
+      bookTrial: () => this.openFlow(true),
+      speaksTags: [
+        { text: "Spanish · Native", tone: "info" },
+        { text: "English · C2", tone: "neutral" },
+        { text: "Portuguese · B1", tone: "neutral" },
+      ],
+      interests: ["Cooking", "Cinema", "Hiking", "Football", "History", "Travel"],
+      stats: [
+        { value: "4.98", label: "Rating", star: true },
+        { value: "512", label: "Students", star: false },
+        { value: "2,431", label: "Lessons", star: false },
+        { value: "99%", label: "Attendance", star: false },
+      ],
+      tabsAnchorRef: this.tabsAnchorRef,
+      tabsBarRef: this.tabsBarRef,
+      railRef: this.railRef,
+      tabItems: [
+        { id: "about", label: "About" },
+        { id: "lessons", label: "Lessons" },
+        { id: "availability", label: "Availability" },
+        { id: "reviews", label: "Reviews" },
+      ],
+      activeTab: this.state.activeTab,
+      onTabClick: (e) => {
+        const trigger = e.target.closest?.(".ui-tabs__trigger");
+        const id = trigger?.dataset?.tab;
+        if (!id) return;
+        this.setState({ activeTab: id });
+        scrollTo(id);
+      },
+      readMore: this.state.readMore,
+      readMoreLabel: this.state.readMore ? "Show less" : "Read more",
+      readMoreIcon: this.state.readMore ? "Assets/Icons/arrow-up-sm.svg" : "Assets/Icons/arrow-down-sm.svg",
+      toggleReadMore: () => this.setState((s) => ({ readMore: !s.readMore })),
+      insights: [
+        { icon: "../../Assets/Icons/message.svg", title: "Quick responder", caption: "Usually replies within 1 hour" },
+        { icon: "../../Assets/Icons/teacher-steady.svg", title: "Reliable schedule", caption: "99% attendance across 2,431 lessons" },
+        { icon: "../../Assets/Icons/teacher-like.svg", title: "Great with beginners", caption: "Mentioned in 214 student reviews" },
+        { icon: "../../Assets/Icons/teacher-lessons.svg", title: "Structured lessons", caption: "Mentioned in 187 student reviews" },
+        { icon: "../../Assets/Icons/teacher-trending.svg", title: "In demand", caption: "38 lessons booked this week" },
+        { icon: "../../Assets/Icons/teacher-students.svg", title: "Long-term students", caption: "68% book again after 5 lessons" },
+      ],
+      /* Booking from a lesson row starts the flow on that row's type, which is
+         the whole reason the row has a Book button of its own. */
+      lessons: [
+        { name: "Trial Lesson", tag: "New students only", desc: "A 30-minute first meeting to set goals and check your level.", meta: "30 min · one per student", price: trialPrice, per: "30 min", divider: false },
+        { name: "Conversation Practice", tag: "", desc: "Everyday speaking with corrections delivered in the chat.", meta: "A2 – C2 · 1,214 lessons taught", price: "US$14.00", per: "60 min", divider: true, course: "conversation" },
+        { name: "DELE Exam Prep", tag: "", desc: "Mock exams, marking criteria and technique from a DELE examiner.", meta: "A2 – C1 · 642 lessons taught", price: "US$18.00", per: "60 min", divider: true, course: "dele" },
+        { name: "Business Spanish", tag: "", desc: "Meetings, emails and calls — rehearsed with your real agenda.", meta: "B1 – C2 · 318 lessons taught", price: "US$16.00", per: "60 min", divider: true, course: "business" },
+        { name: "Grammar Foundations", tag: "", desc: "From sounds to sentences, built in the right order.", meta: "A1 – B1 · 257 lessons taught", price: "US$12.00", per: "60 min", divider: true, course: "grammar" },
+      ].map((l) => ({ ...l, onBook: () => this.openFlow(l.name === "Trial Lesson") })),
+      weekDates: C.DAYS.map((d) => d.label + " " + d.date),
+      weekRows: C.availability(),
+      nextSlots: [
+        { id: "t-1800", time: "18:00", day: "Today" },
+        { id: "t-1930", time: "19:30", day: "Today" },
+        { id: "tm-0900", time: "09:00", day: "Tomorrow" },
+        { id: "tm-1700", time: "17:00", day: "Tomorrow" },
+        { id: "mon-1000", time: "10:00", day: "Mon 10" },
+      ].map((s) => ({
+        ...s,
+        label: s.day + " " + s.time,
+        state: this.state.pickedSlot === s.id ? "selected" : "available",
+        onPick: () => this.setState((st) => ({ pickedSlot: st.pickedSlot === s.id ? null : s.id })),
+      })),
+      similar: [
+        { name: "Mateo Rojas", photo: "https://randomuser.me/api/portraits/men/32.jpg", flag: "mx", aria: "Mateo Rojas, Mexico", role: "Community Tutor", rating: "4.92", lessons: "1,876 lessons", speaks: "Spanish · English B2", price: "US$12.00" },
+        { name: "Sofía Herrera", photo: "https://randomuser.me/api/portraits/women/21.jpg", flag: "es", aria: "Sofía Herrera, Spain", role: "Professional Teacher", rating: "4.95", lessons: "1,207 lessons", speaks: "Spanish · English C1 · Italian B2", price: "US$18.00" },
+        { name: "Elena Ruiz", photo: "https://randomuser.me/api/portraits/women/12.jpg", flag: "es", aria: "Elena Ruiz, Spain", role: "Professional Teacher", rating: "4.97", lessons: "2,106 lessons", speaks: "Spanish · Catalan · English C2", price: "US$20.00" },
+      ],
+      favIcon: this.state.favorite ? "Assets/Icons/favorite-solid.svg" : "Assets/Icons/favorite-outline.svg",
+      favAria: this.state.favorite ? "Remove from favorites" : "Save to favorites",
+      toggleFavorite: () => this.setState((s) => ({ favorite: !s.favorite })),
+      moreOpen: this.state.moreOpen,
+      toggleMore: () => this.setState((s) => ({ moreOpen: !s.moreOpen })),
+      railMoreItems: [
+        { icon: "share", label: "Share profile" },
+        { icon: "favorite-outline", label: "Save to favorites" },
+        { icon: "gift-card", label: "Refer a friend" },
+        { icon: "report", label: "Report" },
+      ].map((mi) => ({ ...mi, onPick: () => this.setState({ moreOpen: false }) })),
+      videoPlaying: this.state.videoPlaying,
+      videoIdle: !this.state.videoPlaying,
+      videoAria: this.state.videoPlaying ? "Pause introduction video" : "Play introduction video",
+      toggleVideo: () => this.setState((s) => ({ videoPlaying: !s.videoPlaying })),
+    };
+  }
+}
+</script>
+</body>
+</html>

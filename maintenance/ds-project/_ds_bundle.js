@@ -1,0 +1,7878 @@
+/* @ds-bundle: {"namespace":"ItalkiUI","slotRuntime":"portal-v1","slots":{"formField":1,"textInput":1,"selection":1,"badge":1,"disclosure":1,"panel":2,"tooltip":1,"modal":3,"drawer":5,"popconfirm":3,"popup":2,"popover":2,"dropdownMenu":1,"toast":1,"notification":1,"result":2,"topNav":3,"sidebar":1},"componentCount":57,"builtBy":"maintenance/scripts/build-ds-project.mjs","source":"catalog-runtime/italki-ui.js","components":[{"name":"Kit","sourcePath":"components/_kit/Kit.jsx"},{"name":"Button","sourcePath":"components/actions/Button/Button.jsx"},{"name":"Link","sourcePath":"components/actions/Link/Link.jsx"},{"name":"Chip","sourcePath":"components/actions/Chip/Chip.jsx"},{"name":"SegmentedControl","sourcePath":"components/actions/SegmentedControl/SegmentedControl.jsx"},{"name":"FormField","sourcePath":"components/forms-inputs/FormField/FormField.jsx"},{"name":"TextInput","sourcePath":"components/forms-inputs/TextInput/TextInput.jsx"},{"name":"Textarea","sourcePath":"components/forms-inputs/Textarea/Textarea.jsx"},{"name":"NumberStepper","sourcePath":"components/forms-inputs/NumberStepper/NumberStepper.jsx"},{"name":"Upload","sourcePath":"components/forms-inputs/Upload/Upload.jsx"},{"name":"Search","sourcePath":"components/forms-inputs/Search/Search.jsx"},{"name":"Combobox","sourcePath":"components/forms-inputs/Combobox/Combobox.jsx"},{"name":"Select","sourcePath":"components/forms-inputs/Select/Select.jsx"},{"name":"Checkbox","sourcePath":"components/forms-inputs/Checkbox/Checkbox.jsx"},{"name":"CheckboxGroup","sourcePath":"components/forms-inputs/CheckboxGroup/CheckboxGroup.jsx"},{"name":"Radio","sourcePath":"components/forms-inputs/Radio/Radio.jsx"},{"name":"DatePicker","sourcePath":"components/forms-inputs/DatePicker/DatePicker.jsx"},{"name":"TimePicker","sourcePath":"components/forms-inputs/TimePicker/TimePicker.jsx"},{"name":"TimeSlot","sourcePath":"components/forms-inputs/TimeSlot/TimeSlot.jsx"},{"name":"Rate","sourcePath":"components/forms-inputs/Rate/Rate.jsx"},{"name":"Selection","sourcePath":"components/forms-inputs/Selection/Selection.jsx"},{"name":"Slider","sourcePath":"components/forms-inputs/Slider/Slider.jsx"},{"name":"Switch","sourcePath":"components/forms-inputs/Switch/Switch.jsx"},{"name":"Card","sourcePath":"components/data-display/Card/Card.jsx"},{"name":"List","sourcePath":"components/data-display/List/List.jsx"},{"name":"Video","sourcePath":"components/data-display/Video/Video.jsx"},{"name":"Avatar","sourcePath":"components/data-display/Avatar/Avatar.jsx"},{"name":"Badge","sourcePath":"components/data-display/Badge/Badge.jsx"},{"name":"Tag","sourcePath":"components/data-display/Tag/Tag.jsx"},{"name":"Tabs","sourcePath":"components/navigation/Tabs/Tabs.jsx"},{"name":"Statistic","sourcePath":"components/data-display/Statistic/Statistic.jsx"},{"name":"Table","sourcePath":"components/data-display/Table/Table.jsx"},{"name":"Calendar","sourcePath":"components/forms-inputs/Calendar/Calendar.jsx"},{"name":"Timeline","sourcePath":"components/data-display/Timeline/Timeline.jsx"},{"name":"Disclosure","sourcePath":"components/data-display/Disclosure/Disclosure.jsx"},{"name":"SectionIntro","sourcePath":"components/data-display/SectionIntro/SectionIntro.jsx"},{"name":"Divider","sourcePath":"components/data-display/Divider/Divider.jsx"},{"name":"Panel","sourcePath":"components/data-display/Panel/Panel.jsx"},{"name":"Stepper","sourcePath":"components/feedback/Stepper/Stepper.jsx"},{"name":"Tooltip","sourcePath":"components/feedback/Tooltip/Tooltip.jsx"},{"name":"Modal","sourcePath":"components/overlays/Modal/Modal.jsx"},{"name":"Drawer","sourcePath":"components/overlays/Drawer/Drawer.jsx"},{"name":"Popconfirm","sourcePath":"components/overlays/Popconfirm/Popconfirm.jsx"},{"name":"Popup","sourcePath":"components/overlays/Popup/Popup.jsx"},{"name":"Popover","sourcePath":"components/overlays/Popover/Popover.jsx"},{"name":"DropdownMenu","sourcePath":"components/actions/DropdownMenu/DropdownMenu.jsx"},{"name":"Alert","sourcePath":"components/feedback/Alert/Alert.jsx"},{"name":"Toast","sourcePath":"components/feedback/Toast/Toast.jsx"},{"name":"Notification","sourcePath":"components/feedback/Notification/Notification.jsx"},{"name":"Result","sourcePath":"components/feedback/Result/Result.jsx"},{"name":"Progress","sourcePath":"components/feedback/Progress/Progress.jsx"},{"name":"Skeleton","sourcePath":"components/feedback/Skeleton/Skeleton.jsx"},{"name":"TopNav","sourcePath":"components/navigation/TopNav/TopNav.jsx"},{"name":"Breadcrumb","sourcePath":"components/navigation/Breadcrumb/Breadcrumb.jsx"},{"name":"Sidebar","sourcePath":"components/navigation/Sidebar/Sidebar.jsx"},{"name":"Footer","sourcePath":"components/navigation/Footer/Footer.jsx"},{"name":"Pagination","sourcePath":"components/navigation/Pagination/Pagination.jsx"},{"name":"SideNav","sourcePath":"components/navigation/SideNav/SideNav.jsx"}]} */
+(function (global) {
+  "use strict";
+// Where Assets/ live, worked out from this file's own URL instead of the
+// page's. Every icon the runtime emits is a page-relative "Assets/Icons/x.svg",
+// which is right only for a page sitting at the project root — and a page
+// generated into a folder got a screenful of broken images with nothing on
+// screen to explain why. The escape hatch (ITalkiUIAssetBase) existed the whole
+// time; nobody could be expected to know it, so the bundle sets it itself.
+//
+// Two layouts, one rule: in this project the bundle is at the root, so its own
+// directory is the answer; in a project consuming the kit it is vendored under
+// _ds/<kit>/ while Assets/ stays at the project root, so that segment comes off.
+// Synchronous on purpose — a probe would resolve after the first render, which
+// is the paint the person is looking at.
+(function () {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return;
+  if (window.ITalkiUIAssetBase) return;          // a host that already decided wins
+  var self = document.currentScript && document.currentScript.src;
+  if (!self) {                                    // deferred, async, or re-executed
+    var scripts = document.getElementsByTagName('script');
+    for (var i = scripts.length - 1; i >= 0 && !self; i--) {
+      if (/_ds_bundle\.js(\?|$)/.test(scripts[i].src)) self = scripts[i].src;
+    }
+  }
+  if (!self) {
+    // Inlined bundle, no URL to read. The stylesheet is published beside it and
+    // arrives as a <link>, so it answers the same question.
+    var links = document.getElementsByTagName('link');
+    for (var j = links.length - 1; j >= 0 && !self; j--) {
+      if (/(_ds_bundle\.css|styles\.css|tokens\/tokens\.css)(\?|$)/.test(links[j].href)) {
+        self = links[j].href.replace(/tokens\/[^/]+$/, '');
+      }
+    }
+  }
+  if (!self) return;                              // nothing to go on: page-relative, as before
+
+  /* Two layouts, and no way to tell them apart synchronously. The bundle may
+     sit beside its own Assets/ (a mirrored design project, where the whole
+     thing is copied under _ds/<kit>/ including its assets), or beside a page
+     whose Assets/ is at the project root. This used to strip _ds/<kit>/ and
+     commit to the second; the first is the one that ships, and it broke every
+     icon in a generated page.
+
+     So: assume the bundle's own directory — the assumption that holds whenever
+     the kit was copied whole — then check, and correct. Purely async would be
+     worse than either guess: the probe resolves after the first paint, which is
+     the frame the person is looking at. */
+  var here, root;
+  try {
+    here = new URL('.', self).href;
+    root = here.replace(/_ds\/[^/]+\/$/, '');
+  } catch (e) { return; }                         // opaque URL — page-relative
+  window.ITalkiUIAssetBase = here;
+  if (root === here) return;                      // not a mirrored layout; nothing to check
+
+  var PROBE = 'Assets/Icons/logo-italki-logomark.svg';
+  var img = new Image();
+  img.onerror = function () {
+    /* here/ has no assets. Before moving the base, confirm the other candidate
+       actually has them — a broken probe under both means something else is
+       wrong, and flipping would only change which URL 404s. */
+    var alt = new Image();
+    alt.onload = function () {
+      window.ITalkiUIAssetBase = root;
+      /* Everything already painted still points at the wrong base. The runtime
+         does not re-render on its own, so rewrite what is on the page: img
+         sources it emitted, and the mask-image URLs it sets inline. */
+      var n, k;
+      var imgs = document.querySelectorAll('img[src^="' + here + 'Assets/"]');
+      for (n = 0; n < imgs.length; n++) {
+        imgs[n].src = root + imgs[n].getAttribute('src').slice(here.length);
+      }
+      var masked = document.querySelectorAll('[style*="' + here + 'Assets/"]');
+      for (k = 0; k < masked.length; k++) {
+        masked[k].setAttribute('style', masked[k].getAttribute('style').split(here + 'Assets/').join(root + 'Assets/'));
+      }
+    };
+    alt.src = root + PROBE;
+  };
+  img.src = here + PROBE;
+})();
+  // The vanilla catalog runtime, inlined verbatim.
+global.ITalkiUIContracts = {
+  "assetRoots": [
+    "Assets/Icons/",
+    "Assets/Flags/",
+    "Assets/Images/"
+  ],
+  "components": {
+    "button": {
+      "acceptedProps": [
+        "label",
+        "variant",
+        "size",
+        "shape",
+        "state",
+        "leadingIcon",
+        "trailingIcon",
+        "iconOnly",
+        "disabled",
+        "loading",
+        "demo",
+        "ariaLabel",
+        "href",
+        "download",
+        "target",
+        "rel",
+        "ariaExpanded",
+        "ariaPressed",
+        "ariaDescribedBy",
+        "ariaControls"
+      ],
+      "props": {
+        "variant": [
+          "emphasis",
+          "red",
+          "secondary",
+          "white",
+          "ghost",
+          "text",
+          "link",
+          "danger",
+          "plus"
+        ],
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "pressed",
+          "disabled",
+          "loading"
+        ]
+      }
+    },
+    "chip": {
+      "acceptedProps": [
+        "label",
+        "size",
+        "surface",
+        "checked",
+        "selected",
+        "disabled",
+        "state",
+        "demo"
+      ],
+      "props": {
+        "size": [
+          24,
+          32,
+          40
+        ],
+        "surface": [
+          "default",
+          "white",
+          "transparent"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "checked",
+          "disabled"
+        ]
+      }
+    },
+    "link": {
+      "acceptedProps": [
+        "label",
+        "href",
+        "size",
+        "variant",
+        "trailingIcon",
+        "external",
+        "disabled",
+        "state",
+        "ariaLabel",
+        "demo"
+      ],
+      "props": {
+        "size": [
+          14,
+          16
+        ],
+        "variant": [
+          "default",
+          "subtle",
+          "inverse"
+        ],
+        "trailingIcon": [
+          "none",
+          "chevron",
+          "external"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ]
+      }
+    },
+    "video": {
+      "acceptedProps": [
+        "id",
+        "poster",
+        "posterAlt",
+        "title",
+        "duration",
+        "playLabel",
+        "state",
+        "demo"
+      ],
+      "props": {
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ]
+      }
+    },
+    "tag": {
+      "acceptedProps": [
+        "label",
+        "value",
+        "size",
+        "tone",
+        "variant",
+        "leadingIcon",
+        "removable",
+        "removeDemo",
+        "removeAriaLabel"
+      ],
+      "props": {
+        "size": [
+          24,
+          32,
+          40
+        ],
+        "tone": [
+          "neutral",
+          "info",
+          "success",
+          "warning",
+          "error"
+        ],
+        "variant": [
+          "default",
+          "status",
+          "promo"
+        ]
+      }
+    },
+    "checkbox": {
+      "acceptedProps": [
+        "id",
+        "label",
+        "checked",
+        "state",
+        "disabled",
+        "toggleMode",
+        "demo"
+      ],
+      "props": {
+        "checked": [
+          "off",
+          "on",
+          "mixed"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ],
+        "toggleMode": [
+          "binary",
+          "indeterminate",
+          "controlled"
+        ]
+      }
+    },
+    "checkbox-group": {
+      "acceptedProps": [
+        "id",
+        "label",
+        "description",
+        "options",
+        "selected",
+        "layout",
+        "selectAll",
+        "feedback",
+        "feedbackTone"
+      ],
+      "props": {
+        "layout": [
+          "vertical",
+          "inline"
+        ],
+        "feedbackTone": [
+          "default",
+          "error"
+        ]
+      }
+    },
+    "radio": {
+      "acceptedProps": [
+        "label",
+        "value",
+        "checked",
+        "disabled",
+        "state",
+        "description",
+        "demo",
+        "tabIndex"
+      ],
+      "props": {
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ]
+      },
+      "subcomponents": {
+        "group": {
+          "acceptedProps": [
+            "label",
+            "options",
+            "selected",
+            "layout",
+            "block"
+          ]
+        }
+      }
+    },
+    "selection": {
+      "acceptedProps": [
+        "label",
+        "value",
+        "subtext",
+        "description",
+        "leading",
+        "badge",
+        "price",
+        "period",
+        "discount",
+        "quantity",
+        "quantityLabel",
+        "originalPrice",
+        "totalPrice",
+        "selected",
+        "selectedMarker",
+        "disabled",
+        "contentType",
+        "selectionMode",
+        "state",
+        "tabIndex",
+        "demo"
+      ],
+      "props": {
+        "contentType": [
+          "standard",
+          "icon-simple",
+          "icon-card",
+          "package-card",
+          "lesson-options",
+          "avatar",
+          "payment-icon"
+        ],
+        "selectionMode": [
+          "radio",
+          "checkbox"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ]
+      },
+      "subcomponents": {
+        "group": {
+          "acceptedProps": [
+            "label",
+            "options",
+            "selected",
+            "contentType",
+            "selectionMode",
+            "selectedMarker",
+            "layout",
+            "courseTitle",
+            "courseMeta",
+            "courses",
+            "selectedDuration"
+          ],
+          "props": {
+            "layout": [
+              "stack",
+              "grid",
+              "package-grid"
+            ]
+          }
+        }
+      }
+    },
+    "date-picker": {
+      "acceptedProps": [
+        "id",
+        "label",
+        "value",
+        "placeholder",
+        "size",
+        "shape",
+        "status",
+        "open",
+        "disabled",
+        "state",
+        "monthLabel",
+        "weekdays",
+        "days",
+        "months",
+        "monthIndex",
+        "selected",
+        "range",
+        "demo"
+      ],
+      "props": {
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ]
+      }
+    },
+    "tooltip": {
+      "acceptedProps": [
+        "id",
+        "content",
+        "trigger",
+        "triggerLabel",
+        "placement",
+        "arrow",
+        "open",
+        "disabled",
+        "demo"
+      ],
+      "props": {
+        "placement": [
+          "top",
+          "top-left",
+          "top-right",
+          "bottom",
+          "bottom-left",
+          "bottom-right",
+          "left",
+          "right"
+        ]
+      }
+    },
+    "modal": {
+      "acceptedProps": [
+        "id",
+        "title",
+        "body",
+        "footer",
+        "trigger",
+        "triggerLabel",
+        "open",
+        "size",
+        "titleAlign",
+        "stage",
+        "closable",
+        "maskClosable",
+        "keyboardClosable",
+        "demo"
+      ],
+      "props": {
+        "size": [
+          "default",
+          "wide"
+        ],
+        "titleAlign": [
+          "start",
+          "center"
+        ],
+        "stage": [
+          "demo",
+          "inline"
+        ]
+      }
+    },
+    "popup": {
+      "acceptedProps": [
+        "id",
+        "title",
+        "body",
+        "actions",
+        "trigger",
+        "triggerLabel",
+        "open",
+        "placement",
+        "triggerMode",
+        "closeOnLeave",
+        "leaveDelay",
+        "demo",
+        "ariaLabel"
+      ],
+      "props": {
+        "placement": [
+          "top",
+          "bottom",
+          "left",
+          "right"
+        ],
+        "triggerMode": [
+          "click",
+          "hover",
+          "focus"
+        ],
+        "closeOnLeave": [
+          true,
+          false
+        ],
+        "leaveDelay": [
+          300
+        ]
+      }
+    },
+    "popconfirm": {
+      "acceptedProps": [
+        "id",
+        "title",
+        "description",
+        "trigger",
+        "triggerLabel",
+        "confirm",
+        "cancel",
+        "confirmLabel",
+        "cancelLabel",
+        "showCancel",
+        "open",
+        "placement",
+        "disabled",
+        "loading",
+        "demo",
+        "ariaLabel"
+      ],
+      "props": {
+        "placement": [
+          "top",
+          "bottom",
+          "left",
+          "right"
+        ],
+        "showCancel": [
+          true,
+          false
+        ],
+        "disabled": [
+          true,
+          false
+        ],
+        "loading": [
+          true,
+          false
+        ]
+      }
+    },
+    "divider": {
+      "acceptedProps": [
+        "type",
+        "label",
+        "orientation",
+        "orientationMargin",
+        "dashed",
+        "plain",
+        "tone",
+        "icon",
+        "ariaLabel"
+      ],
+      "props": {
+        "type": [
+          "horizontal",
+          "vertical"
+        ],
+        "orientation": [
+          "left",
+          "center",
+          "right"
+        ],
+        "dashed": [
+          true,
+          false
+        ],
+        "plain": [
+          true,
+          false
+        ],
+        "tone": [
+          "divider",
+          "border"
+        ]
+      }
+    },
+    "avatar": {
+      "acceptedProps": [
+        "name",
+        "image",
+        "initials",
+        "size",
+        "flag",
+        "flagLabel",
+        "variant",
+        "tone",
+        "interactive",
+        "state",
+        "ariaLabel"
+      ],
+      "props": {
+        "size": [
+          24,
+          32,
+          40,
+          48,
+          56,
+          64,
+          80,
+          96,
+          120
+        ],
+        "variant": [
+          "without-flag",
+          "with-flag",
+          "empty",
+          "logo"
+        ],
+        "tone": [
+          "primary",
+          "info",
+          "success",
+          "warning"
+        ],
+        "interactive": [
+          true,
+          false
+        ],
+        "state": [
+          "default",
+          "hover"
+        ]
+      },
+      "subcomponents": {
+        "flag": {
+          "acceptedProps": [
+            "countryCode",
+            "countryLabel",
+            "size",
+            "decorative",
+            "ariaLabel"
+          ]
+        },
+        "group": {
+          "acceptedProps": [
+            "members",
+            "overflow",
+            "addLabel",
+            "size",
+            "ariaLabel"
+          ]
+        }
+      }
+    },
+    "badge": {
+      "acceptedProps": [
+        "type",
+        "anchor",
+        "count",
+        "label",
+        "tone",
+        "overflowCount",
+        "hidden",
+        "ariaLabel"
+      ],
+      "props": {
+        "type": [
+          "count",
+          "dot",
+          "status",
+          "new",
+          "beta",
+          "previous"
+        ],
+        "tone": [
+          "default",
+          "success",
+          "info",
+          "warning",
+          "error"
+        ],
+        "hidden": [
+          true,
+          false
+        ]
+      }
+    },
+    "breadcrumb": {
+      "acceptedProps": [
+        "items",
+        "separator",
+        "ariaLabel",
+        "collapsedOpen",
+        "demo"
+      ],
+      "props": {
+        "collapsedOpen": [
+          true,
+          false
+        ]
+      }
+    },
+    "card": {
+      "acceptedProps": [
+        "interactive",
+        "outlined",
+        "media",
+        "mediaAlt",
+        "mediaPlaceholder",
+        "mediaRatio",
+        "eyebrow",
+        "title",
+        "body",
+        "meta",
+        "footer",
+        "density",
+        "ariaLabel",
+        "href",
+        "demo"
+      ],
+      "props": {
+        "interactive": [
+          true,
+          false
+        ],
+        "outlined": [
+          true,
+          false
+        ],
+        "mediaPlaceholder": [
+          true,
+          false
+        ],
+        "mediaRatio": [
+          "16:9",
+          "3:1"
+        ],
+        "density": [
+          "compact",
+          "default",
+          "comfortable"
+        ]
+      }
+    },
+    "alert": {
+      "acceptedProps": [
+        "tone",
+        "title",
+        "description",
+        "closable",
+        "action",
+        "banner",
+        "ariaLabel",
+        "demo"
+      ],
+      "props": {
+        "tone": [
+          "info",
+          "success",
+          "warning",
+          "error"
+        ],
+        "closable": [
+          true,
+          false
+        ],
+        "banner": [
+          true,
+          false
+        ]
+      }
+    },
+    "tabs": {
+      "acceptedProps": [
+        "id",
+        "items",
+        "activeId",
+        "extra",
+        "ariaLabel",
+        "orientation",
+        "variant",
+        "activation",
+        "demo"
+      ],
+      "props": {
+        "orientation": [
+          "horizontal"
+        ],
+        "variant": [
+          "default",
+          "red-line"
+        ],
+        "activation": [
+          "manual",
+          "automatic"
+        ]
+      }
+    },
+    "pagination": {
+      "acceptedProps": [
+        "pages",
+        "current",
+        "previousDisabled",
+        "nextDisabled",
+        "ariaLabel",
+        "demo"
+      ],
+      "props": {
+        "previousDisabled": [
+          true,
+          false
+        ],
+        "nextDisabled": [
+          true,
+          false
+        ]
+      }
+    },
+    "rate": {
+      "acceptedProps": [
+        "id",
+        "value",
+        "count",
+        "size",
+        "allowHalf",
+        "allowClear",
+        "disabled",
+        "labels",
+        "showText",
+        "label",
+        "variant",
+        "state",
+        "demo"
+      ],
+      "props": {
+        "variant": [
+          "interactive",
+          "summary"
+        ],
+        "allowHalf": [
+          true,
+          false
+        ],
+        "allowClear": [
+          true,
+          false
+        ],
+        "disabled": [
+          true,
+          false
+        ],
+        "showText": [
+          true,
+          false
+        ],
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ],
+        "size": [
+          20,
+          48
+        ]
+      }
+    },
+    "sidebar": {
+      "acceptedProps": [
+        "id",
+        "variant",
+        "collapsed",
+        "items",
+        "sections",
+        "moreItems",
+        "moreOpen",
+        "footer",
+        "balance",
+        "avatarInitials",
+        "ariaLabel",
+        "sticky",
+        "demo"
+      ],
+      "props": {
+        "variant": [
+          "normal",
+          "plus"
+        ],
+        "collapsed": [
+          true,
+          false
+        ],
+        "moreOpen": [
+          true,
+          false
+        ],
+        "sticky": [
+          true,
+          false
+        ]
+      }
+    },
+    "statistic": {
+      "acceptedProps": [
+        "title",
+        "value",
+        "prefix",
+        "suffix",
+        "description",
+        "loading",
+        "ariaLabel",
+        "demo"
+      ],
+      "props": {
+        "loading": [
+          true,
+          false
+        ]
+      }
+    },
+    "table": {
+      "acceptedProps": [
+        "id",
+        "columns",
+        "rows",
+        "caption",
+        "density",
+        "loading",
+        "empty",
+        "ariaLabel",
+        "demo"
+      ],
+      "props": {
+        "density": [
+          "compact",
+          "default"
+        ],
+        "loading": [
+          true,
+          false
+        ]
+      }
+    },
+    "timeline": {
+      "acceptedProps": [
+        "id",
+        "items",
+        "layout",
+        "reverse",
+        "tone",
+        "ariaLabel",
+        "demo"
+      ],
+      "props": {
+        "layout": [
+          "left",
+          "right",
+          "alternate"
+        ],
+        "tone": [
+          "default",
+          "info",
+          "success",
+          "warning",
+          "error"
+        ],
+        "reverse": [
+          true,
+          false
+        ]
+      }
+    },
+    "top-nav": {
+      "acceptedProps": [
+        "id",
+        "variant",
+        "leading",
+        "center",
+        "trailing",
+        "contextLabel",
+        "contextFlag",
+        "contextOptions",
+        "searchPlaceholder",
+        "searchFilterLabel",
+        "actionLabel",
+        "actionIcon",
+        "links",
+        "localeLabel",
+        "localeOptions",
+        "mobileActionLabel",
+        "menuOpen",
+        "menuActionLabel",
+        "menuLocale",
+        "menuCurrency",
+        "ariaLabel",
+        "sticky",
+        "demo"
+      ],
+      "props": {
+        "sticky": [
+          true,
+          false
+        ],
+        "variant": [
+          "custom",
+          "global-default",
+          "teacher-search",
+          "logged-out"
+        ],
+        "menuOpen": [
+          true,
+          false
+        ]
+      },
+      "subcomponents": {
+        "context": {
+          "acceptedProps": [
+            "id",
+            "mode",
+            "selected",
+            "options",
+            "open",
+            "ariaLabel",
+            "demo"
+          ],
+          "props": {
+            "mode": [
+              "labelled",
+              "compact",
+              "plain"
+            ],
+            "open": [
+              true,
+              false
+            ]
+          }
+        },
+        "search": {
+          "acceptedProps": [
+            "id",
+            "value",
+            "placeholder",
+            "filter",
+            "filterLabel",
+            "filterIcon",
+            "filterCount",
+            "filtered",
+            "clearable",
+            "disabled",
+            "state",
+            "ariaLabel",
+            "demo"
+          ],
+          "props": {
+            "filter": [
+              true,
+              false
+            ],
+            "filtered": [
+              true,
+              false
+            ],
+            "clearable": [
+              true,
+              false
+            ],
+            "disabled": [
+              true,
+              false
+            ],
+            "state": [
+              "default",
+              "focus",
+              "disabled"
+            ]
+          }
+        }
+      }
+    },
+    "slider": {
+      "acceptedProps": [
+        "value",
+        "label",
+        "disabled",
+        "tooltip",
+        "reversed",
+        "state"
+      ],
+      "props": {
+        "orientation": [
+          "horizontal",
+          "vertical"
+        ],
+        "mode": [
+          "single",
+          "range"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ],
+        "reversed": [
+          true,
+          false
+        ]
+      },
+      "subcomponents": {
+        "range": {
+          "acceptedProps": [
+            "lower",
+            "upper",
+            "label"
+          ]
+        },
+        "vertical": {
+          "acceptedProps": [
+            "value",
+            "label",
+            "disabled"
+          ]
+        }
+      }
+    },
+    "panel": {
+      "acceptedProps": [
+        "title",
+        "body",
+        "extra",
+        "divider",
+        "density"
+      ],
+      "props": {
+        "density": [
+          "small",
+          "medium",
+          "large"
+        ],
+        "divider": [
+          true,
+          false
+        ]
+      }
+    },
+    "search": {
+      "acceptedProps": [
+        "id",
+        "value",
+        "placeholder",
+        "size",
+        "shape",
+        "state",
+        "clearable",
+        "disabled"
+      ],
+      "props": {
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "rounded",
+          "pill"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ]
+      }
+    },
+    "select": {
+      "acceptedProps": [
+        "id",
+        "label",
+        "placeholder",
+        "options",
+        "groups",
+        "selected",
+        "mode",
+        "size",
+        "shape",
+        "status",
+        "state",
+        "clearable",
+        "searchable",
+        "query",
+        "disabled",
+        "loading",
+        "open"
+      ],
+      "props": {
+        "mode": [
+          "single",
+          "multiple"
+        ],
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled",
+          "loading"
+        ]
+      }
+    },
+    "switch": {
+      "acceptedProps": [
+        "checked",
+        "disabled",
+        "state",
+        "demo",
+        "label"
+      ],
+      "props": {
+        "state": [
+          "default",
+          "hover",
+          "disabled"
+        ]
+      }
+    },
+    "drawer": {
+      "acceptedProps": [
+        "id",
+        "title",
+        "titleLeading",
+        "subtitle",
+        "body",
+        "footer",
+        "trigger",
+        "triggerLabel",
+        "open",
+        "placement",
+        "size",
+        "stage",
+        "titleHidden",
+        "closable",
+        "maskClosable",
+        "keyboardClosable",
+        "demo"
+      ],
+      "props": {
+        "placement": [
+          "left",
+          "right",
+          "bottom"
+        ],
+        "size": [
+          "default",
+          "wide"
+        ],
+        "stage": [
+          "demo",
+          "inline"
+        ],
+        "titleHidden": [
+          true,
+          false
+        ]
+      }
+    },
+    "form-field": {
+      "acceptedProps": [
+        "id",
+        "label",
+        "control",
+        "helper",
+        "error",
+        "status",
+        "size",
+        "shape",
+        "state",
+        "required",
+        "disabled"
+      ],
+      "props": {
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ]
+      }
+    },
+    "text-input": {
+      "acceptedProps": [
+        "id",
+        "value",
+        "placeholder",
+        "size",
+        "shape",
+        "status",
+        "state",
+        "disabled",
+        "readOnly",
+        "leadingIcon",
+        "trailingIcon",
+        "trailingAction",
+        "ariaLabel",
+        "demo"
+      ],
+      "props": {
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "warning",
+          "error",
+          "disabled"
+        ]
+      }
+    },
+    "textarea": {
+      "acceptedProps": [
+        "id",
+        "value",
+        "placeholder",
+        "size",
+        "rows",
+        "maxLength",
+        "showCount",
+        "status",
+        "state",
+        "disabled",
+        "readOnly",
+        "ariaLabel",
+        "demo"
+      ],
+      "props": {
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "warning",
+          "error",
+          "disabled"
+        ]
+      }
+    },
+    "number-stepper": {
+      "acceptedProps": [
+        "id",
+        "value",
+        "min",
+        "max",
+        "step",
+        "size",
+        "shape",
+        "status",
+        "state",
+        "disabled",
+        "label",
+        "ariaLabel",
+        "demo"
+      ],
+      "props": {
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ]
+      }
+    },
+    "combobox": {
+      "acceptedProps": [
+        "id",
+        "label",
+        "placeholder",
+        "options",
+        "groups",
+        "selected",
+        "size",
+        "shape",
+        "status",
+        "state",
+        "clearable",
+        "disabled",
+        "loading",
+        "open",
+        "query"
+      ],
+      "props": {
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "default",
+          "rounded",
+          "pill"
+        ],
+        "status": [
+          "default",
+          "warning",
+          "error"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled",
+          "loading"
+        ]
+      }
+    },
+    "upload": {
+      "acceptedProps": [
+        "id",
+        "label",
+        "description",
+        "accept",
+        "multiple",
+        "files",
+        "variant",
+        "state",
+        "disabled",
+        "actionLabel",
+        "maxSize",
+        "avatar",
+        "avatarAlt",
+        "error",
+        "ariaLabel",
+        "demo"
+      ],
+      "props": {
+        "variant": [
+          "dropzone",
+          "trigger",
+          "avatar"
+        ],
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled",
+          "uploading",
+          "error"
+        ]
+      }
+    },
+    "stepper": {
+      "acceptedProps": [
+        "id",
+        "items",
+        "current",
+        "variant",
+        "orientation",
+        "value",
+        "max",
+        "label",
+        "ariaLabel",
+        "currentComplete"
+      ],
+      "props": {
+        "variant": [
+          "default",
+          "flow-progress",
+          "dots",
+          "top-indicator",
+          "schedule-progress",
+          "progress-steps"
+        ],
+        "orientation": [
+          "horizontal",
+          "vertical"
+        ]
+      }
+    },
+    "progress": {
+      "acceptedProps": [
+        "value",
+        "max",
+        "status",
+        "type",
+        "size",
+        "showLabel",
+        "indeterminate",
+        "ariaLabel"
+      ],
+      "props": {
+        "status": [
+          "default",
+          "success",
+          "error"
+        ],
+        "type": [
+          "line",
+          "circle",
+          "semicircle"
+        ],
+        "size": [
+          80,
+          120
+        ]
+      }
+    },
+    "toast": {
+      "acceptedProps": [
+        "id",
+        "tone",
+        "title",
+        "description",
+        "action",
+        "duration",
+        "closable",
+        "open",
+        "ariaLabel"
+      ],
+      "props": {
+        "tone": [
+          "info",
+          "success",
+          "warning",
+          "error"
+        ]
+      }
+    },
+    "notification": {
+      "acceptedProps": [
+        "id",
+        "tone",
+        "title",
+        "description",
+        "action",
+        "closable",
+        "open",
+        "ariaLabel"
+      ],
+      "props": {
+        "tone": [
+          "info",
+          "success",
+          "warning",
+          "error"
+        ]
+      }
+    },
+    "result": {
+      "acceptedProps": [
+        "id",
+        "tone",
+        "title",
+        "description",
+        "action",
+        "secondaryAction",
+        "ariaLabel"
+      ],
+      "props": {
+        "tone": [
+          "info",
+          "success",
+          "warning",
+          "error"
+        ]
+      }
+    },
+    "skeleton": {
+      "acceptedProps": [
+        "type",
+        "lines",
+        "width",
+        "height",
+        "title",
+        "avatar",
+        "lastLineWidth",
+        "shape",
+        "round",
+        "animated",
+        "ariaLabel"
+      ],
+      "props": {
+        "type": [
+          "text",
+          "content",
+          "avatar",
+          "button",
+          "input",
+          "image",
+          "card"
+        ],
+        "shape": [
+          "default",
+          "round",
+          "circle",
+          "square"
+        ]
+      }
+    },
+    "dropdown-menu": {
+      "acceptedProps": [
+        "id",
+        "trigger",
+        "triggerLabel",
+        "items",
+        "open",
+        "placement",
+        "ariaLabel"
+      ],
+      "props": {
+        "placement": [
+          "bottom-start",
+          "bottom-end"
+        ]
+      }
+    },
+    "disclosure": {
+      "acceptedProps": [
+        "id",
+        "title",
+        "content",
+        "open",
+        "disabled",
+        "kind",
+        "ariaLabel"
+      ],
+      "props": {
+        "kind": [
+          "accordion",
+          "details"
+        ]
+      }
+    },
+    "segmented-control": {
+      "acceptedProps": [
+        "id",
+        "options",
+        "selected",
+        "size",
+        "shape",
+        "contentType",
+        "disabled",
+        "ariaLabel"
+      ],
+      "props": {
+        "size": [
+          32,
+          40,
+          48
+        ],
+        "shape": [
+          "pill",
+          "rounded"
+        ],
+        "contentType": [
+          "text",
+          "icon",
+          "role"
+        ]
+      }
+    },
+    "time-slot": {
+      "acceptedProps": [
+        "id",
+        "label",
+        "time",
+        "secondary",
+        "weekday",
+        "day",
+        "month",
+        "appearance",
+        "state",
+        "selected",
+        "unavailable",
+        "held",
+        "loading",
+        "disabled",
+        "duration",
+        "teacher",
+        "calendarDay",
+        "calendarMinute",
+        "ariaLabel",
+        "tooltip",
+        "demo"
+      ],
+      "props": {
+        "appearance": [
+          "availability",
+          "option",
+          "scheduled"
+        ],
+        "duration": [
+          15,
+          30,
+          60
+        ],
+        "state": [
+          "available",
+          "selected",
+          "unavailable",
+          "booked-by-others",
+          "booked-by-you",
+          "loading"
+        ]
+      }
+    },
+    "time-picker": {
+      "acceptedProps": [
+        "id",
+        "label",
+        "placeholder",
+        "slots",
+        "selected",
+        "selectionMode",
+        "disabled",
+        "open",
+        "state",
+        "ariaLabel"
+      ],
+      "props": {
+        "state": [
+          "default",
+          "hover",
+          "focus",
+          "disabled"
+        ],
+        "selectionMode": [
+          "single",
+          "multiple"
+        ]
+      }
+    },
+    "calendar": {
+      "acceptedProps": [
+        "id",
+        "variant",
+        "timezone",
+        "weekLabel",
+        "todayLabel",
+        "dates",
+        "rows",
+        "weekViews",
+        "activeWeek",
+        "todayWeek",
+        "timePicker",
+        "availabilityLabel",
+        "teacherAvailability",
+        "recordTitle",
+        "recordMonths",
+        "recordStats",
+        "weekdays",
+        "disabled",
+        "ariaLabel",
+        "demo"
+      ],
+      "props": {
+        "variant": [
+          "availability",
+          "teacher-availability",
+          "compact-availability",
+          "lesson-record"
+        ]
+      }
+    },
+    "footer": {
+      "acceptedProps": [
+        "id",
+        "columns",
+        "utilities",
+        "copyright",
+        "legalLinks",
+        "socialLinks",
+        "ariaLabel",
+        "demo"
+      ],
+      "props": {}
+    },
+    "section-intro": {
+      "acceptedProps": [
+        "id",
+        "eyebrow",
+        "title",
+        "description",
+        "action",
+        "size",
+        "alignment",
+        "headingLevel",
+        "ariaLabel"
+      ],
+      "props": {
+        "size": [
+          "compact",
+          "default"
+        ],
+        "alignment": [
+          "start",
+          "center"
+        ],
+        "headingLevel": [
+          2,
+          3
+        ]
+      }
+    },
+    "list": {
+      "acceptedProps": [
+        "id",
+        "items",
+        "size",
+        "variant",
+        "divided",
+        "ariaLabel",
+        "demo"
+      ],
+      "props": {
+        "size": [
+          "small",
+          "default",
+          "large"
+        ],
+        "variant": [
+          "default",
+          "avatar",
+          "image",
+          "content"
+        ],
+        "divided": [
+          true,
+          false
+        ]
+      }
+    },
+    "popover": {
+      "acceptedProps": [
+        "id",
+        "title",
+        "body",
+        "actions",
+        "trigger",
+        "triggerLabel",
+        "open",
+        "placement",
+        "triggerMode",
+        "closeOnLeave",
+        "leaveDelay",
+        "demo",
+        "ariaLabel"
+      ],
+      "props": {
+        "placement": [
+          "top",
+          "bottom",
+          "left",
+          "right"
+        ],
+        "triggerMode": [
+          "click",
+          "hover",
+          "focus"
+        ],
+        "closeOnLeave": [
+          true,
+          false
+        ],
+        "leaveDelay": [
+          300
+        ]
+      }
+    },
+    "side-nav": {
+      "acceptedProps": [
+        "id",
+        "items",
+        "activeId",
+        "ariaLabel",
+        "demo"
+      ],
+      "props": {}
+    }
+  }
+};
+
+// Generated by maintenance/scripts/build-icon-manifest.mjs — do not edit.
+// Lists Assets/Icons for the Catalog's Icon Library (1529 of 1537 on disk;
+// 8 duplicates excluded by the script's curated list).
+global.ITalkiIconManifest = [
+  "Assets/Icons/logo-italki-plus.svg",
+  "Assets/Icons/Plustag.svg",
+  "Assets/Icons/teacher-professional.svg",
+  "Assets/Icons/teacher-community.svg",
+  "Assets/Icons/16px/Art.svg",
+  "Assets/Icons/16px/Finance.svg",
+  "Assets/Icons/16px/Food.svg",
+  "Assets/Icons/16px/Gaming.svg",
+  "Assets/Icons/16px/General-interest.svg",
+  "Assets/Icons/16px/Health.svg",
+  "Assets/Icons/16px/History.svg",
+  "Assets/Icons/16px/Movies-1.svg",
+  "Assets/Icons/16px/Movies.svg",
+  "Assets/Icons/16px/Music.svg",
+  "Assets/Icons/16px/Science.svg",
+  "Assets/Icons/16px/Tech.svg",
+  "Assets/Icons/16px/Travel.svg",
+  "Assets/Icons/16px/Writing.svg",
+  "Assets/Icons/16px/action-required-sm.svg",
+  "Assets/Icons/16px/add-circle-solid.svg",
+  "Assets/Icons/16px/add-sm.svg",
+  "Assets/Icons/16px/afternoon-sm.svg",
+  "Assets/Icons/16px/ai-sm.svg",
+  "Assets/Icons/16px/book-opened.svg",
+  "Assets/Icons/16px/category-sm.svg",
+  "Assets/Icons/16px/check-plain-sm.svg",
+  "Assets/Icons/16px/classroom-camera-sm.svg",
+  "Assets/Icons/16px/comics.svg",
+  "Assets/Icons/16px/comments-sm.svg",
+  "Assets/Icons/16px/completed-sm.svg",
+  "Assets/Icons/16px/coupon-sm.svg",
+  "Assets/Icons/16px/cross-sm.svg",
+  "Assets/Icons/16px/decline-canceled-sm.svg",
+  "Assets/Icons/16px/delete-sm.svg",
+  "Assets/Icons/16px/download-sm.svg",
+  "Assets/Icons/16px/duration-30-sm.svg",
+  "Assets/Icons/16px/duration-45-sm.svg",
+  "Assets/Icons/16px/duration-60-sm.svg",
+  "Assets/Icons/16px/duration-90-sm.svg",
+  "Assets/Icons/16px/earth-sm.svg",
+  "Assets/Icons/16px/edit-sm.svg",
+  "Assets/Icons/16px/evening-sm.svg",
+  "Assets/Icons/16px/fashion.svg",
+  "Assets/Icons/16px/filter-sm.svg",
+  "Assets/Icons/16px/frozen-sm.svg",
+  "Assets/Icons/16px/gift-sm.svg",
+  "Assets/Icons/16px/grammar-sm.svg",
+  "Assets/Icons/16px/help-sm.svg",
+  "Assets/Icons/16px/hot-sm.svg",
+  "Assets/Icons/16px/idioms-sm.svg",
+  "Assets/Icons/16px/legal.svg",
+  "Assets/Icons/16px/lesson-action-required-sm.svg",
+  "Assets/Icons/16px/lesson-canceled-sm.svg",
+  "Assets/Icons/16px/lesson-completed-sm.svg",
+  "Assets/Icons/16px/lesson-package-active-sm.svg",
+  "Assets/Icons/16px/lesson-package-expiring-sm.svg",
+  "Assets/Icons/16px/lesson-sm.svg",
+  "Assets/Icons/16px/lesson-upcoming-sm.svg",
+  "Assets/Icons/16px/lesson-waiting-sm.svg",
+  "Assets/Icons/16px/location-sm.svg",
+  "Assets/Icons/16px/lock-sm.svg",
+  "Assets/Icons/16px/mail-01.svg",
+  "Assets/Icons/16px/marketing.svg",
+  "Assets/Icons/16px/message-heart-sm.svg",
+  "Assets/Icons/16px/more-sm.svg",
+  "Assets/Icons/16px/morning-sm.svg",
+  "Assets/Icons/16px/nature.svg",
+  "Assets/Icons/16px/new-sm.svg",
+  "Assets/Icons/16px/night-sm.svg",
+  "Assets/Icons/16px/notification-sm.svg",
+  "Assets/Icons/16px/package-sm.svg",
+  "Assets/Icons/16px/password-sm.svg",
+  "Assets/Icons/16px/pet.svg",
+  "Assets/Icons/16px/recommendation-sm.svg",
+  "Assets/Icons/16px/refresh-sm.svg",
+  "Assets/Icons/16px/search-sm.svg",
+  "Assets/Icons/16px/share-sm.svg",
+  "Assets/Icons/16px/slash-circle-sm.svg",
+  "Assets/Icons/16px/sport.svg",
+  "Assets/Icons/16px/teacher-sm.svg",
+  "Assets/Icons/16px/time-afternoon-sm.svg",
+  "Assets/Icons/16px/time-evening-sm.svg",
+  "Assets/Icons/16px/time-morning-sm.svg",
+  "Assets/Icons/16px/time-sm.svg",
+  "Assets/Icons/16px/timer-lightning-sm.svg",
+  "Assets/Icons/16px/timer-lightning-solid-sm.svg",
+  "Assets/Icons/16px/today-sm.svg",
+  "Assets/Icons/16px/topic-sm.svg",
+  "Assets/Icons/16px/trending-up-sm.svg",
+  "Assets/Icons/16px/upcoming-sm.svg",
+  "Assets/Icons/16px/upvote-sm.svg",
+  "Assets/Icons/16px/view-sm.svg",
+  "Assets/Icons/16px/vocabulary-sm.svg",
+  "Assets/Icons/16px/waiting-sm.svg",
+  "Assets/Icons/16px/whiteboard-translate-sm.svg",
+  "Assets/Icons/16px/whiteboard-upload-sm.svg",
+  "Assets/Icons/add-chat.svg",
+  "Assets/Icons/add.svg",
+  "Assets/Icons/afternoon-lg.svg",
+  "Assets/Icons/afternoon.svg",
+  "Assets/Icons/ai-magic.svg",
+  "Assets/Icons/alert-circle.svg",
+  "Assets/Icons/arrow-down-sm.svg",
+  "Assets/Icons/arrow-down.svg",
+  "Assets/Icons/arrow-left-sm.svg",
+  "Assets/Icons/arrow-left.svg",
+  "Assets/Icons/arrow-right-sm.svg",
+  "Assets/Icons/arrow-right.svg",
+  "Assets/Icons/arrow-up-right.svg",
+  "Assets/Icons/arrow-up-sm.svg",
+  "Assets/Icons/arrow-up.svg",
+  "Assets/Icons/assessment.svg",
+  "Assets/Icons/back-to-bottom.svg",
+  "Assets/Icons/back-to-top.svg",
+  "Assets/Icons/briefcase.svg",
+  "Assets/Icons/calendar-add.svg",
+  "Assets/Icons/calendar.svg",
+  "Assets/Icons/cancel-contract.svg",
+  "Assets/Icons/certified-solid-red.svg",
+  "Assets/Icons/certified-solid-teal.svg",
+  "Assets/Icons/chart.svg",
+  "Assets/Icons/check.svg",
+  "Assets/Icons/chevron-right.svg",
+  "Assets/Icons/classroom-amplify.svg",
+  "Assets/Icons/classroom-audio-off.svg",
+  "Assets/Icons/classroom-audio-sm.svg",
+  "Assets/Icons/classroom-audio.svg",
+  "Assets/Icons/classroom-camera.svg",
+  "Assets/Icons/classroom-images.svg",
+  "Assets/Icons/classroom-narrow.svg",
+  "Assets/Icons/classroom-network-off.svg",
+  "Assets/Icons/classroom-network.svg",
+  "Assets/Icons/classroom-play.svg",
+  "Assets/Icons/classroom-prompt-medium.svg",
+  "Assets/Icons/classroom-screen-share.svg",
+  "Assets/Icons/classroom-stop.svg",
+  "Assets/Icons/classroom-tools-selected.svg",
+  "Assets/Icons/classroom-turn-camera.svg",
+  "Assets/Icons/classroom-video-outline.svg",
+  "Assets/Icons/classroom-video-solid.svg",
+  "Assets/Icons/classroom-vocabulary.svg",
+  "Assets/Icons/classroom-volume-off.svg",
+  "Assets/Icons/classroom-volume.svg",
+  "Assets/Icons/classroom-whiteboard.svg",
+  "Assets/Icons/clip.svg",
+  "Assets/Icons/coins-dollar.svg",
+  "Assets/Icons/comments.svg",
+  "Assets/Icons/community.svg",
+  "Assets/Icons/confirm-sm.svg",
+  "Assets/Icons/confirm.svg",
+  "Assets/Icons/contact-teacher.svg",
+  "Assets/Icons/copy.svg",
+  "Assets/Icons/coupon.svg",
+  "Assets/Icons/credit.svg",
+  "Assets/Icons/cross-sm.svg",
+  "Assets/Icons/cross.svg",
+  "Assets/Icons/dashboard.svg",
+  "Assets/Icons/delete.svg",
+  "Assets/Icons/download.svg",
+  "Assets/Icons/earth.svg",
+  "Assets/Icons/edit.svg",
+  "Assets/Icons/error.svg",
+  "Assets/Icons/evening-lg.svg",
+  "Assets/Icons/evening.svg",
+  "Assets/Icons/exit.svg",
+  "Assets/Icons/extension-package.svg",
+  "Assets/Icons/favicon.svg",
+  "Assets/Icons/favorite-outline.svg",
+  "Assets/Icons/favorite-solid.svg",
+  "Assets/Icons/file-csv.svg",
+  "Assets/Icons/file-doc.svg",
+  "Assets/Icons/file-docx.svg",
+  "Assets/Icons/file-gif.svg",
+  "Assets/Icons/file-image.svg",
+  "Assets/Icons/file-jpeg.svg",
+  "Assets/Icons/file-jpg.svg",
+  "Assets/Icons/file-mkv.svg",
+  "Assets/Icons/file-mp3.svg",
+  "Assets/Icons/file-mp4.svg",
+  "Assets/Icons/file-pdf.svg",
+  "Assets/Icons/file-png.svg",
+  "Assets/Icons/file-ppt.svg",
+  "Assets/Icons/file-pptx.svg",
+  "Assets/Icons/file-rar.svg",
+  "Assets/Icons/file-txt.svg",
+  "Assets/Icons/file-xls.svg",
+  "Assets/Icons/file-xlsx.svg",
+  "Assets/Icons/file-zip.svg",
+  "Assets/Icons/file.svg",
+  "Assets/Icons/filter-sliders.svg",
+  "Assets/Icons/filter.svg",
+  "Assets/Icons/flashcards.svg",
+  "Assets/Icons/flowy.svg",
+  "Assets/Icons/form.svg",
+  "Assets/Icons/free-language-test.svg",
+  "Assets/Icons/gift-card.svg",
+  "Assets/Icons/group.svg",
+  "Assets/Icons/hamburger.svg",
+  "Assets/Icons/help-icon.svg",
+  "Assets/Icons/home-01.svg",
+  "Assets/Icons/home.svg",
+  "Assets/Icons/homework.svg",
+  "Assets/Icons/info.svg",
+  "Assets/Icons/keyboard.svg",
+  "Assets/Icons/layout-left.svg",
+  "Assets/Icons/learn-ai.svg",
+  "Assets/Icons/learning-progress.svg",
+  "Assets/Icons/lesson-summaries.svg",
+  "Assets/Icons/lesson.svg",
+  "Assets/Icons/link.svg",
+  "Assets/Icons/location.svg",
+  "Assets/Icons/logo-italki-logomark-white.svg",
+  "Assets/Icons/logo-italki-logomark.svg",
+  "Assets/Icons/logo-italki-wordmark-white.svg",
+  "Assets/Icons/logo-italki-wordmark.svg",
+  "Assets/Icons/message.svg",
+  "Assets/Icons/minus-circle.svg",
+  "Assets/Icons/mira.svg",
+  "Assets/Icons/more.svg",
+  "Assets/Icons/morning-lg.svg",
+  "Assets/Icons/morning.svg",
+  "Assets/Icons/nav-plus.svg",
+  "Assets/Icons/night.svg",
+  "Assets/Icons/notes.svg",
+  "Assets/Icons/online-learning.svg",
+  "Assets/Icons/pay-alipay.svg",
+  "Assets/Icons/pay-american-express.svg",
+  "Assets/Icons/pay-apple-pay.svg",
+  "Assets/Icons/pay-general.svg",
+  "Assets/Icons/pay-google-pay.svg",
+  "Assets/Icons/pay-mastercard.svg",
+  "Assets/Icons/pay-paypal.svg",
+  "Assets/Icons/pay-skrill-moneybookers.svg",
+  "Assets/Icons/pay-skrill.svg",
+  "Assets/Icons/pay-unionpay.svg",
+  "Assets/Icons/pay-visa.svg",
+  "Assets/Icons/pay-webmoney.svg",
+  "Assets/Icons/pay-wechat-pay.svg",
+  "Assets/Icons/payment.svg",
+  "Assets/Icons/pin-outline.svg",
+  "Assets/Icons/pin-solid.svg",
+  "Assets/Icons/plus-circle.svg",
+  "Assets/Icons/plus-features-label.svg",
+  "Assets/Icons/plus.svg",
+  "Assets/Icons/practice.svg",
+  "Assets/Icons/preference-brain-training.svg",
+  "Assets/Icons/preference-exams-or-schools.svg",
+  "Assets/Icons/preference-family-or-relationships.svg",
+  "Assets/Icons/preference-goal.svg",
+  "Assets/Icons/preference-hobbies-or-cultural-interest.svg",
+  "Assets/Icons/preference-interested.svg",
+  "Assets/Icons/preference-level.svg",
+  "Assets/Icons/preference-notes.svg",
+  "Assets/Icons/preference-other.svg",
+  "Assets/Icons/preference-prepare-for-a-trip.svg",
+  "Assets/Icons/preference-schedule.svg",
+  "Assets/Icons/preference-settling-in-new-country.svg",
+  "Assets/Icons/preference-work.svg",
+  "Assets/Icons/premium.svg",
+  "Assets/Icons/pronounce-sm-outline.svg",
+  "Assets/Icons/pronounce-sm-solid.svg",
+  "Assets/Icons/purpose-brain-training.svg",
+  "Assets/Icons/purpose-career.svg",
+  "Assets/Icons/purpose-child.svg",
+  "Assets/Icons/purpose-cultural-interest.svg",
+  "Assets/Icons/purpose-life-abroad.svg",
+  "Assets/Icons/purpose-relationships.svg",
+  "Assets/Icons/purpose-school-or-exams.svg",
+  "Assets/Icons/purpose-travel.svg",
+  "Assets/Icons/recall.svg",
+  "Assets/Icons/referral.svg",
+  "Assets/Icons/refresh.svg",
+  "Assets/Icons/remove.svg",
+  "Assets/Icons/replace.svg",
+  "Assets/Icons/report.svg",
+  "Assets/Icons/role-student.svg",
+  "Assets/Icons/role-switch.svg",
+  "Assets/Icons/role-teacher.svg",
+  "Assets/Icons/save-as-draft.svg",
+  "Assets/Icons/scan.svg",
+  "Assets/Icons/schedule-add.svg",
+  "Assets/Icons/schedule.svg",
+  "Assets/Icons/search-list.svg",
+  "Assets/Icons/search-md.svg",
+  "Assets/Icons/search.svg",
+  "Assets/Icons/search_teacher_2.svg",
+  "Assets/Icons/security-check.svg",
+  "Assets/Icons/sent.svg",
+  "Assets/Icons/settings.svg",
+  "Assets/Icons/share.svg",
+  "Assets/Icons/sign.svg",
+  "Assets/Icons/slash-divider.svg",
+  "Assets/Icons/smart-lesson.svg",
+  "Assets/Icons/social-linkedin.svg",
+  "Assets/Icons/social-website.svg",
+  "Assets/Icons/sort.svg",
+  "Assets/Icons/speak-ai.svg",
+  "Assets/Icons/special-offers.svg",
+  "Assets/Icons/star-outline.svg",
+  "Assets/Icons/star-solid.svg",
+  "Assets/Icons/student.svg",
+  "Assets/Icons/support.svg",
+  "Assets/Icons/switch.svg",
+  "Assets/Icons/sync-calendar.svg",
+  "Assets/Icons/tabbar-learn.svg",
+  "Assets/Icons/task-done.svg",
+  "Assets/Icons/teacher-certified.svg",
+  "Assets/Icons/teacher-demand.svg",
+  "Assets/Icons/teacher-fast.svg",
+  "Assets/Icons/teacher-lessons.svg",
+  "Assets/Icons/teacher-like.svg",
+  "Assets/Icons/teacher-new.svg",
+  "Assets/Icons/teacher-steady.svg",
+  "Assets/Icons/teacher-students.svg",
+  "Assets/Icons/teacher-trending.svg",
+  "Assets/Icons/teacher.svg",
+  "Assets/Icons/terminate-package.svg",
+  "Assets/Icons/test-alt.svg",
+  "Assets/Icons/test-classroom.svg",
+  "Assets/Icons/test.svg",
+  "Assets/Icons/tips.svg",
+  "Assets/Icons/topic.svg",
+  "Assets/Icons/translate.svg",
+  "Assets/Icons/ui/activity-heart.svg",
+  "Assets/Icons/ui/activity.svg",
+  "Assets/Icons/ui/airplay.svg",
+  "Assets/Icons/ui/airpods.svg",
+  "Assets/Icons/ui/alarm-clock-check.svg",
+  "Assets/Icons/ui/alarm-clock-minus.svg",
+  "Assets/Icons/ui/alarm-clock-off.svg",
+  "Assets/Icons/ui/alarm-clock-plus.svg",
+  "Assets/Icons/ui/alarm-clock.svg",
+  "Assets/Icons/ui/alert-circle.svg",
+  "Assets/Icons/ui/alert-hexagon.svg",
+  "Assets/Icons/ui/alert-octagon.svg",
+  "Assets/Icons/ui/alert-square.svg",
+  "Assets/Icons/ui/alert-triangle.svg",
+  "Assets/Icons/ui/align-bottom-01.svg",
+  "Assets/Icons/ui/align-bottom-02.svg",
+  "Assets/Icons/ui/align-center.svg",
+  "Assets/Icons/ui/align-horizontal-centre-01.svg",
+  "Assets/Icons/ui/align-horizontal-centre-02.svg",
+  "Assets/Icons/ui/align-justify.svg",
+  "Assets/Icons/ui/align-left-01.svg",
+  "Assets/Icons/ui/align-left-02.svg",
+  "Assets/Icons/ui/align-left.svg",
+  "Assets/Icons/ui/align-right-01.svg",
+  "Assets/Icons/ui/align-right-02.svg",
+  "Assets/Icons/ui/align-right.svg",
+  "Assets/Icons/ui/align-top-01.svg",
+  "Assets/Icons/ui/align-top-02.svg",
+  "Assets/Icons/ui/align-vertical-center-01.svg",
+  "Assets/Icons/ui/align-vertical-center-02.svg",
+  "Assets/Icons/ui/anchor.svg",
+  "Assets/Icons/ui/annotation-alert.svg",
+  "Assets/Icons/ui/annotation-check.svg",
+  "Assets/Icons/ui/annotation-dots.svg",
+  "Assets/Icons/ui/annotation-heart.svg",
+  "Assets/Icons/ui/annotation-info.svg",
+  "Assets/Icons/ui/annotation-plus.svg",
+  "Assets/Icons/ui/annotation-question.svg",
+  "Assets/Icons/ui/annotation-x.svg",
+  "Assets/Icons/ui/annotation.svg",
+  "Assets/Icons/ui/announcement-01.svg",
+  "Assets/Icons/ui/announcement-02.svg",
+  "Assets/Icons/ui/announcement-03.svg",
+  "Assets/Icons/ui/archive.svg",
+  "Assets/Icons/ui/arrow-block-down.svg",
+  "Assets/Icons/ui/arrow-block-left.svg",
+  "Assets/Icons/ui/arrow-block-right.svg",
+  "Assets/Icons/ui/arrow-block-up.svg",
+  "Assets/Icons/ui/arrow-circle-broken-down-left.svg",
+  "Assets/Icons/ui/arrow-circle-broken-down-right.svg",
+  "Assets/Icons/ui/arrow-circle-broken-down.svg",
+  "Assets/Icons/ui/arrow-circle-broken-left.svg",
+  "Assets/Icons/ui/arrow-circle-broken-right.svg",
+  "Assets/Icons/ui/arrow-circle-broken-up-left.svg",
+  "Assets/Icons/ui/arrow-circle-broken-up-right.svg",
+  "Assets/Icons/ui/arrow-circle-broken-up.svg",
+  "Assets/Icons/ui/arrow-circle-down-left.svg",
+  "Assets/Icons/ui/arrow-circle-down-right.svg",
+  "Assets/Icons/ui/arrow-circle-down.svg",
+  "Assets/Icons/ui/arrow-circle-left.svg",
+  "Assets/Icons/ui/arrow-circle-right.svg",
+  "Assets/Icons/ui/arrow-circle-up-left.svg",
+  "Assets/Icons/ui/arrow-circle-up-right.svg",
+  "Assets/Icons/ui/arrow-circle-up.svg",
+  "Assets/Icons/ui/arrow-down-left.svg",
+  "Assets/Icons/ui/arrow-down-right.svg",
+  "Assets/Icons/ui/arrow-down.svg",
+  "Assets/Icons/ui/arrow-left.svg",
+  "Assets/Icons/ui/arrow-narrow-down-left.svg",
+  "Assets/Icons/ui/arrow-narrow-down-right.svg",
+  "Assets/Icons/ui/arrow-narrow-down.svg",
+  "Assets/Icons/ui/arrow-narrow-left.svg",
+  "Assets/Icons/ui/arrow-narrow-right.svg",
+  "Assets/Icons/ui/arrow-narrow-up-left.svg",
+  "Assets/Icons/ui/arrow-narrow-up-right.svg",
+  "Assets/Icons/ui/arrow-narrow-up.svg",
+  "Assets/Icons/ui/arrow-right.svg",
+  "Assets/Icons/ui/arrow-square-down-left.svg",
+  "Assets/Icons/ui/arrow-square-down-right.svg",
+  "Assets/Icons/ui/arrow-square-down.svg",
+  "Assets/Icons/ui/arrow-square-left.svg",
+  "Assets/Icons/ui/arrow-square-right.svg",
+  "Assets/Icons/ui/arrow-square-up-left.svg",
+  "Assets/Icons/ui/arrow-square-up-right.svg",
+  "Assets/Icons/ui/arrow-square-up.svg",
+  "Assets/Icons/ui/arrow-up-left.svg",
+  "Assets/Icons/ui/arrow-up-right.svg",
+  "Assets/Icons/ui/arrow-up.svg",
+  "Assets/Icons/ui/arrows-down.svg",
+  "Assets/Icons/ui/arrows-left.svg",
+  "Assets/Icons/ui/arrows-right.svg",
+  "Assets/Icons/ui/arrows-triangle.svg",
+  "Assets/Icons/ui/arrows-up.svg",
+  "Assets/Icons/ui/asterisk-01.svg",
+  "Assets/Icons/ui/asterisk-02.svg",
+  "Assets/Icons/ui/at-sign.svg",
+  "Assets/Icons/ui/atom-01.svg",
+  "Assets/Icons/ui/atom-02.svg",
+  "Assets/Icons/ui/attachment-01.svg",
+  "Assets/Icons/ui/attachment-02.svg",
+  "Assets/Icons/ui/award-01.svg",
+  "Assets/Icons/ui/award-02.svg",
+  "Assets/Icons/ui/award-03.svg",
+  "Assets/Icons/ui/award-04.svg",
+  "Assets/Icons/ui/award-05.svg",
+  "Assets/Icons/ui/backpack.svg",
+  "Assets/Icons/ui/bank-note-01.svg",
+  "Assets/Icons/ui/bank-note-02.svg",
+  "Assets/Icons/ui/bank-note-03.svg",
+  "Assets/Icons/ui/bank.svg",
+  "Assets/Icons/ui/bar-chart-01.svg",
+  "Assets/Icons/ui/bar-chart-02.svg",
+  "Assets/Icons/ui/bar-chart-03.svg",
+  "Assets/Icons/ui/bar-chart-04.svg",
+  "Assets/Icons/ui/bar-chart-05.svg",
+  "Assets/Icons/ui/bar-chart-06.svg",
+  "Assets/Icons/ui/bar-chart-07.svg",
+  "Assets/Icons/ui/bar-chart-08.svg",
+  "Assets/Icons/ui/bar-chart-09.svg",
+  "Assets/Icons/ui/bar-chart-10.svg",
+  "Assets/Icons/ui/bar-chart-11.svg",
+  "Assets/Icons/ui/bar-chart-12.svg",
+  "Assets/Icons/ui/bar-chart-circle-01.svg",
+  "Assets/Icons/ui/bar-chart-circle-02.svg",
+  "Assets/Icons/ui/bar-chart-circle-03.svg",
+  "Assets/Icons/ui/bar-chart-square-01.svg",
+  "Assets/Icons/ui/bar-chart-square-02.svg",
+  "Assets/Icons/ui/bar-chart-square-03.svg",
+  "Assets/Icons/ui/bar-chart-square-down.svg",
+  "Assets/Icons/ui/bar-chart-square-minus.svg",
+  "Assets/Icons/ui/bar-chart-square-plus.svg",
+  "Assets/Icons/ui/bar-chart-square-up.svg",
+  "Assets/Icons/ui/bar-line-chart.svg",
+  "Assets/Icons/ui/battery-charging-01.svg",
+  "Assets/Icons/ui/battery-charging-02.svg",
+  "Assets/Icons/ui/battery-empty.svg",
+  "Assets/Icons/ui/battery-full.svg",
+  "Assets/Icons/ui/battery-low.svg",
+  "Assets/Icons/ui/battery-mid.svg",
+  "Assets/Icons/ui/beaker-01.svg",
+  "Assets/Icons/ui/beaker-02.svg",
+  "Assets/Icons/ui/bell-01.svg",
+  "Assets/Icons/ui/bell-02.svg",
+  "Assets/Icons/ui/bell-03.svg",
+  "Assets/Icons/ui/bell-04.svg",
+  "Assets/Icons/ui/bell-minus.svg",
+  "Assets/Icons/ui/bell-off-01.svg",
+  "Assets/Icons/ui/bell-off-02.svg",
+  "Assets/Icons/ui/bell-off-03.svg",
+  "Assets/Icons/ui/bell-plus.svg",
+  "Assets/Icons/ui/bell-ringing-01.svg",
+  "Assets/Icons/ui/bell-ringing-02.svg",
+  "Assets/Icons/ui/bell-ringing-03.svg",
+  "Assets/Icons/ui/bell-ringing-04.svg",
+  "Assets/Icons/ui/bezier-curve-01.svg",
+  "Assets/Icons/ui/bezier-curve-02.svg",
+  "Assets/Icons/ui/bezier-curve-03.svg",
+  "Assets/Icons/ui/bluetooth-connect.svg",
+  "Assets/Icons/ui/bluetooth-off.svg",
+  "Assets/Icons/ui/bluetooth-on.svg",
+  "Assets/Icons/ui/bluetooth-signal.svg",
+  "Assets/Icons/ui/bold-01.svg",
+  "Assets/Icons/ui/bold-02.svg",
+  "Assets/Icons/ui/bold-square.svg",
+  "Assets/Icons/ui/book-closed.svg",
+  "Assets/Icons/ui/book-open-01.svg",
+  "Assets/Icons/ui/book-open-02.svg",
+  "Assets/Icons/ui/bookmark-add.svg",
+  "Assets/Icons/ui/bookmark-check.svg",
+  "Assets/Icons/ui/bookmark-minus.svg",
+  "Assets/Icons/ui/bookmark-x.svg",
+  "Assets/Icons/ui/bookmark.svg",
+  "Assets/Icons/ui/box.svg",
+  "Assets/Icons/ui/brackets-check.svg",
+  "Assets/Icons/ui/brackets-ellipses.svg",
+  "Assets/Icons/ui/brackets-minus.svg",
+  "Assets/Icons/ui/brackets-plus.svg",
+  "Assets/Icons/ui/brackets-slash.svg",
+  "Assets/Icons/ui/brackets-x.svg",
+  "Assets/Icons/ui/brackets.svg",
+  "Assets/Icons/ui/briefcase-01.svg",
+  "Assets/Icons/ui/briefcase-02.svg",
+  "Assets/Icons/ui/browser.svg",
+  "Assets/Icons/ui/brush-01.svg",
+  "Assets/Icons/ui/brush-02.svg",
+  "Assets/Icons/ui/brush-03.svg",
+  "Assets/Icons/ui/building-01.svg",
+  "Assets/Icons/ui/building-02.svg",
+  "Assets/Icons/ui/building-03.svg",
+  "Assets/Icons/ui/building-04.svg",
+  "Assets/Icons/ui/building-05.svg",
+  "Assets/Icons/ui/building-06.svg",
+  "Assets/Icons/ui/building-07.svg",
+  "Assets/Icons/ui/building-08.svg",
+  "Assets/Icons/ui/bus.svg",
+  "Assets/Icons/ui/calculator.svg",
+  "Assets/Icons/ui/calendar-check-01.svg",
+  "Assets/Icons/ui/calendar-check-02.svg",
+  "Assets/Icons/ui/calendar-date.svg",
+  "Assets/Icons/ui/calendar-heart-01.svg",
+  "Assets/Icons/ui/calendar-heart-02.svg",
+  "Assets/Icons/ui/calendar-minus-01.svg",
+  "Assets/Icons/ui/calendar-minus-02.svg",
+  "Assets/Icons/ui/calendar-plus-01.svg",
+  "Assets/Icons/ui/calendar-plus-02.svg",
+  "Assets/Icons/ui/calendar.svg",
+  "Assets/Icons/ui/camera-01.svg",
+  "Assets/Icons/ui/camera-02.svg",
+  "Assets/Icons/ui/camera-03.svg",
+  "Assets/Icons/ui/camera-lens.svg",
+  "Assets/Icons/ui/camera-off.svg",
+  "Assets/Icons/ui/camera-plus.svg",
+  "Assets/Icons/ui/car-01.svg",
+  "Assets/Icons/ui/car-02.svg",
+  "Assets/Icons/ui/certificate-01.svg",
+  "Assets/Icons/ui/certificate-02.svg",
+  "Assets/Icons/ui/chart-breakout-circle.svg",
+  "Assets/Icons/ui/chart-breakout-square.svg",
+  "Assets/Icons/ui/check-circle-broken.svg",
+  "Assets/Icons/ui/check-circle.svg",
+  "Assets/Icons/ui/check-done-01.svg",
+  "Assets/Icons/ui/check-done-02.svg",
+  "Assets/Icons/ui/check-heart.svg",
+  "Assets/Icons/ui/check-square-broken.svg",
+  "Assets/Icons/ui/check-square.svg",
+  "Assets/Icons/ui/check-verified-01.svg",
+  "Assets/Icons/ui/check-verified-02.svg",
+  "Assets/Icons/ui/check-verified-03.svg",
+  "Assets/Icons/ui/check.svg",
+  "Assets/Icons/ui/chevron-down-double.svg",
+  "Assets/Icons/ui/chevron-down.svg",
+  "Assets/Icons/ui/chevron-left-double.svg",
+  "Assets/Icons/ui/chevron-left.svg",
+  "Assets/Icons/ui/chevron-right-double.svg",
+  "Assets/Icons/ui/chevron-selector-horizontal.svg",
+  "Assets/Icons/ui/chevron-selector-vertical.svg",
+  "Assets/Icons/ui/chevron-up-double.svg",
+  "Assets/Icons/ui/chevron-up.svg",
+  "Assets/Icons/ui/chrome-cast.svg",
+  "Assets/Icons/ui/circle-cut.svg",
+  "Assets/Icons/ui/circle.svg",
+  "Assets/Icons/ui/clapperboard.svg",
+  "Assets/Icons/ui/clipboard-attachment.svg",
+  "Assets/Icons/ui/clipboard-check.svg",
+  "Assets/Icons/ui/clipboard-download.svg",
+  "Assets/Icons/ui/clipboard-minus.svg",
+  "Assets/Icons/ui/clipboard-plus.svg",
+  "Assets/Icons/ui/clipboard-x.svg",
+  "Assets/Icons/ui/clipboard.svg",
+  "Assets/Icons/ui/clock-check.svg",
+  "Assets/Icons/ui/clock-fast-forward.svg",
+  "Assets/Icons/ui/clock-plus.svg",
+  "Assets/Icons/ui/clock-refresh.svg",
+  "Assets/Icons/ui/clock-rewind.svg",
+  "Assets/Icons/ui/clock-snooze.svg",
+  "Assets/Icons/ui/clock-stopwatch.svg",
+  "Assets/Icons/ui/clock.svg",
+  "Assets/Icons/ui/cloud-01.svg",
+  "Assets/Icons/ui/cloud-02.svg",
+  "Assets/Icons/ui/cloud-03.svg",
+  "Assets/Icons/ui/cloud-blank-01.svg",
+  "Assets/Icons/ui/cloud-blank-02.svg",
+  "Assets/Icons/ui/cloud-lightning.svg",
+  "Assets/Icons/ui/cloud-moon.svg",
+  "Assets/Icons/ui/cloud-off.svg",
+  "Assets/Icons/ui/cloud-raining-01.svg",
+  "Assets/Icons/ui/cloud-raining-02.svg",
+  "Assets/Icons/ui/cloud-raining-03.svg",
+  "Assets/Icons/ui/cloud-raining-04.svg",
+  "Assets/Icons/ui/cloud-raining-05.svg",
+  "Assets/Icons/ui/cloud-raining-06.svg",
+  "Assets/Icons/ui/cloud-snowing-01.svg",
+  "Assets/Icons/ui/cloud-snowing-02.svg",
+  "Assets/Icons/ui/cloud-sun-01.svg",
+  "Assets/Icons/ui/cloud-sun-02.svg",
+  "Assets/Icons/ui/cloud-sun-03.svg",
+  "Assets/Icons/ui/code-01.svg",
+  "Assets/Icons/ui/code-02.svg",
+  "Assets/Icons/ui/code-browser.svg",
+  "Assets/Icons/ui/code-circle-01.svg",
+  "Assets/Icons/ui/code-circle-02.svg",
+  "Assets/Icons/ui/code-circle-03.svg",
+  "Assets/Icons/ui/code-snippet-01.svg",
+  "Assets/Icons/ui/code-snippet-02.svg",
+  "Assets/Icons/ui/code-square-01.svg",
+  "Assets/Icons/ui/code-square-02.svg",
+  "Assets/Icons/ui/codepen.svg",
+  "Assets/Icons/ui/coins-01.svg",
+  "Assets/Icons/ui/coins-02.svg",
+  "Assets/Icons/ui/coins-03.svg",
+  "Assets/Icons/ui/coins-04.svg",
+  "Assets/Icons/ui/coins-hand.svg",
+  "Assets/Icons/ui/coins-stacked-01.svg",
+  "Assets/Icons/ui/coins-stacked-02.svg",
+  "Assets/Icons/ui/coins-stacked-03.svg",
+  "Assets/Icons/ui/coins-stacked-04.svg",
+  "Assets/Icons/ui/coins-swap-01.svg",
+  "Assets/Icons/ui/coins-swap-02.svg",
+  "Assets/Icons/ui/colors-1.svg",
+  "Assets/Icons/ui/colors.svg",
+  "Assets/Icons/ui/columns-01.svg",
+  "Assets/Icons/ui/columns-02.svg",
+  "Assets/Icons/ui/columns-03.svg",
+  "Assets/Icons/ui/command.svg",
+  "Assets/Icons/ui/compass-01.svg",
+  "Assets/Icons/ui/compass-02.svg",
+  "Assets/Icons/ui/compass-03.svg",
+  "Assets/Icons/ui/compass.svg",
+  "Assets/Icons/ui/container.svg",
+  "Assets/Icons/ui/contrast-01.svg",
+  "Assets/Icons/ui/contrast-02.svg",
+  "Assets/Icons/ui/contrast-03.svg",
+  "Assets/Icons/ui/copy-01.svg",
+  "Assets/Icons/ui/copy-02.svg",
+  "Assets/Icons/ui/copy-03.svg",
+  "Assets/Icons/ui/copy-04.svg",
+  "Assets/Icons/ui/copy-05.svg",
+  "Assets/Icons/ui/copy-06.svg",
+  "Assets/Icons/ui/copy-07.svg",
+  "Assets/Icons/ui/corner-down-left.svg",
+  "Assets/Icons/ui/corner-down-right.svg",
+  "Assets/Icons/ui/corner-left-down.svg",
+  "Assets/Icons/ui/corner-left-up.svg",
+  "Assets/Icons/ui/corner-right-down.svg",
+  "Assets/Icons/ui/corner-right-up.svg",
+  "Assets/Icons/ui/corner-up-left.svg",
+  "Assets/Icons/ui/corner-up-right.svg",
+  "Assets/Icons/ui/cpu-chip-01.svg",
+  "Assets/Icons/ui/cpu-chip-02.svg",
+  "Assets/Icons/ui/credit-card-01.svg",
+  "Assets/Icons/ui/credit-card-02.svg",
+  "Assets/Icons/ui/credit-card-check.svg",
+  "Assets/Icons/ui/credit-card-down.svg",
+  "Assets/Icons/ui/credit-card-download.svg",
+  "Assets/Icons/ui/credit-card-edit.svg",
+  "Assets/Icons/ui/credit-card-lock.svg",
+  "Assets/Icons/ui/credit-card-minus.svg",
+  "Assets/Icons/ui/credit-card-plus.svg",
+  "Assets/Icons/ui/credit-card-refresh.svg",
+  "Assets/Icons/ui/credit-card-search.svg",
+  "Assets/Icons/ui/credit-card-shield.svg",
+  "Assets/Icons/ui/credit-card-up.svg",
+  "Assets/Icons/ui/credit-card-upload.svg",
+  "Assets/Icons/ui/credit-card-x.svg",
+  "Assets/Icons/ui/crop-01.svg",
+  "Assets/Icons/ui/crop-02.svg",
+  "Assets/Icons/ui/cryptocurrency-01.svg",
+  "Assets/Icons/ui/cryptocurrency-02.svg",
+  "Assets/Icons/ui/cryptocurrency-03.svg",
+  "Assets/Icons/ui/cryptocurrency-04.svg",
+  "Assets/Icons/ui/cube-01.svg",
+  "Assets/Icons/ui/cube-02.svg",
+  "Assets/Icons/ui/cube-03.svg",
+  "Assets/Icons/ui/cube-04.svg",
+  "Assets/Icons/ui/cube-outline.svg",
+  "Assets/Icons/ui/currency-bitcoin-circle.svg",
+  "Assets/Icons/ui/currency-bitcoin.svg",
+  "Assets/Icons/ui/currency-dollar-circle.svg",
+  "Assets/Icons/ui/currency-dollar.svg",
+  "Assets/Icons/ui/currency-ethereum-circle.svg",
+  "Assets/Icons/ui/currency-ethereum.svg",
+  "Assets/Icons/ui/currency-euro-circle.svg",
+  "Assets/Icons/ui/currency-euro.svg",
+  "Assets/Icons/ui/currency-pound-circle.svg",
+  "Assets/Icons/ui/currency-pound.svg",
+  "Assets/Icons/ui/currency-ruble-circle.svg",
+  "Assets/Icons/ui/currency-ruble.svg",
+  "Assets/Icons/ui/currency-rupee-circle.svg",
+  "Assets/Icons/ui/currency-rupee.svg",
+  "Assets/Icons/ui/currency-yen-circle.svg",
+  "Assets/Icons/ui/currency-yen.svg",
+  "Assets/Icons/ui/cursor-01.svg",
+  "Assets/Icons/ui/cursor-02.svg",
+  "Assets/Icons/ui/cursor-03.svg",
+  "Assets/Icons/ui/cursor-04.svg",
+  "Assets/Icons/ui/cursor-box.svg",
+  "Assets/Icons/ui/cursor-click-01.svg",
+  "Assets/Icons/ui/cursor-click-02.svg",
+  "Assets/Icons/ui/data.svg",
+  "Assets/Icons/ui/database-01.svg",
+  "Assets/Icons/ui/database-02.svg",
+  "Assets/Icons/ui/database-03.svg",
+  "Assets/Icons/ui/dataflow-01.svg",
+  "Assets/Icons/ui/dataflow-02.svg",
+  "Assets/Icons/ui/dataflow-03.svg",
+  "Assets/Icons/ui/dataflow-04.svg",
+  "Assets/Icons/ui/delete.svg",
+  "Assets/Icons/ui/diamond-01.svg",
+  "Assets/Icons/ui/diamond-02.svg",
+  "Assets/Icons/ui/dice-1.svg",
+  "Assets/Icons/ui/dice-2.svg",
+  "Assets/Icons/ui/dice-3.svg",
+  "Assets/Icons/ui/dice-4.svg",
+  "Assets/Icons/ui/dice-5.svg",
+  "Assets/Icons/ui/dice-6.svg",
+  "Assets/Icons/ui/disc-01.svg",
+  "Assets/Icons/ui/disc-02.svg",
+  "Assets/Icons/ui/distribute-spacing-horizontal.svg",
+  "Assets/Icons/ui/distribute-spacing-vertical.svg",
+  "Assets/Icons/ui/divide-01.svg",
+  "Assets/Icons/ui/divide-02.svg",
+  "Assets/Icons/ui/divide-03.svg",
+  "Assets/Icons/ui/divider.svg",
+  "Assets/Icons/ui/dotpoints-01.svg",
+  "Assets/Icons/ui/dotpoints-02.svg",
+  "Assets/Icons/ui/dots-grid.svg",
+  "Assets/Icons/ui/dots-horizontal.svg",
+  "Assets/Icons/ui/dots-vertical.svg",
+  "Assets/Icons/ui/download-01.svg",
+  "Assets/Icons/ui/download-02.svg",
+  "Assets/Icons/ui/download-03.svg",
+  "Assets/Icons/ui/download-04.svg",
+  "Assets/Icons/ui/download-cloud-01.svg",
+  "Assets/Icons/ui/download-cloud-02.svg",
+  "Assets/Icons/ui/drop.svg",
+  "Assets/Icons/ui/droplets-01.svg",
+  "Assets/Icons/ui/droplets-02.svg",
+  "Assets/Icons/ui/droplets-03.svg",
+  "Assets/Icons/ui/dropper.svg",
+  "Assets/Icons/ui/edit-01.svg",
+  "Assets/Icons/ui/edit-02.svg",
+  "Assets/Icons/ui/edit-03.svg",
+  "Assets/Icons/ui/edit-04.svg",
+  "Assets/Icons/ui/edit-05.svg",
+  "Assets/Icons/ui/equal-not.svg",
+  "Assets/Icons/ui/equal.svg",
+  "Assets/Icons/ui/eraser.svg",
+  "Assets/Icons/ui/expand-01.svg",
+  "Assets/Icons/ui/expand-02.svg",
+  "Assets/Icons/ui/expand-03.svg",
+  "Assets/Icons/ui/expand-04.svg",
+  "Assets/Icons/ui/expand-05.svg",
+  "Assets/Icons/ui/expand-06.svg",
+  "Assets/Icons/ui/eye-off.svg",
+  "Assets/Icons/ui/eye.svg",
+  "Assets/Icons/ui/face-content.svg",
+  "Assets/Icons/ui/face-frown.svg",
+  "Assets/Icons/ui/face-happy.svg",
+  "Assets/Icons/ui/face-id-square.svg",
+  "Assets/Icons/ui/face-id.svg",
+  "Assets/Icons/ui/face-neutral.svg",
+  "Assets/Icons/ui/face-sad.svg",
+  "Assets/Icons/ui/face-smile.svg",
+  "Assets/Icons/ui/face-wink.svg",
+  "Assets/Icons/ui/fast-backward.svg",
+  "Assets/Icons/ui/fast-forward.svg",
+  "Assets/Icons/ui/feather.svg",
+  "Assets/Icons/ui/figma.svg",
+  "Assets/Icons/ui/file-01.svg",
+  "Assets/Icons/ui/file-02.svg",
+  "Assets/Icons/ui/file-03.svg",
+  "Assets/Icons/ui/file-04.svg",
+  "Assets/Icons/ui/file-05.svg",
+  "Assets/Icons/ui/file-06.svg",
+  "Assets/Icons/ui/file-07.svg",
+  "Assets/Icons/ui/file-attachment-01.svg",
+  "Assets/Icons/ui/file-attachment-02.svg",
+  "Assets/Icons/ui/file-attachment-03.svg",
+  "Assets/Icons/ui/file-attachment-04.svg",
+  "Assets/Icons/ui/file-attachment-05.svg",
+  "Assets/Icons/ui/file-check-01.svg",
+  "Assets/Icons/ui/file-check-02.svg",
+  "Assets/Icons/ui/file-check-03.svg",
+  "Assets/Icons/ui/file-code-01.svg",
+  "Assets/Icons/ui/file-code-02.svg",
+  "Assets/Icons/ui/file-download-01.svg",
+  "Assets/Icons/ui/file-download-02.svg",
+  "Assets/Icons/ui/file-download-03.svg",
+  "Assets/Icons/ui/file-heart-01.svg",
+  "Assets/Icons/ui/file-heart-02.svg",
+  "Assets/Icons/ui/file-heart-03.svg",
+  "Assets/Icons/ui/file-lock-01.svg",
+  "Assets/Icons/ui/file-lock-02.svg",
+  "Assets/Icons/ui/file-lock-03.svg",
+  "Assets/Icons/ui/file-minus-01.svg",
+  "Assets/Icons/ui/file-minus-02.svg",
+  "Assets/Icons/ui/file-minus-03.svg",
+  "Assets/Icons/ui/file-plus-01.svg",
+  "Assets/Icons/ui/file-plus-02.svg",
+  "Assets/Icons/ui/file-plus-03.svg",
+  "Assets/Icons/ui/file-question-01.svg",
+  "Assets/Icons/ui/file-question-02.svg",
+  "Assets/Icons/ui/file-question-03.svg",
+  "Assets/Icons/ui/file-search-01.svg",
+  "Assets/Icons/ui/file-search-02.svg",
+  "Assets/Icons/ui/file-search-03.svg",
+  "Assets/Icons/ui/file-shield-01.svg",
+  "Assets/Icons/ui/file-shield-02.svg",
+  "Assets/Icons/ui/file-shield-03.svg",
+  "Assets/Icons/ui/file-x-01.svg",
+  "Assets/Icons/ui/file-x-02.svg",
+  "Assets/Icons/ui/file-x-03.svg",
+  "Assets/Icons/ui/film-01.svg",
+  "Assets/Icons/ui/film-02.svg",
+  "Assets/Icons/ui/film-03.svg",
+  "Assets/Icons/ui/filter-funnel-01.svg",
+  "Assets/Icons/ui/filter-funnel-02.svg",
+  "Assets/Icons/ui/filter-lines.svg",
+  "Assets/Icons/ui/fingerprint-01.svg",
+  "Assets/Icons/ui/fingerprint-02.svg",
+  "Assets/Icons/ui/fingerprint-03.svg",
+  "Assets/Icons/ui/fingerprint-04.svg",
+  "Assets/Icons/ui/flag-01.svg",
+  "Assets/Icons/ui/flag-02.svg",
+  "Assets/Icons/ui/flag-03.svg",
+  "Assets/Icons/ui/flag-04.svg",
+  "Assets/Icons/ui/flag-05.svg",
+  "Assets/Icons/ui/flag-06.svg",
+  "Assets/Icons/ui/flash-off.svg",
+  "Assets/Icons/ui/flash.svg",
+  "Assets/Icons/ui/flex-align-bottom.svg",
+  "Assets/Icons/ui/flex-align-left.svg",
+  "Assets/Icons/ui/flex-align-right.svg",
+  "Assets/Icons/ui/flex-align-top.svg",
+  "Assets/Icons/ui/flip-backward.svg",
+  "Assets/Icons/ui/flip-forward.svg",
+  "Assets/Icons/ui/folder-check.svg",
+  "Assets/Icons/ui/folder-closed.svg",
+  "Assets/Icons/ui/folder-code.svg",
+  "Assets/Icons/ui/folder-download.svg",
+  "Assets/Icons/ui/folder-lock.svg",
+  "Assets/Icons/ui/folder-minus.svg",
+  "Assets/Icons/ui/folder-plus.svg",
+  "Assets/Icons/ui/folder-question.svg",
+  "Assets/Icons/ui/folder-search.svg",
+  "Assets/Icons/ui/folder-shield.svg",
+  "Assets/Icons/ui/folder-x.svg",
+  "Assets/Icons/ui/folder.svg",
+  "Assets/Icons/ui/framer.svg",
+  "Assets/Icons/ui/gaming-pad-01.svg",
+  "Assets/Icons/ui/gaming-pad-02.svg",
+  "Assets/Icons/ui/gift-01.svg",
+  "Assets/Icons/ui/gift-02.svg",
+  "Assets/Icons/ui/git-branch-01.svg",
+  "Assets/Icons/ui/git-branch-02.svg",
+  "Assets/Icons/ui/git-commit.svg",
+  "Assets/Icons/ui/git-merge.svg",
+  "Assets/Icons/ui/git-pull-request.svg",
+  "Assets/Icons/ui/glasses-01.svg",
+  "Assets/Icons/ui/glasses-02.svg",
+  "Assets/Icons/ui/globe-01.svg",
+  "Assets/Icons/ui/globe-02.svg",
+  "Assets/Icons/ui/globe-03.svg",
+  "Assets/Icons/ui/globe-04.svg",
+  "Assets/Icons/ui/globe-05.svg",
+  "Assets/Icons/ui/globe-06.svg",
+  "Assets/Icons/ui/globe-slated-01.svg",
+  "Assets/Icons/ui/globe-slated-02.svg",
+  "Assets/Icons/ui/google-chrome.svg",
+  "Assets/Icons/ui/graduation-hat-01.svg",
+  "Assets/Icons/ui/graduation-hat-02.svg",
+  "Assets/Icons/ui/grid-01.svg",
+  "Assets/Icons/ui/grid-02.svg",
+  "Assets/Icons/ui/grid-03.svg",
+  "Assets/Icons/ui/grid-dots-blank.svg",
+  "Assets/Icons/ui/grid-dots-bottom.svg",
+  "Assets/Icons/ui/grid-dots-horizontal-center.svg",
+  "Assets/Icons/ui/grid-dots-left.svg",
+  "Assets/Icons/ui/grid-dots-outer.svg",
+  "Assets/Icons/ui/grid-dots-right.svg",
+  "Assets/Icons/ui/grid-dots-top.svg",
+  "Assets/Icons/ui/grid-dots-vertical-center.svg",
+  "Assets/Icons/ui/hand.svg",
+  "Assets/Icons/ui/hard-drive.svg",
+  "Assets/Icons/ui/hash-01.svg",
+  "Assets/Icons/ui/hash-02.svg",
+  "Assets/Icons/ui/heading-01.svg",
+  "Assets/Icons/ui/heading-02.svg",
+  "Assets/Icons/ui/heading-square.svg",
+  "Assets/Icons/ui/headphones-01.svg",
+  "Assets/Icons/ui/headphones-02.svg",
+  "Assets/Icons/ui/heart-circle.svg",
+  "Assets/Icons/ui/heart-hand.svg",
+  "Assets/Icons/ui/heart-hexagon.svg",
+  "Assets/Icons/ui/heart-octagon.svg",
+  "Assets/Icons/ui/heart-rounded.svg",
+  "Assets/Icons/ui/heart-square.svg",
+  "Assets/Icons/ui/heart.svg",
+  "Assets/Icons/ui/hearts.svg",
+  "Assets/Icons/ui/help-circle.svg",
+  "Assets/Icons/ui/help-hexagon.svg",
+  "Assets/Icons/ui/help-octagon.svg",
+  "Assets/Icons/ui/help-square.svg",
+  "Assets/Icons/ui/hexagon-01.svg",
+  "Assets/Icons/ui/hexagon-02.svg",
+  "Assets/Icons/ui/home-02.svg",
+  "Assets/Icons/ui/home-03.svg",
+  "Assets/Icons/ui/home-04.svg",
+  "Assets/Icons/ui/home-05.svg",
+  "Assets/Icons/ui/home-line.svg",
+  "Assets/Icons/ui/home-smile.svg",
+  "Assets/Icons/ui/horizontal-bar-chart-01.svg",
+  "Assets/Icons/ui/horizontal-bar-chart-02.svg",
+  "Assets/Icons/ui/horizontal-bar-chart-03.svg",
+  "Assets/Icons/ui/hourglass-01.svg",
+  "Assets/Icons/ui/hourglass-02.svg",
+  "Assets/Icons/ui/hourglass-03.svg",
+  "Assets/Icons/ui/hurricane-01.svg",
+  "Assets/Icons/ui/hurricane-02.svg",
+  "Assets/Icons/ui/hurricane-03.svg",
+  "Assets/Icons/ui/image-01.svg",
+  "Assets/Icons/ui/image-02.svg",
+  "Assets/Icons/ui/image-03.svg",
+  "Assets/Icons/ui/image-04.svg",
+  "Assets/Icons/ui/image-05.svg",
+  "Assets/Icons/ui/image-check.svg",
+  "Assets/Icons/ui/image-down.svg",
+  "Assets/Icons/ui/image-indent-left.svg",
+  "Assets/Icons/ui/image-indent-right.svg",
+  "Assets/Icons/ui/image-left.svg",
+  "Assets/Icons/ui/image-plus.svg",
+  "Assets/Icons/ui/image-right.svg",
+  "Assets/Icons/ui/image-up.svg",
+  "Assets/Icons/ui/image-user-check.svg",
+  "Assets/Icons/ui/image-user-down.svg",
+  "Assets/Icons/ui/image-user-left.svg",
+  "Assets/Icons/ui/image-user-plus.svg",
+  "Assets/Icons/ui/image-user-right.svg",
+  "Assets/Icons/ui/image-user-up.svg",
+  "Assets/Icons/ui/image-user-x.svg",
+  "Assets/Icons/ui/image-user.svg",
+  "Assets/Icons/ui/image-x.svg",
+  "Assets/Icons/ui/inbox-01.svg",
+  "Assets/Icons/ui/inbox-02.svg",
+  "Assets/Icons/ui/infinity.svg",
+  "Assets/Icons/ui/info-circle.svg",
+  "Assets/Icons/ui/info-hexagon.svg",
+  "Assets/Icons/ui/info-octagon.svg",
+  "Assets/Icons/ui/info-square.svg",
+  "Assets/Icons/ui/intersect-circle.svg",
+  "Assets/Icons/ui/intersect-square.svg",
+  "Assets/Icons/ui/italic-01.svg",
+  "Assets/Icons/ui/italic-02.svg",
+  "Assets/Icons/ui/italic-square.svg",
+  "Assets/Icons/ui/key-01.svg",
+  "Assets/Icons/ui/key-02.svg",
+  "Assets/Icons/ui/keyboard-01.svg",
+  "Assets/Icons/ui/keyboard-02.svg",
+  "Assets/Icons/ui/laptop-01.svg",
+  "Assets/Icons/ui/laptop-02.svg",
+  "Assets/Icons/ui/layer-single.svg",
+  "Assets/Icons/ui/layers-three-01.svg",
+  "Assets/Icons/ui/layers-three-02.svg",
+  "Assets/Icons/ui/layers-two-01.svg",
+  "Assets/Icons/ui/layers-two-02.svg",
+  "Assets/Icons/ui/layout-alt-01.svg",
+  "Assets/Icons/ui/layout-alt-02.svg",
+  "Assets/Icons/ui/layout-alt-03.svg",
+  "Assets/Icons/ui/layout-alt-04.svg",
+  "Assets/Icons/ui/layout-bottom.svg",
+  "Assets/Icons/ui/layout-grid-01.svg",
+  "Assets/Icons/ui/layout-grid-02.svg",
+  "Assets/Icons/ui/layout-left.svg",
+  "Assets/Icons/ui/layout-right.svg",
+  "Assets/Icons/ui/layout-top.svg",
+  "Assets/Icons/ui/left-indent-01.svg",
+  "Assets/Icons/ui/left-indent-02.svg",
+  "Assets/Icons/ui/letter-spacing-01.svg",
+  "Assets/Icons/ui/letter-spacing-02.svg",
+  "Assets/Icons/ui/life-buoy-01.svg",
+  "Assets/Icons/ui/life-buoy-02.svg",
+  "Assets/Icons/ui/lightbulb-01.svg",
+  "Assets/Icons/ui/lightbulb-02.svg",
+  "Assets/Icons/ui/lightbulb-03.svg",
+  "Assets/Icons/ui/lightbulb-04.svg",
+  "Assets/Icons/ui/lightbulb-05.svg",
+  "Assets/Icons/ui/lightning-01.svg",
+  "Assets/Icons/ui/lightning-02.svg",
+  "Assets/Icons/ui/line-chart-down-01.svg",
+  "Assets/Icons/ui/line-chart-down-02.svg",
+  "Assets/Icons/ui/line-chart-down-03.svg",
+  "Assets/Icons/ui/line-chart-down-04.svg",
+  "Assets/Icons/ui/line-chart-down-05.svg",
+  "Assets/Icons/ui/line-chart-up-01.svg",
+  "Assets/Icons/ui/line-chart-up-02.svg",
+  "Assets/Icons/ui/line-chart-up-03.svg",
+  "Assets/Icons/ui/line-chart-up-04.svg",
+  "Assets/Icons/ui/line-chart-up-05.svg",
+  "Assets/Icons/ui/line-height.svg",
+  "Assets/Icons/ui/link-01.svg",
+  "Assets/Icons/ui/link-02.svg",
+  "Assets/Icons/ui/link-03.svg",
+  "Assets/Icons/ui/link-04.svg",
+  "Assets/Icons/ui/link-05.svg",
+  "Assets/Icons/ui/link-broken-01.svg",
+  "Assets/Icons/ui/link-broken-02.svg",
+  "Assets/Icons/ui/link-external-01.svg",
+  "Assets/Icons/ui/link-external-02.svg",
+  "Assets/Icons/ui/list.svg",
+  "Assets/Icons/ui/loading-01.svg",
+  "Assets/Icons/ui/loading-02.svg",
+  "Assets/Icons/ui/loading-03.svg",
+  "Assets/Icons/ui/lock-01.svg",
+  "Assets/Icons/ui/lock-02.svg",
+  "Assets/Icons/ui/lock-03.svg",
+  "Assets/Icons/ui/lock-04.svg",
+  "Assets/Icons/ui/lock-keyhole-circle.svg",
+  "Assets/Icons/ui/lock-keyhole-square.svg",
+  "Assets/Icons/ui/lock-unlocked-01.svg",
+  "Assets/Icons/ui/lock-unlocked-02.svg",
+  "Assets/Icons/ui/lock-unlocked-03.svg",
+  "Assets/Icons/ui/lock-unlocked-04.svg",
+  "Assets/Icons/ui/log-in-01.svg",
+  "Assets/Icons/ui/log-in-02.svg",
+  "Assets/Icons/ui/log-in-03.svg",
+  "Assets/Icons/ui/log-in-04.svg",
+  "Assets/Icons/ui/log-out-01.svg",
+  "Assets/Icons/ui/log-out-02.svg",
+  "Assets/Icons/ui/log-out-03.svg",
+  "Assets/Icons/ui/log-out-04.svg",
+  "Assets/Icons/ui/luggage-01.svg",
+  "Assets/Icons/ui/luggage-02.svg",
+  "Assets/Icons/ui/luggage-03.svg",
+  "Assets/Icons/ui/magic-wand-01.svg",
+  "Assets/Icons/ui/magic-wand-02.svg",
+  "Assets/Icons/ui/mail-01.svg",
+  "Assets/Icons/ui/mail-02.svg",
+  "Assets/Icons/ui/mail-03.svg",
+  "Assets/Icons/ui/mail-04.svg",
+  "Assets/Icons/ui/mail-05.svg",
+  "Assets/Icons/ui/map-01.svg",
+  "Assets/Icons/ui/map-02.svg",
+  "Assets/Icons/ui/mark.svg",
+  "Assets/Icons/ui/marker-pin-01.svg",
+  "Assets/Icons/ui/marker-pin-02.svg",
+  "Assets/Icons/ui/marker-pin-03.svg",
+  "Assets/Icons/ui/marker-pin-04.svg",
+  "Assets/Icons/ui/marker-pin-05.svg",
+  "Assets/Icons/ui/marker-pin-06.svg",
+  "Assets/Icons/ui/maximize-01.svg",
+  "Assets/Icons/ui/maximize-02.svg",
+  "Assets/Icons/ui/medical-circle.svg",
+  "Assets/Icons/ui/medical-cross.svg",
+  "Assets/Icons/ui/medical-square.svg",
+  "Assets/Icons/ui/menu-01.svg",
+  "Assets/Icons/ui/menu-02.svg",
+  "Assets/Icons/ui/menu-03.svg",
+  "Assets/Icons/ui/menu-04.svg",
+  "Assets/Icons/ui/menu-05.svg",
+  "Assets/Icons/ui/message-alert-circle.svg",
+  "Assets/Icons/ui/message-alert-square.svg",
+  "Assets/Icons/ui/message-chat-circle.svg",
+  "Assets/Icons/ui/message-chat-square.svg",
+  "Assets/Icons/ui/message-check-circle.svg",
+  "Assets/Icons/ui/message-check-square.svg",
+  "Assets/Icons/ui/message-circle-01.svg",
+  "Assets/Icons/ui/message-circle-02.svg",
+  "Assets/Icons/ui/message-dots-circle.svg",
+  "Assets/Icons/ui/message-dots-square.svg",
+  "Assets/Icons/ui/message-heart-circle.svg",
+  "Assets/Icons/ui/message-heart-square.svg",
+  "Assets/Icons/ui/message-notification-circle.svg",
+  "Assets/Icons/ui/message-notification-square.svg",
+  "Assets/Icons/ui/message-plus-circle.svg",
+  "Assets/Icons/ui/message-plus-square.svg",
+  "Assets/Icons/ui/message-question-circle.svg",
+  "Assets/Icons/ui/message-question-square.svg",
+  "Assets/Icons/ui/message-smile-square.svg",
+  "Assets/Icons/ui/message-square-01.svg",
+  "Assets/Icons/ui/message-square-02.svg",
+  "Assets/Icons/ui/message-text-circle-01.svg",
+  "Assets/Icons/ui/message-text-circle-02.svg",
+  "Assets/Icons/ui/message-text-square-01.svg",
+  "Assets/Icons/ui/message-text-square-02.svg",
+  "Assets/Icons/ui/message-x-circle.svg",
+  "Assets/Icons/ui/message-x-square.svg",
+  "Assets/Icons/ui/microphone-01.svg",
+  "Assets/Icons/ui/microphone-02.svg",
+  "Assets/Icons/ui/microphone-off-01.svg",
+  "Assets/Icons/ui/microphone-off-02.svg",
+  "Assets/Icons/ui/microscope.svg",
+  "Assets/Icons/ui/minimize-01.svg",
+  "Assets/Icons/ui/minimize-02.svg",
+  "Assets/Icons/ui/minus-square.svg",
+  "Assets/Icons/ui/minus.svg",
+  "Assets/Icons/ui/modem-01.svg",
+  "Assets/Icons/ui/modem-02.svg",
+  "Assets/Icons/ui/monitor-01.svg",
+  "Assets/Icons/ui/monitor-02.svg",
+  "Assets/Icons/ui/monitor-03.svg",
+  "Assets/Icons/ui/monitor-04.svg",
+  "Assets/Icons/ui/monitor-05.svg",
+  "Assets/Icons/ui/moon-01.svg",
+  "Assets/Icons/ui/moon-02.svg",
+  "Assets/Icons/ui/moon-eclipse.svg",
+  "Assets/Icons/ui/moon-star.svg",
+  "Assets/Icons/ui/mouse.svg",
+  "Assets/Icons/ui/move.svg",
+  "Assets/Icons/ui/music-note-01.svg",
+  "Assets/Icons/ui/music-note-02.svg",
+  "Assets/Icons/ui/music-note-plus.svg",
+  "Assets/Icons/ui/navigation-pointer-01.svg",
+  "Assets/Icons/ui/navigation-pointer-02.svg",
+  "Assets/Icons/ui/navigation-pointer-off-01.svg",
+  "Assets/Icons/ui/navigation-pointer-off-02.svg",
+  "Assets/Icons/ui/notification-box.svg",
+  "Assets/Icons/ui/notification-message.svg",
+  "Assets/Icons/ui/notification-text.svg",
+  "Assets/Icons/ui/octagon.svg",
+  "Assets/Icons/ui/package-check.svg",
+  "Assets/Icons/ui/package-minus.svg",
+  "Assets/Icons/ui/package-plus.svg",
+  "Assets/Icons/ui/package-search.svg",
+  "Assets/Icons/ui/package-x.svg",
+  "Assets/Icons/ui/package.svg",
+  "Assets/Icons/ui/paint-pour.svg",
+  "Assets/Icons/ui/paint.svg",
+  "Assets/Icons/ui/palette.svg",
+  "Assets/Icons/ui/paperclip.svg",
+  "Assets/Icons/ui/paragraph-spacing.svg",
+  "Assets/Icons/ui/paragraph-wrap.svg",
+  "Assets/Icons/ui/passcode-lock.svg",
+  "Assets/Icons/ui/passcode.svg",
+  "Assets/Icons/ui/passport.svg",
+  "Assets/Icons/ui/pause-circle.svg",
+  "Assets/Icons/ui/pause-square.svg",
+  "Assets/Icons/ui/pen-tool-01.svg",
+  "Assets/Icons/ui/pen-tool-02.svg",
+  "Assets/Icons/ui/pen-tool-minus.svg",
+  "Assets/Icons/ui/pen-tool-plus.svg",
+  "Assets/Icons/ui/pencil-01.svg",
+  "Assets/Icons/ui/pencil-02.svg",
+  "Assets/Icons/ui/pencil-line.svg",
+  "Assets/Icons/ui/pentagon.svg",
+  "Assets/Icons/ui/percent-01.svg",
+  "Assets/Icons/ui/percent-02.svg",
+  "Assets/Icons/ui/percent-03.svg",
+  "Assets/Icons/ui/perspective-01.svg",
+  "Assets/Icons/ui/perspective-02.svg",
+  "Assets/Icons/ui/phone-01.svg",
+  "Assets/Icons/ui/phone-02.svg",
+  "Assets/Icons/ui/phone-call-01.svg",
+  "Assets/Icons/ui/phone-call-02.svg",
+  "Assets/Icons/ui/phone-hang-up.svg",
+  "Assets/Icons/ui/phone-incoming-01.svg",
+  "Assets/Icons/ui/phone-incoming-02.svg",
+  "Assets/Icons/ui/phone-outgoing-01.svg",
+  "Assets/Icons/ui/phone-outgoing-02.svg",
+  "Assets/Icons/ui/phone-pause.svg",
+  "Assets/Icons/ui/phone-plus.svg",
+  "Assets/Icons/ui/phone-x.svg",
+  "Assets/Icons/ui/phone.svg",
+  "Assets/Icons/ui/pie-chart-01.svg",
+  "Assets/Icons/ui/pie-chart-02.svg",
+  "Assets/Icons/ui/pie-chart-03.svg",
+  "Assets/Icons/ui/pie-chart-04.svg",
+  "Assets/Icons/ui/piggy-bank-01.svg",
+  "Assets/Icons/ui/piggy-bank-02.svg",
+  "Assets/Icons/ui/pilcrow-01.svg",
+  "Assets/Icons/ui/pilcrow-02.svg",
+  "Assets/Icons/ui/pilcrow-square.svg",
+  "Assets/Icons/ui/pin-01.svg",
+  "Assets/Icons/ui/pin-02.svg",
+  "Assets/Icons/ui/placeholder.svg",
+  "Assets/Icons/ui/plane.svg",
+  "Assets/Icons/ui/play-circle.svg",
+  "Assets/Icons/ui/play-square.svg",
+  "Assets/Icons/ui/play.svg",
+  "Assets/Icons/ui/plus-square.svg",
+  "Assets/Icons/ui/plus.svg",
+  "Assets/Icons/ui/podcast.svg",
+  "Assets/Icons/ui/power-01.svg",
+  "Assets/Icons/ui/power-02.svg",
+  "Assets/Icons/ui/power-03.svg",
+  "Assets/Icons/ui/presentation-chart-01.svg",
+  "Assets/Icons/ui/presentation-chart-02.svg",
+  "Assets/Icons/ui/presentation-chart-03.svg",
+  "Assets/Icons/ui/printer.svg",
+  "Assets/Icons/ui/puzzle-piece-01.svg",
+  "Assets/Icons/ui/puzzle-piece-02.svg",
+  "Assets/Icons/ui/qr-code-01.svg",
+  "Assets/Icons/ui/qr-code-02.svg",
+  "Assets/Icons/ui/receipt-check.svg",
+  "Assets/Icons/ui/receipt.svg",
+  "Assets/Icons/ui/recording-01.svg",
+  "Assets/Icons/ui/recording-02.svg",
+  "Assets/Icons/ui/recording-03.svg",
+  "Assets/Icons/ui/reflect-01.svg",
+  "Assets/Icons/ui/reflect-02.svg",
+  "Assets/Icons/ui/refresh-ccw-01.svg",
+  "Assets/Icons/ui/refresh-ccw-02.svg",
+  "Assets/Icons/ui/refresh-ccw-03.svg",
+  "Assets/Icons/ui/refresh-ccw-04.svg",
+  "Assets/Icons/ui/refresh-ccw-05.svg",
+  "Assets/Icons/ui/refresh-cw-01.svg",
+  "Assets/Icons/ui/refresh-cw-02.svg",
+  "Assets/Icons/ui/refresh-cw-03.svg",
+  "Assets/Icons/ui/refresh-cw-04.svg",
+  "Assets/Icons/ui/refresh-cw-05.svg",
+  "Assets/Icons/ui/repeat-01.svg",
+  "Assets/Icons/ui/repeat-02.svg",
+  "Assets/Icons/ui/repeat-03.svg",
+  "Assets/Icons/ui/repeat-04.svg",
+  "Assets/Icons/ui/reverse-left.svg",
+  "Assets/Icons/ui/reverse-right.svg",
+  "Assets/Icons/ui/right-indent-01.svg",
+  "Assets/Icons/ui/right-indent-02.svg",
+  "Assets/Icons/ui/rocket-01.svg",
+  "Assets/Icons/ui/rocket-02.svg",
+  "Assets/Icons/ui/roller-brush.svg",
+  "Assets/Icons/ui/route.svg",
+  "Assets/Icons/ui/rows-01.svg",
+  "Assets/Icons/ui/rows-02.svg",
+  "Assets/Icons/ui/rows-03.svg",
+  "Assets/Icons/ui/rss-01.svg",
+  "Assets/Icons/ui/rss-02.svg",
+  "Assets/Icons/ui/ruler.svg",
+  "Assets/Icons/ui/safe.svg",
+  "Assets/Icons/ui/sale-01.svg",
+  "Assets/Icons/ui/sale-02.svg",
+  "Assets/Icons/ui/sale-03.svg",
+  "Assets/Icons/ui/sale-04.svg",
+  "Assets/Icons/ui/save-01.svg",
+  "Assets/Icons/ui/save-02.svg",
+  "Assets/Icons/ui/save-03.svg",
+  "Assets/Icons/ui/scale-01.svg",
+  "Assets/Icons/ui/scale-02.svg",
+  "Assets/Icons/ui/scale-03.svg",
+  "Assets/Icons/ui/scales-01.svg",
+  "Assets/Icons/ui/scales-02.svg",
+  "Assets/Icons/ui/scan.svg",
+  "Assets/Icons/ui/scissors-01.svg",
+  "Assets/Icons/ui/scissors-02.svg",
+  "Assets/Icons/ui/scissors-cut-01.svg",
+  "Assets/Icons/ui/scissors-cut-02.svg",
+  "Assets/Icons/ui/search-lg.svg",
+  "Assets/Icons/ui/search-md.svg",
+  "Assets/Icons/ui/search-refraction.svg",
+  "Assets/Icons/ui/search-sm.svg",
+  "Assets/Icons/ui/send-01.svg",
+  "Assets/Icons/ui/send-02.svg",
+  "Assets/Icons/ui/send-03.svg",
+  "Assets/Icons/ui/server-01.svg",
+  "Assets/Icons/ui/server-02.svg",
+  "Assets/Icons/ui/server-03.svg",
+  "Assets/Icons/ui/server-04.svg",
+  "Assets/Icons/ui/server-05.svg",
+  "Assets/Icons/ui/server-06.svg",
+  "Assets/Icons/ui/settings-01.svg",
+  "Assets/Icons/ui/settings-02.svg",
+  "Assets/Icons/ui/settings-03.svg",
+  "Assets/Icons/ui/settings-04.svg",
+  "Assets/Icons/ui/share-01.svg",
+  "Assets/Icons/ui/share-02.svg",
+  "Assets/Icons/ui/share-03.svg",
+  "Assets/Icons/ui/share-04.svg",
+  "Assets/Icons/ui/share-05.svg",
+  "Assets/Icons/ui/share-06.svg",
+  "Assets/Icons/ui/share-07.svg",
+  "Assets/Icons/ui/shield-01.svg",
+  "Assets/Icons/ui/shield-02.svg",
+  "Assets/Icons/ui/shield-03.svg",
+  "Assets/Icons/ui/shield-dollar.svg",
+  "Assets/Icons/ui/shield-off.svg",
+  "Assets/Icons/ui/shield-plus.svg",
+  "Assets/Icons/ui/shield-tick.svg",
+  "Assets/Icons/ui/shield-zap.svg",
+  "Assets/Icons/ui/shopping-bag-01.svg",
+  "Assets/Icons/ui/shopping-bag-02.svg",
+  "Assets/Icons/ui/shopping-bag-03.svg",
+  "Assets/Icons/ui/shopping-cart-01.svg",
+  "Assets/Icons/ui/shopping-cart-02.svg",
+  "Assets/Icons/ui/shopping-cart-03.svg",
+  "Assets/Icons/ui/shuffle-01.svg",
+  "Assets/Icons/ui/shuffle-02.svg",
+  "Assets/Icons/ui/signal-01.svg",
+  "Assets/Icons/ui/signal-02.svg",
+  "Assets/Icons/ui/signal-03.svg",
+  "Assets/Icons/ui/simcard.svg",
+  "Assets/Icons/ui/skew.svg",
+  "Assets/Icons/ui/skip-back.svg",
+  "Assets/Icons/ui/skip-forward.svg",
+  "Assets/Icons/ui/slash-circle-01.svg",
+  "Assets/Icons/ui/slash-circle-02.svg",
+  "Assets/Icons/ui/slash-divider.svg",
+  "Assets/Icons/ui/slash-octagon.svg",
+  "Assets/Icons/ui/sliders-01.svg",
+  "Assets/Icons/ui/sliders-02.svg",
+  "Assets/Icons/ui/sliders-03.svg",
+  "Assets/Icons/ui/sliders-04.svg",
+  "Assets/Icons/ui/snowflake-01.svg",
+  "Assets/Icons/ui/snowflake-02.svg",
+  "Assets/Icons/ui/spacing-height-01.svg",
+  "Assets/Icons/ui/spacing-height-02.svg",
+  "Assets/Icons/ui/spacing-width-01.svg",
+  "Assets/Icons/ui/spacing-width-02.svg",
+  "Assets/Icons/ui/speaker-01.svg",
+  "Assets/Icons/ui/speaker-02.svg",
+  "Assets/Icons/ui/speaker-03.svg",
+  "Assets/Icons/ui/speedometer-01.svg",
+  "Assets/Icons/ui/speedometer-02.svg",
+  "Assets/Icons/ui/speedometer-03.svg",
+  "Assets/Icons/ui/speedometer-04.svg",
+  "Assets/Icons/ui/square.svg",
+  "Assets/Icons/ui/stand.svg",
+  "Assets/Icons/ui/star-01.svg",
+  "Assets/Icons/ui/star-02.svg",
+  "Assets/Icons/ui/star-03.svg",
+  "Assets/Icons/ui/star-04.svg",
+  "Assets/Icons/ui/star-05.svg",
+  "Assets/Icons/ui/star-06.svg",
+  "Assets/Icons/ui/star-07.svg",
+  "Assets/Icons/ui/stars-01.svg",
+  "Assets/Icons/ui/stars-02.svg",
+  "Assets/Icons/ui/stars-03.svg",
+  "Assets/Icons/ui/sticker-circle.svg",
+  "Assets/Icons/ui/sticker-square.svg",
+  "Assets/Icons/ui/stop-circle.svg",
+  "Assets/Icons/ui/stop-square.svg",
+  "Assets/Icons/ui/stop.svg",
+  "Assets/Icons/ui/strikethrough-01.svg",
+  "Assets/Icons/ui/strikethrough-02.svg",
+  "Assets/Icons/ui/strikethrough-square.svg",
+  "Assets/Icons/ui/subscript.svg",
+  "Assets/Icons/ui/sun-setting-01.svg",
+  "Assets/Icons/ui/sun-setting-02.svg",
+  "Assets/Icons/ui/sun-setting-03.svg",
+  "Assets/Icons/ui/sun.svg",
+  "Assets/Icons/ui/sunrise.svg",
+  "Assets/Icons/ui/sunset.svg",
+  "Assets/Icons/ui/switch-horizontal-01.svg",
+  "Assets/Icons/ui/switch-horizontal-02.svg",
+  "Assets/Icons/ui/switch-vertical-01.svg",
+  "Assets/Icons/ui/switch-vertical-02.svg",
+  "Assets/Icons/ui/table.svg",
+  "Assets/Icons/ui/tablet-01.svg",
+  "Assets/Icons/ui/tablet-02.svg",
+  "Assets/Icons/ui/tag-01.svg",
+  "Assets/Icons/ui/tag-02.svg",
+  "Assets/Icons/ui/tag-03.svg",
+  "Assets/Icons/ui/target-01.svg",
+  "Assets/Icons/ui/target-02.svg",
+  "Assets/Icons/ui/target-03.svg",
+  "Assets/Icons/ui/target-04.svg",
+  "Assets/Icons/ui/target-05.svg",
+  "Assets/Icons/ui/telescope.svg",
+  "Assets/Icons/ui/terminal-browser.svg",
+  "Assets/Icons/ui/terminal-circle.svg",
+  "Assets/Icons/ui/terminal-square.svg",
+  "Assets/Icons/ui/terminal.svg",
+  "Assets/Icons/ui/text-input.svg",
+  "Assets/Icons/ui/thermometer-01.svg",
+  "Assets/Icons/ui/thermometer-02.svg",
+  "Assets/Icons/ui/thermometer-03.svg",
+  "Assets/Icons/ui/thermometer-cold.svg",
+  "Assets/Icons/ui/thermometer-warm.svg",
+  "Assets/Icons/ui/thumbs-down.svg",
+  "Assets/Icons/ui/thumbs-up.svg",
+  "Assets/Icons/ui/ticket-01.svg",
+  "Assets/Icons/ui/ticket-02.svg",
+  "Assets/Icons/ui/toggle-01-left.svg",
+  "Assets/Icons/ui/toggle-01-right.svg",
+  "Assets/Icons/ui/toggle-02-left.svg",
+  "Assets/Icons/ui/toggle-02-right.svg",
+  "Assets/Icons/ui/toggle-03-left.svg",
+  "Assets/Icons/ui/toggle-03-right.svg",
+  "Assets/Icons/ui/tool-01.svg",
+  "Assets/Icons/ui/tool-02.svg",
+  "Assets/Icons/ui/train.svg",
+  "Assets/Icons/ui/tram.svg",
+  "Assets/Icons/ui/transform.svg",
+  "Assets/Icons/ui/translate-01.svg",
+  "Assets/Icons/ui/translate-02.svg",
+  "Assets/Icons/ui/trash-01.svg",
+  "Assets/Icons/ui/trash-02.svg",
+  "Assets/Icons/ui/trash-03.svg",
+  "Assets/Icons/ui/trash-04.svg",
+  "Assets/Icons/ui/trend-down-01.svg",
+  "Assets/Icons/ui/trend-down-02.svg",
+  "Assets/Icons/ui/trend-up-01.svg",
+  "Assets/Icons/ui/trend-up-02.svg",
+  "Assets/Icons/ui/triangle.svg",
+  "Assets/Icons/ui/trophy-01.svg",
+  "Assets/Icons/ui/trophy-02.svg",
+  "Assets/Icons/ui/truck-01.svg",
+  "Assets/Icons/ui/truck-02.svg",
+  "Assets/Icons/ui/tv-01.svg",
+  "Assets/Icons/ui/tv-02.svg",
+  "Assets/Icons/ui/tv-03.svg",
+  "Assets/Icons/ui/type-01.svg",
+  "Assets/Icons/ui/type-02.svg",
+  "Assets/Icons/ui/type-square.svg",
+  "Assets/Icons/ui/type-strikethrough-01.svg",
+  "Assets/Icons/ui/type-strikethrough-02.svg",
+  "Assets/Icons/ui/umbrella-01.svg",
+  "Assets/Icons/ui/umbrella-02.svg",
+  "Assets/Icons/ui/umbrella-03.svg",
+  "Assets/Icons/ui/underline-01.svg",
+  "Assets/Icons/ui/underline-02.svg",
+  "Assets/Icons/ui/underline-square.svg",
+  "Assets/Icons/ui/upload-02.svg",
+  "Assets/Icons/ui/upload-03.svg",
+  "Assets/Icons/ui/upload-04.svg",
+  "Assets/Icons/ui/upload-cloud-01.svg",
+  "Assets/Icons/ui/upload-cloud-02.svg",
+  "Assets/Icons/ui/usb-flash-drive.svg",
+  "Assets/Icons/ui/user-01.svg",
+  "Assets/Icons/ui/user-02.svg",
+  "Assets/Icons/ui/user-03.svg",
+  "Assets/Icons/ui/user-check-01.svg",
+  "Assets/Icons/ui/user-check-02.svg",
+  "Assets/Icons/ui/user-circle.svg",
+  "Assets/Icons/ui/user-down-01.svg",
+  "Assets/Icons/ui/user-down-02.svg",
+  "Assets/Icons/ui/user-edit.svg",
+  "Assets/Icons/ui/user-left-01.svg",
+  "Assets/Icons/ui/user-left-02.svg",
+  "Assets/Icons/ui/user-minus-01.svg",
+  "Assets/Icons/ui/user-minus-02.svg",
+  "Assets/Icons/ui/user-plus-01.svg",
+  "Assets/Icons/ui/user-plus-02.svg",
+  "Assets/Icons/ui/user-right-01.svg",
+  "Assets/Icons/ui/user-right-02.svg",
+  "Assets/Icons/ui/user-square.svg",
+  "Assets/Icons/ui/user-up-01.svg",
+  "Assets/Icons/ui/user-up-02.svg",
+  "Assets/Icons/ui/user-x-01.svg",
+  "Assets/Icons/ui/user-x-02.svg",
+  "Assets/Icons/ui/users-01.svg",
+  "Assets/Icons/ui/users-02.svg",
+  "Assets/Icons/ui/users-03.svg",
+  "Assets/Icons/ui/users-check.svg",
+  "Assets/Icons/ui/users-down.svg",
+  "Assets/Icons/ui/users-edit.svg",
+  "Assets/Icons/ui/users-left.svg",
+  "Assets/Icons/ui/users-minus.svg",
+  "Assets/Icons/ui/users-plus.svg",
+  "Assets/Icons/ui/users-right.svg",
+  "Assets/Icons/ui/users-up.svg",
+  "Assets/Icons/ui/users-x.svg",
+  "Assets/Icons/ui/variable.svg",
+  "Assets/Icons/ui/video-recorder-off.svg",
+  "Assets/Icons/ui/video-recorder.svg",
+  "Assets/Icons/ui/virus.svg",
+  "Assets/Icons/ui/voicemail.svg",
+  "Assets/Icons/ui/volume-max.svg",
+  "Assets/Icons/ui/volume-min.svg",
+  "Assets/Icons/ui/volume-minus.svg",
+  "Assets/Icons/ui/volume-plus.svg",
+  "Assets/Icons/ui/volume-x.svg",
+  "Assets/Icons/ui/wallet-01.svg",
+  "Assets/Icons/ui/wallet-02.svg",
+  "Assets/Icons/ui/wallet-03.svg",
+  "Assets/Icons/ui/wallet-04.svg",
+  "Assets/Icons/ui/wallet-05.svg",
+  "Assets/Icons/ui/watch-circle.svg",
+  "Assets/Icons/ui/watch-square.svg",
+  "Assets/Icons/ui/waves.svg",
+  "Assets/Icons/ui/webcam-01.svg",
+  "Assets/Icons/ui/webcam-02.svg",
+  "Assets/Icons/ui/wifi-off.svg",
+  "Assets/Icons/ui/wifi.svg",
+  "Assets/Icons/ui/wind-01.svg",
+  "Assets/Icons/ui/wind-02.svg",
+  "Assets/Icons/ui/wind-03.svg",
+  "Assets/Icons/ui/x-circle.svg",
+  "Assets/Icons/ui/x-close.svg",
+  "Assets/Icons/ui/x-square.svg",
+  "Assets/Icons/ui/x.svg",
+  "Assets/Icons/ui/zap-circle.svg",
+  "Assets/Icons/ui/zap-fast.svg",
+  "Assets/Icons/ui/zap-off.svg",
+  "Assets/Icons/ui/zap-square.svg",
+  "Assets/Icons/ui/zap.svg",
+  "Assets/Icons/ui/zoom-in.svg",
+  "Assets/Icons/ui/zoom-out.svg",
+  "Assets/Icons/upvote-outline.svg",
+  "Assets/Icons/upvote-solid.svg",
+  "Assets/Icons/user.svg",
+  "Assets/Icons/verified-badge.svg",
+  "Assets/Icons/video-call.svg",
+  "Assets/Icons/video-classroom.svg",
+  "Assets/Icons/video-googleHangouts.svg",
+  "Assets/Icons/video-lesson.svg",
+  "Assets/Icons/video-qq.svg",
+  "Assets/Icons/video-skype.svg",
+  "Assets/Icons/video-teams.svg",
+  "Assets/Icons/video-wechat.svg",
+  "Assets/Icons/video-zoom.svg",
+  "Assets/Icons/vocabulary.svg",
+  "Assets/Icons/wallet.svg",
+  "Assets/Icons/warning.svg",
+  "Assets/Icons/whiteboard-add-canvas.svg",
+  "Assets/Icons/whiteboard-attachment.svg",
+  "Assets/Icons/whiteboard-clear.svg",
+  "Assets/Icons/whiteboard-device-check.svg",
+  "Assets/Icons/whiteboard-doc.svg",
+  "Assets/Icons/whiteboard-eraser.svg",
+  "Assets/Icons/whiteboard-highlighter.svg",
+  "Assets/Icons/whiteboard-lesson-plan.svg",
+  "Assets/Icons/whiteboard-notes.svg",
+  "Assets/Icons/whiteboard-pencil.svg",
+  "Assets/Icons/whiteboard-picture-in-picture.svg",
+  "Assets/Icons/whiteboard-privacy.svg",
+  "Assets/Icons/whiteboard-select.svg",
+  "Assets/Icons/whiteboard-shape.svg",
+  "Assets/Icons/whiteboard-stop.svg",
+  "Assets/Icons/whiteboard-take-note.svg",
+  "Assets/Icons/whiteboard-text.svg",
+  "Assets/Icons/whiteboard-tool-collection.svg",
+  "Assets/Icons/whiteboard-translate.svg",
+  "Assets/Icons/whiteboard-upload.svg",
+  "Assets/Icons/whiteboard-zoom-in.svg",
+  "Assets/Icons/whiteboard-zoom-out.svg",
+  "Assets/Icons/x-close.svg",
+  "Assets/Icons/youtube.svg"
+];
+
+(function installItalkiUI(global) {
+  "use strict";
+
+  const contracts = global.ITalkiUIContracts || {};
+  const componentContracts = contracts.components || {};
+  const assetRoots = contracts.assetRoots || ["Assets/Icons/", "Assets/Flags/"];
+
+  const escapeHTML = (value) => String(value ?? "").replace(/[&<>'"]/g, (character) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "'": "&#39;",
+    '"': "&quot;"
+  }[character]));
+
+  const enumValue = (component, name, value, subcomponent = "") => {
+    const contract = subcomponent ? componentContracts[component]?.subcomponents?.[subcomponent] : componentContracts[component];
+    if (value === undefined || !contract?.props?.[name]) return;
+    if (!contract.props[name].includes(value)) {
+      throw new Error(`${component}.${name} does not accept ${String(value)}`);
+    }
+  };
+
+  /* "does not accept prop defaultCollapsed" is true and unhelpful: the prop is
+     called `collapsed`, and the reader has no list to check against. Name the
+     nearest accepted prop when there is an obvious one. */
+  const nearestProp = (name, allowed) => {
+    const lower = String(name).toLowerCase();
+    const near = (a, b) => {
+      if (Math.abs(a.length - b.length) > 2) return 99;
+      const row = Array.from({ length: b.length + 1 }, (_, i) => i);
+      for (let i = 1; i <= a.length; i += 1) {
+        let prev = row[0];
+        row[0] = i;
+        for (let j = 1; j <= b.length; j += 1) {
+          const swap = row[j];
+          row[j] = Math.min(row[j] + 1, row[j - 1] + 1, prev + (a[i - 1] === b[j - 1] ? 0 : 1));
+          prev = swap;
+        }
+      }
+      return row[b.length];
+    };
+    const hit = allowed.find((candidate) => {
+      const other = candidate.toLowerCase();
+      return other !== lower && (other.includes(lower) || lower.includes(other));
+    }) || allowed.find((candidate) => near(lower, candidate.toLowerCase()) <= 2);
+    return hit ? ` — did you mean ${hit}?` : "";
+  };
+
+  const assertProps = (component, props, subcomponent = "") => {
+    const contract = componentContracts[component];
+    const allowed = subcomponent ? (contract?.subcomponents?.[subcomponent]?.acceptedProps || []) : (contract?.acceptedProps || []);
+    for (const name of Object.keys(props || {})) {
+      if (!allowed.includes(name)) throw new Error(`${component} does not accept prop ${name}${nearestProp(name, allowed)}`);
+    }
+  };
+
+  /* A page two or three folders down addresses the same approved asset with a
+     leading pair of dot-dot steps, and that was rejected: the check required
+     the path to start with the root. It bit where nothing was watching — the pin
+     controls re-render a row from its stored icon path, so on a card the row
+     silently refused to move. Leading ./ and ../ steps are part of addressing,
+     not of identity, so they come off before the root is checked. Everything
+     else — absolute URLs, other origins, paths outside the roots — is rejected
+     exactly as before. */
+  /* Where the page sits relative to the asset folder. Markup rendered at build
+     time can be rebased by whoever writes the file, but markup the runtime
+     creates later — a row rebuilt by the pin controls, a menu row restored from
+     the roster — cannot: it is produced long after, by code that has no idea
+     the page is three folders down. Both broke as soon as they were touched.
+     The host states the depth once and every path the runtime emits follows it. */
+  const assetBase = () => String(global.ITalkiUIAssetBase || "");
+  const withBase = (path) => (/^([a-z]+:|\/|\.)/i.test(path) ? path : assetBase() + path);
+
+  const approvedAsset = (path) => {
+    if (!path) return true;
+    const withinSite = String(path).replace(/^(?:\.{1,2}\/)+/, "");
+    return assetRoots.some((root) => withinSite.startsWith(root));
+  };
+
+  /* An icon may be named rather than pathed. Every consumer that wrote one by
+     hand reached for `icon: "dashboard"` — the name in the library — and got
+     "Unapproved asset: dashboard", because the prop had always meant a path.
+     A name is the safer form of the two: it cannot point outside the library,
+     so it is resolved against the manifest and rejected when the manifest does
+     not have it. A value containing a slash is still taken as a path. */
+  const iconLibrary = () => {
+    const manifest = global.ITalkiIconManifest;
+    return Array.isArray(manifest) ? manifest : (manifest && manifest.icons) || null;
+  };
+  const resolveIcon = (value) => {
+    if (!value || value.includes("/")) return value;
+    const library = iconLibrary();
+    /* With the manifest present the name is verified, and 16px/ icons resolve
+       to their real folder. Without it — a host that loaded the runtime alone —
+       fall back to the library root rather than refusing to render. */
+    if (!library) return `Assets/Icons/${value}.svg`;
+    /* Curated first, adopted second. A name is matched by its file name, so the
+       general-purpose set under Assets/Icons/ui/ can carry a name the library
+       already uses — 20 of them do, and 15 are a different drawing of it. Which
+       one a bare name reached used to fall out of the manifest's sort order:
+       `x-close` would have resolved to the adopted glyph and `check` to the
+       library's, for no reason either way. The library's own icon wins because
+       it is the library's, and only a name the library does not have reaches
+       the adopted set. */
+    const matches = library.filter((entry) => String(entry).endsWith("/" + value + ".svg"));
+    const hit = matches.find((entry) => !String(entry).includes("/ui/")) ?? matches[0];
+    if (!hit) throw new Error(`Unknown icon: "${value}" is not in the icon library`);
+    return hit;
+  };
+
+  const icon = (rawPath, className = "ui-icon") => {
+    if (!rawPath) return "";
+    const path = resolveIcon(rawPath);
+    if (!approvedAsset(path)) throw new Error(`Unapproved asset: ${path}`);
+    return `<img class="${className}" src="${escapeHTML(withBase(path))}" alt="" />`;
+  };
+
+  /* A url() an inline style can carry unquoted, so the same declaration survives
+     both this renderer and React's attribute escaping — quotes come back out the
+     other side spelled differently in each. Percent-encoding covers the
+     characters that would end the url() early. */
+  const cssUrl = (path) => `url(${encodeURI(path).replace(/['"()]/g, (character) => ({ "'": "%27", '"': "%22", "(": "%28", ")": "%29" })[character])})`;
+  /* mask-image itself, not a custom property holding the url: a relative url()
+     handed to a variable is resolved against the stylesheet that reads it — the
+     runtime's own folder — and every icon came out missing. Declared on the
+     element, it resolves against the page, which is where the assets are. */
+  const maskImageStyle = (path) => `-webkit-mask-image:${cssUrl(path)};mask-image:${cssUrl(path)}`;
+
+  /* A glyph that has to take the colour of what it sits in. A step marker changes
+     colour with its state — grey while it waits, white once it is behind you —
+     and an <img> cannot follow that. Same name resolution and same approval as
+     icon(); painted as a mask so currentColor shows through. */
+  /* Split out because a mask glyph is not always its own element. Two of them —
+     the package offer's category mark and the calendar's timezone pin — belong to
+     a span the renderer was already emitting, and they used to name their asset in
+     the stylesheet instead. A url() there resolves against the stylesheet, which
+     moves: catalog-runtime/ in the repo, the project root once published, and
+     _ds/<kit>/ in a project that adds the kit as a library. One of those is right
+     at a time. Emitted here it goes through withBase() like every other asset. */
+  const maskStyle = (rawPath) => {
+    const path = resolveIcon(rawPath);
+    if (!approvedAsset(path)) throw new Error(`Unapproved asset: ${path}`);
+    return maskImageStyle(withBase(path));
+  };
+
+  const maskIcon = (rawPath, className) => {
+    if (!rawPath) return "";
+    return `<i class="${className}" style="${maskStyle(rawPath)}" aria-hidden="true"></i>`;
+  };
+
+  const resolveControlShape = (size, shape) => shape === "default" ? (size === 32 ? "pill" : "rounded") : shape;
+  /* The stepper is the one control whose default is a pill at every size: the two
+     round actions sit either side of the value, and a rounded box around them
+     reads as a field the value could be typed into, which it cannot. */
+  const resolveStepperShape = (shape) => shape === "default" ? "pill" : shape;
+
+  // Field controls separate interaction from validation. Legacy state="warning" and
+  // state="error" remain supported while consumers move to status.
+  const resolveFieldPresentation = ({ state = "default", status = "default", disabled = false, readOnly = false }) => ({
+    state: disabled ? "disabled" : (readOnly ? "read-only" : state),
+    status: ["warning", "error"].includes(state) ? state : status
+  });
+
+  function button(props = {}) {
+    assertProps("button", props);
+    const {
+    label = "",
+    variant = "emphasis",
+    size = 40,
+    shape = "default",
+    state = "default",
+    leadingIcon = "",
+    trailingIcon = "",
+    iconOnly = false,
+    disabled = false,
+    loading = false,
+    demo = "",
+    ariaLabel = "",
+    href = "",
+    download = "",
+    target = "",
+    rel = "",
+    ariaExpanded,
+    ariaPressed,
+    ariaDescribedBy = "",
+    ariaControls = ""
+    } = props;
+    enumValue("button", "variant", variant);
+    enumValue("button", "size", size);
+    enumValue("button", "shape", shape);
+    enumValue("button", "state", loading ? "loading" : (disabled ? "disabled" : state));
+    const resolvedShape = resolveControlShape(size, shape);
+    const isDisabled = disabled || state === "disabled" || loading;
+    const classes = ["ui-button", `ui-button--${variant}`, `ui-button--${size}`, `ui-button--${resolvedShape}`, leadingIcon && !loading && !iconOnly ? "has-leading-icon" : "", trailingIcon && !loading && !iconOnly ? "has-trailing-icon" : "", state !== "default" ? `is-${state}` : "", loading ? "is-loading" : "", iconOnly ? "is-icon-only" : ""].filter(Boolean).join(" ");
+    const leading = loading ? '<span class="ui-button__spinner" aria-hidden="true"></span>' : icon(leadingIcon, "ui-button__icon");
+    const trailing = loading ? "" : icon(trailingIcon, "ui-button__icon");
+    const readableLabel = iconOnly ? "" : `<span class="ui-button__label">${escapeHTML(label)}</span>`;
+    const accessibleName = ariaLabel || (iconOnly ? label : "");
+    const tag = href ? "a" : "button";
+    const navigation = href ? ` href="${escapeHTML(href)}"${download ? ` download="${escapeHTML(download)}"` : ""}${target ? ` target="${escapeHTML(target)}"` : ""}${rel ? ` rel="${escapeHTML(rel)}"` : ""}` : ' type="button"';
+    return `<${tag} class="${classes}" data-component="button"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}${accessibleName ? ` aria-label="${escapeHTML(accessibleName)}"` : ""}${ariaDescribedBy ? ` aria-describedby="${escapeHTML(ariaDescribedBy)}"` : ""}${ariaControls ? ` aria-controls="${escapeHTML(ariaControls)}"` : ""}${ariaExpanded === undefined ? "" : ` aria-expanded="${ariaExpanded}"`}${ariaPressed === undefined ? "" : ` aria-pressed="${ariaPressed}"`}${isDisabled ? (href ? ' aria-disabled="true"' : " disabled") : ""}${navigation}>${leading}${readableLabel}${trailing}</${tag}>`;
+  }
+
+  function chip(props = {}) {
+    assertProps("chip", props);
+    const { label = "", size = 32, surface = "default", checked, selected = false, disabled = false, state = "default", demo = "" } = props;
+    const isChecked = checked === undefined ? selected : checked;
+    enumValue("chip", "size", size);
+    enumValue("chip", "surface", surface);
+    enumValue("chip", "state", disabled ? "disabled" : (isChecked ? "checked" : state));
+    const isHover = !disabled && !isChecked && state === "hover";
+    const classes = ["ui-chip", `ui-chip--${size}`, `ui-chip--${surface}`, isChecked ? "is-selected" : "", isHover ? "is-hover" : "", disabled ? "is-disabled" : ""].filter(Boolean).join(" ");
+    return `<button class="${classes}" type="button" data-component="chip"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""} aria-pressed="${isChecked}"${disabled ? " disabled" : ""}>${escapeHTML(label)}</button>`;
+  }
+
+  function tag(props = {}) {
+    assertProps("tag", props);
+    const { label = "", value = label, size = 24, tone = "neutral", variant = "default", leadingIcon = "", removable = false, removeDemo = "", removeAriaLabel = "" } = props;
+    enumValue("tag", "size", size);
+    enumValue("tag", "tone", tone);
+    enumValue("tag", "variant", variant);
+    if (leadingIcon && !approvedAsset(leadingIcon)) throw new Error(`tag.leadingIcon must be an approved asset: ${leadingIcon}`);
+    const leading = icon(leadingIcon, "ui-tag__icon");
+    const remove = removable ? `<button class="ui-tag__remove" type="button"${removeDemo ? ` data-demo="${escapeHTML(removeDemo)}"` : ""}${removeAriaLabel ? ` aria-label="${escapeHTML(removeAriaLabel)}"` : ` aria-label="Remove ${escapeHTML(label)}"`}>${icon("Assets/Icons/16px/cross-sm.svg", "ui-tag__remove-icon")}</button>` : "";
+    return `<span class="ui-tag ui-tag--${size} ui-tag--${tone} ui-tag--${variant}" data-component="tag" data-value="${escapeHTML(value)}">${leading}<span class="ui-tag__label">${escapeHTML(label)}</span>${remove}</span>`;
+  }
+
+  function link(props = {}) {
+    assertProps("link", props);
+    const {
+      label = "", href = "#", size = 14, variant = "default",
+      trailingIcon = "none", external = false, disabled = false,
+      state = "default", ariaLabel = "", demo = "",
+    } = props;
+    enumValue("link", "size", size);
+    enumValue("link", "variant", variant);
+    enumValue("link", "trailingIcon", trailingIcon);
+    enumValue("link", "state", state);
+    /* An external link opens elsewhere, which the reader is entitled to know
+       before clicking — so the arrow is the default marker for one, not an
+       independent decoration. Passing an explicit trailingIcon still wins. */
+    const marker = trailingIcon !== "none" ? trailingIcon : external ? "external" : "none";
+    const glyph = marker === "chevron" ? "Assets/Icons/chevron-right.svg"
+      : marker === "external" ? "Assets/Icons/arrow-up-right.svg" : "";
+    const tail = glyph ? icon(glyph, "ui-link__icon") : "";
+    /* A disabled link is not a link: it cannot be followed, so it must not be
+       focusable or expose a destination. */
+    const tag = disabled ? "span" : "a";
+    const target = !disabled && external ? ' target="_blank" rel="noreferrer noopener"' : "";
+    return `<${tag} class="ui-link ui-link--${size} ui-link--${variant}${disabled ? " is-disabled" : ""}${state === "hover" ? " is-hover" : ""}"`
+      + ` data-component="link"`
+      + (disabled ? ' aria-disabled="true"' : ` href="${escapeHTML(href)}"`)
+      + target
+      + (ariaLabel ? ` aria-label="${escapeHTML(ariaLabel)}"` : "")
+      + (demo ? ` data-demo="${escapeHTML(demo)}"` : "")
+      + `><span class="ui-link__label">${escapeHTML(label)}</span>${tail}</${tag}>`;
+  }
+
+  function video(props = {}) {
+    assertProps("video", props);
+    const {
+      id = "", poster = "", posterAlt = "", title = "",
+      duration = "", playLabel = "", state = "default", demo = "",
+    } = props;
+    enumValue("video", "state", state);
+    if (!poster) throw new Error("video requires a poster: a play affordance over an empty frame tells the reader nothing about what they would be starting");
+    approvedAsset(poster) || (() => { throw new Error(`video.poster must be an approved asset: ${poster}`); })();
+    const disabled = state === "disabled";
+    /* The component is the cover and the way in. What the click does — open a
+       dialog, navigate, swap in a player — belongs to the page, so it arrives
+       through the same data-demo hook every other interactive renderer uses. */
+    const label = playLabel || (title ? `Play ${title}` : "Play video");
+    return `<div class="ui-video${state === "hover" ? " is-hover" : ""}${disabled ? " is-disabled" : ""}" data-component="video"${id ? ` id="${escapeHTML(id)}"` : ""}>`
+      + `<img class="ui-video__poster" src="${escapeHTML(withBase(poster))}" alt="${escapeHTML(posterAlt)}" />`
+      + `<button class="ui-video__play" type="button" aria-label="${escapeHTML(label)}"${disabled ? " disabled" : ""}${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}>`
+      + `<span class="ui-video__play-disc" aria-hidden="true"></span></button>`
+      + (duration ? `<span class="ui-video__duration">${escapeHTML(duration)}</span>` : "")
+      + (title ? `<p class="ui-video__title">${escapeHTML(title)}</p>` : "")
+      + `</div>`;
+  }
+
+  function checkbox(props = {}) {
+    assertProps("checkbox", props);
+    const { id = "", label = "Checkbox", checked = "off", state = "default", disabled = false, toggleMode = "binary", demo = "" } = props;
+    enumValue("checkbox", "checked", checked);
+    enumValue("checkbox", "state", disabled ? "disabled" : state);
+    enumValue("checkbox", "toggleMode", toggleMode);
+    const isDisabled = disabled || state === "disabled";
+    const ariaChecked = checked === "mixed" ? "mixed" : String(checked === "on");
+    const classes = ["ui-checkbox", `value-${checked}`, state === "hover" ? "is-hover" : "", isDisabled ? "is-disabled" : ""].filter(Boolean).join(" ");
+    return `<button class="${classes}" type="button" role="checkbox" aria-checked="${ariaChecked}" data-component="checkbox" data-value="${checked}" data-checkbox-toggle="${toggleMode}"${id ? ` data-checkbox-id="${escapeHTML(id)}"` : ""}${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}${isDisabled ? " disabled" : ""}><span class="ui-checkbox__box" aria-hidden="true">${icon("Assets/Icons/confirm-sm.svg", "ui-checkbox__check")}<i class="ui-checkbox__mixed"></i></span><span>${escapeHTML(label)}</span></button>`;
+  }
+
+  function checkboxGroup(props = {}) {
+    assertProps("checkbox-group", props);
+    const { id = "", label = "Checkbox group", description = "", options = [], selected = [], layout = "vertical", selectAll = false, feedback = "", feedbackTone = "default" } = props;
+    enumValue("checkbox-group", "layout", layout);
+    enumValue("checkbox-group", "feedbackTone", feedbackTone);
+    const values = new Set((Array.isArray(selected) ? selected : [selected]).map(String));
+    const normalized = options.map((option) => typeof option === "string" ? { id: option, label: option } : { ...option, id: option?.id || option?.value || option?.label || "" });
+    const active = normalized.filter((option) => !option.disabled);
+    const selectedCount = active.filter((option) => values.has(String(option.id))).length;
+    const selectAllValue = selectedCount === 0 ? "off" : (selectedCount === active.length ? "on" : "mixed");
+    const descriptionId = description && id ? `${id}-description` : "";
+    const feedbackId = feedback && id ? `${id}-feedback` : "";
+    const all = selectAll ? `<div class="ui-checkbox-group__select-all">${checkbox({ label: "Select all", checked: selectAllValue, demo: "ui-checkbox-group-all" })}</div>` : "";
+    const items = normalized.map((option) => checkbox({ id: option.id, label: option.label, checked: values.has(String(option.id)) ? "on" : "off", disabled: Boolean(option.disabled), demo: "ui-checkbox-group-item" })).join("");
+    const descriptionMarkup = description ? `<p class="ui-checkbox-group__description"${descriptionId ? ` id="${escapeHTML(descriptionId)}"` : ""}>${escapeHTML(description)}</p>` : "";
+    const feedbackMarkup = feedback ? `<p class="ui-checkbox-group__feedback${feedbackTone === "error" ? " is-error" : ""}"${feedbackId ? ` id="${escapeHTML(feedbackId)}"` : ""} data-ui-checkbox-group-feedback>${escapeHTML(feedback)}</p>` : `<p class="ui-checkbox-group__feedback" data-ui-checkbox-group-count>${selectedCount} selected</p>`;
+    const describedBy = [descriptionId, feedbackId].filter(Boolean).join(" ");
+    return `<fieldset class="ui-checkbox-group ui-checkbox-group--${layout}" data-component="checkbox-group" data-ui-checkbox-group${id ? ` id="${escapeHTML(id)}"` : ""}${describedBy ? ` aria-describedby="${escapeHTML(describedBy)}"` : ""}><legend>${escapeHTML(label)}</legend>${descriptionMarkup}${all}<div class="ui-checkbox-group__options">${items}</div>${feedbackMarkup}</fieldset>`;
+  }
+
+  function radio(props = {}) {
+    assertProps("radio", props);
+    const { label = "Radio", value = label, checked = false, disabled = false, state = "default", description = "", demo = "", tabIndex = checked ? 0 : -1 } = props;
+    enumValue("radio", "state", disabled ? "disabled" : state);
+    const isDisabled = disabled || state === "disabled";
+    const classes = ["ui-radio", checked ? "is-checked" : "", state === "hover" ? "is-hover" : "", isDisabled ? "is-disabled" : ""].filter(Boolean).join(" ");
+    return `<button class="${classes}" type="button" role="radio" aria-checked="${checked}" data-component="radio" data-radio-value="${escapeHTML(value)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""} tabindex="${Number(tabIndex)}"${isDisabled ? " disabled" : ""}><span class="ui-radio__indicator" aria-hidden="true"></span><span class="ui-radio__copy"><span>${escapeHTML(label)}</span>${description ? `<small>${escapeHTML(description)}</small>` : ""}</span></button>`;
+  }
+
+  function radioGroup(props = {}) {
+    assertProps("radio", props, "group");
+    const { label = "Radio group", options = [], selected = "", layout = "inline", block = false } = props;
+    if (!["inline", "vertical"].includes(layout)) throw new Error(`radio.group.layout does not accept ${String(layout)}`);
+    const normalized = options.map((option) => typeof option === "string" ? { label: option, value: option } : { ...option, value: option?.value || option?.label || "" });
+    const requested = Array.isArray(selected) ? selected[0] : selected;
+    const preselected = normalized.find((option) => option.checked && !option.disabled)?.value;
+    const selectedValue = String(requested || preselected || "");
+    const focusIndex = normalized.findIndex((option) => String(option.value) === selectedValue && !option.disabled);
+    const fallbackFocusIndex = focusIndex >= 0 ? focusIndex : normalized.findIndex((option) => !option.disabled);
+    const content = normalized.map((option, index) => {
+      const checked = String(option.value) === selectedValue;
+      return radio({
+        label: option.label,
+        value: option.value,
+        checked,
+        disabled: Boolean(option.disabled),
+        state: option.state || "default",
+        description: option.description || "",
+        demo: "ui-radio",
+        tabIndex: index === fallbackFocusIndex ? 0 : -1
+      });
+    }).join("");
+    return `<div class="ui-radio-group ui-radio-group--${block ? "block" : layout}" data-component="radio-group" data-ui-radio-group role="radiogroup" aria-label="${escapeHTML(label)}">${content}</div>`;
+  }
+
+  function selection(props = {}) {
+    assertProps("selection", props);
+    const { label = "Selection", value = label, subtext = "", description = "", leading = "", badge = "", price = "", period = "", discount = "", quantity = "", quantityLabel = "Lessons", originalPrice = "", totalPrice = "", selected = false, selectedMarker = false, disabled = false, contentType = "icon-simple", selectionMode = "checkbox", state = "default", tabIndex = selectionMode === "checkbox" ? 0 : (selected ? 0 : -1), demo = "" } = props;
+    enumValue("selection", "contentType", contentType);
+    enumValue("selection", "selectionMode", selectionMode);
+    enumValue("selection", "state", state);
+    const isDisabled = disabled || state === "disabled";
+    const isControlLeading = contentType === "standard";
+    // Selection shares the Radio / Checkbox visual primitives while retaining one
+    // interactive card shell, so it never nests an interactive control.
+    const indicator = selectionMode === "radio"
+      ? '<span class="ui-radio__indicator ui-selection__indicator ui-selection__indicator--radio" aria-hidden="true"></span>'
+      : `<span class="ui-checkbox__box ui-selection__indicator ui-selection__indicator--checkbox" aria-hidden="true">${icon("Assets/Icons/confirm-sm.svg", "ui-checkbox__check")}</span>`;
+    const feature = leading ? `<span class="ui-selection__feature ui-selection__feature--${contentType}">${leading}</span>` : "";
+    const title = `<span class="ui-selection__title">${escapeHTML(label)}</span>${subtext ? `<span class="ui-selection__subtext">${escapeHTML(subtext)}</span>` : ""}`;
+    const copy = `<span class="ui-selection__copy"><span class="ui-selection__title-row">${title}</span>${description ? `<span class="ui-selection__description">${escapeHTML(description)}</span>` : ""}</span>`;
+    const packageOffer = discount ? `<span class="ui-selection__package-offer${discount === "No discount" ? " is-neutral" : ""}"><span class="ui-selection__package-offer-icon" style="${maskStyle("Assets/Icons/16px/category-sm.svg")}" aria-hidden="true"></span><span>${escapeHTML(discount)}</span></span>` : "";
+    const packageQuantity = quantity ? `<span class="ui-selection__package-quantity"><strong>${escapeHTML(quantity)}</strong><span>${escapeHTML(quantityLabel)}</span></span>` : "";
+    const packageTotal = originalPrice || totalPrice ? `<span class="ui-selection__package-total">${originalPrice ? `<s>${escapeHTML(originalPrice)}</s>` : ""}${totalPrice ? `<strong>${escapeHTML(totalPrice)}</strong>` : ""}</span>` : "";
+    const packageBody = `<span class="ui-selection__package-copy">${packageOffer}${price ? `<span class="ui-selection__package-price">${escapeHTML(price)}${period ? `<small>${escapeHTML(period)}</small>` : ""}</span>` : ""}${description ? `<span class="ui-selection__package-description">${escapeHTML(description)}</span>` : ""}</span>${packageQuantity || packageTotal ? `<span class="ui-selection__package-footer">${packageQuantity}${packageTotal}</span>` : ""}`;
+    const lessonSummary = `<span class="ui-selection__lesson-summary-copy"><span class="ui-selection__lesson-summary-title">${escapeHTML(label)}</span>${description ? `<span class="ui-selection__lesson-summary-meta">${escapeHTML(description)}</span>` : ""}</span>${price ? `<span class="ui-selection__lesson-summary-price">${escapeHTML(price)}</span>` : ""}`;
+    const cardFeature = contentType === "icon-card" ? leading : feature;
+    const body = contentType === "lesson-options"
+      ? lessonSummary
+      : contentType === "package-card"
+      ? packageBody
+      : contentType === "icon-card"
+      ? `<span class="ui-selection__card-header">${cardFeature}<span class="ui-selection__card-title">${escapeHTML(label)}</span>${indicator}</span><span class="ui-selection__card-body"><span class="ui-selection__card-copy">${price ? `<span class="ui-selection__price">${escapeHTML(price)}${period ? `<small>${escapeHTML(period)}</small>` : ""}</span>` : ""}${description ? `<span class="ui-selection__description">${escapeHTML(description)}</span>` : ""}</span>${badge ? `<span class="ui-selection__badge">${badge}</span>` : ""}</span>`
+      : `<span class="ui-selection__body">${isControlLeading ? indicator : ""}${feature}${copy}${isControlLeading ? "" : indicator}</span>`;
+    const usesSelectedMarker = selectedMarker || contentType === "package-card";
+    const classes = ["ui-selection", `ui-selection--${contentType}`, `ui-selection--${selectionMode}`, selected ? "is-selected" : "", usesSelectedMarker ? "uses-selected-marker" : "", selected && usesSelectedMarker ? "has-selected-marker" : "", isDisabled ? "is-disabled" : "", state === "hover" ? "is-hover" : "", state === "focus" ? "is-focused" : ""].filter(Boolean).join(" ");
+    return `<button class="${classes}" type="button" data-component="selection" data-demo="${escapeHTML(demo || "ui-selection-card")}" data-selection-mode="${selectionMode}" data-selection-value="${escapeHTML(value)}" role="${selectionMode}" aria-checked="${selected}" aria-label="${escapeHTML(label)}" tabindex="${tabIndex}"${isDisabled ? " disabled" : ""}>${body}</button>`;
+  }
+
+  function selectionGroup(props = {}) {
+    assertProps("selection", props, "group");
+    const { label = "Selection", options = [], selected = "", contentType = "icon-simple", selectionMode = "radio", selectedMarker = false, layout = "stack", courseTitle = "", courseMeta = "", courses = [], selectedDuration = "" } = props;
+    enumValue("selection", "contentType", contentType);
+    enumValue("selection", "selectionMode", selectionMode);
+    enumValue("selection", "layout", layout, "group");
+    const normalized = options.map((option) => typeof option === "string" ? { label: option, value: option } : { ...option, value: option?.value || option?.label || "" });
+    const selectedValues = new Set((Array.isArray(selected) ? selected : [selected]).filter(Boolean).map(String));
+    if (contentType === "lesson-options" && courses.length) {
+      if (selectionMode !== "radio") throw new Error("selection.lesson-options requires radio selectionMode");
+      const courseCards = courses.map((course, courseIndex) => {
+        const courseValue = String(course?.value || course?.label || course?.title || courseIndex);
+        const courseSelected = selectedValues.has(courseValue);
+        const courseOptions = Array.isArray(course?.options) ? course.options : (Array.isArray(course?.durations) ? course.durations : []);
+        const durationValue = String(course?.selectedDuration || (courseSelected ? selectedDuration : ""));
+        const durationRows = courseOptions.map((option, optionIndex) => {
+          const optionValue = String(option?.value || option?.label || optionIndex);
+          const optionSelected = durationValue === optionValue;
+          const disabled = Boolean(option?.disabled);
+          return `<button class="ui-selection__lesson-option${optionSelected ? " is-selected" : ""}${disabled ? " is-disabled" : ""}" type="button" data-component="selection" data-demo="ui-selection-card" data-selection-mode="radio" data-selection-value="${escapeHTML(optionValue)}" role="radio" aria-checked="${optionSelected}" aria-label="${escapeHTML(`${option?.label || optionValue}${option?.price ? `, ${option.price}` : ""}`)}" tabindex="${optionSelected || (!durationValue && optionIndex === 0) ? 0 : -1}"${disabled ? " disabled" : ""}><span class="ui-selection__lesson-option-label">${escapeHTML(option?.label || optionValue)}</span>${option?.price ? `<span class="ui-selection__lesson-option-price">${escapeHTML(option.price)}</span>` : ""}<span class="ui-selection__lesson-option-indicator" aria-hidden="true"></span></button>`;
+        }).join("");
+        const summary = `<button class="ui-selection__lesson-toggle${courseSelected ? " is-selected" : ""}" type="button" data-demo="ui-lesson-toggle" data-lesson-course="${escapeHTML(courseValue)}" aria-expanded="${courseSelected}" aria-checked="${courseSelected}" role="radio"><span class="ui-selection__lesson-summary-copy"><span class="ui-selection__lesson-summary-title">${escapeHTML(course?.title || course?.label || courseValue)}</span>${course?.meta ? `<span class="ui-selection__lesson-summary-meta">${escapeHTML(course.meta)}</span>` : ""}</span>${course?.price ? `<span class="ui-selection__lesson-summary-price">${escapeHTML(course.price)}</span>` : ""}</button>`;
+        /* A course with no lengths has nothing to expand — emitting the
+           container anyway gave the card a block of padding when it was picked. */
+        const durationMarkup = !durationRows ? "" : `<div class="ui-selection__lesson-options${courseSelected ? "" : " is-collapsed"}" data-ui-selection-group role="radiogroup" aria-label="${escapeHTML(`${course?.title || courseValue} duration`)}" aria-hidden="${!courseSelected}"${courseSelected ? "" : " inert"}><div class="ui-selection__lesson-options-inner">${durationRows}</div></div>`;
+        return `<section class="ui-selection__lesson-card${courseSelected ? " is-expanded" : ""}" data-lesson-course-card="${escapeHTML(courseValue)}">${summary}${durationMarkup}</section>`;
+      }).join("");
+      return `<div class="ui-selection-group ui-selection-group--lesson-options-list" data-component="selection-group" data-ui-lesson-options data-selection-mode="radio" role="group" aria-label="${escapeHTML(label)}">${courseCards}</div>`;
+    }
+    if (contentType === "lesson-options") {
+      if (selectionMode !== "radio") throw new Error("selection.lesson-options requires radio selectionMode");
+      if (!courseTitle) throw new Error("selection.lesson-options requires courseTitle");
+      const optionsMarkup = normalized.map((option, index) => {
+        const optionSelected = selectedValues.has(String(option.value));
+        const disabled = Boolean(option.disabled);
+        return `<button class="ui-selection__lesson-option${optionSelected ? " is-selected" : ""}${disabled ? " is-disabled" : ""}" type="button" data-component="selection" data-demo="ui-selection-card" data-selection-mode="radio" data-selection-value="${escapeHTML(option.value)}" role="radio" aria-checked="${optionSelected}" aria-label="${escapeHTML(`${option.label}${option.price ? `, ${option.price}` : ""}`)}" tabindex="${optionSelected || (!selectedValues.size && index === 0) ? 0 : -1}"${disabled ? " disabled" : ""}><span class="ui-selection__lesson-option-label">${escapeHTML(option.label)}</span>${option.price ? `<span class="ui-selection__lesson-option-price">${escapeHTML(option.price)}</span>` : ""}<span class="ui-selection__lesson-option-indicator" aria-hidden="true"></span></button>`;
+      }).join("");
+      return `<section class="ui-selection-group ui-selection-group--lesson-options${selectedValues.size ? " is-selected" : ""}" data-component="selection-group" data-ui-selection-group data-selection-mode="radio" role="radiogroup" aria-label="${escapeHTML(label)}"><header class="ui-selection__lesson-header"><span class="ui-selection__lesson-title">${escapeHTML(courseTitle)}</span>${courseMeta ? `<span class="ui-selection__lesson-meta">${escapeHTML(courseMeta)}</span>` : ""}</header><div class="ui-selection__lesson-options">${optionsMarkup}</div></section>`;
+    }
+    const content = normalized.map((option, index) => {
+      const optionSelected = selectedValues.has(String(option.value));
+      const optionMode = option.selectionMode || selectionMode;
+      return selection({ label: option.label, value: option.value, subtext: option.subtext || "", description: option.description || "", leading: option.leading || "", badge: option.badge || "", price: option.price || "", period: option.period || "", discount: option.discount || "", quantity: option.quantity || "", quantityLabel: option.quantityLabel || "Lessons", originalPrice: option.originalPrice || "", totalPrice: option.totalPrice || "", selected: optionSelected, selectedMarker: option.selectedMarker ?? selectedMarker, disabled: Boolean(option.disabled), contentType: option.contentType || contentType, selectionMode: optionMode, tabIndex: optionMode === "radio" ? (optionSelected || (!selectedValues.size && index === 0) ? 0 : -1) : 0 });
+    }).join("");
+    const groupRole = selectionMode === "radio" ? "radiogroup" : "group";
+    return `<div class="ui-selection-group ui-selection-group--${selectionMode} ui-selection-group--${layout}" data-component="selection-group" data-ui-selection-group data-selection-mode="${selectionMode}" role="${groupRole}" aria-label="${escapeHTML(label)}">${content}</div>`;
+  }
+
+  const defaultDateWeekdays = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+  const dateDay = (day, index) => {
+    if (day === null || day === undefined || day === "") return null;
+    if (typeof day === "object") return { label: String(day.label ?? day.value ?? ""), value: String(day.value ?? day.label ?? index), disabled: Boolean(day.disabled), muted: Boolean(day.muted) };
+    return { label: String(day), value: String(day), disabled: false, muted: false };
+  };
+  const normalizeDateDays = (days) => (Array.isArray(days) ? days : []).map(dateDay);
+  const selectedDateValues = (selected, range) => {
+    const values = Array.isArray(range) && range.length ? range : (selected === "" || selected === undefined || selected === null ? [] : [selected]);
+    return values.filter((value) => value !== "" && value !== undefined && value !== null).map(String).slice(0, 2);
+  };
+  const datePickerLabel = (days, values, fallback) => {
+    if (!values.length) return fallback;
+    const labels = values.map((value) => days.find((day) => day?.value === value)?.label || value);
+    return labels.join(" - ");
+  };
+  const datePickerGrid = (days, values) => {
+    const indexes = values.map((value) => days.findIndex((day) => day?.value === value)).filter((index) => index >= 0);
+    const start = indexes.length === 2 ? Math.min(...indexes) : -1;
+    const end = indexes.length === 2 ? Math.max(...indexes) : -1;
+    return days.map((day, index) => {
+      if (!day) return '<span class="ui-date-picker__blank" aria-hidden="true"></span>';
+      const selected = values.includes(day.value);
+      const inRange = start >= 0 && index > start && index < end;
+      const rangeStart = start >= 0 && index === start;
+      const rangeEnd = end >= 0 && index === end;
+      const classes = ["ui-date-picker__day", selected ? "is-selected" : "", inRange ? "is-in-range" : "", rangeStart ? "is-range-start" : "", rangeEnd ? "is-range-end" : "", day.muted ? "is-muted" : ""].filter(Boolean).join(" ");
+      return `<button class="${classes}" type="button" data-demo="ui-date-day" data-date-value="${escapeHTML(day.value)}"${day.disabled ? " disabled" : ""}>${escapeHTML(day.label)}</button>`;
+    }).join("");
+  };
+
+  function datePicker(props = {}) {
+    assertProps("date-picker", props);
+    const { id = "", label = "Choose a date", value = "", placeholder = "Choose a date", size = 40, shape = "default", status = "default", open = false, disabled = false, state = "default", monthLabel = "", weekdays = defaultDateWeekdays, days = [], months = [], monthIndex = 0, selected = "", range = null, demo = "" } = props;
+    enumValue("date-picker", "size", size);
+    enumValue("date-picker", "shape", shape);
+    enumValue("date-picker", "status", status);
+    enumValue("date-picker", "state", disabled ? "disabled" : state);
+    const presentation = resolveFieldPresentation({ state, status, disabled });
+    const providedMonths = Array.isArray(months) && months.length ? months : [{ label: monthLabel || "Calendar", days }];
+    const index = Math.min(Math.max(Number(monthIndex) || 0, 0), providedMonths.length - 1);
+    const activeMonth = providedMonths[index] || { label: monthLabel || "Calendar", days };
+    const normalizedDays = normalizeDateDays(activeMonth.days ?? days);
+    const isRange = Array.isArray(range);
+    const values = selectedDateValues(selected, range);
+    const triggerValue = value || datePickerLabel(normalizedDays, values, placeholder);
+    const rootId = id || `date-picker-${String(label).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "field"}`;
+    const isDisabled = disabled || presentation.state === "disabled";
+    const isOpen = Boolean(open) && !isDisabled;
+    const classes = ["ui-date-picker", `ui-date-picker--${size}`, `ui-date-picker--${resolveControlShape(size, shape)}`, isOpen ? "is-open" : "", isDisabled ? "is-disabled" : "", presentation.state === "hover" ? "is-hover" : "", presentation.state === "focus" ? "is-focus" : "", presentation.status !== "default" ? `is-${presentation.status}` : ""].filter(Boolean).join(" ");
+    const calendar = icon("Assets/Icons/16px/today-sm.svg", "ui-date-picker__calendar-icon");
+    const suffix = icon(isOpen ? "Assets/Icons/arrow-up-sm.svg" : "Assets/Icons/arrow-down-sm.svg", "ui-date-picker__suffix-icon");
+    const previousDisabled = index === 0;
+    const nextDisabled = index === providedMonths.length - 1;
+    const popup = `<div class="ui-date-picker__popup" id="${escapeHTML(rootId)}-popup" role="dialog" aria-label="${escapeHTML(label)} calendar"><div class="ui-date-picker__header"><button type="button" data-demo="ui-date-previous" aria-label="Previous month"${previousDisabled ? " disabled" : ""}>${icon("Assets/Icons/arrow-left.svg", "ui-date-picker__month-icon")}</button><strong data-ui-date-month>${escapeHTML(activeMonth.label || monthLabel || "Calendar")}</strong><button type="button" data-demo="ui-date-next" aria-label="Next month"${nextDisabled ? " disabled" : ""}>${icon("Assets/Icons/arrow-right.svg", "ui-date-picker__month-icon")}</button></div><div class="ui-date-picker__weekdays">${(Array.isArray(weekdays) ? weekdays : defaultDateWeekdays).map((day) => `<span>${escapeHTML(day)}</span>`).join("")}</div><div class="ui-date-picker__grid" data-ui-date-grid>${datePickerGrid(normalizedDays, values)}</div></div>`;
+    const isPlaceholder = !value && values.length === 0;
+    return `<div class="${classes}" id="${escapeHTML(rootId)}" data-component="date-picker" data-ui-date-picker data-date-values="${escapeHTML(JSON.stringify(values))}" data-date-months="${escapeHTML(JSON.stringify(providedMonths))}" data-date-month-index="${index}" data-date-range="${isRange ? "true" : "false"}"><button class="ui-date-picker__trigger" type="button" data-demo="${escapeHTML(demo || "ui-date-toggle")}" aria-label="${escapeHTML(label)}" aria-haspopup="dialog" aria-expanded="${isOpen}" aria-controls="${escapeHTML(rootId)}-popup"${isDisabled ? " disabled" : ""}>${calendar}<span class="${isPlaceholder ? "ui-date-picker__placeholder" : ""}" data-ui-date-label>${escapeHTML(triggerValue)}</span>${suffix}</button>${popup}</div>`;
+  }
+
+  function tooltip(props = {}) {
+    assertProps("tooltip", props);
+    const { id = "", content = "", trigger = "", triggerLabel = "Hover me", placement = "top", arrow = true, open = false, disabled = false, demo = "" } = props;
+    enumValue("tooltip", "placement", placement);
+    const tooltipId = id || `tooltip-${String(triggerLabel).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "hint"}`;
+    const triggerMarkup = trigger || button({ label: triggerLabel, variant: "secondary", size: 32, shape: "pill", disabled, demo, ariaDescribedBy: tooltipId });
+    const classes = ["ui-tooltip-wrap", open ? "is-open" : "", disabled ? "is-disabled" : ""].filter(Boolean).join(" ");
+    return `<span class="${classes}" data-component="tooltip" data-ui-tooltip>${triggerMarkup}<span class="ui-tooltip${arrow ? "" : " no-arrow"}" id="${escapeHTML(tooltipId)}" data-placement="${placement}" role="tooltip">${escapeHTML(content)}</span></span>`;
+  }
+
+  function divider(props = {}) {
+    assertProps("divider", props);
+    const { type = "horizontal", label = "", orientation = "center", orientationMargin = "", dashed = false, plain = false, tone = "divider", icon: iconPath = "", ariaLabel = "" } = props;
+    enumValue("divider", "type", type);
+    enumValue("divider", "orientation", orientation);
+    enumValue("divider", "dashed", dashed);
+    enumValue("divider", "plain", plain);
+    enumValue("divider", "tone", tone);
+
+    const normalizeMargin = (value) => {
+      if (value === "" || value === undefined || value === null) return "";
+      if (typeof value === "number" && Number.isFinite(value) && value >= 0) return `${value}px`;
+      const normalized = String(value).trim();
+      if (!/^(?:0|[1-9]\d*)(?:px|%)?$/.test(normalized)) throw new Error("divider.orientationMargin must be a non-negative number, px, or percentage value");
+      return normalized === "0" ? "0px" : normalized;
+    };
+
+    const resolvedMargin = type === "horizontal" && label && orientation !== "center" ? normalizeMargin(orientationMargin) : "";
+    const classes = [
+      "ui-divider",
+      `ui-divider--${type}`,
+      `ui-divider--${tone}`,
+      label && type === "horizontal" ? "has-label" : "",
+      label && type === "horizontal" ? `is-${orientation}` : "",
+      dashed ? "is-dashed" : "",
+      plain ? "is-plain" : ""
+    ].filter(Boolean).join(" ");
+    const margin = resolvedMargin ? ` style="--ui-divider-edge:${escapeHTML(resolvedMargin)}"` : "";
+
+    if (type === "vertical") {
+      return `<span class="${classes}" data-component="divider" role="separator" aria-orientation="vertical"${ariaLabel ? ` aria-label="${escapeHTML(ariaLabel)}"` : ""}></span>`;
+    }
+
+    const iconMarkup = label && iconPath ? icon(iconPath, "ui-divider__icon") : "";
+    const labelMarkup = label ? `<span class="ui-divider__label">${iconMarkup}${escapeHTML(label)}</span>` : "";
+    return `<div class="${classes}" data-component="divider" role="separator" aria-orientation="horizontal"${ariaLabel ? ` aria-label="${escapeHTML(ariaLabel)}"` : ""}${margin}>${labelMarkup}</div>`;
+  }
+
+  function sectionIntro(props = {}) {
+    assertProps("section-intro", props);
+    const { id = "", eyebrow = "", title = "", description = "", action = "", size = "default", alignment = "start", headingLevel = 2, ariaLabel = "" } = props;
+    enumValue("section-intro", "size", size);
+    enumValue("section-intro", "alignment", alignment);
+    enumValue("section-intro", "headingLevel", headingLevel);
+    if (!title && !ariaLabel) throw new Error("section-intro requires a title or ariaLabel");
+    const headingTag = `h${headingLevel}`;
+    const headingId = id ? `${id}-title` : "";
+    const classes = ["ui-section-intro", `ui-section-intro--${size}`, `ui-section-intro--${alignment}`, action ? "has-action" : ""].filter(Boolean).join(" ");
+    const eyebrowMarkup = eyebrow ? `<p class="ui-section-intro__eyebrow">${escapeHTML(eyebrow)}</p>` : "";
+    const titleMarkup = title ? `<${headingTag} class="ui-section-intro__title"${headingId ? ` id="${escapeHTML(headingId)}"` : ""}>${escapeHTML(title)}</${headingTag}>` : "";
+    const descriptionMarkup = description ? `<p class="ui-section-intro__description">${escapeHTML(description)}</p>` : "";
+    const copy = `<div class="ui-section-intro__copy">${eyebrowMarkup}${titleMarkup}${descriptionMarkup}</div>`;
+    return `<header class="${classes}" data-component="section-intro"${id ? ` id="${escapeHTML(id)}"` : ""}${ariaLabel ? ` aria-label="${escapeHTML(ariaLabel)}"` : ""}${headingId ? ` aria-labelledby="${escapeHTML(headingId)}"` : ""}>${copy}${action ? `<div class="ui-section-intro__action">${action}</div>` : ""}</header>`;
+  }
+
+  function flag(props = {}) {
+    assertProps("avatar", props, "flag");
+    const { countryCode = "", countryLabel = "", size = 24, decorative = false, ariaLabel = "" } = props;
+    const code = String(countryCode).trim().toLowerCase();
+    if (!/^[a-z]{2}$/.test(code)) throw new Error("avatar.flag countryCode must be an ISO 3166-1 alpha-2 code");
+    if (![16, 24].includes(size)) throw new Error(`avatar.flag does not accept size ${String(size)}`);
+    const label = ariaLabel || countryLabel || code.toUpperCase();
+    return `<img class="ui-flag ui-flag--${size}" data-component="avatar" data-ui-avatar-part="flag" src="${escapeHTML(withBase(`Assets/Flags/${code}.svg`))}" alt="${decorative ? "" : escapeHTML(label)}"${decorative ? ' aria-hidden="true"' : ""} />`;
+  }
+
+  function avatar(props = {}) {
+    assertProps("avatar", props);
+    const { name = "", image = "", initials = "", size = 56, flag: countryCode = "", flagLabel = "", variant = countryCode ? "with-flag" : (image ? "without-flag" : "empty"), tone = "info", interactive = false, state = "default", ariaLabel = "" } = props;
+    enumValue("avatar", "size", size);
+    enumValue("avatar", "variant", variant);
+    enumValue("avatar", "tone", tone);
+    enumValue("avatar", "interactive", interactive);
+    enumValue("avatar", "state", state);
+    if (variant === "with-flag" && !countryCode) throw new Error("avatar.with-flag requires a flag country code");
+    if (variant === "empty" && image) throw new Error("avatar.empty does not accept an image");
+    if (variant === "logo" && (image || initials || countryCode)) throw new Error("avatar.logo does not accept image, initials, or flag content");
+    if (!image && !initials && variant !== "logo") throw new Error("avatar without an image requires initials");
+    const accessibleName = ariaLabel || name || initials || "italki";
+    const content = variant === "logo"
+      ? `<img class="ui-avatar__logo" src="${withBase("Assets/Icons/logo-italki-logomark-white.svg")}" alt="" />`
+      : image
+      ? `<img class="ui-avatar__image" src="${escapeHTML(withBase(image))}" alt="" />`
+      : `<span class="ui-avatar__initials" aria-hidden="true">${escapeHTML(initials)}</span>`;
+    const flagMarkup = variant === "with-flag"
+      ? `<span class="ui-avatar__flag">${flag({ countryCode, countryLabel: flagLabel, size: size <= 56 ? 16 : 24, decorative: true })}</span>`
+      : "";
+    const classes = ["ui-avatar", `ui-avatar--${size}`, `ui-avatar--${variant}`, `ui-avatar--tone-${tone}`, interactive ? "is-interactive" : "", state === "hover" ? "is-hover" : ""].filter(Boolean).join(" ");
+    return `<span class="${classes}" data-component="avatar" role="img" aria-label="${escapeHTML(accessibleName)}"><span class="ui-avatar__body">${content}</span>${flagMarkup}</span>`;
+  }
+
+  function avatarGroup(props = {}) {
+    assertProps("avatar", props, "group");
+    const { members = [], overflow = 0, addLabel = "", size = "md", ariaLabel = "Avatar group" } = props;
+    const sizeMap = {
+      xs: { avatar: 24, overlap: 4 },
+      sm: { avatar: 32, overlap: 8 },
+      md: { avatar: 40, overlap: 12 }
+    };
+    if (!sizeMap[size]) throw new Error(`avatar.group does not accept size ${String(size)}`);
+    if (!Array.isArray(members)) throw new Error("avatar.group members must be an array");
+    if (!Number.isInteger(overflow) || overflow < 0) throw new Error("avatar.group overflow must be a non-negative integer");
+    const avatarSize = sizeMap[size].avatar;
+    const memberMarkup = members.map((member) => avatar({ ...member, size: avatarSize })).join("");
+    const overflowMarkup = overflow ? `<span class="ui-avatar-group__overflow" aria-label="${escapeHTML(`${overflow} additional members`)}">+${overflow}</span>` : "";
+    const addMarkup = addLabel ? `<button class="ui-avatar-group__add" type="button" aria-label="${escapeHTML(addLabel)}">${icon("Assets/Icons/add.svg", "ui-avatar-group__add-icon")}</button>` : "";
+    return `<span class="ui-avatar-group ui-avatar-group--${size}" data-component="avatar" data-ui-avatar-part="group" role="group" aria-label="${escapeHTML(ariaLabel)}"><span class="ui-avatar-group__stack">${memberMarkup}${overflowMarkup}${addMarkup}</span></span>`;
+  }
+
+  function badge(props = {}) {
+    assertProps("badge", props);
+    const { type = "count", anchor = "", count = 0, label = "", tone = "default", overflowCount = 99, hidden = false, ariaLabel = "" } = props;
+    enumValue("badge", "type", type);
+    enumValue("badge", "tone", tone);
+    enumValue("badge", "hidden", hidden);
+    if (!Number.isInteger(overflowCount) || overflowCount < 0) throw new Error("badge.overflowCount must be a non-negative integer");
+    if ((type === "count" || type === "dot") && !anchor) throw new Error(`badge.${type} requires an anchor slot`);
+    if (type === "status" && !label) throw new Error("badge.status requires a label");
+
+    const numericCount = typeof count === "number" && Number.isFinite(count) ? count : null;
+    const displayCount = numericCount !== null && numericCount > overflowCount ? `${overflowCount}+` : escapeHTML(String(count));
+    const accessibleLabel = ariaLabel || (type === "status" ? label : type === "dot" ? "New activity" : type === "previous" ? (label || "Previous lesson") : type === "new" || type === "beta" ? (label || type.toUpperCase()) : `${displayCount} notifications`);
+    const classes = ["ui-badge", `ui-badge--${type}`, `ui-badge--${tone}`, hidden ? "is-hidden" : ""].filter(Boolean).join(" ");
+
+    if (type === "status") {
+      return `<span class="${classes}" data-component="badge" role="status" aria-label="${escapeHTML(accessibleLabel)}"><span class="ui-badge__status-dot" aria-hidden="true"></span><span class="ui-badge__label">${escapeHTML(label)}</span></span>`;
+    }
+
+    /* NEW and BETA are words, not counts: they mark what a thing is, so they take
+       no anchor, no number and no tone. NEW is the brand surface — it is a
+       promotion — and BETA is the info surface, because it is a statement about
+       maturity rather than an invitation. A label may rename either one for
+       another language; the shape does not change. */
+    /* "Previous lesson" is a note, not a shout: it marks the lesson type a
+       returning student took last time, so it reads in sentence case on a tinted
+       surface rather than as a solid uppercase mark. */
+    if (type === "previous") {
+      const note = label || "Previous lesson";
+      return `<span class="${classes}" data-component="badge" role="status" aria-label="${escapeHTML(ariaLabel || note)}"><span class="ui-badge__note">${escapeHTML(note)}</span></span>`;
+    }
+
+    if (type === "new" || type === "beta") {
+      const word = label || type.toUpperCase();
+      return `<span class="${classes}" data-component="badge" role="status" aria-label="${escapeHTML(ariaLabel || word)}"><span class="ui-badge__word">${escapeHTML(word)}</span></span>`;
+    }
+
+    const marker = hidden ? "" : type === "dot"
+      ? '<span class="ui-badge__marker ui-badge__marker--dot" aria-hidden="true"></span>'
+      : `<span class="ui-badge__marker ui-badge__marker--count" aria-hidden="true">${displayCount}</span>`;
+    return `<span class="${classes}" data-component="badge" role="status" aria-label="${escapeHTML(accessibleLabel)}"><span class="ui-badge__anchor">${anchor}</span>${marker}</span>`;
+  }
+
+  function breadcrumb(props = {}) {
+    assertProps("breadcrumb", props);
+    const { items = [], separator = "Assets/Icons/arrow-right-sm.svg", ariaLabel = "Breadcrumb", collapsedOpen = false, demo = "" } = props;
+    enumValue("breadcrumb", "collapsedOpen", collapsedOpen);
+    if (!Array.isArray(items) || !items.length) throw new Error("breadcrumb requires at least one item");
+    const currentIndex = items.findIndex((item) => item?.current);
+    const resolvedCurrent = currentIndex === -1 ? items.length - 1 : currentIndex;
+    if (items.some((item, index) => item?.current && index !== resolvedCurrent)) throw new Error("breadcrumb accepts one current item");
+
+    const separatorMarkup = () => {
+      if (separator && approvedAsset(separator)) return icon(separator, "ui-breadcrumb__separator");
+      return `<span class="ui-breadcrumb__separator ui-breadcrumb__separator--text" aria-hidden="true">${escapeHTML(separator || "/")}</span>`;
+    };
+    const itemMarkup = (item, index) => {
+      const { label = "", icon: iconPath = "", ariaLabel: itemAriaLabel = "", href = "", disabled = false } = item || {};
+      if (iconPath && !approvedAsset(iconPath)) throw new Error(`Unapproved asset: ${iconPath}`);
+      if (!label && !iconPath) throw new Error("breadcrumb item requires a label or icon");
+      if (!label && !itemAriaLabel) throw new Error("icon-only breadcrumb item requires ariaLabel");
+      const isCurrent = index === resolvedCurrent;
+      const iconMarkup = iconPath ? icon(iconPath, "ui-breadcrumb__icon") : "";
+      const content = `${iconMarkup}${label ? `<span class="ui-breadcrumb__label">${escapeHTML(label)}</span>` : ""}`;
+      if (isCurrent) return `<li class="ui-breadcrumb__item is-current"><span class="ui-breadcrumb__current" aria-current="page">${content}</span></li>`;
+      const classes = ["ui-breadcrumb__link", iconPath ? "has-icon" : "", !label ? "is-icon-only" : ""].filter(Boolean).join(" ");
+      const navigation = href ? ` href="${escapeHTML(href)}"` : ' type="button"';
+      const disabledMarkup = disabled ? (href ? ' aria-disabled="true"' : " disabled") : "";
+      return `<li class="ui-breadcrumb__item"><${href ? "a" : "button"} class="${classes}" data-demo="${escapeHTML(demo || "ui-breadcrumb-item")}"${itemAriaLabel ? ` aria-label="${escapeHTML(itemAriaLabel)}"` : ""}${disabledMarkup}${navigation}>${content}</${href ? "a" : "button"}></li>`;
+    };
+
+    const output = [];
+    let collapsedHandled = false;
+    items.forEach((item, index) => {
+      if (item?.collapsed) {
+        if (collapsedHandled) return;
+        collapsedHandled = true;
+        const collapsed = items.filter((candidate) => candidate?.collapsed);
+        const menuItems = collapsed.map((candidate) => `<li role="none"><button type="button" role="menuitem" data-demo="ui-breadcrumb-overflow-item">${escapeHTML(candidate.label || candidate.ariaLabel || "Path item")}</button></li>`).join("");
+        output.push(`<li class="ui-breadcrumb__item ui-breadcrumb__overflow-wrap"><button class="ui-breadcrumb__overflow" type="button" data-demo="ui-breadcrumb-overflow" aria-label="Show hidden path items" aria-expanded="${collapsedOpen}" aria-controls="ui-breadcrumb-overflow-menu">${icon("Assets/Icons/more.svg", "ui-breadcrumb__overflow-icon")}</button><ul class="ui-breadcrumb__menu" id="ui-breadcrumb-overflow-menu" role="menu"${collapsedOpen ? "" : " hidden"}>${menuItems}</ul></li>`);
+      } else {
+        output.push(itemMarkup(item, index));
+      }
+    });
+    const joined = output.flatMap((item, index) => index < output.length - 1 ? [item, `<li class="ui-breadcrumb__item ui-breadcrumb__separator-wrap">${separatorMarkup()}</li>`] : [item]).join("");
+    return `<nav class="ui-breadcrumb" data-component="breadcrumb" aria-label="${escapeHTML(ariaLabel)}"><ol class="ui-breadcrumb__list">${joined}</ol></nav>`;
+  }
+
+  function toggleBreadcrumb(control) {
+    const wrapper = control?.closest?.(".ui-breadcrumb__overflow-wrap");
+    const menu = wrapper?.querySelector?.(".ui-breadcrumb__menu");
+    if (!menu) return;
+    const open = menu.hasAttribute("hidden");
+    menu.toggleAttribute("hidden", !open);
+    control.setAttribute("aria-expanded", String(open));
+  }
+
+  function closeBreadcrumbs(except = null) {
+    document.querySelectorAll(".ui-breadcrumb__overflow-wrap").forEach((wrapper) => {
+      if (wrapper.contains(except)) return;
+      wrapper.querySelector(".ui-breadcrumb__menu")?.setAttribute("hidden", "");
+      wrapper.querySelector("[data-demo=ui-breadcrumb-overflow]")?.setAttribute("aria-expanded", "false");
+    });
+  }
+
+  function card(props = {}) {
+    assertProps("card", props);
+    const { interactive = false, outlined = true, media = "", mediaAlt = "", mediaPlaceholder = false, mediaRatio = "16:9", eyebrow = "", title = "", body = "", meta = "", footer = "", density = "default", ariaLabel = "", href = "", demo = "" } = props;
+    enumValue("card", "interactive", interactive);
+    enumValue("card", "outlined", outlined);
+    enumValue("card", "mediaRatio", mediaRatio);
+    enumValue("card", "density", density);
+    if (!title && !ariaLabel) throw new Error("card requires a title or ariaLabel");
+    if (href && !interactive) throw new Error("card.href requires interactive true");
+    const tag = interactive ? (href ? "a" : "button") : "article";
+    const rootAttributes = interactive
+      ? (href ? ` href="${escapeHTML(href)}"` : ' type="button"')
+      : "";
+    const hasMedia = Boolean(media || mediaPlaceholder);
+    const classes = ["ui-card", interactive ? "is-interactive" : "is-static", outlined && !interactive ? "is-outlined" : "", `ui-card--${density}`, hasMedia ? `ui-card--media-${mediaRatio.replace(":", "-")}` : ""].filter(Boolean).join(" ");
+    const mediaMarkup = media
+      ? `<img class="ui-card__media" src="${escapeHTML(withBase(media))}" alt="${escapeHTML(mediaAlt)}" />`
+      : mediaPlaceholder ? `<span class="ui-card__media ui-media-placeholder" aria-hidden="true"><img src="${withBase("Assets/Icons/logo-italki-logomark-white.svg")}" alt="" /></span>` : "";
+    const eyebrowMarkup = eyebrow ? `<span class="ui-card__eyebrow">${escapeHTML(eyebrow)}</span>` : "";
+    const titleMarkup = title ? `<h3 class="ui-card__title">${escapeHTML(title)}</h3>` : "";
+    const heading = eyebrow || title || meta ? `<header class="ui-card__heading"><div>${eyebrowMarkup}${titleMarkup}</div>${meta ? `<div class="ui-card__meta">${meta}</div>` : ""}</header>` : "";
+    const bodyMarkup = body ? `<div class="ui-card__body">${body}</div>` : "";
+    const footerMarkup = footer ? `<footer class="ui-card__footer">${footer}</footer>` : "";
+    return `<${tag} class="${classes}" data-component="card"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}${ariaLabel ? ` aria-label="${escapeHTML(ariaLabel)}"` : ""}${rootAttributes}>${mediaMarkup}<div class="ui-card__content">${heading}${bodyMarkup}${footerMarkup}</div></${tag}>`;
+  }
+
+  function list(props = {}) {
+    assertProps("list", props);
+    const { id = "", items = [], size = "default", variant = "default", divided = true, ariaLabel = "List", demo = "" } = props;
+    enumValue("list", "size", size);
+    enumValue("list", "variant", variant);
+    enumValue("list", "divided", divided);
+    if (!Array.isArray(items) || !items.length) throw new Error("list requires at least one item");
+    const content = items.map((rawItem, index) => {
+      const item = typeof rawItem === "string" ? { label: rawItem } : rawItem || {};
+      const { id: itemId = `item-${index + 1}`, label = "", description = "", content = "", avatar = "", likes = "", comments = "", trailing = "", image = "", imageAlt = "", imagePlaceholder = false, href = "", disabled = false, ariaLabel: itemAriaLabel = "", demo: itemDemo = "" } = item;
+      if (!label && !itemAriaLabel) throw new Error("list item requires a label or ariaLabel");
+      if (variant === "avatar" && !avatar) throw new Error("list.avatar items require an avatar slot");
+      if (variant === "image" && !image && !imagePlaceholder) throw new Error("list.image items require an image or placeholder");
+      if (variant === "content" && (!avatar || !content || (!image && !imagePlaceholder))) throw new Error("list.content items require avatar, content, and image or placeholder");
+      if (image && !approvedAsset(image)) throw new Error(`list.image must be an approved asset: ${image}`);
+      const interactive = Boolean(href || itemDemo);
+      const tag = href && !disabled ? "a" : interactive ? "button" : "div";
+      const actionAttrs = href && !disabled ? ` href="${escapeHTML(href)}"` : interactive ? ` type="button"${disabled ? " disabled" : ""}` : "";
+      const avatarMarkup = avatar ? `<span class="ui-list__avatar">${avatar}</span>` : "";
+      const descriptionMarkup = description ? `<span class="ui-list__description">${escapeHTML(description)}</span>` : "";
+      const contentMarkup = content ? `<span class="ui-list__content">${escapeHTML(content)}</span>` : "";
+      const metricsMarkup = likes !== "" || comments !== "" ? `<span class="ui-list__metrics">${likes !== "" ? `<span>${icon("Assets/Icons/16px/upvote-sm.svg", "ui-list__metric-icon")}${escapeHTML(likes)}</span>` : ""}${comments !== "" ? `<span>${icon("Assets/Icons/16px/comments-sm.svg", "ui-list__metric-icon")}${escapeHTML(comments)}</span>` : ""}</span>` : "";
+      const trailingMarkup = trailing ? `<span class="ui-list__trailing">${trailing}</span>` : "";
+      const imageMarkup = imagePlaceholder
+        ? `<span class="ui-list__image-placeholder ui-media-placeholder" aria-hidden="true"><img src="${withBase("Assets/Icons/logo-italki-logomark-white.svg")}" alt="" /></span>`
+        : image ? `<img class="ui-list__image" src="${escapeHTML(withBase(image))}" alt="${escapeHTML(imageAlt)}" />` : "";
+      const identityMarkup = `<span class="ui-list__copy"><span class="ui-list__label">${escapeHTML(label)}</span>${descriptionMarkup}</span>`;
+      const rowContent = variant === "content"
+        ? `${avatarMarkup}${identityMarkup}${imageMarkup}${contentMarkup}${metricsMarkup}${trailingMarkup}`
+        : `${avatarMarkup}${identityMarkup}${trailingMarkup}${imageMarkup}`;
+      return `<li class="ui-list__item${interactive ? " is-interactive" : ""}${disabled ? " is-disabled" : ""}" data-list-item="${escapeHTML(itemId)}"><${tag} class="ui-list__row"${actionAttrs}${itemAriaLabel ? ` aria-label="${escapeHTML(itemAriaLabel)}"` : ""}${itemDemo || demo ? ` data-demo="${escapeHTML(itemDemo || demo)}"` : ""}>${rowContent}</${tag}></li>`;
+    }).join("");
+    return `<ul class="ui-list ui-list--${size} ui-list--${variant}${divided ? " is-divided" : ""}" data-component="list"${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel)}">${content}</ul>`;
+  }
+
+  function alert(props = {}) {
+    assertProps("alert", props);
+    const { tone = "info", title = "", description = "", closable = false, action = "", banner = false, ariaLabel = "", demo = "" } = props;
+    enumValue("alert", "tone", tone);
+    enumValue("alert", "closable", closable);
+    enumValue("alert", "banner", banner);
+    if (!title && !ariaLabel) throw new Error("alert requires a title or ariaLabel");
+    const iconByTone = {
+      info: "Assets/Icons/info.svg",
+      success: "Assets/Icons/check.svg",
+      warning: "Assets/Icons/warning.svg",
+      error: "Assets/Icons/error.svg"
+    };
+    const close = closable ? `<button class="ui-alert__close" type="button" data-demo="ui-alert-close" aria-label="Dismiss alert">${icon("Assets/Icons/cross.svg", "ui-alert__close-icon")}</button>` : "";
+    const descriptionMarkup = description ? `<span class="ui-alert__description">${escapeHTML(description)}</span>` : "";
+    /* The action is a label, and the Alert builds the button: a 32 pill White,
+       which is the one shape that belongs on a tinted alert surface. It used to
+       take rendered markup, so every caller chose a size and a variant of its
+       own and no two alerts agreed. */
+    if (action && /^\s*</.test(String(action))) throw new Error("alert.action takes a label; the Alert renders its own 32 pill White button");
+    const actionMarkup = action ? `<div class="ui-alert__action">${button({ label: String(action), variant: "white", size: 32, shape: "pill" })}</div>` : "";
+    const classes = ["ui-alert", `ui-alert--${tone}`, action ? "has-action" : "", closable ? "is-closable" : "", banner ? "is-banner" : ""].filter(Boolean).join(" ");
+    return `<section class="${classes}" data-component="alert"${demo ? ` data-demo-alert="${escapeHTML(demo)}"` : ""} role="alert" aria-label="${escapeHTML(ariaLabel || title)}"><span class="ui-alert__icon" aria-hidden="true">${icon(iconByTone[tone], "ui-alert__icon-image")}</span><div class="ui-alert__copy"><strong>${escapeHTML(title)}</strong>${descriptionMarkup}</div>${actionMarkup}${close}</section>`;
+  }
+
+  function dismissAlert(control) {
+    control?.closest?.("[data-component=alert]")?.remove();
+  }
+
+  function tabs(props = {}) {
+    assertProps("tabs", props);
+    const { id = "tabs", items = [], activeId = "", extra = "", ariaLabel = "Tabs", orientation = "horizontal", variant = "default", activation = "automatic", demo = "" } = props;
+    enumValue("tabs", "orientation", orientation);
+    enumValue("tabs", "variant", variant);
+    enumValue("tabs", "activation", activation);
+    if (!Array.isArray(items) || !items.length) throw new Error("tabs requires at least one item");
+    const normalizedItems = items.map((item, index) => ({ ...item, id: item?.id || `${id}-${index}` }));
+    if (normalizedItems.some((item) => !item.label)) throw new Error("tabs items require a label");
+    for (const item of normalizedItems) if (item.icon && !approvedAsset(item.icon)) throw new Error(`Unapproved asset: ${item.icon}`);
+    const selectedId = activeId || normalizedItems.find((item) => !item.disabled)?.id;
+    const activeItem = normalizedItems.find((item) => item.id === selectedId && !item.disabled) || normalizedItems.find((item) => !item.disabled);
+    if (!activeItem) throw new Error("tabs requires one enabled item");
+    const triggers = normalizedItems.map((item) => {
+      const active = item.id === activeItem.id;
+      const iconMarkup = item.icon ? icon(item.icon, "ui-tabs__icon") : "";
+      const countMarkup = item.count === undefined || item.count === "" ? "" : `<span class="ui-tabs__count" aria-label="${escapeHTML(`${item.count} notifications`)}">${escapeHTML(item.count)}</span>`;
+      return `<button class="ui-tabs__trigger${active ? " is-active" : ""}" type="button" role="tab" id="${escapeHTML(item.id)}-tab" data-demo="${escapeHTML(demo || "ui-tabs-trigger")}" data-tab="${escapeHTML(item.id)}" aria-selected="${active}" aria-controls="${escapeHTML(item.id)}-panel" tabindex="${active ? "0" : "-1"}"${item.disabled ? " disabled" : ""}>${iconMarkup}<span>${escapeHTML(item.label)}</span>${countMarkup}</button>`;
+    }).join("");
+    const panels = normalizedItems.map((item) => `<section class="ui-tabs__panel" id="${escapeHTML(item.id)}-panel" role="tabpanel" aria-labelledby="${escapeHTML(item.id)}-tab"${item.id === activeItem.id ? "" : " hidden"}>${item.panel || ""}</section>`).join("");
+    const extraMarkup = extra ? `<div class="ui-tabs__extra">${extra}</div>` : "";
+    return `<section class="ui-tabs ui-tabs--${orientation} ui-tabs--${variant}${extra ? " has-extra" : ""}" data-component="tabs" data-ui-tabs data-activation="${activation}" aria-label="${escapeHTML(ariaLabel)}"><div class="ui-tabs__header"><div class="ui-tabs__list" role="tablist" aria-orientation="${orientation}" aria-label="${escapeHTML(ariaLabel)}">${triggers}</div>${extraMarkup}</div>${panels}</section>`;
+  }
+
+  function selectTab(control) {
+    const tabsRoot = control?.closest?.("[data-ui-tabs]");
+    if (!tabsRoot || control.disabled) return;
+    const tabId = control.dataset.tab;
+    tabsRoot.querySelectorAll("[role=tab]").forEach((trigger) => {
+      const active = trigger === control;
+      trigger.classList.toggle("is-active", active);
+      trigger.setAttribute("aria-selected", String(active));
+      trigger.tabIndex = active ? 0 : -1;
+    });
+    const activePanelId = `${tabId}-panel`;
+    tabsRoot.querySelectorAll("[role=tabpanel]").forEach((panel) => {
+      const active = panel.id === activePanelId;
+      panel.hidden = !active;
+      if (!active) {
+        panel.classList.remove("is-entering");
+        return;
+      }
+      panel.classList.remove("is-entering");
+      const nextFrame = global.requestAnimationFrame || ((callback) => global.setTimeout(callback, 0));
+      nextFrame(() => panel.classList.add("is-entering"));
+    });
+  }
+
+  function handleTabsKeydown(event) {
+    const control = event?.target?.closest?.('[role="tab"]');
+    const tabsRoot = control?.closest?.("[data-ui-tabs]");
+    if (!control || !tabsRoot || !["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+    const enabled = [...tabsRoot.querySelectorAll('[role="tab"]')].filter((tab) => !tab.disabled);
+    const currentIndex = enabled.indexOf(control);
+    let nextIndex = currentIndex;
+    if (event.key === "ArrowLeft") nextIndex = (currentIndex - 1 + enabled.length) % enabled.length;
+    if (event.key === "ArrowRight") nextIndex = (currentIndex + 1) % enabled.length;
+    if (event.key === "Home") nextIndex = 0;
+    if (event.key === "End") nextIndex = enabled.length - 1;
+    event.preventDefault();
+    const next = enabled[nextIndex];
+    next.focus();
+    if (tabsRoot.dataset.activation === "automatic") selectTab(next);
+  }
+
+  function pagination(props = {}) {
+    assertProps("pagination", props);
+    const { pages = [], current = 1, previousDisabled = false, nextDisabled = false, ariaLabel = "Pagination", demo = "" } = props;
+    enumValue("pagination", "previousDisabled", previousDisabled);
+    enumValue("pagination", "nextDisabled", nextDisabled);
+    if (!Array.isArray(pages) || !pages.some((page) => page === current)) throw new Error("pagination.pages must contain current");
+    const suppliedPages = pages.filter((page) => Number.isInteger(page));
+    const currentIndex = suppliedPages.indexOf(current);
+    const previousUnavailable = previousDisabled || currentIndex <= 0;
+    const nextUnavailable = nextDisabled || currentIndex >= suppliedPages.length - 1;
+    const pageItems = pages.map((page) => {
+      if (page === "ellipsis") return '<span class="ui-pagination__ellipsis" aria-hidden="true">...</span>';
+      if (!Number.isInteger(page) || page < 1) throw new Error("pagination pages must be positive integers or ellipsis");
+      const active = page === current;
+      return `<button class="ui-pagination__page${active ? " is-current" : ""}" type="button" data-demo="${escapeHTML(demo || "ui-pagination")}" data-page="${page}"${active ? ' aria-current="page"' : ""}>${page}</button>`;
+    }).join("");
+    const previous = `<button class="ui-pagination__arrow" type="button" data-demo="${escapeHTML(demo || "ui-pagination")}" data-page="prev" aria-label="Previous page"${previousUnavailable ? " disabled" : ""}>${icon("Assets/Icons/arrow-left-sm.svg", "ui-pagination__arrow-icon")}</button>`;
+    const next = `<button class="ui-pagination__arrow" type="button" data-demo="${escapeHTML(demo || "ui-pagination")}" data-page="next" aria-label="Next page"${nextUnavailable ? " disabled" : ""}>${icon("Assets/Icons/arrow-right-sm.svg", "ui-pagination__arrow-icon")}</button>`;
+    return `<nav class="ui-pagination" data-component="pagination" data-pagination-previous-disabled="${previousDisabled}" data-pagination-next-disabled="${nextDisabled}" aria-label="${escapeHTML(ariaLabel)}">${previous}${pageItems}${next}</nav>`;
+  }
+
+  function selectPaginationPage(control) {
+    const pager = control?.closest?.(".ui-pagination");
+    if (!pager || control.disabled) return;
+    const pages = [...pager.querySelectorAll("[data-page]")].filter((page) => /^\d+$/.test(page.dataset.page));
+    const current = pages.findIndex((page) => page.classList.contains("is-current"));
+    const requested = control.dataset.page;
+    const nextIndex = requested === "prev" ? Math.max(0, current - 1) : (requested === "next" ? Math.min(pages.length - 1, current + 1) : pages.findIndex((page) => page.dataset.page === requested));
+    if (nextIndex < 0) return;
+    pages.forEach((page, index) => {
+      const active = index === nextIndex;
+      page.classList.toggle("is-current", active);
+      if (active) page.setAttribute("aria-current", "page");
+      else page.removeAttribute("aria-current");
+    });
+    const previous = pager.querySelector('[data-page="prev"]');
+    const next = pager.querySelector('[data-page="next"]');
+    if (previous) previous.disabled = pager.dataset.paginationPreviousDisabled === "true" || nextIndex === 0;
+    if (next) next.disabled = pager.dataset.paginationNextDisabled === "true" || nextIndex === pages.length - 1;
+  }
+
+  function rate(props = {}) {
+    assertProps("rate", props);
+    const {
+      id = "",
+      value = 0,
+      count = 5,
+      size = 20,
+      allowHalf = false,
+      allowClear = true,
+      disabled = false,
+      labels = [],
+      showText = false,
+      label = "Rate this item",
+      variant = "interactive",
+      state = "default",
+      demo = ""
+    } = props;
+    enumValue("rate", "variant", variant);
+    enumValue("rate", "size", size);
+    enumValue("rate", "allowHalf", allowHalf);
+    enumValue("rate", "allowClear", allowClear);
+    enumValue("rate", "disabled", disabled);
+    enumValue("rate", "showText", showText);
+    enumValue("rate", "state", disabled ? "disabled" : state);
+    if (!Number.isInteger(count) || count < 1 || count > 10) throw new Error("rate.count must be an integer from 1 to 10");
+    if (!Array.isArray(labels) || labels.some((item) => typeof item !== "string")) throw new Error("rate.labels must be an array of strings");
+    if (variant === "summary") {
+      if (!Number.isFinite(value) || value < 0 || value > count) throw new Error("rate.value must be within count");
+      const displayValue = String(value);
+      return `<div class="ui-rate ui-rate--summary"${id ? ` id="${escapeHTML(id)}"` : ""} data-component="rate" role="img" aria-label="${escapeHTML(`${label}: ${displayValue} out of ${count}`)}">${icon("Assets/Icons/star-solid.svg", "ui-rate__summary-star")}<output class="ui-rate__summary-value">${escapeHTML(displayValue)}</output></div>`;
+    }
+    if (!Number.isFinite(value) || value < 0 || value > count || (!allowHalf && !Number.isInteger(value)) || (allowHalf && Math.round(value * 2) !== value * 2)) throw new Error("rate.value must be within count and match the active step");
+    const activeIndex = Math.max(1, Math.ceil(value || 1));
+    const display = `${value || 0} / ${count}`;
+    const text = value && labels.length ? labels[Math.ceil(value) - 1] || "" : "";
+    const starBase = icon("Assets/Icons/star-outline.svg", "ui-rate__star-base");
+    const starFill = icon("Assets/Icons/star-solid.svg", "ui-rate__star-image");
+    const items = Array.from({ length: count }, (_, offset) => {
+      const index = offset + 1;
+      const active = value >= index;
+      const half = allowHalf && !active && value === index - .5;
+      const name = labels[offset] || `${index} out of ${count}`;
+      const visualState = state === "hover" ? `${active || half ? " is-preview-active" : ""}${half ? " is-preview-half" : ""}` : `${active ? " is-active" : ""}${half ? " is-half" : ""}`;
+      return `<button class="ui-rate__item${visualState}" type="button" role="radio" aria-checked="${String(active || half)}" aria-label="${escapeHTML(name)}" data-demo="${escapeHTML(demo || "ui-rate")}" data-rate-index="${index}" tabindex="${index === activeIndex ? "0" : "-1"}"${labels[offset] ? ` title="${escapeHTML(labels[offset])}"` : ""}${disabled ? " disabled" : ""}><span class="ui-rate__star" aria-hidden="true">${starBase}<span class="ui-rate__star-fill">${starFill}</span></span></button>`;
+    }).join("");
+    /* Two sizes, and they are two different jobs: 20 is a score being read in a
+       list, 48 is a question being asked after a lesson — big enough to hit with
+       a thumb. */
+    const classes = ["ui-rate", `ui-rate--${size}`, disabled ? "is-disabled" : "", state === "hover" ? "is-preview" : ""].filter(Boolean).join(" ");
+    const idAttribute = id ? ` id="${escapeHTML(id)}"` : "";
+    return `<div class="${classes}"${idAttribute} data-component="rate" data-ui-rate data-rate-value="${value}" data-rate-count="${count}" data-rate-allow-half="${allowHalf}" data-rate-allow-clear="${allowClear}" data-rate-disabled="${disabled}" data-rate-labels="${escapeHTML(labels.join("|"))}" role="radiogroup" aria-label="${escapeHTML(label)}">${items}<output class="ui-rate__output" data-rate-output>${display}</output>${showText ? `<span class="ui-rate__text" data-rate-text>${escapeHTML(text)}</span>` : ""}</div>`;
+  }
+
+  function rateRoot(control) {
+    return control?.closest?.("[data-ui-rate]");
+  }
+
+  function setRateVisual(root, value, preview = false) {
+    if (!root) return;
+    const labels = root.dataset.rateLabels ? root.dataset.rateLabels.split("|") : [];
+    const allowHalf = root.dataset.rateAllowHalf === "true";
+    root.classList.toggle("is-preview", preview);
+    root.querySelectorAll("[data-demo=ui-rate]").forEach((item) => {
+      const index = Number(item.dataset.rateIndex);
+      const active = value >= index;
+      const half = allowHalf && !active && value === index - .5;
+      item.classList.toggle("is-active", !preview && active);
+      item.classList.toggle("is-half", !preview && half);
+      item.classList.toggle("is-preview-active", preview && (active || half));
+      item.classList.toggle("is-preview-half", preview && half);
+      item.setAttribute("aria-checked", String(active || half));
+      item.tabIndex = index === Math.max(1, Math.ceil(value || 1)) ? 0 : -1;
+    });
+    const output = root.querySelector("[data-rate-output]");
+    if (output) output.textContent = `${value || 0} / ${root.dataset.rateCount}`;
+    const text = root.querySelector("[data-rate-text]");
+    if (text) text.textContent = value && labels.length ? labels[Math.ceil(value) - 1] || "" : "";
+  }
+
+  function setRateValue(root, value) {
+    if (!root || root.dataset.rateDisabled === "true") return false;
+    root.dataset.rateValue = String(value);
+    setRateVisual(root, value);
+    return true;
+  }
+
+  function rateValueFromPointer(root, item, event) {
+    const index = Number(item?.dataset?.rateIndex);
+    if (!root || !Number.isFinite(index) || root.dataset.rateAllowHalf !== "true" || !event?.clientX) return index;
+    const bounds = item.getBoundingClientRect();
+    return event.clientX - bounds.left < bounds.width / 2 ? index - .5 : index;
+  }
+
+  function selectRate(control, event) {
+    const root = rateRoot(control);
+    if (!root || control?.disabled || root.dataset.rateDisabled === "true") return false;
+    const value = rateValueFromPointer(root, control, event);
+    const next = root.dataset.rateAllowClear !== "false" && value === Number(root.dataset.rateValue) ? 0 : value;
+    return setRateValue(root, next);
+  }
+
+  function previewRate(control, event) {
+    const root = rateRoot(control);
+    if (!root || control?.disabled || root.dataset.rateDisabled === "true") return;
+    setRateVisual(root, rateValueFromPointer(root, control, event), true);
+  }
+
+  function resetRatePreview(control) {
+    const root = rateRoot(control);
+    if (!root || root.dataset.rateDisabled === "true") return;
+    setRateVisual(root, Number(root.dataset.rateValue));
+  }
+
+  function handleRateKeydown(event) {
+    const item = event?.target?.closest?.("[data-demo=ui-rate]");
+    const root = rateRoot(item);
+    if (!item || !root || root.dataset.rateDisabled === "true" || !["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return false;
+    const count = Number(root.dataset.rateCount);
+    const step = root.dataset.rateAllowHalf === "true" ? .5 : 1;
+    const current = Number(root.dataset.rateValue);
+    const next = event.key === "Home" ? 0 : (event.key === "End" ? count : Math.max(0, Math.min(count, current + (event.key === "ArrowLeft" ? -step : step))));
+    event.preventDefault();
+    setRateValue(root, next);
+    root.querySelector(`[data-demo=ui-rate][data-rate-index="${Math.max(1, Math.ceil(next))}"]`)?.focus();
+    return true;
+  }
+
+  function sidebarPrimaryRow(item = {}, demo = "") {
+    const { id: itemId = "", label = "", icon: iconPath = "", active = false, disabled = false, fixed = false } = item;
+    if (!itemId || !label) throw new Error("sidebar items require id and label");
+    const eventAttribute = demo ? ` data-sidebar-demo="${escapeHTML(demo)}"` : "";
+    const fixedItem = Boolean(fixed);
+    const itemClass = ["ui-sidebar__item", active ? "is-active" : ""].filter(Boolean).join(" ");
+    const pinControl = fixedItem ? "" : `<button class="ui-sidebar__pin-toggle" type="button" data-demo="ui-sidebar-unpin" aria-label="Unpin ${escapeHTML(label)}">${icon("Assets/Icons/pin-solid.svg", "ui-sidebar__pin-toggle-icon")}</button>`;
+    return `<div class="ui-sidebar__nav-row${fixedItem ? " is-fixed" : " is-pinnable"}${active ? " is-active" : ""}" data-ui-sidebar-primary-row data-sidebar-item="${escapeHTML(itemId)}" data-sidebar-label="${escapeHTML(label)}" data-sidebar-icon="${escapeHTML(iconPath)}" data-sidebar-fixed="${fixedItem}"${fixedItem ? "" : ' draggable="true"'}><button class="${itemClass}" type="button" data-demo="ui-sidebar-item" data-sidebar-item="${escapeHTML(itemId)}"${active ? ' aria-current="page"' : ""}${disabled ? " disabled" : ""}${eventAttribute}>${iconPath ? icon(iconPath, "ui-sidebar__item-icon") : ""}<span>${escapeHTML(label)}</span></button>${pinControl}</div>`;
+  }
+
+  function sidebarMoreRow(item = {}) {
+    const { id: itemId = "", label = "", icon: iconPath = "", dividerBefore = false, disabled = false } = item;
+    if (!itemId || !label) throw new Error("sidebar moreItems require id and label");
+    /* The flag rides on the row rather than only being rendered once: a row
+       that leaves and comes back has to know whether it still starts a group. */
+    return `${dividerBefore ? '<i class="ui-sidebar__more-divider" aria-hidden="true"></i>' : ""}<div class="ui-sidebar__more-row" role="none" data-ui-sidebar-more-row data-sidebar-item="${escapeHTML(itemId)}" data-sidebar-label="${escapeHTML(label)}" data-sidebar-icon="${escapeHTML(iconPath)}" draggable="true"><button class="ui-sidebar__more-menu-item" type="button" role="menuitem" data-demo="ui-sidebar-more-item" data-sidebar-item="${escapeHTML(itemId)}"${disabled ? " disabled" : ""}>${iconPath ? icon(iconPath, "ui-sidebar__more-icon") : ""}<span>${escapeHTML(label)}</span></button><button class="ui-sidebar__pin-toggle" type="button" data-demo="ui-sidebar-pin" aria-label="Pin ${escapeHTML(label)}">${icon("Assets/Icons/pin-outline.svg", "ui-sidebar__pin-toggle-icon")}</button></div>`;
+  }
+
+  /* italki's own shell navigation, defined once.
+     The Sidebar component takes its rows as data, which is right — it has no
+     business knowing what italki's destinations are. But then every page that
+     mounts it wrote out the list again, and three hand-written copies drifted
+     into three different More menus: the Catalog's card had five entries, one
+     template had five including a Practice and a Vocabulary that were never
+     part of the spec, and the other had two. Nothing was keeping them in step
+     because nothing could.
+
+     So the roster lives here, beside the component, as data rather than
+     behaviour: this is what italki's shell contains, and a page says which row
+     is current. Icons stay bare names — the renderer resolves them against the
+     manifest, which is also what makes the same list correct two folders down,
+     where literal paths would not be.
+
+     moreItems is the full roster in canonical order, not just what is hidden
+     right now. A destination missing from it has nowhere to return to when it
+     is unpinned, and the dividers are the grouping: each holds whichever of its
+     members is currently in the menu. */
+  const APP_SHELL_ITEMS = [
+    { id: "home", label: "Home", icon: "dashboard", fixed: true },
+    { id: "search-teachers", label: "Search Teachers", icon: "search-list", fixed: true },
+    { id: "my-lessons", label: "My Lessons", icon: "lesson" },
+    { id: "my-calendar", label: "My Calendar", icon: "calendar" },
+    { id: "learn", label: "Learn", icon: "tabbar-learn" },
+    { id: "progress", label: "Progress", icon: "chart" },
+    { id: "mira", label: "italki Mira", icon: "mira" },
+    { id: "more", label: "More", icon: "more", more: true },
+  ];
+  const APP_SHELL_MORE = [
+    { id: "my-lessons", label: "My Lessons", icon: "lesson" },
+    { id: "my-calendar", label: "My Calendar", icon: "calendar" },
+    { id: "my-teachers", label: "My Teachers", icon: "teacher" },
+    { id: "learn", label: "Learn", icon: "tabbar-learn", dividerBefore: true },
+    { id: "progress", label: "Progress", icon: "chart" },
+    { id: "flowy", label: "Flowy", icon: "flowy" },
+    { id: "mira", label: "italki Mira", icon: "mira", dividerBefore: true },
+    { id: "group-class", label: "Group Class", icon: "group", dividerBefore: true },
+    { id: "community", label: "Community", icon: "community" },
+    { id: "business", label: "italki Business", icon: "briefcase", dividerBefore: true },
+  ];
+
+  function appShellNav(options = {}) {
+    const { active = "" } = options;
+    /* Copied out, not handed over: the caller spreads extra keys onto these
+       rows, and a shared array that one page mutates is the same drift in a
+       new shape. */
+    const clone = (row) => ({ ...row });
+    return {
+      items: APP_SHELL_ITEMS.map((row) => (active && row.id === active ? { ...row, active: true } : clone(row))),
+      moreItems: APP_SHELL_MORE.map(clone),
+    };
+  }
+
+  function sidebar(props = {}) {
+    assertProps("sidebar", props);
+    const {
+      id = "",
+      variant = "normal",
+      collapsed = false,
+      items = [],
+      sections = [],
+      moreItems = [],
+      moreOpen = false,
+      footer = "",
+      balance = "",
+      avatarInitials = "",
+      ariaLabel = "Sidebar",
+      sticky = true,
+      demo = ""
+    } = props;
+    enumValue("sidebar", "variant", variant);
+    enumValue("sidebar", "collapsed", collapsed);
+    enumValue("sidebar", "sticky", sticky);
+    enumValue("sidebar", "moreOpen", moreOpen);
+    if (!Array.isArray(items) || !Array.isArray(sections) || !Array.isArray(moreItems)) throw new Error("sidebar.items, sidebar.sections, and sidebar.moreItems must be arrays");
+    const sidebarId = id || `sidebar-${String(ariaLabel).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "navigation"}`;
+    const eventAttribute = demo ? ` data-sidebar-demo="${escapeHTML(demo)}"` : "";
+    const renderIcon = (path, className) => path ? icon(path, className) : "";
+    const renderItem = (item) => {
+      const { id: itemId = "", label = "", icon: iconPath = "", active = false, disabled = false, more = false } = item || {};
+      if (!itemId || !label) throw new Error("sidebar items require id and label");
+      const itemClass = ["ui-sidebar__item", active ? "is-active" : ""].filter(Boolean).join(" ");
+      const content = `${renderIcon(iconPath, "ui-sidebar__item-icon")}<span>${escapeHTML(label)}</span>`;
+      if (more) {
+        /* moreItems is the overflow roster in its canonical order, not just
+           what happens to be in the menu right now. A destination pinned out to
+           the primary list is simply not rendered here — which is what lets it
+           come back to its own place instead of the bottom of the list. */
+        const pinnedOut = new Set(items.map((entry) => (entry || {}).id));
+        const inMenu = moreItems.filter((entry) => entry && !pinnedOut.has(entry.id));
+        /* Same rule as refreshSidebarMoreMenu: the line belongs to the first
+           member of the group that is actually showing. */
+        let groupIndex = 0;
+        const groupOf = new Map();
+        for (const entry of moreItems) {
+          if (entry && entry.dividerBefore) groupIndex += 1;
+          if (entry) groupOf.set(entry.id, groupIndex);
+        }
+        let previousGroup = null;
+        const menuRows = inMenu.map((entry) => {
+          const current = groupOf.get(entry.id);
+          const starts = previousGroup !== null && current !== previousGroup;
+          previousGroup = current;
+          return sidebarMoreRow({ ...entry, dividerBefore: starts });
+        });
+        const moreMenu = `<div class="ui-sidebar__more-menu" role="menu" aria-label="More destinations" data-sidebar-more-roster="${escapeHTML(JSON.stringify(moreItems))}">${menuRows.join("")}<p class="ui-sidebar__more-empty" data-ui-sidebar-more-empty${inMenu.length ? " hidden" : ""}>No more destinations.</p></div>`;
+        return `<div class="ui-sidebar__more${moreOpen ? " is-open" : ""}" data-ui-sidebar-more><button class="${itemClass}" type="button" data-demo="ui-sidebar-more" aria-expanded="${moreOpen}" aria-haspopup="menu"${disabled ? " disabled" : ""}${eventAttribute}>${content}</button>${moreMenu}</div>`;
+      }
+      return sidebarPrimaryRow(item, demo);
+    };
+    const renderSection = (section) => {
+      const { id: sectionId = "", label = "", items: sectionItems = [], open = false } = section || {};
+      if (!sectionId || !label || !Array.isArray(sectionItems)) throw new Error("sidebar sections require id, label, and items");
+      const rows = sectionItems.map((item) => {
+        const { id: itemId = "", label: itemLabel = "", leading = "", avatar: avatarImage = "", prefix = "", divider = false, secondary = "", disabled = false } = item || {};
+        if (!itemId || !itemLabel) throw new Error("sidebar section items require id and label");
+        /* A chat row leads with the person's face, and `leading` takes rendered
+           markup — so every consumer that had only a URL either pre-rendered an
+           avatar or, more often, passed the URL as `avatar` and watched it be
+           dropped without a word. The row builds it now. */
+        const leadingMarkup = leading || (avatarImage
+          ? avatar({ image: avatarImage, size: 24, ariaLabel: itemLabel })
+          : "");
+        const prefixMarkup = prefix ? `<span class="ui-sidebar__subitem-prefix">${escapeHTML(prefix)}</span>` : "";
+        const dividerMarkup = divider ? '<i class="ui-sidebar__subitem-divider" aria-hidden="true"></i>' : "";
+        const secondaryMarkup = secondary ? `<span class="ui-sidebar__subitem-secondary">${escapeHTML(secondary)}</span>` : "";
+        return `<li><button class="ui-sidebar__subitem" type="button" data-demo="ui-sidebar-item" data-sidebar-item="${escapeHTML(itemId)}"${disabled ? " disabled" : ""}${eventAttribute}>${leadingMarkup}<span class="ui-sidebar__subitem-content">${prefixMarkup}${dividerMarkup}<span class="ui-sidebar__subitem-label">${escapeHTML(itemLabel)}</span>${secondaryMarkup}</span></button></li>`;
+      }).join("");
+      return `<section class="ui-sidebar__section${open ? " is-open" : ""}" data-ui-sidebar-section><button class="ui-sidebar__section-toggle" id="${escapeHTML(sidebarId)}-${escapeHTML(sectionId)}" type="button" data-demo="ui-sidebar-section" aria-expanded="${open}" aria-controls="${escapeHTML(sidebarId)}-${escapeHTML(sectionId)}-items"${eventAttribute}><span>${escapeHTML(label)}</span>${renderIcon("Assets/Icons/chevron-right.svg", "ui-sidebar__section-arrow")}</button><ul class="ui-sidebar__section-list" id="${escapeHTML(sidebarId)}-${escapeHTML(sectionId)}-items"${open ? "" : ' aria-hidden="true" inert'}>${rows}</ul></section>`;
+    };
+    const brand = `<button class="ui-sidebar__brand" type="button" data-demo="ui-sidebar-brand" aria-label="${collapsed ? "Show sidebar" : "italki"}" aria-controls="${escapeHTML(sidebarId)}"${eventAttribute}>${renderIcon("Assets/Icons/logo-italki-wordmark.svg", "ui-sidebar__brand-wordmark")} ${renderIcon("Assets/Icons/logo-italki-logomark.svg", "ui-sidebar__brand-mark")} ${renderIcon("Assets/Icons/logo-italki-plus.svg", "ui-sidebar__brand-plus")} ${renderIcon("Assets/Icons/layout-left.svg", "ui-sidebar__brand-expand")}</button>`;
+    const brandTooltip = tooltip({ id: `${sidebarId}-expand-tooltip`, content: "Show sidebar", placement: "bottom", trigger: brand });
+    /* The label says what the click will do, and a rail that starts collapsed will
+       expand. setSidebarCollapsed already keeps it honest after the first toggle;
+       rendering it "Hide sidebar" while collapsed only left the first one wrong. */
+    const collapseTrigger = `<button class="ui-sidebar__utility" type="button" data-demo="ui-sidebar-collapse" aria-label="${collapsed ? "Show sidebar" : "Hide sidebar"}" aria-expanded="${!collapsed}" aria-controls="${escapeHTML(sidebarId)}"${eventAttribute}>${renderIcon("Assets/Icons/layout-left.svg", "ui-sidebar__utility-icon")}</button>`;
+    const collapseTooltip = tooltip({ id: `${sidebarId}-collapse-tooltip`, content: "Hide sidebar", placement: "bottom", trigger: collapseTrigger });
+    /* The footer is a slot, and the only thing anyone puts in it is the wallet
+       balance and the account avatar. Filling it meant calling button() and
+       avatar() and concatenating their markup, so consumers reached for
+       `balance` and `avatarInitials` instead, got "does not accept prop", and
+       shipped a rail with no footer. The standard footer is declarative now;
+       the slot still wins when it is given. */
+    const footerContent = footer || ((balance || avatarInitials)
+      ? (balance ? button({ label: balance, variant: "secondary", size: 40, shape: "pill", leadingIcon: "wallet" }) : "")
+        + (avatarInitials ? avatar({ initials: avatarInitials, size: 32, tone: "primary", interactive: true, ariaLabel: "Your profile" }) : "")
+      : "");
+    const classes = ["ui-sidebar", `ui-sidebar--${variant}`, collapsed ? "is-collapsed" : "", sticky ? "" : "is-flow"].filter(Boolean).join(" ");
+    return `<aside class="${classes}" id="${escapeHTML(sidebarId)}" data-component="sidebar" data-ui-sidebar data-sidebar-collapsed="${collapsed}"${demo ? ` data-sidebar-demo="${escapeHTML(demo)}"` : ""} aria-label="${escapeHTML(ariaLabel)}"><header class="ui-sidebar__header">${brandTooltip}${collapseTooltip}</header><div class="ui-sidebar__scroll"><nav class="ui-sidebar__nav" aria-label="${escapeHTML(ariaLabel)} destinations">${items.map(renderItem).join("")}</nav>${sections.map(renderSection).join("")}</div>${footerContent ? `<footer class="ui-sidebar__footer">${footerContent}</footer>` : ""}</aside>`;
+  }
+
+  function sidebarRoot(control) {
+    return control?.closest?.("[data-ui-sidebar]");
+  }
+
+  function setSidebarVariant(root, variant) {
+    if (!root) return false;
+    enumValue("sidebar", "variant", variant);
+    root.classList.remove("ui-sidebar--normal", "ui-sidebar--plus");
+    root.classList.add(`ui-sidebar--${variant}`);
+    return true;
+  }
+
+  function setSidebarCollapsed(root, collapsed) {
+    if (!root) return false;
+    root.classList.toggle("is-collapsed", collapsed);
+    root.dataset.sidebarCollapsed = String(collapsed);
+    root.querySelector("[data-demo=ui-sidebar-collapse]")?.setAttribute("aria-expanded", String(!collapsed));
+    root.querySelector("[data-demo=ui-sidebar-collapse]")?.setAttribute("aria-label", collapsed ? "Show sidebar" : "Hide sidebar");
+    root.querySelector("[data-demo=ui-sidebar-brand]")?.setAttribute("aria-label", collapsed ? "Show sidebar" : "italki");
+    return collapsed;
+  }
+
+  function toggleSidebar(control) {
+    const root = sidebarRoot(control);
+    if (!root) return false;
+    if (control?.dataset?.demo === "ui-sidebar-brand" && !root.classList.contains("is-collapsed")) return false;
+    return setSidebarCollapsed(root, !root.classList.contains("is-collapsed"));
+  }
+
+  function selectSidebarItem(control) {
+    const root = sidebarRoot(control);
+    if (!root || control?.disabled) return false;
+    root.querySelectorAll("[data-demo=ui-sidebar-item], [data-demo=ui-sidebar-more-item]").forEach((item) => {
+      const active = item === control;
+      item.classList.toggle("is-active", active);
+      if (active) item.setAttribute("aria-current", "page");
+      else item.removeAttribute("aria-current");
+    });
+    root.querySelectorAll("[data-ui-sidebar-primary-row]").forEach((row) => {
+      row.classList.toggle("is-active", Boolean(row.querySelector("[data-demo=ui-sidebar-item].is-active")));
+    });
+    return true;
+  }
+
+  function sidebarItemData(row) {
+    const itemButton = row?.querySelector?.("[data-sidebar-item]");
+    if (!row || !itemButton) return null;
+    return {
+      id: row.dataset.sidebarItem || itemButton.dataset.sidebarItem || "",
+      label: row.dataset.sidebarLabel || "",
+      icon: row.dataset.sidebarIcon || "",
+      active: itemButton.classList.contains("is-active"),
+      disabled: itemButton.disabled
+    };
+  }
+
+  function updateSidebarMoreEmpty(root) {
+    const menu = root?.querySelector?.(".ui-sidebar__more-menu");
+    const empty = menu?.querySelector?.("[data-ui-sidebar-more-empty]");
+    if (empty) empty.hidden = Boolean(menu.querySelector("[data-ui-sidebar-more-row]"));
+  }
+
+  /* The overflow roster travels with the menu so a row that comes back can be
+     rebuilt from the roster rather than from the primary row it was sitting in
+     — the two legitimately differ, and a destination called "Mira" beside the
+     nav is "italki Mira" inside the menu. */
+  function sidebarMoreRoster(menu) {
+    try { return JSON.parse(menu?.dataset?.sidebarMoreRoster || "[]"); }
+    catch { return []; }
+  }
+
+  /* Dividers separate groups, so they are a property of the arrangement rather
+     than of a row: the first visible row must not carry one, and a group whose
+     every member is pinned out must not leave a line behind. Recomputed from
+     what is actually in the menu, after every move. */
+  function refreshSidebarMoreMenu(menu) {
+    if (!menu) return;
+    menu.querySelectorAll(".ui-sidebar__more-divider").forEach((line) => line.remove());
+    /* A line goes before the first *visible* member of each group, not before
+       the one the roster happens to name first: pin that one out to the nav and
+       the rest of its group would silently merge into the group above. */
+    const group = new Map();
+    let index = 0;
+    for (const entry of sidebarMoreRoster(menu)) {
+      if (entry.dividerBefore) index += 1;
+      group.set(entry.id, index);
+    }
+    const rows = [...menu.querySelectorAll("[data-ui-sidebar-more-row]")];
+    let previous = null;
+    for (const row of rows) {
+      const current = group.get(row.dataset.sidebarItem);
+      if (previous !== null && current !== previous) {
+        row.insertAdjacentHTML("beforebegin", '<i class="ui-sidebar__more-divider" aria-hidden="true"></i>');
+      }
+      previous = current;
+    }
+    const empty = menu.querySelector("[data-ui-sidebar-more-empty]");
+    if (empty) empty.toggleAttribute("hidden", rows.length > 0);
+  }
+
+  function unpinSidebarItem(control) {
+    const root = sidebarRoot(control);
+    const row = control?.closest?.("[data-ui-sidebar-primary-row]");
+    const menu = root?.querySelector?.(".ui-sidebar__more-menu");
+    if (!root || !row || !menu || row.dataset.sidebarFixed === "true") return false;
+    const item = sidebarItemData(row);
+    if (!item) return false;
+    /* Back to its own place, not to the end. The menu carries the canonical
+       order, so the row goes in front of the first destination that ranks after
+       it — which is also what keeps its group intact. */
+    const roster = sidebarMoreRoster(menu);
+    const order = roster.map((entry) => entry.id);
+    const rank = order.indexOf(item.id);
+    row.remove();
+    const markup = sidebarMoreRow({ ...item, ...(roster[rank] || {}), dividerBefore: false });
+    const after = rank < 0 ? null : [...menu.querySelectorAll("[data-ui-sidebar-more-row]")]
+      .find((sibling) => order.indexOf(sibling.dataset.sidebarItem) > rank);
+    if (after) after.insertAdjacentHTML("beforebegin", markup);
+    else (menu.querySelector("[data-ui-sidebar-more-empty]") || menu)
+      .insertAdjacentHTML(menu.querySelector("[data-ui-sidebar-more-empty]") ? "beforebegin" : "beforeend", markup);
+    refreshSidebarMoreMenu(menu);
+    updateSidebarMoreEmpty(root);
+    return true;
+  }
+
+  function pinSidebarItem(control) {
+    const root = sidebarRoot(control);
+    const row = control?.closest?.("[data-ui-sidebar-more-row]");
+    const nav = root?.querySelector?.(".ui-sidebar__nav");
+    const more = nav?.querySelector?.("[data-ui-sidebar-more]");
+    if (!root || !row || !nav || !more) return false;
+    const item = sidebarItemData(row);
+    if (!item) return false;
+    const menu = row.closest(".ui-sidebar__more-menu");
+    row.remove();
+    more.insertAdjacentHTML("beforebegin", sidebarPrimaryRow(item, root.dataset.sidebarDemo || ""));
+    /* Removing a row can orphan the line that separated its group, or promote
+       the next row to first, where a line must not be. Recompute rather than
+       patch the neighbour. */
+    refreshSidebarMoreMenu(menu);
+    updateSidebarMoreEmpty(root);
+    closeSidebarMore(root);
+    return true;
+  }
+
+  function startSidebarDrag(event) {
+    const row = event?.target?.closest?.("[data-ui-sidebar-primary-row].is-pinnable, [data-ui-sidebar-more-row]");
+    if (!row) return false;
+    const root = sidebarRoot(row);
+    if (!root) return false;
+    root.sidebarDraggedRow = row;
+    row.classList.add("is-dragging");
+    event.dataTransfer?.setData?.("text/plain", row.dataset.sidebarItem || "");
+    if (event.dataTransfer) event.dataTransfer.effectAllowed = "move";
+    return true;
+  }
+
+  function moveSidebarDrag(event) {
+    const target = event?.target?.closest?.("[data-ui-sidebar-primary-row].is-pinnable, [data-ui-sidebar-more-row]");
+    const root = sidebarRoot(target);
+    const dragged = root?.sidebarDraggedRow;
+    if (!root || !dragged || !target || dragged === target || dragged.parentElement !== target.parentElement) return false;
+    event.preventDefault();
+    const box = target.getBoundingClientRect?.();
+    const insertAfter = box && event.clientY > box.top + box.height / 2;
+    const draggedDivider = dragged.previousElementSibling?.classList?.contains("ui-sidebar__more-divider") ? dragged.previousElementSibling : null;
+    const targetDivider = target.previousElementSibling?.classList?.contains("ui-sidebar__more-divider") ? target.previousElementSibling : null;
+    const reference = insertAfter ? target.nextSibling : (targetDivider || target);
+    if (draggedDivider) target.parentElement.insertBefore(draggedDivider, reference);
+    target.parentElement.insertBefore(dragged, reference);
+    return true;
+  }
+
+  function endSidebarDrag(event) {
+    const row = event?.target?.closest?.("[data-ui-sidebar-primary-row], [data-ui-sidebar-more-row]");
+    const root = sidebarRoot(row);
+    if (row) row.classList.remove("is-dragging");
+    if (root) root.sidebarDraggedRow = null;
+    return true;
+  }
+
+  function sidebarSectionOpenScrollTarget(section, list) {
+    const scroll = section?.closest?.(".ui-sidebar__scroll");
+    const control = section?.querySelector?.("[data-demo=ui-sidebar-section]");
+    const items = [...(list?.querySelectorAll?.(".ui-sidebar__subitem") || [])].slice(0, 3);
+    if (!scroll || !control || !items.length) return null;
+
+    const scrollBox = scroll.getBoundingClientRect?.();
+    const sectionBox = section.getBoundingClientRect?.();
+    if (!scrollBox || !sectionBox) return null;
+
+    const inset = 16;
+    const sectionTop = scroll.scrollTop + sectionBox.top - scrollBox.top;
+    const firstRowsHeight = items.reduce((total, item) => total + Math.max(item.offsetHeight || 0, 40), 0) + Math.max(0, items.length - 1) * 2;
+    const listMargin = 4;
+    const desiredTop = Math.max(0, sectionTop - inset);
+    const desiredBottom = sectionTop + control.offsetHeight + listMargin + firstRowsHeight + inset;
+    const visibleBottom = scroll.scrollTop + scroll.clientHeight;
+
+    if (sectionTop < scroll.scrollTop + inset) return desiredTop;
+    if (desiredBottom > visibleBottom) return Math.max(0, desiredBottom - scroll.clientHeight);
+    return null;
+  }
+
+  function scrollSidebarSectionIntoView(section, list, targetTop) {
+    const scroll = section?.closest?.(".ui-sidebar__scroll");
+    if (!scroll || targetTop === null || Math.abs(targetTop - scroll.scrollTop) <= 1) return;
+
+    const requestFrame = global.requestAnimationFrame || ((callback) => global.setTimeout(() => callback(Date.now()), 16));
+    const startTop = scroll.scrollTop;
+    const distance = targetTop - startTop;
+    const duration = 340;
+    const startTime = global.performance?.now?.() || Date.now();
+    const scrollStep = (now) => {
+      const elapsed = Math.min(1, (now - startTime) / duration);
+      const eased = .5 - Math.cos(Math.PI * elapsed) / 2;
+      const maximum = Math.max(0, scroll.scrollHeight - scroll.clientHeight);
+      scroll.scrollTop = Math.min(startTop + distance * eased, maximum);
+      if (elapsed < 1) requestFrame(scrollStep);
+    };
+
+    // The section's height expands over the same 260ms. Scrolling every frame
+    // avoids the browser clamping a one-off scroll before that new height exists.
+    requestFrame(scrollStep);
+  }
+
+  function toggleSidebarSection(control) {
+    const section = control?.closest?.("[data-ui-sidebar-section]");
+    if (!section) return false;
+    const next = !section.classList.contains("is-open");
+    const list = section.querySelector(".ui-sidebar__section-list");
+    const scroll = section.closest(".ui-sidebar__scroll");
+    const targetTop = next ? sidebarSectionOpenScrollTarget(section, list) : null;
+    if (next && list) list.style.setProperty("--ui-sidebar-section-height", `${list.scrollHeight}px`);
+    section.classList.toggle("is-open", next);
+    control.setAttribute("aria-expanded", String(next));
+    if (list) {
+      if (next) list.removeAttribute("aria-hidden");
+      else list.setAttribute("aria-hidden", "true");
+      list.toggleAttribute("inert", !next);
+    }
+    if (next && scroll) scrollSidebarSectionIntoView(section, list, targetTop);
+    return next;
+  }
+
+  function closeSidebarMore(control) {
+    const root = sidebarRoot(control);
+    const wrappers = root ? root.querySelectorAll("[data-ui-sidebar-more].is-open") : global.document?.querySelectorAll?.("[data-ui-sidebar-more].is-open") || [];
+    wrappers.forEach((wrapper) => {
+      wrapper.classList.remove("is-open");
+      wrapper.querySelector("[data-demo=ui-sidebar-more]")?.setAttribute("aria-expanded", "false");
+    });
+  }
+
+  function toggleSidebarMore(control) {
+    const root = sidebarRoot(control);
+    const wrapper = control?.closest?.("[data-ui-sidebar-more]");
+    if (!root || !wrapper || control.disabled) return false;
+    if (root.classList.contains("is-collapsed")) setSidebarCollapsed(root, false);
+    global.clearTimeout?.(wrapper.moreCloseTimer);
+    const next = !wrapper.classList.contains("is-open");
+    closeSidebarMore(root);
+    wrapper.classList.toggle("is-open", next);
+    control.setAttribute("aria-expanded", String(next));
+    if (next) positionSidebarMore(root, wrapper, control);
+    return next;
+  }
+
+  /* The menu opens under the More row, but it cannot be positioned against it:
+     the row lives inside .ui-sidebar__scroll, and a menu whose containing block
+     is inside a scroll container gets clipped by it. So the containing block
+     stays the rail — which is why this used to sit at a fixed `bottom: 80px`,
+     pinned above the footer no matter where More was — and the offset is
+     measured instead. Flips above the row when there is not room below. */
+  function positionSidebarMore(root, wrapper, control) {
+    const menu = wrapper.querySelector(".ui-sidebar__more-menu");
+    if (!menu || !root.getBoundingClientRect) return;
+    const rail = root.getBoundingClientRect();
+    const row = control.getBoundingClientRect();
+    const gap = 4;
+    const below = row.bottom - rail.top + gap;
+    const height = menu.offsetHeight || 0;
+    const footer = root.querySelector(".ui-sidebar__footer");
+    const floor = (footer ? footer.getBoundingClientRect().top : rail.bottom) - rail.top - gap;
+    const above = row.top - rail.top - gap - height;
+    menu.style.bottom = "auto";
+    menu.style.top = (below + height > floor && above > 0 ? above : below) + "px";
+  }
+
+  function cancelSidebarMoreClose(control) {
+    const wrapper = control?.closest?.("[data-ui-sidebar-more]");
+    if (wrapper) global.clearTimeout?.(wrapper.moreCloseTimer);
+  }
+
+  function scheduleSidebarMoreClose(control) {
+    const wrapper = control?.closest?.("[data-ui-sidebar-more]");
+    if (!wrapper || !wrapper.classList.contains("is-open")) return;
+    global.clearTimeout?.(wrapper.moreCloseTimer);
+    wrapper.moreCloseTimer = global.setTimeout?.(() => closeSidebarMore(wrapper), 300);
+  }
+
+  function statistic(props = {}) {
+    assertProps("statistic", props);
+    const { title = "", value = "", prefix = "", suffix = "", description = "", loading = false, ariaLabel = "", demo = "" } = props;
+    enumValue("statistic", "loading", loading);
+    if (!title && !ariaLabel) throw new Error("statistic requires a title or ariaLabel");
+    if (!loading && value === "") throw new Error("statistic requires a value unless loading");
+    const readableValue = `${prefix}${value}${suffix}`;
+    const label = ariaLabel || (loading ? [title, "Loading"].filter(Boolean).join(", ") : [title, readableValue, description].filter(Boolean).join(", "));
+    const amount = loading
+      ? '<span class="ui-statistic__skeleton ui-statistic__skeleton--value" aria-hidden="true"></span>'
+      : `<strong class="ui-statistic__value">${prefix ? `<span class="ui-statistic__prefix">${escapeHTML(prefix)}</span>` : ""}${escapeHTML(value)}${suffix ? `<span class="ui-statistic__suffix">${escapeHTML(suffix)}</span>` : ""}</strong>`;
+    const supporting = loading
+      ? '<span class="ui-statistic__skeleton ui-statistic__skeleton--description" aria-hidden="true"></span>'
+      : (description ? `<small class="ui-statistic__description">${escapeHTML(description)}</small>` : "");
+    return `<section class="ui-statistic${loading ? " is-loading" : ""}" data-component="statistic" role="group" aria-label="${escapeHTML(label)}"${loading ? ' aria-busy="true"' : ""}${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}><span class="ui-statistic__title">${escapeHTML(title)}</span>${amount}${supporting}</section>`;
+  }
+
+  function table(props = {}) {
+    assertProps("table", props);
+    const { id = "", columns = [], rows = [], caption = "", density = "default", loading = false, empty = "", ariaLabel = "", demo = "" } = props;
+    enumValue("table", "density", density);
+    enumValue("table", "loading", loading);
+    if (!Array.isArray(columns) || columns.length === 0) throw new Error("table.columns must be a non-empty array");
+    if (!Array.isArray(rows)) throw new Error("table.rows must be an array");
+    const tableId = id || `table-${String(ariaLabel || caption || "data").toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+    const readableLabel = ariaLabel || caption || "Data table";
+    const renderHeader = (column) => {
+      const { id: columnId = "", label = "", align = "left" } = column || {};
+      if (!columnId) throw new Error("table columns require id");
+      if (!['left', 'center', 'right'].includes(align)) throw new Error(`table column ${columnId} has unsupported alignment`);
+      return `<th scope="col" class="ui-table__head is-${align}" data-table-column="${escapeHTML(columnId)}">${escapeHTML(label)}</th>`;
+    };
+    const renderRow = (row) => {
+      const { id: rowId = "", cells = [] } = row || {};
+      if (!rowId || !Array.isArray(cells) || cells.length !== columns.length) throw new Error("table rows require an id and one cell for each column");
+      const cellsMarkup = cells.map((cell, index) => {
+        const { content = "", rowHeader = false, align = columns[index]?.align || "left" } = cell || {};
+        if (!['left', 'center', 'right'].includes(align)) throw new Error(`table cell ${rowId}:${index} has unsupported alignment`);
+        const tag = rowHeader ? "th" : "td";
+        const scope = rowHeader ? ' scope="row"' : "";
+        return `<${tag} class="ui-table__cell is-${align}"${scope}>${content}</${tag}>`;
+      }).join("");
+      return `<tr data-table-row="${escapeHTML(rowId)}">${cellsMarkup}</tr>`;
+    };
+    const skeletonRows = Array.from({ length: 3 }, (_, index) => `<tr data-table-row="loading-${index}">${columns.map((column) => `<td class="ui-table__cell is-${column.align || "left"}"><span class="ui-table__skeleton" aria-hidden="true"></span></td>`).join("")}</tr>`).join("");
+    const emptyRow = `<tr><td class="ui-table__empty" colspan="${columns.length}">${escapeHTML(empty || "No results")}</td></tr>`;
+    const body = loading ? skeletonRows : (rows.length ? rows.map(renderRow).join("") : emptyRow);
+    return `<section class="ui-table ui-table--${density}" id="${escapeHTML(tableId)}" data-component="table" role="region" aria-label="${escapeHTML(readableLabel)}"${loading ? ' aria-busy="true"' : ""}${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}><div class="ui-table__scroll"><table>${caption ? `<caption class="ui-table__caption">${escapeHTML(caption)}</caption>` : ""}<thead><tr>${columns.map(renderHeader).join("")}</tr></thead><tbody>${body}</tbody></table></div></section>`;
+  }
+
+  function timeline(props = {}) {
+    assertProps("timeline", props);
+    const { id = "", items = [], layout = "left", reverse = false, tone = "", ariaLabel = "", demo = "" } = props;
+    enumValue("timeline", "layout", layout);
+    enumValue("timeline", "reverse", reverse);
+    if (tone) enumValue("timeline", "tone", tone);
+    if (!Array.isArray(items) || items.length === 0) throw new Error("timeline.items must be a non-empty array");
+    const timelineId = id || `timeline-${String(ariaLabel || "events").toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+    const readableLabel = ariaLabel || "Timeline";
+    const hasLabels = layout !== "alternate" && items.some((item) => item?.label);
+    const orderedItems = reverse ? [...items].reverse() : items;
+    const renderItem = (item, index) => {
+      const { id: itemId = "", title = "", description = "", label = "", tone: itemTone = "default", dot = "" } = item || {};
+      if (!itemId || !title) throw new Error("timeline items require an id and title");
+      const resolvedTone = tone || itemTone;
+      if (!["default", "info", "success", "warning", "error", "pending"].includes(resolvedTone)) throw new Error(`timeline item ${itemId} has unsupported tone`);
+      if (dot && !approvedAsset(dot)) throw new Error(`Unapproved asset: ${dot}`);
+      const isLeft = layout === "alternate" && index % 2 === 0;
+      const dotMarkup = dot ? icon(dot, "ui-timeline__dot-icon") : "";
+      const labelMarkup = label ? `<span class="ui-timeline__label">${escapeHTML(label)}</span>` : "";
+      const copyLabel = layout === "alternate" ? labelMarkup : "";
+      return `<li class="ui-timeline__item${isLeft ? " is-left" : ""}" data-timeline-item="${escapeHTML(itemId)}">${layout !== "alternate" ? labelMarkup : ""}<span class="ui-timeline__dot ui-timeline__dot--${resolvedTone}${dot ? " has-custom-dot" : ""}" aria-hidden="true">${dotMarkup}</span><div class="ui-timeline__copy">${copyLabel}<strong>${escapeHTML(title)}</strong>${description ? `<span>${escapeHTML(description)}</span>` : ""}</div></li>`;
+    };
+    return `<section class="ui-timeline ui-timeline--${layout}${hasLabels ? " has-labels" : ""}" id="${escapeHTML(timelineId)}" data-component="timeline" data-ui-timeline data-timeline-reversed="${reverse}"${tone ? ` data-timeline-tone="${escapeHTML(tone)}"` : ""} role="region" aria-label="${escapeHTML(readableLabel)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}><ol class="ui-timeline__list">${orderedItems.map(renderItem).join("")}</ol></section>`;
+  }
+
+  function setTimelineReverse(control, reverse) {
+    const root = control?.closest?.("[data-ui-timeline]") || control?.querySelector?.("[data-ui-timeline]");
+    if (!root) return;
+    const shouldReverse = typeof reverse === "boolean" ? reverse : root.dataset.timelineReversed !== "true";
+    const currentlyReversed = root.dataset.timelineReversed === "true";
+    if (shouldReverse === currentlyReversed) return;
+    const list = root.querySelector(".ui-timeline__list");
+    if (!list) return;
+    list.replaceChildren(...Array.from(list.children).reverse());
+    root.dataset.timelineReversed = String(shouldReverse);
+  }
+
+  function setTimelineTone(control, tone) {
+    const root = control?.closest?.("[data-ui-timeline]") || control?.closest?.(".component-doc-block")?.querySelector?.("[data-ui-timeline]") || control?.querySelector?.("[data-ui-timeline]");
+    if (!root) return false;
+    if (!["default", "info", "success", "warning", "error"].includes(tone)) throw new Error(`timeline has unsupported tone: ${tone}`);
+    root.querySelectorAll(".ui-timeline__dot").forEach((dot) => {
+      dot.classList.remove("ui-timeline__dot--default", "ui-timeline__dot--info", "ui-timeline__dot--success", "ui-timeline__dot--warning", "ui-timeline__dot--error", "ui-timeline__dot--pending");
+      dot.classList.add(`ui-timeline__dot--${tone}`);
+    });
+    root.dataset.timelineTone = tone;
+    return true;
+  }
+
+  function topNav(props = {}) {
+    assertProps("top-nav", props);
+    const {
+      id = "", variant = "custom", leading = "", center = "", trailing = "",
+      contextLabel = "", contextFlag = "", contextOptions = [],
+      searchPlaceholder = "Search", searchFilterLabel = "Filter",
+      actionLabel = "Book lessons", actionIcon = "nav-plus",
+      links = [], localeLabel = "", localeOptions = [],
+      mobileActionLabel = "Open in App", menuOpen = false,
+      menuActionLabel = "", menuLocale = null, menuCurrency = null,
+      ariaLabel = "Top navigation", sticky = true, demo = "",
+    } = props;
+    enumValue("top-nav", "sticky", sticky);
+    enumValue("top-nav", "variant", variant);
+    enumValue("top-nav", "menuOpen", menuOpen);
+    /* The two bars italki actually ships have names — the Catalog lists
+       global-default and teacher-search among this component's required states
+       — but they existed only as a recipe the Catalog route followed by hand:
+       call topNavContext, call topNavSearch, call button, thread three HTML
+       strings back through the slots. Every consumer had to rediscover the
+       recipe, and the ones that got it wrong shipped an empty bar. The two are
+       variants now; the difference between them is the whole of it, so it is
+       written once here rather than in each page.
+
+         global-default   compact context, search without a filter
+         teacher-search   labelled context, search with a filter
+
+       `custom` keeps the slots-only behaviour, and a slot still wins wherever
+       one is given, so arbitrary content stays arbitrary. */
+    /* `custom` means "I am filling the slots myself". A page that passes the
+       context options, the placeholder and the action label has plainly not
+       done that — it has handed over the data and expects the bar. Refusing to
+       compose because the variant was left unwritten is the component playing
+       dumb, and what it produced was an empty bar with no error to explain it. */
+    const navId = id || `top-nav-${String(ariaLabel).toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+    const hasBarData = Boolean(contextLabel || contextOptions.length || searchPlaceholder !== "Search" || actionLabel !== "Book lessons");
+    const composed = variant !== "custom" || (hasBarData && !leading && !center && !trailing);
+    const searchBar = variant === "teacher-search";
+    const visitor = variant === "logged-out";
+    const contextSelected = contextOptions.find((option) => option && option.label === contextLabel)
+      || contextOptions[0]
+      || (contextLabel ? { id: "context", label: contextLabel, flag: contextFlag } : null);
+    /* The logged-out bar. It is a different shape from the two signed-in ones,
+       not a trimmed version of them: no search in the middle, the whole row
+       collected at the end, and the action deliberately quiet — a visitor who
+       has not chosen anything yet is not being pushed at. Below 744px the same
+       variant becomes the phone bar from the reference: hamburger, mark, one
+       32px action, and the destinations move into a left Drawer. That Drawer is
+       the shared `drawer` component with its inline stage, so its focus trap,
+       Escape handling and mask behaviour are not written a second time here. */
+    const menuName = "Menu";
+    const visitorLinks = links.filter(Boolean);
+    const visitorAction = actionLabel === "Book lessons" && visitor ? "Sign up / Log in" : actionLabel;
+    const visitorMenuAction = menuActionLabel || visitorAction;
+    const menuRow = (link) => {
+      const { id: linkId = "", label = "", icon: linkIcon = "", href = "" } = link || {};
+      if (!label) throw new Error("top-nav.links require a label");
+      if (linkIcon && !approvedAsset(linkIcon)) throw new Error(`Unapproved asset: ${linkIcon}`);
+      return `<a class="ui-top-nav-menu__item" href="${escapeHTML(href || "#")}"${linkId ? ` data-nav-link="${escapeHTML(linkId)}"` : ""}>${linkIcon ? icon(linkIcon, "ui-top-nav-menu__item-icon") : ""}<span>${escapeHTML(label)}</span></a>`;
+    };
+    const menuField = (field, fieldId) => (field
+      ? select({ id: `${navId}-${fieldId}`, label: field.label || fieldId, options: field.options || [], selected: field.selected || "", size: 48, shape: "rounded" })
+      : "");
+    const visitorMenu = visitorLinks.length
+      ? drawer({
+          id: `${navId}-menu`,
+          title: menuName,
+          titleHidden: true,
+          placement: "left",
+          stage: "inline",
+          open: menuOpen,
+          trigger: button({ label: menuName, ariaLabel: menuName, variant: "text", size: 40, iconOnly: true, leadingIcon: "hamburger", demo: "ui-drawer-open" }),
+          /* One column that owns its own height, rather than a Drawer footer:
+             the reference floats the action and the two selects on the panel
+             floor with no rule above them, and reaching into `.ui-drawer__body`
+             from here to get that would be this component restyling another. */
+          body: `<div class="ui-top-nav-menu"><nav class="ui-top-nav-menu__list" aria-label="${escapeHTML(menuName)}">${visitorLinks.map(menuRow).join("")}</nav><div class="ui-top-nav-menu__foot">${button({ label: visitorMenuAction, ariaLabel: visitorMenuAction, variant: "red", size: 48 })}<div class="ui-top-nav-menu__options">${menuField(menuLocale, "menu-language")}${menuField(menuCurrency, "menu-currency")}</div></div></div>`,
+        })
+      : "";
+    const visitorLeading = `${visitorMenu ? `<div class="ui-top-nav__menu">${visitorMenu}</div>` : ""}<a class="ui-top-nav__brand" href="#" aria-label="italki">${icon("Assets/Icons/logo-italki-wordmark.svg", "ui-top-nav__brand-mark")}</a>`;
+    const visitorTrailing = `${localeLabel ? topNavContext({ id: `${navId}-locale`, mode: "plain", selected: { id: "locale", label: localeLabel }, options: localeOptions.length ? localeOptions : [{ id: "locale", label: localeLabel }], ariaLabel: "Language and currency" }) : ""}${visitorLinks.length ? `<nav class="ui-top-nav__links" aria-label="${escapeHTML(ariaLabel)}">${visitorLinks.map((link) => `<a class="ui-top-nav__link" href="${escapeHTML(link.href || "#")}"${link.id ? ` data-nav-link="${escapeHTML(link.id)}"` : ""}>${escapeHTML(link.label)}</a>`).join("")}</nav>` : ""}<span class="ui-top-nav__action">${button({ label: visitorAction, ariaLabel: visitorAction, variant: "secondary", size: 40, shape: "pill" })}</span><span class="ui-top-nav__action-compact">${button({ label: mobileActionLabel, ariaLabel: mobileActionLabel, variant: "secondary", size: 32, shape: "pill" })}</span>`;
+    const leadingContent = visitor ? (leading || visitorLeading) : leading || (composed && contextSelected
+      ? topNavContext({
+          /* Same reason as the search field below: this derived its id from its
+             aria-label, which is the same on every nav, so two navs on one page
+             published the same id twice — and the trigger's aria-controls then
+             pointed at an ambiguous target. */
+          id: `${navId}-context`,
+          mode: searchBar ? "labelled" : "compact",
+          selected: contextSelected,
+          options: contextOptions.length ? contextOptions : [contextSelected],
+        })
+      : "");
+    /* The search element used to derive its own id from its placeholder, so two
+       navs asking for the same placeholder produced the same id twice on one
+       page — id has to be unique, and a duplicate breaks label association and
+       fragment links. Derived from the nav that owns it instead. */
+    const centerContent = visitor ? center : center || (composed
+      ? topNavSearch({ id: `${navId}-search`, placeholder: searchPlaceholder, filter: searchBar, filterLabel: searchFilterLabel })
+      : "");
+    /* Named as well as labelled: when the bar runs out of room the CSS drops the
+       written label and leaves the icon, and a button whose only text is hidden
+       has no accessible name left. The aria-label is what survives that. */
+    const trailingContent = visitor ? (trailing || visitorTrailing) : trailing || (composed
+      ? button({ label: actionLabel, ariaLabel: actionLabel, variant: "emphasis", size: 40, shape: "pill", leadingIcon: actionIcon })
+      : "");
+    return `<header class="ui-top-nav${visitor ? " ui-top-nav--logged-out" : ""}${sticky ? "" : " is-flow"}" id="${escapeHTML(navId)}" data-component="top-nav" data-ui-top-nav aria-label="${escapeHTML(ariaLabel)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}><div class="ui-top-nav__leading">${leadingContent}</div><div class="ui-top-nav__center">${centerContent}</div><div class="ui-top-nav__trailing">${trailingContent}</div></header>`;
+  }
+
+  function topNavContext(props = {}) {
+    assertProps("top-nav", props, "context");
+    const { id = "", mode = "labelled", selected = {}, options = [], open = false, ariaLabel = "Navigation context", demo = "" } = props;
+    enumValue("top-nav", "mode", mode, "context");
+    enumValue("top-nav", "open", open, "context");
+    if (!Array.isArray(options) || options.length === 0) throw new Error("top-nav.context.options must be a non-empty array");
+    const contextId = id || `top-nav-context-${String(ariaLabel).toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+    /* `plain` is the flagless context: the logged-out bar's control reads
+       "English · USD $", which is a language and a currency together and has no
+       one country behind it. Demanding a flag there forced a page to pick a
+       nation for a currency — so the flag is required in the two flagged modes
+       and refused in this one, rather than quietly optional in all three. */
+    const flagless = mode === "plain";
+    const current = typeof selected === "string" ? { id: selected, label: selected, flag: "" } : selected;
+    if (!current?.label) throw new Error("top-nav.context.selected requires a label");
+    if (!flagless && !current.flag) throw new Error("top-nav.context.selected requires label and flag");
+    if (current.flag && !approvedAsset(current.flag)) throw new Error(`Unapproved asset: ${current.flag}`);
+    const contextOptions = options.map((option) => {
+      const { id: optionId = "", label = "", flag = "" } = option || {};
+      if (!optionId || !label) throw new Error("top-nav.context options require id and label");
+      if (!flagless && !flag) throw new Error("top-nav.context options require id, label, and flag");
+      if (flag && !approvedAsset(flag)) throw new Error(`Unapproved asset: ${flag}`);
+      return `<button class="ui-top-nav-context__option" type="button" role="menuitem" data-demo="ui-top-nav-context-option" data-context-label="${escapeHTML(label)}"${flag ? ` data-context-flag="${escapeHTML(flag)}"` : ""}>${flag ? icon(flag, "ui-top-nav-context__option-flag") : ""}<span>${escapeHTML(label)}</span></button>`;
+    }).join("");
+    return `<div class="ui-top-nav-context ui-top-nav-context--${mode}" id="${escapeHTML(contextId)}" data-ui-top-nav-context data-component="top-nav-context"><button class="ui-top-nav-context__trigger" type="button" data-demo="ui-top-nav-context" aria-expanded="${open}" aria-haspopup="menu" aria-controls="${escapeHTML(contextId)}-menu" aria-label="${escapeHTML(ariaLabel)}">${current.flag ? icon(current.flag, "ui-top-nav-context__flag") : ""}${mode === "compact" ? "" : `<span class="ui-top-nav-context__label">${escapeHTML(current.label)}</span>`}${icon("Assets/Icons/arrow-down-sm.svg", "ui-top-nav-context__arrow")}</button><div class="ui-top-nav-context__menu${open ? " is-open" : ""}" id="${escapeHTML(contextId)}-menu" role="menu" aria-label="${escapeHTML(ariaLabel)}"${open ? "" : " aria-hidden=\"true\""}>${contextOptions}</div></div>`;
+  }
+
+  function setTopNavContextOpen(control, open) {
+    const root = control?.closest?.("[data-ui-top-nav-context]") || control?.querySelector?.("[data-ui-top-nav-context]");
+    if (!root) return;
+    const shouldOpen = typeof open === "boolean" ? open : root.querySelector("[data-demo=ui-top-nav-context]")?.getAttribute("aria-expanded") !== "true";
+    if (shouldOpen) closeTopNavContexts(root.ownerDocument);
+    const trigger = root.querySelector("[data-demo=ui-top-nav-context]");
+    const menu = root.querySelector("[role=menu]");
+    if (!trigger || !menu) return;
+    trigger.setAttribute("aria-expanded", String(shouldOpen));
+    menu.classList.toggle("is-open", shouldOpen);
+    menu.toggleAttribute("aria-hidden", !shouldOpen);
+  }
+
+  function closeTopNavContexts(scope = global.document) {
+    scope?.querySelectorAll?.("[data-ui-top-nav-context]").forEach((root) => setTopNavContextOpen(root, false));
+  }
+
+  function selectTopNavContext(control) {
+    const root = control?.closest?.("[data-ui-top-nav-context]");
+    if (!root) return;
+    const label = control.dataset.contextLabel || "";
+    const flag = control.dataset.contextFlag || "";
+    /* A flagless option is the `plain` mode's normal case, not a malformed one:
+       requiring a flag here made every selection in the logged-out bar a no-op. */
+    if (!label || (flag && !approvedAsset(flag))) return;
+    const trigger = root.querySelector("[data-demo=ui-top-nav-context]");
+    const triggerLabel = root.querySelector(".ui-top-nav-context__label");
+    const triggerFlag = root.querySelector(".ui-top-nav-context__flag");
+    if (triggerLabel) triggerLabel.textContent = label;
+    if (triggerFlag) triggerFlag.src = flag;
+    setTopNavContextOpen(root, false);
+    trigger?.focus();
+  }
+
+  function topNavSearch(props = {}) {
+    assertProps("top-nav", props, "search");
+    const { id = "", value = "", placeholder = "Search", filter = false, filterLabel = "Filter", filterIcon = "Assets/Icons/filter-sliders.svg", filterCount = 0, filtered = false, clearable = true, disabled = false, state = "default", ariaLabel = "", demo = "" } = props;
+    enumValue("top-nav", "filter", filter, "search");
+    enumValue("top-nav", "filtered", filtered, "search");
+    enumValue("top-nav", "clearable", clearable, "search");
+    enumValue("top-nav", "disabled", disabled, "search");
+    enumValue("top-nav", "state", disabled ? "disabled" : state, "search");
+    if (!approvedAsset(filterIcon)) throw new Error(`Unapproved asset: ${filterIcon}`);
+    const searchId = id || `top-nav-search-${String(ariaLabel || placeholder).toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+    const isDisabled = disabled || state === "disabled";
+    const filterCopy = filtered ? `${filterLabel} · ${filterCount}` : filterLabel;
+    const filterSlot = filter ? `<button class="ui-top-nav-search__filter${filtered ? " is-filtered" : ""}" type="button" data-demo="ui-top-nav-filter" data-filter-count="${escapeHTML(filterCount)}" data-filter-label="${escapeHTML(filterLabel)}" aria-pressed="${filtered}"${isDisabled ? " disabled" : ""}>${icon(filterIcon, "ui-top-nav-search__filter-icon")}<i aria-hidden="true"></i><span>${escapeHTML(filterCopy)}</span></button>` : "";
+    const classes = ["ui-top-nav-search", value ? "has-query" : "", filtered ? "is-filtered" : "", state === "focus" ? "is-input-focused" : "", isDisabled ? "is-disabled" : ""].filter(Boolean).join(" ");
+    return `<form class="${classes}" id="${escapeHTML(searchId)}" data-component="top-nav-search" data-ui-top-nav-search${demo ? ` data-demo="${escapeHTML(demo)}"` : ""} role="search"><img class="ui-top-nav-search__icon" src="Assets/Icons/search.svg" alt="" /><input class="ui-top-nav-search__input" type="text" value="${escapeHTML(value)}" placeholder="${escapeHTML(placeholder)}" aria-label="${escapeHTML(ariaLabel || placeholder)}" data-demo="ui-top-nav-search-input"${isDisabled ? " disabled" : ""} /><button class="ui-top-nav-search__clear" type="button" data-demo="ui-top-nav-search-clear" aria-label="Clear search"${clearable && value ? "" : " hidden"}${isDisabled ? " disabled" : ""}>${icon("Assets/Icons/16px/cross-sm.svg", "ui-top-nav-search__clear-icon")}</button>${filterSlot}</form>`;
+  }
+
+  function setTopNavSearchFocus(control, focused) {
+    const root = control?.closest?.("[data-ui-top-nav-search]") || control?.querySelector?.("[data-ui-top-nav-search]");
+    if (!root || root.classList.contains("is-disabled")) return;
+    root.classList.toggle("is-input-focused", Boolean(focused));
+  }
+
+  function syncTopNavSearch(input) {
+    const root = input?.closest?.("[data-ui-top-nav-search]");
+    if (!root) return;
+    const hasQuery = Boolean(input.value);
+    root.classList.toggle("has-query", hasQuery);
+    const clear = root.querySelector("[data-demo=ui-top-nav-search-clear]");
+    if (clear) clear.hidden = !hasQuery;
+  }
+
+  function clearTopNavSearch(control) {
+    const root = control?.closest?.("[data-ui-top-nav-search]");
+    const input = root?.querySelector?.(".ui-top-nav-search__input");
+    if (!input) return;
+    input.value = "";
+    syncTopNavSearch(input);
+    input.focus();
+  }
+
+  /* Opening the panel and having filters applied are two different facts, and
+     this conflated them: every press flipped the green cue and appended a count
+     that came from a prop nobody updated, so the nav announced "Filter · 3"
+     because someone had opened the drawer. Pressing is aria-pressed. The cue
+     and the number belong to what is actually selected, which is what
+     setTopNavFilterCount is for. */
+  function toggleTopNavFilter(control) {
+    if (!control) return false;
+    const pressed = control.getAttribute("aria-pressed") !== "true";
+    control.setAttribute("aria-pressed", String(pressed));
+    return pressed;
+  }
+
+  function setTopNavFilterCount(control, count) {
+    if (!control) return 0;
+    const total = Math.max(0, Number(count) || 0);
+    control.dataset.filterCount = String(total);
+    control.classList.toggle("is-filtered", total > 0);
+    const label = control.dataset.filterLabel || "Filter";
+    const copy = control.querySelector("span");
+    if (copy) copy.textContent = total > 0 ? `${label} · ${total}` : label;
+    return total;
+  }
+
+  /* What "one filter" means, counted off the markup the pattern renders: a
+     selected chip, a ticked category, a chosen option card, a range dragged off
+     the value it was rendered with. Reading the DOM rather than a store is
+     deliberate — the selections live there, because the pattern's controls are
+     driven by these helpers and nothing else. */
+  function countFilterSelections(scope) {
+    const root = scope || document;
+    if (!root.querySelectorAll) return 0;
+    let count = root.querySelectorAll('[data-demo="ds-chip"].is-selected, [data-filter-category-child].is-selected').length;
+    count += root.querySelectorAll('[data-demo="filter-category-parent"][data-value="on"]').length;
+    count += root.querySelectorAll(".ui-selection.is-selected").length;
+    for (const input of root.querySelectorAll('[data-demo="ui-slider-range"], [data-demo="ui-slider"]')) {
+      if (input.value !== input.defaultValue) { count += 1; break; }
+    }
+    for (const box of root.querySelectorAll('[data-demo="checkbox"]')) {
+      if (box.dataset.value === "on") count += 1;
+    }
+    return count;
+  }
+
+  function resetFilters(scope) {
+    const root = scope || document;
+    if (!root.querySelectorAll) return 0;
+    root.querySelectorAll('[data-demo="ds-chip"], [data-filter-category-child]').forEach((chip) => setFilterChipSelected(chip, false));
+    root.querySelectorAll('[data-demo="filter-category-parent"], [data-demo="checkbox"]').forEach((box) => setCheckboxValue(box, "off"));
+    root.querySelectorAll("[data-filter-category]").forEach((category) => {
+      category.dataset.expanded = "false";
+      const children = category.querySelector("[data-filter-category-children]");
+      if (children) children.hidden = true;
+    });
+    root.querySelectorAll(".ui-selection.is-selected").forEach((card) => setSelectionCardState(card, false));
+    for (const input of root.querySelectorAll('[data-demo="ui-slider-range"], [data-demo="ui-slider"]')) {
+      input.value = input.defaultValue;
+      if (input.dataset.rangeHandle) syncSliderRange(input); else syncSliderInput(input);
+    }
+    return 0;
+  }
+
+  /* One call for hosts: recount what the panel holds and tell the control. */
+  function syncTopNavFilterCue(scope, control) {
+    return setTopNavFilterCount(control || document.querySelector('[data-demo="ui-top-nav-filter"]'), countFilterSelections(scope));
+  }
+
+  function modal(props = {}) {
+    assertProps("modal", props);
+    const { id = "", title = "Dialog", body = "", footer = "", trigger, triggerLabel = "Open modal", open = false, size = "default", titleAlign = "start", stage = "demo", closable = true, maskClosable = true, keyboardClosable = true, demo = "" } = props;
+    enumValue("modal", "size", size);
+    enumValue("modal", "titleAlign", titleAlign);
+    enumValue("modal", "stage", stage);
+    const modalId = id || `modal-${String(title).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "dialog"}`;
+    /* Not passing a trigger asks for the default button; passing an empty one
+       says the dialog is opened from somewhere else on the page. A filter that
+       opens from the top nav has no trigger of its own, and the template had to
+       hand-roll the entire modal to get rid of the button this used to insert
+       unconditionally. Undefined and "" are different answers to the question. */
+    const triggerMarkup = trigger === undefined
+      ? button({ label: triggerLabel, variant: "secondary", demo: demo || "ui-modal-open", ariaExpanded: open, ariaControls: `${modalId}-dialog` })
+      : trigger;
+    const close = closable ? `<button class="ui-modal__close" type="button" data-demo="ui-modal-close" aria-label="Close dialog">${icon("Assets/Icons/cross.svg", "ui-modal__close-icon")}</button>` : "";
+    const footerMarkup = footer ? `<footer class="ui-modal__footer">${footer}</footer>` : "";
+    return `<div class="ui-modal-stage ui-modal-stage--${stage}${open ? " is-open" : ""}" id="${escapeHTML(modalId)}" data-component="modal" data-ui-modal data-mask-closable="${maskClosable}" data-keyboard-closable="${keyboardClosable}">${triggerMarkup}<div class="ui-modal__layer"${open ? "" : " aria-hidden=\"true\""}><button class="ui-modal__mask" type="button" data-demo="ui-modal-mask" aria-label="Close dialog"></button><section class="ui-modal ui-modal--${size}" id="${escapeHTML(modalId)}-dialog" role="dialog" aria-modal="true" aria-labelledby="${escapeHTML(modalId)}-title" tabindex="-1"><header class="ui-modal__header${titleAlign === "center" ? " is-title-centered" : ""}"><h3 id="${escapeHTML(modalId)}-title">${escapeHTML(title)}</h3>${close}</header><div class="ui-modal__body">${body}</div>${footerMarkup}</section></div></div>`;
+  }
+
+  function popup(props = {}) {
+    assertProps("popup", props);
+    const { id = "", title = "", body = "", actions = "", trigger = "", triggerLabel = "More details", open = false, placement = "bottom", triggerMode = "click", closeOnLeave = true, leaveDelay = 300, demo = "", ariaLabel = "" } = props;
+    enumValue("popup", "placement", placement);
+    enumValue("popup", "triggerMode", triggerMode);
+    enumValue("popup", "closeOnLeave", closeOnLeave);
+    enumValue("popup", "leaveDelay", leaveDelay);
+    const popupId = id || `popup-${String(title || triggerLabel).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "details"}`;
+    const triggerMarkup = trigger || button({ label: triggerLabel, variant: "secondary", size: 32, shape: "pill", demo: demo || "ui-popup-toggle", ariaExpanded: open, ariaControls: `${popupId}-surface` });
+    const titleMarkup = title ? `<h3 id="${escapeHTML(popupId)}-title">${escapeHTML(title)}</h3>` : "";
+    const bodyMarkup = body ? `<p>${escapeHTML(body)}</p>` : "";
+    const actionsMarkup = actions ? `<footer class="ui-popup__actions">${actions}</footer>` : "";
+    const labelledBy = title ? ` aria-labelledby="${escapeHTML(popupId)}-title"` : ` aria-label="${escapeHTML(ariaLabel || triggerLabel)}"`;
+    return `<div class="ui-popup${open ? " is-open" : ""}" id="${escapeHTML(popupId)}" data-component="popup" data-ui-popup data-popup-trigger-mode="${triggerMode}" data-close-on-leave="${closeOnLeave}" data-leave-delay="${leaveDelay}">${triggerMarkup}<section class="ui-popup__surface" id="${escapeHTML(popupId)}-surface" data-placement="${placement}" role="dialog"${labelledBy}${open ? "" : " aria-hidden=\"true\""}>${titleMarkup}${bodyMarkup}${actionsMarkup}</section></div>`;
+  }
+
+  function popconfirm(props = {}) {
+    assertProps("popconfirm", props);
+    const { id = "", title = "Confirm action?", description = "", trigger = "", triggerLabel = "Confirm", confirm = "", cancel = "", confirmLabel = "Confirm", cancelLabel = "Cancel", showCancel = true, open = false, placement = "bottom", disabled = false, loading = false, demo = "", ariaLabel = "" } = props;
+    enumValue("popconfirm", "placement", placement);
+    enumValue("popconfirm", "showCancel", showCancel);
+    enumValue("popconfirm", "disabled", disabled);
+    enumValue("popconfirm", "loading", loading);
+    const popconfirmId = id || `popconfirm-${String(title).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "action"}`;
+    const triggerMarkup = trigger || button({ label: triggerLabel, variant: "secondary", size: 32, shape: "pill", disabled, demo: demo || "ui-popconfirm-toggle", ariaExpanded: open, ariaControls: `${popconfirmId}-surface` });
+    const cancelMarkup = showCancel ? (cancel || button({ label: cancelLabel, variant: "secondary", size: 32, shape: "pill", demo: "ui-popconfirm-close" })) : "";
+/* The danger variant, not a filled red one. Red is this system's promoted
+     action — Book lesson, Book trial — so a filled red "Cancel lesson" makes
+     destroying the thing look like the thing you came to do. Danger is red on
+     the card colour, quieter than the secondary "Keep lesson" beside it, which
+     is the right order for a question whose safe answer is no.
+     (It was filled red for a while on my reading of "a White button needs a
+     coloured background". That rule is about the White variant; danger is not
+     it.) */
+    const confirmMarkup = confirm || button({ label: confirmLabel, variant: "danger", size: 32, shape: "pill", disabled: disabled || loading, loading, demo: "ui-popconfirm-close" });
+    const descriptionMarkup = description ? `<p>${escapeHTML(description)}</p>` : "";
+    const labelledBy = title ? ` aria-labelledby="${escapeHTML(popconfirmId)}-title"` : ` aria-label="${escapeHTML(ariaLabel || triggerLabel)}"`;
+    return `<div class="ui-popconfirm${open ? " is-open" : ""}${disabled ? " is-disabled" : ""}" id="${escapeHTML(popconfirmId)}" data-component="popconfirm" data-ui-popconfirm data-loading="${loading}">${triggerMarkup}<section class="ui-popconfirm__surface" id="${escapeHTML(popconfirmId)}-surface" data-placement="${placement}" role="alertdialog"${labelledBy}${open ? "" : " aria-hidden=\"true\""}><h3 id="${escapeHTML(popconfirmId)}-title">${escapeHTML(title)}</h3>${descriptionMarkup}<footer class="ui-popconfirm__actions">${cancelMarkup}${confirmMarkup}</footer></section></div>`;
+  }
+
+  function slider(props = {}) {
+    assertProps("slider", props);
+    const { value = 0, label = "Slider", disabled = false, tooltip = false, reversed = false, state = "default" } = props;
+    enumValue("slider", "orientation", "horizontal");
+    enumValue("slider", "mode", "single");
+    enumValue("slider", "state", disabled ? "disabled" : state);
+    const classes = ["ui-slider", tooltip ? "has-tooltip" : "", reversed ? "is-reversed" : "", state === "hover" ? "is-hover" : "", state === "focus" ? "is-focus" : "", disabled ? "is-disabled" : ""].filter(Boolean).join(" ");
+    return `<div class="${classes}" data-component="slider"><div class="ui-slider__row"><span class="ui-slider__control" style="--ui-slider-progress:${Number(value)}%"><input class="${reversed ? "is-reversed" : ""}" type="range" min="0" max="100" value="${Number(value)}" data-demo="ui-slider" aria-label="${escapeHTML(label)}"${disabled ? " disabled" : ""}/>${tooltip ? `<output class="ui-slider__tooltip">${Number(value)}</output>` : ""}</span><output class="ui-slider__value" data-slider-value>${Number(value)}</output></div></div>`;
+  }
+
+  function sliderRange(props = {}) {
+    assertProps("slider", props, "range");
+    const { lower = 20, upper = 70, label = "Range" } = props;
+    const start = Number(lower);
+    const end = Number(upper);
+    return `<div class="ui-slider" data-component="slider"><div class="ui-slider__row"><span class="ui-slider__range" data-slider-range style="--ui-slider-range-start:${start}%;--ui-slider-range-end:${end}%"><input type="range" min="0" max="100" value="${start}" data-demo="ui-slider-range" data-range-handle="lower" aria-label="Minimum ${escapeHTML(label)}" /><input type="range" min="0" max="100" value="${end}" data-demo="ui-slider-range" data-range-handle="upper" aria-label="Maximum ${escapeHTML(label)}" /></span><output class="ui-slider__value ui-slider__value--range" data-range-value>${start}–${end}</output></div></div>`;
+  }
+
+  function sliderVertical(props = {}) {
+    assertProps("slider", props, "vertical");
+    const { value = 0, label = "Vertical slider", disabled = false } = props;
+    enumValue("slider", "orientation", "vertical");
+    return `<div class="ui-slider-vertical" data-component="slider"><span class="ui-slider-vertical__control" style="--ui-slider-progress:${Number(value)}%"><input type="range" min="0" max="100" value="${Number(value)}" data-demo="ui-slider" aria-label="${escapeHTML(label)}"${disabled ? " disabled" : ""}/></span><output data-slider-value>${Number(value)}</output></div>`;
+  }
+
+  function panel(props = {}) {
+    assertProps("panel", props);
+    const { title = "", body = "", extra = "", divider = false, density = "medium" } = props;
+    enumValue("panel", "density", density);
+    enumValue("panel", "divider", divider);
+    const header = title || extra ? `<header class="ui-panel__header">${title ? `<span>${escapeHTML(title)}</span>` : ""}${extra}</header>` : "";
+    return `<section class="ui-panel ui-panel--${density}${divider && header ? " has-divider" : ""}" data-component="panel">${header}<div class="ui-panel__body">${body}</div></section>`;
+  }
+
+  function search(props = {}) {
+    assertProps("search", props);
+    const { id = "", value = "", placeholder = "Search", size = 40, shape = "pill", state = "default", clearable = false, disabled = false } = props;
+    enumValue("search", "size", size);
+    enumValue("search", "shape", shape);
+    enumValue("search", "state", disabled ? "disabled" : state);
+    const classes = ["ui-search", `ui-search--${size}`, `ui-search--${shape}`, state === "hover" ? "is-hover" : "", state === "focus" ? "is-focus" : "", disabled ? "is-disabled" : ""].filter(Boolean).join(" ");
+    return `<div class="${classes}" data-component="search">${icon("Assets/Icons/16px/search-sm.svg", "ui-search__icon")}<input${id ? ` id="${escapeHTML(id)}"` : ""} type="search" value="${escapeHTML(value)}" placeholder="${escapeHTML(placeholder)}" aria-label="${escapeHTML(placeholder)}"${disabled ? " disabled" : ""} />${clearable ? `<button class="ui-search__clear" type="button" data-demo="ui-search-clear" aria-label="Clear search"${value ? "" : " hidden"}>${icon("Assets/Icons/16px/cross-sm.svg", "ui-search__clear-icon")}</button>` : ""}</div>`;
+  }
+
+  const normalizeSelectOption = (option) => typeof option === "string" ? { label: option, value: option } : { label: option?.label || "", value: option?.value || option?.label || "", disabled: Boolean(option?.disabled) };
+  const selectOptionsFromProps = ({ options = [], groups = [] }) => groups.length ? groups.flatMap((group) => group.options || []) : options;
+  const selectValueTags = (values) => values.map((value) => tag({ label: value, value, removable: true, removeDemo: "ui-select-remove" })).join("");
+
+  function select(props = {}) {
+    assertProps("select", props);
+    const {
+      id = "select",
+      label = "Select an option",
+      placeholder = "Select an option",
+      options = [],
+      groups = [],
+      selected = [],
+      mode = "single",
+      size = 40,
+      shape = "default",
+      status = "default",
+      state = "default",
+      clearable = false,
+      searchable = false,
+      query = "",
+      disabled = false,
+      loading = false,
+      open = false
+    } = props;
+    enumValue("select", "mode", mode);
+    enumValue("select", "size", size);
+    enumValue("select", "shape", shape);
+    enumValue("select", "status", status);
+    enumValue("select", "state", loading ? "loading" : (disabled ? "disabled" : state));
+    const values = (Array.isArray(selected) ? selected : [selected]).filter(Boolean).map(String);
+    const resolvedShape = resolveControlShape(size, shape);
+    const normalizedOptions = selectOptionsFromProps({ options, groups }).map(normalizeSelectOption);
+    const normalizedQuery = String(query).trim().toLowerCase();
+    const matchesQuery = (option) => !normalizedQuery || String(option.label).toLowerCase().includes(normalizedQuery);
+    const renderOption = (option) => {
+      const isSelected = values.includes(String(option.value));
+      return `<button class="ui-select__option${isSelected ? " is-selected" : ""}${matchesQuery(option) ? "" : " is-filtered"}" type="button" role="option" aria-selected="${isSelected}" data-demo="ui-select-option" data-select-value="${escapeHTML(option.value)}" data-select-label="${escapeHTML(option.label)}"${option.disabled ? " disabled" : ""}><span>${escapeHTML(option.label)}</span>${isSelected ? icon("Assets/Icons/confirm-sm.svg", "ui-select__option-check") : ""}</button>`;
+    };
+    const menuOptions = groups.length
+      ? groups.map((group) => {
+        const groupOptions = (group.options || []).map(normalizeSelectOption);
+        return `<div class="ui-select__group" data-select-group${groupOptions.some(matchesQuery) ? "" : " hidden"}><p>${escapeHTML(group.label || "")}</p>${groupOptions.map(renderOption).join("")}</div>`;
+      }).join("")
+      : normalizedOptions.map(renderOption).join("");
+    const hasVisibleOptions = normalizedOptions.some(matchesQuery);
+    const selection = mode === "multiple"
+      ? `<span class="ui-select__values" data-ui-select-values>${values.length ? selectValueTags(values) : `<span class="ui-select__placeholder">${escapeHTML(placeholder)}</span>`}</span>`
+      : `<span class="${values[0] ? "ui-select__value" : "ui-select__placeholder"}" data-ui-select-single>${escapeHTML(values[0] || placeholder)}</span>`;
+    const unavailable = disabled || loading || state === "disabled" || state === "loading";
+    const classes = ["ui-select", `ui-select--${size}`, `ui-select--${resolvedShape}`, status !== "default" ? `is-${status}` : "", state === "hover" ? "is-hover" : "", state === "focus" ? "is-focus" : "", unavailable ? "is-disabled" : "", loading ? "is-loading" : "", open ? "is-open" : ""].filter(Boolean).join(" ");
+    const clear = clearable && !loading ? `<button class="ui-select__clear" type="button" data-demo="ui-select-clear" aria-label="Clear selection"${values.length ? "" : " hidden"}>${icon("Assets/Icons/16px/cross-sm.svg", "ui-select__clear-icon")}</button>` : "";
+    const suffix = loading ? '<span class="ui-select__loading" aria-hidden="true"></span>' : icon("Assets/Icons/arrow-down-sm.svg", "ui-select__suffix");
+    return `<div class="${classes}" data-component="select" data-select-mode="${mode}" data-select-placeholder="${escapeHTML(placeholder)}"><div class="ui-select__trigger" tabindex="${unavailable ? "-1" : "0"}" data-demo="ui-select-trigger" role="combobox" aria-label="${escapeHTML(label)}" aria-haspopup="listbox" aria-expanded="${open}" aria-controls="${escapeHTML(id)}-menu" aria-disabled="${unavailable}">${selection}${clear}${suffix}</div><div class="ui-select__menu" id="${escapeHTML(id)}-menu" role="listbox"${mode === "multiple" ? ' aria-multiselectable="true"' : ""}>${searchable ? `<label class="ui-select__search">${icon("Assets/Icons/16px/search-sm.svg", "ui-select__search-icon")}<input type="search" value="${escapeHTML(String(query))}" data-demo="ui-select-search" placeholder="Search options" aria-label="Search options" /></label>` : ""}${menuOptions}<p class="ui-select__empty" data-ui-select-empty${hasVisibleOptions ? " hidden" : ""}>No options found.</p></div></div>`;
+  }
+
+  function switchControl(props = {}) {
+    assertProps("switch", props);
+    const { checked = false, disabled = false, state = "default", demo = "", label = "Toggle" } = props;
+    const isDisabled = disabled || state === "disabled";
+    enumValue("switch", "state", isDisabled ? "disabled" : state);
+    const classes = ["ui-switch", checked ? "is-checked" : "", !isDisabled && state === "hover" ? "is-hover" : "", isDisabled ? "is-disabled" : ""].filter(Boolean).join(" ");
+    return `<button class="${classes}" type="button" role="switch" aria-checked="${checked}" aria-label="${escapeHTML(label)}" data-component="switch"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}${isDisabled ? " disabled" : ""}></button>`;
+  }
+
+  function setCheckboxValue(control, value) {
+    enumValue("checkbox", "checked", value);
+    if (!control) return;
+    control.dataset.value = value;
+    control.classList.remove("value-off", "value-on", "value-mixed");
+    control.classList.add(`value-${value}`);
+    control.setAttribute("aria-checked", value === "mixed" ? "mixed" : String(value === "on"));
+  }
+
+  /* A standalone checkbox is a button with role="checkbox", so it has no native
+     toggle — and this logic lived only in the Catalog's dispatcher. Everywhere
+     else the control rendered and refused to tick, which is how "Plus features
+     available" ended up unclickable inside the filter. The mode is the
+     component's own: binary flips on/off, indeterminate cycles through mixed,
+     and controlled means the page owns the value. */
+  function toggleCheckbox(control) {
+    if (!control || control.disabled) return null;
+    const mode = control.dataset.checkboxToggle || "binary";
+    if (mode === "controlled") return control.dataset.value || "off";
+    const next = mode === "indeterminate"
+      ? (control.dataset.value === "mixed" ? "off" : "mixed")
+      : (control.dataset.value === "on" ? "off" : "on");
+    setCheckboxValue(control, next);
+    return next;
+  }
+
+  const checkboxGroupItems = (group) => [...(group?.querySelectorAll?.('[data-demo="ui-checkbox-group-item"]') || [])];
+
+  function syncCheckboxGroup(group) {
+    if (!group) return;
+    const items = checkboxGroupItems(group).filter((item) => !item.disabled);
+    const selectedCount = items.filter((item) => item.dataset.value === "on").length;
+    const all = group.querySelector('[data-demo="ui-checkbox-group-all"]');
+    if (all) setCheckboxValue(all, selectedCount === 0 ? "off" : (selectedCount === items.length ? "on" : "mixed"));
+    const count = group.querySelector("[data-ui-checkbox-group-count]");
+    if (count) count.textContent = `${selectedCount} selected`;
+  }
+
+  function toggleCheckboxGroup(control) {
+    const group = control?.closest?.("[data-ui-checkbox-group]");
+    if (!group || control.disabled) return false;
+    if (control.dataset.demo === "ui-checkbox-group-all") {
+      const next = control.dataset.value === "on" ? "off" : "on";
+      checkboxGroupItems(group).filter((item) => !item.disabled).forEach((item) => setCheckboxValue(item, next));
+    } else {
+      setCheckboxValue(control, control.dataset.value === "on" ? "off" : "on");
+    }
+    syncCheckboxGroup(group);
+    return true;
+  }
+
+  const radioControls = (group) => [...(group?.querySelectorAll?.('[data-component="radio"]') || [])];
+
+  function syncSelectionGroup(group) {
+    group?.querySelectorAll?.('[data-component="selection"]').forEach((item) => {
+      item.classList.toggle("is-selected", item.querySelector('[data-component="radio"]')?.getAttribute("aria-checked") === "true");
+    });
+  }
+
+  function selectRadio(control) {
+    const group = control?.closest?.("[data-ui-radio-group]");
+    if (!group || control.disabled) return false;
+    radioControls(group).forEach((item) => {
+      const selected = item === control;
+      item.classList.toggle("is-checked", selected);
+      item.setAttribute("aria-checked", String(selected));
+      item.tabIndex = selected ? 0 : -1;
+    });
+    syncSelectionGroup(group);
+    return true;
+  }
+
+  const selectionCards = (group) => [...(group?.querySelectorAll?.('[data-component="selection"]') || [])];
+
+  function setSelectionCardState(control, selected) {
+    if (!control) return;
+    control.classList.toggle("is-selected", Boolean(selected));
+    control.setAttribute("aria-checked", String(Boolean(selected)));
+    if (control.dataset.selectionMode === "radio") control.tabIndex = selected ? 0 : -1;
+  }
+
+  function toggleSelectionCard(control) {
+    if (!control || control.disabled) return false;
+    const group = control.closest("[data-ui-selection-group]");
+    const mode = control.dataset.selectionMode || group?.dataset.selectionMode || "radio";
+    if (mode === "radio") {
+      const cards = group ? selectionCards(group) : [control];
+      cards.forEach((item) => setSelectionCardState(item, item === control));
+      return true;
+    }
+    const next = !control.classList.contains("is-selected");
+    setSelectionCardState(control, next);
+    return next;
+  }
+
+  function toggleLessonOptions(control) {
+    if (!control || control.disabled) return false;
+    const list = control.closest("[data-ui-lesson-options]");
+    if (!list) return false;
+    const card = control.closest("[data-lesson-course-card]");
+    const shouldExpand = !card?.classList.contains("is-expanded");
+    /* Two lesson-options groups can be one choice. The reference splits the
+       trial from the regular courses with a divider, which a single group
+       cannot draw — so it is two groups, and each was its own radiogroup:
+       picking a course left the trial selected and the step reported two
+       lessons chosen at once. A wrapper marked data-lesson-exclusive says the
+       groups inside it are alternatives, and picking in one clears the rest.
+       Opt-in, so a page with genuinely independent groups is unaffected. */
+    const exclusive = control.closest("[data-lesson-exclusive]");
+    if (exclusive && shouldExpand) {
+      exclusive.querySelectorAll("[data-ui-lesson-options]").forEach((group) => {
+        if (group === list) return;
+        group.querySelectorAll("[data-lesson-course-card]").forEach((item) => {
+          item.classList.remove("is-expanded", "is-preview-expanded");
+          const toggle = item.querySelector("[data-demo=ui-lesson-toggle]");
+          toggle?.classList.remove("is-selected");
+          toggle?.setAttribute("aria-expanded", "false");
+          toggle?.setAttribute("aria-checked", "false");
+          const options = item.querySelector("[data-ui-selection-group]");
+          if (options) {
+            options.classList.add("is-collapsed");
+            options.setAttribute("aria-hidden", "true");
+            options.inert = true;
+          }
+          /* The lengths inside a cleared course stop being a selection too,
+             or stepping back would show a course collapsed with a length
+             still chosen inside it. */
+          item.querySelectorAll(".ui-selection__lesson-option").forEach((o) => {
+            o.classList.remove("is-selected");
+            o.setAttribute("aria-checked", "false");
+            o.tabIndex = -1;
+          });
+        });
+      });
+    }
+    list.querySelectorAll("[data-lesson-course-card]").forEach((item) => {
+      const expanded = shouldExpand && item === card;
+      item.classList.toggle("is-expanded", expanded);
+      item.classList.remove("is-preview-expanded");
+      const toggle = item.querySelector("[data-demo=ui-lesson-toggle]");
+      const options = item.querySelector("[data-ui-selection-group]");
+      toggle?.classList.toggle("is-selected", expanded);
+      toggle?.setAttribute("aria-expanded", String(expanded));
+      toggle?.setAttribute("aria-checked", String(expanded));
+      if (options) {
+        options.classList.toggle("is-collapsed", !expanded);
+        options.setAttribute("aria-hidden", String(!expanded));
+        options.inert = !expanded;
+      }
+      /* A collapsed course keeps no chosen length. Only the cross-group branch
+         cleared these, so picking a second course inside the same group left the
+         first one's duration selected and the group reported two lessons. */
+      if (!expanded) {
+        item.querySelectorAll(".ui-selection__lesson-option").forEach((o) => {
+          o.classList.remove("is-selected");
+          o.setAttribute("aria-checked", "false");
+          o.tabIndex = -1;
+        });
+      }
+      /* Expanding a course now lands on a length instead of on nothing. A
+         lesson-options card is a duration control: opening one with no duration
+         chosen leaves the consumer unable to name a price, which is exactly
+         where the booking flow got stuck — the card was open, nothing was
+         selected, and Continue had nothing to become available for. 60 minutes
+         is the product default; a course without it falls back to its first
+         length. An already-chosen length is never overwritten. */
+      if (expanded && options) {
+        const lengths = [...options.querySelectorAll(".ui-selection__lesson-option")];
+        if (lengths.length && !lengths.some((o) => o.getAttribute("aria-checked") === "true")) {
+          const preferred = lengths.find((o) => o.dataset.selectionValue === "60") || lengths[0];
+          lengths.forEach((o) => {
+            const chosen = o === preferred;
+            o.classList.toggle("is-selected", chosen);
+            o.setAttribute("aria-checked", String(chosen));
+            o.tabIndex = chosen ? 0 : -1;
+          });
+        }
+      }
+    });
+    return true;
+  }
+
+  function previewLessonOptions(card, preview) {
+    if (!card || card.classList.contains("is-expanded")) return false;
+    const toggle = card.querySelector("[data-demo=ui-lesson-toggle]");
+    const options = card.querySelector("[data-ui-selection-group]");
+    if (!toggle || !options) return false;
+    card.classList.toggle("is-preview-expanded", preview);
+    toggle.setAttribute("aria-expanded", String(preview));
+    options.classList.toggle("is-collapsed", !preview);
+    options.setAttribute("aria-hidden", String(!preview));
+    options.inert = !preview;
+    return true;
+  }
+
+  function handleSelectionCardKeydown(event) {
+    const control = event.target?.closest?.('[data-demo="ui-selection-card"]');
+    if (!control || control.dataset.selectionMode !== "radio" || !["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(event.key)) return false;
+    const group = control.closest("[data-ui-selection-group]");
+    const cards = selectionCards(group).filter((item) => !item.disabled);
+    const current = cards.indexOf(control);
+    if (current < 0 || cards.length < 2) return false;
+    event.preventDefault();
+    const direction = event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 1;
+    const next = cards[(current + direction + cards.length) % cards.length];
+    toggleSelectionCard(next);
+    next.focus();
+    return true;
+  }
+
+  const datePickerRoot = (element) => element?.closest?.("[data-ui-date-picker]");
+  const readDatePickerMonths = (picker) => {
+    try { return JSON.parse(picker?.dataset?.dateMonths || "[]"); } catch { return []; }
+  };
+  const readDatePickerValues = (picker) => {
+    try { return JSON.parse(picker?.dataset?.dateValues || "[]"); } catch { return []; }
+  };
+
+  function setDatePickerOpen(trigger, open) {
+    const picker = datePickerRoot(trigger);
+    if (!picker || picker.classList.contains("is-disabled")) return false;
+    picker.classList.toggle("is-open", Boolean(open));
+    const button = picker.querySelector('[data-demo="ui-date-toggle"]') || picker.querySelector(".ui-date-picker__trigger");
+    button?.setAttribute("aria-expanded", String(Boolean(open)));
+    const suffix = button?.querySelector(".ui-date-picker__suffix-icon");
+    /* Through withBase, like everything else the runtime emits. A raw
+       page-relative path is correct for the Catalog and wrong on a card three
+       folders down, and this one is assigned after render — so the generator,
+       which rebases the markup it captures, never sees it. The arrow was fine
+       until the picker had been opened once, and then it was a broken image. */
+    if (suffix) suffix.src = withBase(open ? "Assets/Icons/arrow-up-sm.svg" : "Assets/Icons/arrow-down-sm.svg");
+    return true;
+  }
+
+  function toggleDatePicker(trigger) {
+    const picker = datePickerRoot(trigger);
+    return setDatePickerOpen(trigger, !picker?.classList.contains("is-open"));
+  }
+
+  function syncDatePicker(picker) {
+    if (!picker) return;
+    const months = readDatePickerMonths(picker);
+    const monthIndex = Number(picker.dataset.dateMonthIndex || 0);
+    const activeMonth = months[monthIndex] || {};
+    const days = normalizeDateDays(activeMonth.days || []);
+    const values = readDatePickerValues(picker);
+    picker.querySelector("[data-ui-date-month]")?.replaceChildren(activeMonth.label || "Calendar");
+    const grid = picker.querySelector("[data-ui-date-grid]");
+    if (grid) grid.innerHTML = datePickerGrid(days, values);
+    const previous = picker.querySelector('[data-demo="ui-date-previous"]');
+    const next = picker.querySelector('[data-demo="ui-date-next"]');
+    if (previous) previous.disabled = monthIndex <= 0;
+    if (next) next.disabled = monthIndex >= months.length - 1;
+    const dateLabel = picker.querySelector("[data-ui-date-label]");
+    if (dateLabel) {
+      dateLabel.replaceChildren(datePickerLabel(days, values, "Choose a date"));
+      dateLabel.classList.toggle("ui-date-picker__placeholder", values.length === 0);
+    }
+  }
+
+  function navigateDatePicker(control, direction) {
+    const picker = datePickerRoot(control);
+    if (!picker || control.disabled) return false;
+    const months = readDatePickerMonths(picker);
+    const nextIndex = Math.min(Math.max(Number(picker.dataset.dateMonthIndex || 0) + Number(direction || 0), 0), months.length - 1);
+    if (nextIndex === Number(picker.dataset.dateMonthIndex || 0)) return false;
+    picker.dataset.dateMonthIndex = String(nextIndex);
+    syncDatePicker(picker);
+    return true;
+  }
+
+  function selectDatePickerDay(control) {
+    const picker = datePickerRoot(control);
+    if (!picker || control.disabled) return false;
+    const value = String(control.dataset.dateValue || "");
+    let values = readDatePickerValues(picker);
+    const isRange = picker.dataset.dateRange === "true";
+    if (isRange) {
+      values = values.length === 1 && values[0] !== value ? [values[0], value] : [value];
+      const days = [...picker.querySelectorAll('[data-demo="ui-date-day"]')];
+      if (values.length === 2 && days.findIndex((day) => day.dataset.dateValue === values[0]) > days.findIndex((day) => day.dataset.dateValue === values[1])) values.reverse();
+    } else values = [value];
+    picker.dataset.dateValues = JSON.stringify(values);
+    syncDatePicker(picker);
+    const isRangeComplete = isRange && values.length === 2 && values[0] !== values[1];
+    if (!isRange || isRangeComplete) setDatePickerOpen(picker.querySelector(".ui-date-picker__trigger"), false);
+    return true;
+  }
+
+  function closeDatePickers(except = null) {
+    document.querySelectorAll?.("[data-ui-date-picker].is-open").forEach((picker) => {
+      if (picker !== except) setDatePickerOpen(picker.querySelector(".ui-date-picker__trigger"), false);
+    });
+  }
+
+  const modalRoot = (element) => element?.closest?.("[data-ui-modal]");
+  const modalTrigger = (root) => root?.querySelector?.('[data-demo="ui-modal-open"]');
+
+  function syncModalScrollLock() {
+    const documentRoot = global.document?.documentElement;
+    const body = global.document?.body;
+    const locked = Boolean(global.document?.querySelector?.(".ui-modal-stage--inline.is-open"));
+    documentRoot?.classList.toggle("ui-modal-scroll-locked", locked);
+    body?.classList.toggle("ui-modal-scroll-locked", locked);
+  }
+
+  function setModalOpen(element, open) {
+    const root = modalRoot(element) || element?.closest?.("[data-ui-modal]") || element;
+    if (!root?.classList?.contains("ui-modal-stage")) return false;
+    root.classList.toggle("is-open", Boolean(open));
+    const layer = root.querySelector(".ui-modal__layer");
+    if (layer) {
+      if (open) layer.removeAttribute("aria-hidden");
+      else layer.setAttribute("aria-hidden", "true");
+    }
+    modalTrigger(root)?.setAttribute("aria-expanded", String(Boolean(open)));
+    syncModalScrollLock();
+    if (open) {
+      const dialog = root.querySelector('[role="dialog"]');
+      global.setTimeout?.(() => dialog?.focus(), 0);
+    } else modalTrigger(root)?.focus();
+    return true;
+  }
+
+  function openModal(control) { return setModalOpen(control, true); }
+  function closeModal(control) { return setModalOpen(control, false); }
+
+  function handleModalKeydown(event) {
+    const root = event.target?.closest?.("[data-ui-modal]") || global.document?.querySelector?.("[data-ui-modal].is-open");
+    if (!root?.classList?.contains("is-open")) return false;
+    if (event.key === "Escape" && root.dataset.keyboardClosable !== "false") {
+      event.preventDefault();
+      closeModal(root);
+      return true;
+    }
+    if (event.key !== "Tab") return false;
+    const focusable = [...root.querySelectorAll('.ui-modal [href], .ui-modal button:not([disabled]), .ui-modal [tabindex]:not([tabindex="-1"])')];
+    if (!focusable.length) return false;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && event.target === first) { event.preventDefault(); last.focus(); return true; }
+    if (!event.shiftKey && event.target === last) { event.preventDefault(); first.focus(); return true; }
+    return false;
+  }
+
+  const popupRoot = (element) => element?.closest?.("[data-ui-popup]");
+  const popupTrigger = (root) => root?.querySelector?.('[data-demo="ui-popup-toggle"]');
+
+  function setPopupOpen(element, open, returnFocus = false) {
+    const root = popupRoot(element) || element;
+    if (!root?.classList?.contains("ui-popup")) return false;
+    global.clearTimeout?.(root.popupCloseTimer);
+    root.classList.toggle("is-open", Boolean(open));
+    root.querySelector(".ui-popup__surface")?.toggleAttribute("aria-hidden", !open);
+    const trigger = popupTrigger(root);
+    trigger?.setAttribute("aria-expanded", String(Boolean(open)));
+    if (!open && returnFocus) trigger?.focus();
+    return true;
+  }
+
+  function closePopups(except = null) {
+    global.document?.querySelectorAll?.("[data-ui-popup].is-open").forEach((root) => {
+      if (root !== except) setPopupOpen(root, false);
+    });
+  }
+
+  function openPopup(control) {
+    const root = popupRoot(control) || control;
+    closePopups(root);
+    return setPopupOpen(root, true);
+  }
+
+  function closePopup(control, returnFocus = false) { return setPopupOpen(control, false, returnFocus); }
+
+  function togglePopup(control) {
+    const root = popupRoot(control);
+    if (!root) return false;
+    if (root.classList.contains("is-open")) return closePopup(root);
+    return openPopup(root);
+  }
+
+  function cancelPopupClose(control) {
+    const root = popupRoot(control) || control;
+    if (!root?.classList?.contains("ui-popup")) return false;
+    global.clearTimeout?.(root.popupCloseTimer);
+    return true;
+  }
+
+  function schedulePopupClose(control) {
+    const root = popupRoot(control) || control;
+    if (!root?.classList?.contains("ui-popup") || root.dataset.closeOnLeave === "false" || !root.classList.contains("is-open")) return false;
+    cancelPopupClose(root);
+    root.popupCloseTimer = global.setTimeout?.(() => closePopup(root), Number(root.dataset.leaveDelay || 300));
+    return true;
+  }
+
+  function handlePopupKeydown(event) {
+    if (event.key !== "Escape") return false;
+    const root = popupRoot(event.target) || global.document?.querySelector?.("[data-ui-popup].is-open");
+    if (!root?.classList?.contains("is-open")) return false;
+    event.preventDefault();
+    closePopup(root, true);
+    return true;
+  }
+
+  const popconfirmRoot = (element) => element?.closest?.("[data-ui-popconfirm]");
+  const popconfirmTrigger = (root) => root?.querySelector?.('[data-demo="ui-popconfirm-toggle"]');
+
+  function setPopconfirmOpen(element, open, returnFocus = false) {
+    const root = popconfirmRoot(element) || element;
+    if (!root?.classList?.contains("ui-popconfirm") || root.classList.contains("is-disabled") || root.dataset.loading === "true") return false;
+    root.classList.toggle("is-open", Boolean(open));
+    root.querySelector(".ui-popconfirm__surface")?.toggleAttribute("aria-hidden", !open);
+    const trigger = popconfirmTrigger(root);
+    trigger?.setAttribute("aria-expanded", String(Boolean(open)));
+    if (!open && returnFocus) trigger?.focus();
+    return true;
+  }
+
+  function closePopconfirms(except = null) {
+    global.document?.querySelectorAll?.("[data-ui-popconfirm].is-open").forEach((root) => {
+      if (root !== except) setPopconfirmOpen(root, false);
+    });
+  }
+
+  function openPopconfirm(control) {
+    const root = popconfirmRoot(control) || control;
+    closePopconfirms(root);
+    return setPopconfirmOpen(root, true);
+  }
+
+  function closePopconfirm(control, returnFocus = false) { return setPopconfirmOpen(control, false, returnFocus); }
+
+  function togglePopconfirm(control) {
+    const root = popconfirmRoot(control);
+    if (!root) return false;
+    if (root.classList.contains("is-open")) return closePopconfirm(root);
+    return openPopconfirm(root);
+  }
+
+  function handlePopconfirmKeydown(event) {
+    if (event.key !== "Escape") return false;
+    const root = popconfirmRoot(event.target) || global.document?.querySelector?.("[data-ui-popconfirm].is-open");
+    if (!root?.classList?.contains("is-open")) return false;
+    event.preventDefault();
+    closePopconfirm(root, true);
+    return true;
+  }
+
+  function handleRadioKeydown(event) {
+    const control = event.target?.closest?.("[data-demo=ui-radio]");
+    if (!control || !["ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown"].includes(event.key)) return false;
+    const group = control.closest("[data-ui-radio-group]");
+    const controls = radioControls(group).filter((item) => !item.disabled);
+    const current = controls.indexOf(control);
+    if (current < 0 || controls.length < 2) return false;
+    event.preventDefault();
+    const direction = event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 1;
+    const next = controls[(current + direction + controls.length) % controls.length];
+    selectRadio(next);
+    next.focus();
+    return true;
+  }
+
+  function toggleChip(control) {
+    if (!control || control.disabled) return false;
+    const selected = control.classList.toggle("is-selected");
+    control.setAttribute("aria-pressed", String(selected));
+    return selected;
+  }
+
+  function toggleSwitch(control) {
+    if (!control || control.disabled) return false;
+    const checked = control.classList.toggle("is-checked");
+    control.setAttribute("aria-checked", String(checked));
+    return checked;
+  }
+
+  function clearSearch(control) {
+    const search = control?.closest?.(".ui-search");
+    const input = search?.querySelector("input");
+    if (!input) return;
+    input.value = "";
+    control.hidden = true;
+    input.focus();
+  }
+
+  function syncSearchInput(input) {
+    const clear = input?.closest?.(".ui-search")?.querySelector("[data-demo=ui-search-clear]");
+    if (clear) clear.hidden = !input.value;
+  }
+
+  const selectRoot = (control) => control?.closest?.(".ui-select");
+  const selectOptionNodes = (root) => [...(root?.querySelectorAll?.('[data-demo="ui-select-option"]') || [])];
+
+  function closeSelects(except = null) {
+    global.document?.querySelectorAll?.(".ui-select.is-open").forEach((root) => {
+      if (root !== except) setSelectOpen(root, false);
+    });
+  }
+
+  function setSelectOpen(root, open) {
+    if (!root || root.classList.contains("is-disabled") || root.classList.contains("is-loading")) return false;
+    root.classList.toggle("is-open", open);
+    root.querySelector("[data-demo=ui-select-trigger]")?.setAttribute("aria-expanded", String(open));
+    if (open) {
+      global.requestAnimationFrame?.(() => root.querySelector("[data-demo=ui-select-search]")?.focus());
+    }
+    return open;
+  }
+
+  function toggleSelect(control) {
+    const root = selectRoot(control);
+    if (!root || root.classList.contains("is-disabled") || root.classList.contains("is-loading")) return false;
+    const next = !root.classList.contains("is-open");
+    closeSelects(root);
+    return setSelectOpen(root, next);
+  }
+
+  function syncSelectDisplay(root) {
+    if (!root) return;
+    const values = selectOptionNodes(root).filter((option) => option.getAttribute("aria-selected") === "true").map((option) => option.dataset.selectValue);
+    const multiple = root.dataset.selectMode === "multiple";
+    const placeholder = root.dataset.selectPlaceholder || "Select an option";
+    if (multiple) {
+      const output = root.querySelector("[data-ui-select-values]");
+      if (output) output.innerHTML = values.length ? selectValueTags(values) : `<span class="ui-select__placeholder">${escapeHTML(placeholder)}</span>`;
+    } else {
+      const output = root.querySelector("[data-ui-select-single]");
+      if (output) {
+        output.className = values[0] ? "ui-select__value" : "ui-select__placeholder";
+        output.textContent = values[0] || placeholder;
+      }
+    }
+    const clear = root.querySelector("[data-demo=ui-select-clear]");
+    if (clear) clear.hidden = values.length === 0;
+  }
+
+  function setSelectOption(option, selected) {
+    option.classList.toggle("is-selected", selected);
+    option.setAttribute("aria-selected", String(selected));
+    const existingCheck = option.querySelector(".ui-select__option-check");
+    if (selected && !existingCheck) option.insertAdjacentHTML("beforeend", icon("Assets/Icons/confirm-sm.svg", "ui-select__option-check"));
+    if (!selected && existingCheck) existingCheck.remove();
+  }
+
+  function selectOption(control) {
+    const root = selectRoot(control);
+    if (!root || control?.disabled) return false;
+    const multiple = root.dataset.selectMode === "multiple";
+    if (multiple) setSelectOption(control, control.getAttribute("aria-selected") !== "true");
+    else selectOptionNodes(root).forEach((option) => setSelectOption(option, option === control));
+    syncSelectDisplay(root);
+    if (!multiple) {
+      setSelectOpen(root, false);
+      root.querySelector("[data-demo=ui-select-trigger]")?.focus();
+    }
+    return true;
+  }
+
+  function clearSelect(control) {
+    const root = selectRoot(control);
+    if (!root) return;
+    selectOptionNodes(root).forEach((option) => setSelectOption(option, false));
+    syncSelectDisplay(root);
+    root.querySelector("[data-demo=ui-select-trigger]")?.focus();
+  }
+
+  function removeSelectValue(control) {
+    const root = selectRoot(control);
+    const tagRoot = control?.closest?.("[data-component=tag]");
+    const value = tagRoot?.dataset.value;
+    const option = selectOptionNodes(root).find((item) => item.dataset.selectValue === value);
+    if (option) setSelectOption(option, false);
+    syncSelectDisplay(root);
+    root?.querySelector("[data-demo=ui-select-trigger]")?.focus();
+  }
+
+  function filterSelectOptions(input) {
+    const root = selectRoot(input);
+    if (!root) return;
+    const query = input.value.trim().toLowerCase();
+    const options = selectOptionNodes(root);
+    options.forEach((option) => option.classList.toggle("is-filtered", !option.dataset.selectLabel.toLowerCase().includes(query)));
+    root.querySelectorAll("[data-select-group]").forEach((group) => {
+      group.hidden = ![...group.querySelectorAll(".ui-select__option")].some((option) => !option.classList.contains("is-filtered"));
+    });
+    const empty = root.querySelector("[data-ui-select-empty]");
+    if (empty) empty.hidden = options.some((option) => !option.classList.contains("is-filtered"));
+  }
+
+  function handleSelectKeydown(event) {
+    const trigger = event.target?.closest?.("[data-demo=ui-select-trigger]");
+    if (trigger && ["ArrowDown", "Enter", " "].includes(event.key)) {
+      event.preventDefault();
+      const root = selectRoot(trigger);
+      const next = event.key === "ArrowDown" ? true : !root.classList.contains("is-open");
+      closeSelects(root);
+      setSelectOpen(root, next);
+      if (next && event.key === "ArrowDown") global.requestAnimationFrame?.(() => selectOptionNodes(root).find((option) => !option.disabled && !option.classList.contains("is-filtered"))?.focus());
+      return true;
+    }
+    const option = event.target?.closest?.("[data-demo=ui-select-option]");
+    if (option && ["Enter", " "].includes(event.key)) {
+      event.preventDefault();
+      selectOption(option);
+      return true;
+    }
+    if (option && ["ArrowUp", "ArrowDown"].includes(event.key)) {
+      const options = selectOptionNodes(selectRoot(option)).filter((item) => !item.disabled && !item.classList.contains("is-filtered"));
+      const current = options.indexOf(option);
+      if (current >= 0 && options.length > 1) {
+        event.preventDefault();
+        options[(current + (event.key === "ArrowUp" ? -1 : 1) + options.length) % options.length].focus();
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function setSelectPresentation(container, { size, shape }) {
+    enumValue("select", "size", size);
+    enumValue("select", "shape", shape);
+    container?.querySelectorAll?.(".ui-select").forEach((root) => {
+      root.classList.remove("ui-select--32", "ui-select--40", "ui-select--48", "ui-select--rounded", "ui-select--pill");
+      root.classList.add(`ui-select--${size}`, `ui-select--${resolveControlShape(size, shape)}`);
+    });
+  }
+
+  function setTextInputPresentation(container, { size, shape }) {
+    enumValue("text-input", "size", size);
+    enumValue("text-input", "shape", shape);
+    container?.querySelectorAll?.(".ui-text-input").forEach((root) => {
+      root.classList.remove("ui-text-input--32", "ui-text-input--40", "ui-text-input--48", "ui-text-input--rounded", "ui-text-input--pill");
+      root.classList.add(`ui-text-input--${size}`, `ui-text-input--${resolveControlShape(size, shape)}`);
+    });
+  }
+
+  function setNumberStepperPresentation(container, { size, shape }) {
+    enumValue("number-stepper", "size", size);
+    enumValue("number-stepper", "shape", shape);
+    container?.querySelectorAll?.(".ui-number-stepper").forEach((root) => {
+      root.classList.remove("ui-number-stepper--32", "ui-number-stepper--40", "ui-number-stepper--48", "ui-number-stepper--rounded", "ui-number-stepper--pill");
+      root.classList.add(`ui-number-stepper--${size}`, `ui-number-stepper--${resolveStepperShape(shape)}`);
+    });
+  }
+
+  function setTextareaPresentation(container, { size }) {
+    enumValue("textarea", "size", size);
+    container?.querySelectorAll?.(".ui-textarea").forEach((root) => {
+      root.classList.remove("ui-textarea--32", "ui-textarea--40", "ui-textarea--48");
+      root.classList.add(`ui-textarea--${size}`);
+    });
+  }
+
+  function setDatePickerPresentation(container, { size, shape }) {
+    enumValue("date-picker", "size", size);
+    enumValue("date-picker", "shape", shape);
+    container?.querySelectorAll?.(".ui-date-picker").forEach((root) => {
+      root.classList.remove("ui-date-picker--32", "ui-date-picker--40", "ui-date-picker--48", "ui-date-picker--rounded", "ui-date-picker--pill");
+      root.classList.add(`ui-date-picker--${size}`, `ui-date-picker--${resolveControlShape(size, shape)}`);
+    });
+  }
+
+  function setTagPresentation(container, { size }) {
+    enumValue("tag", "size", size);
+    container?.querySelectorAll?.(".ui-tag").forEach((root) => {
+      root.classList.remove("ui-tag--24", "ui-tag--32", "ui-tag--40");
+      root.classList.add(`ui-tag--${size}`);
+    });
+  }
+
+  function setChipPresentation(container, { size }) {
+    enumValue("chip", "size", size);
+    container?.querySelectorAll?.(".ui-chip").forEach((root) => {
+      root.classList.remove("ui-chip--24", "ui-chip--32", "ui-chip--40");
+      root.classList.add(`ui-chip--${size}`);
+    });
+  }
+
+  function syncSliderInput(input) {
+    const slider = input?.closest?.(".ui-slider");
+    const verticalUnit = input?.closest?.(".ui-slider-vertical");
+    const output = slider?.querySelector("[data-slider-value]") || verticalUnit?.querySelector("[data-slider-value]");
+    const tooltip = slider?.querySelector(".ui-slider__tooltip");
+    if (output) output.textContent = input.value;
+    if (tooltip) tooltip.textContent = input.value;
+    const min = Number(input.min || 0);
+    const max = Number(input.max || 100);
+    const progress = max === min ? 0 : ((Number(input.value) - min) / (max - min)) * 100;
+    input.closest(".ui-slider__control")?.style.setProperty("--ui-slider-progress", `${progress}%`);
+    input.closest(".ui-slider-vertical__control")?.style.setProperty("--ui-slider-progress", `${progress}%`);
+  }
+
+  /* The Filter pattern's category tree. This behaviour existed only inside the
+     Catalog's own dispatcher, so the pattern shipped as a card and as a
+     template with its behaviour left behind — 28 child chips, 6 parent
+     checkboxes and every plain chip in the drawer rendered correctly and could
+     not be selected. Behaviour keyed off a data-demo hook belongs beside the
+     other helpers, where each host binds it from the same place instead of
+     reimplementing it or going without. Lifted verbatim; the Catalog calls
+     these now rather than keeping its own copy. */
+  const setFilterChipSelected = (chip, selected) => {
+    chip.classList.toggle("is-selected", selected);
+    chip.setAttribute("aria-pressed", String(selected));
+  };
+
+  function toggleFilterCategoryChild(control) {
+    const category = control?.closest?.("[data-filter-category]");
+    if (!category) return false;
+    const children = [...category.querySelectorAll("[data-filter-category-child]")];
+    const all = category.querySelector("[data-filter-category-all]");
+    const individualChildren = children.filter((child) => child !== all);
+    const parent = category.querySelector('[data-demo="filter-category-parent"]');
+    if (control === all) {
+      const selectingAll = !control.classList.contains("is-selected");
+      setFilterChipSelected(control, selectingAll);
+      individualChildren.forEach((child) => setFilterChipSelected(child, false));
+      if (parent) setCheckboxValue(parent, selectingAll ? "on" : "off");
+      category.dataset.expanded = String(selectingAll);
+      category.querySelector("[data-filter-category-children]").hidden = !selectingAll;
+      return selectingAll;
+    }
+    toggleChip(control);
+    if (all) setFilterChipSelected(all, false);
+    if (parent) setCheckboxValue(parent, "off");
+    const hasSelectedChild = individualChildren.some((child) => child.classList.contains("is-selected"));
+    category.dataset.expanded = String(hasSelectedChild);
+    category.querySelector("[data-filter-category-children]").hidden = !hasSelectedChild;
+    return control.classList.contains("is-selected");
+  }
+
+  function toggleFilterCategoryParent(control) {
+    const category = control?.closest?.("[data-filter-category]");
+    if (!category) return false;
+    const children = [...category.querySelectorAll("[data-filter-category-child]")];
+    const all = category.querySelector("[data-filter-category-all]");
+    const individualChildren = children.filter((child) => child !== all);
+    const hasSelectedChild = individualChildren.some((child) => child.classList.contains("is-selected"));
+    const checkingParent = control.dataset.value !== "on";
+    setCheckboxValue(control, checkingParent ? "on" : "off");
+    if (checkingParent) {
+      if (all) setFilterChipSelected(all, true);
+      individualChildren.forEach((child) => setFilterChipSelected(child, false));
+    } else if (!hasSelectedChild && all) {
+      setFilterChipSelected(all, false);
+    }
+    category.dataset.expanded = String(checkingParent || hasSelectedChild);
+    category.querySelector("[data-filter-category-children]").hidden = !(checkingParent || hasSelectedChild);
+    return checkingParent;
+  }
+
+
+  /* The Filter pattern shows the chosen price beside the range as two pills. They
+     were static markup — the slider moved, its own value box was hidden, and the
+     numbers people actually read never changed. The slider works in its own 0–100
+     scale, so the pattern declares the money the ends stand for and this maps
+     between them. */
+  function syncFilterPrice(scope) {
+    const root = scope || document;
+    if (!root.querySelectorAll) return;
+    for (const range of root.querySelectorAll("[data-price-floor][data-price-ceiling]")) {
+      const lower = range.querySelector('[data-range-handle="lower"]');
+      const upper = range.querySelector('[data-range-handle="upper"]');
+      if (!lower || !upper) continue;
+      const floor = Number(range.dataset.priceFloor);
+      const ceiling = Number(range.dataset.priceCeiling);
+      const min = Number(lower.min || 0);
+      const max = Number(lower.max || 100);
+      const money = (value) => {
+        const share = (Number(value) - min) / ((max - min) || 1);
+        return `$${Math.round(floor + share * (ceiling - floor))}`;
+      };
+      const write = (which, text) => {
+        const out = range.querySelector(`[data-filter-price="${which}"]`)
+          || root.querySelector(`[data-filter-price="${which}"]`);
+        if (out) out.textContent = text;
+      };
+      write("min", money(lower.value));
+      write("max", money(upper.value));
+    }
+  }
+
+  function syncSliderRange(input) {
+    const range = input?.closest?.("[data-slider-range]");
+    if (!range) return;
+    const lower = range.querySelector('[data-range-handle="lower"]');
+    const upper = range.querySelector('[data-range-handle="upper"]');
+    const step = Number(input.step || 1);
+    if (input.dataset.rangeHandle === "lower" && Number(lower.value) > Number(upper.value) - step) lower.value = String(Number(upper.value) - step);
+    if (input.dataset.rangeHandle === "upper" && Number(upper.value) < Number(lower.value) + step) upper.value = String(Number(lower.value) + step);
+    const min = Number(lower.min || 0);
+    const max = Number(lower.max || 100);
+    const lowerProgress = ((Number(lower.value) - min) / (max - min)) * 100;
+    const upperProgress = ((Number(upper.value) - min) / (max - min)) * 100;
+    range.style.setProperty("--ui-slider-range-start", `${lowerProgress}%`);
+    range.style.setProperty("--ui-slider-range-end", `${upperProgress}%`);
+    range.closest(".ui-slider")?.querySelector("[data-range-value]")?.replaceChildren(`${lower.value}–${upper.value}`);
+  }
+
+  function startSliderRangeDrag(event) {
+    const range = event?.target?.closest?.("[data-slider-range]");
+    if (!range || (event.button !== undefined && event.button !== 0)) return false;
+    const lower = range.querySelector('[data-range-handle="lower"]');
+    const upper = range.querySelector('[data-range-handle="upper"]');
+    if (!lower || !upper || lower.disabled || upper.disabled) return false;
+
+    const bounds = range.getBoundingClientRect();
+    const min = Number(lower.min || 0);
+    const max = Number(lower.max || 100);
+    const step = Number(lower.step || 1);
+    const valueAtPointer = (pointerEvent) => {
+      const progress = Math.min(1, Math.max(0, (pointerEvent.clientX - bounds.left) / bounds.width));
+      const raw = min + ((max - min) * progress);
+      return Math.min(max, Math.max(min, min + (Math.round((raw - min) / step) * step)));
+    };
+    const targetValue = valueAtPointer(event);
+    const active = Math.abs(targetValue - Number(lower.value)) <= Math.abs(targetValue - Number(upper.value)) ? lower : upper;
+    const update = (pointerEvent) => {
+      if (pointerEvent.pointerId !== event.pointerId) return;
+      active.value = String(valueAtPointer(pointerEvent));
+      syncSliderRange(active);
+      /* Setting .value from script does not fire `input`, so anything a page
+         hangs off the range — the Filter pattern's price pills, its selection
+         count — never heard the drag and sat at the value the markup was
+         rendered with. The driver is what moved it, so the driver says so. */
+      active.dispatchEvent(new Event("input", { bubbles: true }));
+    };
+    const finish = (pointerEvent) => {
+      if (pointerEvent.pointerId !== event.pointerId) return;
+      global.removeEventListener("pointermove", update);
+      global.removeEventListener("pointerup", finish);
+      global.removeEventListener("pointercancel", finish);
+    };
+    event.preventDefault();
+    update(event);
+    active.focus({ preventScroll: true });
+    global.addEventListener("pointermove", update);
+    global.addEventListener("pointerup", finish);
+    global.addEventListener("pointercancel", finish);
+    return true;
+  }
+
+  function drawer(props = {}) {
+    assertProps("drawer", props);
+    /* No default for `trigger`: the check below asks whether it was passed at all,
+       and `trigger = ""` answered that question before it could be asked — so the
+       default button never rendered and triggerLabel was dead. Modal reads the
+       same way; the two dialogs now behave alike. */
+    const { id = "", title = "Drawer", titleLeading = "", subtitle = "", body = "", footer = "", trigger, triggerLabel = "Open drawer", open = false, placement = "right", size = "default", stage = "demo", titleHidden = false, closable = true, maskClosable = true, keyboardClosable = true, demo = "" } = props;
+    enumValue("drawer", "placement", placement);
+    enumValue("drawer", "size", size);
+    /* Same two stages the Modal already has, and for the same reason: the
+       bounded grey box is the Catalog's preview surface, and a real page needs
+       the panel over the viewport instead. Without `inline` the only way to put
+       a Drawer in a page was to hand-write one, which is exactly what the
+       layering, focus and dismiss rules exist to prevent. */
+    enumValue("drawer", "stage", stage);
+    /* A panel whose contents name themselves still needs an accessible name, and
+       the reference for the visitor menu shows only a close control above the
+       list. `titleHidden` keeps the name on the dialog and takes the heading —
+       and the rule it was separating — out of the picture. It never removes the
+       name; a Drawer without one is not offered. */
+    enumValue("drawer", "titleHidden", titleHidden);
+    const drawerId = id || `drawer-${String(title).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "panel"}`;
+    /* An empty trigger means the page supplies its own; only an absent one asks
+       for the default button. Modal had the same bug: passing trigger="" still
+       rendered "Open drawer" beside a page's own control. */
+    const triggerMarkup = trigger === undefined
+      ? button({ label: triggerLabel, variant: "secondary", size: 32, shape: "pill", demo: demo || "ui-drawer-open", ariaExpanded: open, ariaControls: `${drawerId}-dialog` })
+      : trigger;
+    const close = closable ? `<button class="ui-drawer__close" type="button" data-demo="ui-drawer-close" aria-label="Close drawer">${icon("Assets/Icons/cross.svg", "ui-drawer__close-icon")}</button>` : "";
+    /* A booking drawer names the person you are booking with, not just the task:
+       the reference carries an avatar and a one-line summary beside the heading.
+       Both are slots because a subtitle can hold a coloured rating mark, and a
+       leading element is a component (an Avatar), not a string. The plain
+       heading is emitted unchanged when neither is supplied, so no existing
+       Drawer moves. */
+    const headingId = `${escapeHTML(drawerId)}-title`;
+    const heading = `<h3 id="${headingId}">${escapeHTML(title)}</h3>`;
+    const titleBlock = (titleLeading || subtitle)
+      ? `<div class="ui-drawer__identity">${titleLeading}<div class="ui-drawer__titles">${heading}${subtitle ? `<span class="ui-drawer__subtitle">${subtitle}</span>` : ""}</div></div>`
+      : heading;
+    const footerMarkup = footer ? `<footer class="ui-drawer__footer">${footer}</footer>` : "";
+    return `<div class="ui-drawer-stage ui-drawer-stage--${stage}${open ? " is-open" : ""}" id="${escapeHTML(drawerId)}" data-component="drawer" data-ui-drawer data-mask-closable="${maskClosable}" data-keyboard-closable="${keyboardClosable}">${triggerMarkup}<div class="ui-drawer__layer"${open ? "" : " aria-hidden=\"true\""}><button class="ui-drawer__mask" type="button" data-demo="ui-drawer-mask" aria-label="Close drawer"></button><aside class="ui-drawer ui-drawer--${placement} ui-drawer--${size}" id="${escapeHTML(drawerId)}-dialog" role="dialog" aria-modal="true" aria-labelledby="${escapeHTML(drawerId)}-title" tabindex="-1"><div class="ui-drawer__content"><header class="ui-drawer__header${titleHidden ? " is-title-hidden" : ""}">${titleBlock}${close}</header><div class="ui-drawer__body">${body}</div>${footerMarkup}</div></aside></div></div>`;
+  }
+
+  function formField(props = {}) {
+    assertProps("form-field", props);
+    const { id = "", label = "Field label", control = "", helper = "", error = "", status = "default", size = 40, shape = "default", state = "default", required = false, disabled = false } = props;
+    enumValue("form-field", "size", size);
+    enumValue("form-field", "shape", shape);
+    enumValue("form-field", "status", status);
+    enumValue("form-field", "state", disabled ? "disabled" : state);
+    const message = error || helper;
+    const messageId = message && id ? `${id}-${error ? "error" : "helper"}` : "";
+    const labelId = id ? `${id}-label` : "";
+    const isFieldControl = /data-component="(?:text-input|textarea|select|combobox|date-picker)"/.test(control);
+    const associatedControl = isFieldControl && (labelId || messageId)
+      ? control.replace(/<(input|textarea|button)\b([^>]*)>/, (match, tag, attributes) => {
+        const cleanAttributes = attributes.replace(/\s*\/\s*$/, "");
+        const labelledBy = labelId && !/\saria-labelledby=/.test(cleanAttributes) ? ` aria-labelledby="${escapeHTML(labelId)}"` : "";
+        const describedBy = messageId && !/\saria-describedby=/.test(cleanAttributes) ? ` aria-describedby="${escapeHTML(messageId)}"` : "";
+        return `<${tag}${cleanAttributes}${labelledBy}${describedBy}>`;
+      })
+      : control;
+    const presentation = resolveFieldPresentation({ state, status: error ? "error" : status, disabled });
+    const classes = ["ui-form-field", `ui-form-field--${presentation.status}`, `ui-form-field--${size}`, `ui-form-field--${resolveControlShape(size, shape)}`, presentation.state !== "default" ? `is-${presentation.state}` : ""].filter(Boolean).join(" ");
+    return `<div class="${classes}" data-component="form-field"><label${labelId ? ` id="${escapeHTML(labelId)}"` : ""}${id ? ` for="${escapeHTML(id)}"` : ""}>${escapeHTML(label)}${required ? '<span aria-hidden="true"> *</span>' : ""}</label>${associatedControl}${message ? `<p class="ui-form-field__message${error ? " is-error" : ""}"${messageId ? ` id="${escapeHTML(messageId)}"` : ""}${error ? ' role="alert"' : ""}>${escapeHTML(message)}</p>` : ""}</div>`;
+  }
+
+  function textInput(props = {}) {
+    assertProps("text-input", props);
+    const { id = "", value = "", placeholder = "", size = 40, shape = "default", status = "default", state = "default", disabled = false, readOnly = false, leadingIcon = "", trailingIcon = "", trailingAction = "", ariaLabel = "", demo = "" } = props;
+    enumValue("text-input", "size", size);
+    enumValue("text-input", "shape", shape);
+    enumValue("text-input", "status", status);
+    enumValue("text-input", "state", disabled ? "disabled" : state);
+    const presentation = resolveFieldPresentation({ state, status, disabled, readOnly });
+    const classes = ["ui-text-input", `ui-text-input--${size}`, `ui-text-input--${resolveControlShape(size, shape)}`, presentation.state === "default" ? "" : `is-${presentation.state}`, presentation.status !== "default" ? `is-${presentation.status}` : ""].filter(Boolean).join(" ");
+    return `<div class="${classes}" data-component="text-input">${icon(leadingIcon, "ui-text-input__icon")}<input${id ? ` id="${escapeHTML(id)}"` : ""} type="text" value="${escapeHTML(value)}" placeholder="${escapeHTML(placeholder)}" aria-label="${escapeHTML(ariaLabel || placeholder || "Text input")}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}${disabled ? " disabled" : ""}${readOnly ? " readonly" : ""} />${icon(trailingIcon, "ui-text-input__icon ui-text-input__trailing-icon")}${trailingAction ? `<span class="ui-text-input__trailing">${trailingAction}</span>` : ""}</div>`;
+  }
+
+  function textarea(props = {}) {
+    assertProps("textarea", props);
+    const { id = "", value = "", placeholder = "", size = 40, rows = 3, maxLength = 0, showCount = false, status = "default", state = "default", disabled = false, readOnly = false, ariaLabel = "", demo = "" } = props;
+    enumValue("textarea", "size", size);
+    enumValue("textarea", "status", status);
+    enumValue("textarea", "state", disabled ? "disabled" : state);
+    const presentation = resolveFieldPresentation({ state, status, disabled, readOnly });
+    const classes = ["ui-textarea", `ui-textarea--${size}`, presentation.state === "default" ? "" : `is-${presentation.state}`, presentation.status !== "default" ? `is-${presentation.status}` : ""].filter(Boolean).join(" ");
+    const count = showCount ? `<span class="ui-textarea__count" data-ui-textarea-count>${String(value).length}${maxLength ? ` / ${maxLength}` : ""}</span>` : "";
+    return `<div class="${classes}" data-component="textarea"><textarea${id ? ` id="${escapeHTML(id)}"` : ""} rows="${Math.max(1, Number(rows) || 3)}" placeholder="${escapeHTML(placeholder)}" aria-label="${escapeHTML(ariaLabel || placeholder || "Textarea")}"${maxLength ? ` maxlength="${Math.max(1, Number(maxLength))}"` : ""}${demo ? ` data-demo="${escapeHTML(demo)}"` : ""}${disabled ? " disabled" : ""}${readOnly ? " readonly" : ""}>${escapeHTML(value)}</textarea>${count}</div>`;
+  }
+
+  function numberStepper(props = {}) {
+    assertProps("number-stepper", props);
+    const { id = "", value = 1, min = 0, max = 99, step = 1, size = 40, shape = "default", status = "default", state = "default", disabled = false, label = "Quantity", ariaLabel = "", demo = "" } = props;
+    enumValue("number-stepper", "size", size);
+    enumValue("number-stepper", "shape", shape);
+    enumValue("number-stepper", "status", status);
+    enumValue("number-stepper", "state", disabled ? "disabled" : state);
+    const presentation = resolveFieldPresentation({ state, status, disabled });
+    const numericMin = Number(min);
+    const numericMax = Math.max(numericMin, Number(max));
+    const numericStep = Math.max(1, Number(step));
+    const numericValue = Math.min(numericMax, Math.max(numericMin, Number(value)));
+    const decrementDisabled = disabled || numericValue <= numericMin;
+    const incrementDisabled = disabled || numericValue >= numericMax;
+    return `<div class="ui-number-stepper ui-number-stepper--${size} ui-number-stepper--${resolveStepperShape(shape)}${presentation.state !== "default" ? ` is-${presentation.state}` : ""}${presentation.status !== "default" ? ` is-${presentation.status}` : ""}" data-component="number-stepper" data-ui-number-stepper data-min="${numericMin}" data-max="${numericMax}" data-step="${numericStep}"${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel || label)}"><button class="ui-number-stepper__action" type="button" data-demo="ui-number-stepper-decrement" aria-label="Decrease ${escapeHTML(label)}"${decrementDisabled ? " disabled" : ""}>${icon("Assets/Icons/minus-circle.svg", "ui-number-stepper__icon")}</button><output data-ui-number-stepper-value>${numericValue}</output><button class="ui-number-stepper__action" type="button" data-demo="ui-number-stepper-increment" aria-label="Increase ${escapeHTML(label)}"${incrementDisabled ? " disabled" : ""}>${icon("Assets/Icons/plus-circle.svg", "ui-number-stepper__icon")}</button></div>`;
+  }
+
+  function combobox(props = {}) {
+    assertProps("combobox", props);
+    const {
+      id = "combobox",
+      label = "Find an option",
+      placeholder = "Find an option",
+      options = [],
+      groups = [],
+      selected = [],
+      size = 48,
+      shape = "default",
+      status = "default",
+      state = "default",
+      clearable = false,
+      disabled = false,
+      loading = false,
+      open = false,
+      query = ""
+    } = props;
+    const markup = select({ id, label, placeholder, options, groups, selected, mode: "single", size, shape, status, state, clearable, searchable: true, query, disabled, loading, open: Boolean(open || query) });
+    /* The marker is added to the display hook, not swapped in for it: replacing
+       "data-ui-select" turned data-ui-select-single into data-ui-combobox-single,
+       and syncSelectDisplay looks the hook up by name — so choosing an option in
+       a combobox ticked the option and never changed what the trigger said. */
+    return markup
+      .replace('data-component="select"', 'data-component="combobox"')
+      .replace('data-ui-select-single', 'data-ui-select-single data-ui-combobox-single');
+  }
+
+  function formatUploadSize(value) {
+    const bytes = Math.max(0, Number(value) || 0);
+    if (!bytes) return "";
+    if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(bytes >= 10 * 1024 * 1024 ? 0 : 1)} MB`;
+  }
+
+  function normalizeUploadFile(file, index) {
+    const supplied = typeof file === "string" ? { name: file } : (file || {});
+    const status = ["uploading", "complete", "error"].includes(supplied.status) ? supplied.status : "complete";
+    return {
+      id: supplied.id || `file-${index + 1}`,
+      name: supplied.name || "Untitled file",
+      size: supplied.size || 0,
+      status,
+      progress: Math.min(100, Math.max(0, Number(supplied.progress) || (status === "complete" ? 100 : 0))),
+      error: supplied.error || "Upload could not be completed."
+    };
+  }
+
+  function renderUploadFile(file) {
+    const meta = file.status === "error"
+      ? file.error
+      : file.status === "uploading"
+        ? `${file.progress}% uploaded`
+        : [formatUploadSize(file.size), "Uploaded"].filter(Boolean).join(" · ");
+    const announcement = file.status === "complete" ? ' role="status" aria-label="Upload complete"' : file.status === "error" ? ' role="alert"' : "";
+    const progressStatus = file.status === "uploading" ? `<span class="ui-upload__file-status" aria-label="uploading"><i class="ui-upload__file-spinner" aria-hidden="true"></i></span>` : "";
+    return `<li class="ui-upload__file is-${file.status}" data-ui-upload-file data-upload-file-id="${escapeHTML(file.id)}"><span class="ui-upload__file-icon">${icon("Assets/Icons/file.svg", "ui-upload__file-type-icon")}</span><span class="ui-upload__file-copy"><strong>${escapeHTML(file.name)}</strong><small${announcement}>${escapeHTML(meta)}</small>${file.status === "uploading" ? `<i class="ui-upload__progress" aria-label="${file.progress}% uploaded"><i style="width:${file.progress}%"></i></i>` : ""}</span>${progressStatus}${button({ label: `Remove ${file.name}`, variant: "text", size: 32, shape: "pill", iconOnly: true, leadingIcon: "Assets/Icons/16px/cross-sm.svg", ariaLabel: `Remove ${file.name}`, demo: "ui-upload-remove" })}</li>`;
+  }
+
+  function renderUploadFiles(files) {
+    return files.length ? `<ul class="ui-upload__files" data-ui-upload-files>${files.map(renderUploadFile).join("")}</ul>` : `<ul class="ui-upload__files" data-ui-upload-files hidden></ul>`;
+  }
+
+  function upload(props = {}) {
+    assertProps("upload", props);
+    const {
+      id = "upload",
+      label = "Upload files",
+      description = "Drag and drop files here, or choose files from your device.",
+      accept = "",
+      multiple = false,
+      files = [],
+      variant = "dropzone",
+      state = "default",
+      disabled = false,
+      actionLabel = "Choose file",
+      maxSize = "",
+      avatar = "",
+      avatarAlt = "",
+      error = "",
+      ariaLabel = "File upload",
+      demo = ""
+    } = props;
+    enumValue("upload", "variant", variant);
+    enumValue("upload", "state", disabled ? "disabled" : state);
+    const uploadId = id || "upload";
+    const normalizedFiles = Array.isArray(files) ? files.map(normalizeUploadFile) : [];
+    const classes = ["ui-upload", `ui-upload--${variant}`, disabled ? "is-disabled" : state !== "default" ? `is-${state}` : ""].filter(Boolean).join(" ");
+    const resolvedAccept = variant === "avatar" && !accept ? ".jpg,.jpeg,.png" : accept;
+    const avatarBusy = variant === "avatar" && state === "uploading";
+    const input = `<input class="ui-upload__input" id="${escapeHTML(uploadId)}-input" type="file"${resolvedAccept ? ` accept="${escapeHTML(resolvedAccept)}"` : ""}${multiple && variant !== "avatar" ? " multiple" : ""}${disabled || avatarBusy ? " disabled" : ""} data-demo="ui-upload-input" aria-label="${escapeHTML(ariaLabel)}" />`;
+    const hint = [description, maxSize].filter(Boolean).join(maxSize && description ? " " : "");
+    const trigger = button({ label: actionLabel, variant: "secondary", size: 32, shape: "pill", disabled, demo: "ui-upload-trigger", ariaControls: `${uploadId}-input` });
+    const avatarHasImage = Boolean(avatar);
+    const avatarAction = avatarHasImage ? "Change photo" : "Upload photo";
+    const avatarMessage = state === "uploading"
+      ? "Uploading photo…"
+      : state === "error"
+        ? (error || "Could not upload photo. Try again.")
+        : hint;
+    const avatarAriaLabel = ariaLabel === "File upload" ? `${avatarAction}: ${label}` : ariaLabel;
+    const content = variant === "avatar"
+      ? `<div class="ui-upload__avatar-field"><button class="ui-upload__avatar" type="button" data-demo="ui-upload-trigger" aria-controls="${escapeHTML(uploadId)}-input" aria-label="${escapeHTML(avatarAriaLabel)}"${avatarBusy ? ' aria-busy="true"' : ""}${disabled || avatarBusy ? " disabled" : ""}>${avatarHasImage ? `<img class="ui-upload__avatar-image" src="${escapeHTML(withBase(avatar))}" alt="${escapeHTML(avatarAlt || label)}" />` : icon("Assets/Icons/whiteboard-upload.svg", "ui-upload__avatar-icon")}<span class="ui-upload__avatar-overlay" aria-hidden="true">${escapeHTML(avatarAction)}</span>${avatarBusy ? `<span class="ui-upload__avatar-loading" aria-hidden="true"><i class="ui-upload__file-spinner"></i></span>` : ""}</button><span class="ui-upload__avatar-copy"><strong>${escapeHTML(label)}</strong>${avatarMessage ? `<small${state === "error" ? ' role="alert"' : state === "uploading" ? ' role="status"' : ""}>${escapeHTML(avatarMessage)}</small>` : ""}</span></div>`
+      : variant === "trigger"
+      ? `<div class="ui-upload__trigger-row"><span class="ui-upload__trigger-copy"><strong>${escapeHTML(label)}</strong>${hint ? `<small>${escapeHTML(hint)}</small>` : ""}</span>${trigger}</div>`
+      : `<button class="ui-upload__dropzone" type="button" data-demo="ui-upload-trigger" aria-controls="${escapeHTML(uploadId)}-input"${disabled ? " disabled" : ""}>${icon("Assets/Icons/whiteboard-upload.svg", "ui-upload__dropzone-icon")}<span><strong>${escapeHTML(label)}</strong>${hint ? `<small>${escapeHTML(hint)}</small>` : ""}</span><span class="ui-upload__action">${escapeHTML(actionLabel)}</span></button>`;
+    return `<section class="${classes}" data-component="upload" data-ui-upload${demo ? ` data-upload-demo="${escapeHTML(demo)}"` : ""}>${input}${content}${renderUploadFiles(normalizedFiles)}</section>`;
+  }
+
+  function openUploadPicker(control) {
+    const root = control?.closest?.("[data-ui-upload]");
+    const input = root?.querySelector(".ui-upload__input");
+    if (!root || root.classList.contains("is-disabled") || !input || input.disabled) return false;
+    input.click();
+    return true;
+  }
+
+  function setUploadFiles(root, files = []) {
+    const uploadRoot = root?.closest?.("[data-ui-upload]") || root;
+    const list = uploadRoot?.querySelector?.("[data-ui-upload-files]");
+    if (!uploadRoot || !list) return false;
+    if (uploadRoot.classList.contains("ui-upload--avatar")) {
+      const avatarFile = Array.from(files)[0];
+      let image = uploadRoot.querySelector(".ui-upload__avatar-image");
+      const avatarButton = uploadRoot.querySelector(".ui-upload__avatar");
+      const message = uploadRoot.querySelector(".ui-upload__avatar-copy small");
+      if (avatarFile && !image && avatarButton) {
+        avatarButton.insertAdjacentHTML("afterbegin", `<img class="ui-upload__avatar-image" alt="" />`);
+        avatarButton.querySelector(".ui-upload__avatar-icon")?.remove();
+        image = avatarButton.querySelector(".ui-upload__avatar-image");
+      }
+      if (avatarFile && image && global.URL?.createObjectURL) image.src = global.URL.createObjectURL(avatarFile);
+      if (avatarFile && image) image.alt = avatarFile.name || image.alt;
+      if (avatarFile && avatarButton) avatarButton.setAttribute("aria-label", `Change photo: ${avatarFile.name || "profile photo"}`);
+      if (avatarFile && message) message.textContent = "Photo selected";
+      if (typeof global.CustomEvent === "function") uploadRoot.dispatchEvent(new global.CustomEvent("italki:upload-change", { bubbles: true, detail: { files: avatarFile ? [avatarFile] : [], avatar: avatarFile || null } }));
+      return true;
+    }
+    const normalized = Array.from(files).map((file, index) => normalizeUploadFile({ id: `${file.name}-${file.lastModified || index}`, name: file.name, size: file.size, status: "complete" }, index));
+    list.hidden = normalized.length === 0;
+    list.innerHTML = normalized.map(renderUploadFile).join("");
+    if (typeof global.CustomEvent === "function") uploadRoot.dispatchEvent(new global.CustomEvent("italki:upload-change", { bubbles: true, detail: { files: normalized } }));
+    return true;
+  }
+
+  function removeUploadFile(control) {
+    const file = control?.closest?.("[data-ui-upload-file]");
+    const list = file?.parentElement;
+    if (!file || !list) return false;
+    const fileId = file.dataset.uploadFileId || "";
+    file.remove();
+    list.hidden = list.children.length === 0;
+    if (typeof global.CustomEvent === "function") list.closest("[data-ui-upload]")?.dispatchEvent(new global.CustomEvent("italki:upload-remove", { bubbles: true, detail: { id: fileId } }));
+    return true;
+  }
+
+  function normalizeStep(item, index) {
+    return typeof item === "string" ? { id: `step-${index + 1}`, label: item, icon: "" } : { id: item?.id || `step-${index + 1}`, label: item?.label || `Step ${index + 1}`, description: item?.description || "", icon: item?.icon || "", disabled: Boolean(item?.disabled) };
+  }
+
+  /* A step is numbered unless it hands over an icon, and an icon step keeps its
+     icon the whole way through: a number says where the step sits in the row, so
+     a tick can take its place once it is behind you, but an icon says what the
+     step *is*, and swapping that for a tick loses the one thing it carried. Being
+     done still reads — the marker fills in, exactly as the numbered one does. */
+  const stepMarker = (item, index, currentIndex) => `<span class="ui-stepper__marker">${item.icon ? maskIcon(item.icon, "ui-stepper__step-icon") : (index < currentIndex ? icon("Assets/Icons/confirm-sm.svg", "ui-stepper__complete-icon") : index + 1)}</span>`;
+
+  function stepper(props = {}) {
+    assertProps("stepper", props);
+    const { id = "", items = [], current = 0, currentComplete = false, variant = "default", orientation = "horizontal", value = 0, max = 0, label = "", ariaLabel = "" } = props;
+    enumValue("stepper", "variant", variant);
+    enumValue("stepper", "orientation", orientation);
+    const normalized = items.map(normalizeStep);
+    const currentIndex = Math.max(0, Math.min(normalized.length - 1, Number(current)));
+    if (variant === "flow-progress") {
+      if (orientation !== "horizontal") throw new Error("flow-progress Stepper only supports horizontal orientation");
+      const flowItem = (item, index) => `<li class="ui-stepper__item${index < currentIndex ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}${item.disabled ? " is-disabled" : ""}"${index === currentIndex ? ' aria-current="step"' : ""}${item.disabled ? ' aria-disabled="true"' : ""}>${stepMarker(item, index, currentIndex)}<strong>${escapeHTML(item.label)}</strong></li>`;
+      const content = normalized.flatMap((item, index) => [flowItem(item, index), index < normalized.length - 1 ? `<li class="ui-stepper__connector${index < currentIndex ? " is-complete" : ""}" role="presentation" aria-hidden="true"></li>` : ""]).join("");
+      return `<ol class="ui-stepper ui-stepper--flow-progress" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel || "Steps")}">${content}</ol>`;
+    }
+    if (variant === "dots") {
+      const content = normalized.map((item, index) => `<li class="ui-stepper__dot${index === currentIndex ? " is-current" : ""}"${index === currentIndex ? ' aria-current="step"' : ""}><span class="ui-stepper__sr-only">${escapeHTML(item.label)}</span></li>`).join("");
+      return `<ol class="ui-stepper ui-stepper--dots" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel || "Steps")}">${content}</ol>`;
+    }
+    if (variant === "top-indicator") {
+      const content = normalized.map((item, index) => `<li class="ui-stepper__segment${index < currentIndex || (index === currentIndex && currentComplete) ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}"${index === currentIndex ? ' aria-current="step"' : ""}><span class="ui-stepper__sr-only">${escapeHTML(item.label)}</span></li>`).join("");
+      return `<ol class="ui-stepper ui-stepper--top-indicator" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel || "Steps")}">${content}</ol>`;
+    }
+    if (variant === "schedule-progress") {
+      const safeMax = Math.max(1, Number(max) || normalized.length || 1);
+      const safeValue = Math.max(0, Math.min(safeMax, Number(value)));
+      const percent = (safeValue / safeMax) * 100;
+      const progressLabel = label || "Scheduled lessons";
+      return `<div class="ui-stepper ui-stepper--schedule-progress" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} role="progressbar" aria-label="${escapeHTML(ariaLabel || progressLabel)}" aria-valuemin="0" aria-valuemax="${safeMax}" aria-valuenow="${safeValue}"><div class="ui-stepper__schedule-meta"><span>${escapeHTML(progressLabel)}</span><strong><b>${safeValue}</b><i>/${safeMax}</i></strong></div><span class="ui-stepper__schedule-track"><i style="--ui-stepper-schedule-value:${percent}%"></i></span></div>`;
+    }
+    if (variant === "progress-steps") {
+      if (orientation !== "horizontal") throw new Error("progress-steps Stepper only supports horizontal orientation");
+      const progressStep = (item, index) => `<li class="ui-stepper__item${index < currentIndex ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}${item.disabled ? " is-disabled" : ""}"${index === currentIndex ? ' aria-current="step"' : ""}${item.disabled ? ' aria-disabled="true"' : ""}>${stepMarker(item, index, currentIndex)}<strong>${escapeHTML(item.label)}</strong></li>`;
+      const content = normalized.flatMap((item, index) => [progressStep(item, index), index < normalized.length - 1 ? `<li class="ui-stepper__connector${index < currentIndex ? " is-complete" : ""}" role="presentation" aria-hidden="true"></li>` : ""]).join("");
+      return `<ol class="ui-stepper ui-stepper--progress-steps" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel || "Steps")}">${content}</ol>`;
+    }
+    const stepItem = (item, index) => `<li class="ui-stepper__item${index < currentIndex ? " is-complete" : ""}${index === currentIndex ? " is-current" : ""}${item.disabled ? " is-disabled" : ""}"><button type="button" data-demo="ui-stepper" data-step-index="${index}" aria-current="${index === currentIndex ? "step" : "false"}"${item.disabled ? " disabled" : ""}>${stepMarker(item, index, currentIndex)}<span><strong>${escapeHTML(item.label)}</strong>${item.description ? `<small>${escapeHTML(item.description)}</small>` : ""}</span></button></li>`;
+    const content = orientation === "horizontal"
+      ? normalized.flatMap((item, index) => [stepItem(item, index), index < normalized.length - 1 ? `<li class="ui-stepper__connector${index < currentIndex ? " is-complete" : ""}" role="presentation" aria-hidden="true"></li>` : ""]).join("")
+      : normalized.map(stepItem).join("");
+    return `<nav class="ui-stepper ui-stepper--${orientation}" data-component="stepper" data-ui-stepper${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel || "Steps")}"><ol>${content}</ol></nav>`;
+  }
+
+  function progress(props = {}) {
+    assertProps("progress", props);
+    const { value = 0, max = 100, status = "default", type = "line", size = 80, showLabel = true, indeterminate = false, ariaLabel = "Progress" } = props;
+    enumValue("progress", "status", status);
+    enumValue("progress", "type", type);
+    enumValue("progress", "size", size);
+    if (indeterminate && type !== "line") throw new Error("indeterminate progress only supports the line type");
+    const safeMax = Math.max(1, Number(max));
+    const safeValue = Math.min(safeMax, Math.max(0, Number(value)));
+    const percent = Math.round((safeValue / safeMax) * 100);
+    const label = indeterminate ? "Loading" : `${percent}%`;
+    const colorClass = `ui-progress--${status}`;
+    if (type === "line") return `<div class="ui-progress ui-progress--line ${colorClass}${indeterminate ? " is-indeterminate" : ""}" data-component="progress" role="progressbar" aria-label="${escapeHTML(ariaLabel)}" aria-valuemin="0" aria-valuemax="${safeMax}"${indeterminate ? " aria-valuetext=\"Loading\"" : ` aria-valuenow="${safeValue}"`}><span class="ui-progress__track"><i style="--ui-progress-value:${percent}%"></i></span>${showLabel ? `<output>${label}</output>` : ""}</div>`;
+    const circularPath = type === "circle"
+      ? '<circle class="ui-progress__ring-track" cx="60" cy="60" r="52" pathLength="100"></circle><circle class="ui-progress__ring-value" cx="60" cy="60" r="52" pathLength="100"></circle>'
+      : '<path class="ui-progress__ring-track" d="M 8 60 A 52 52 0 0 1 112 60" pathLength="100"></path><path class="ui-progress__ring-value" d="M 8 60 A 52 52 0 0 1 112 60" pathLength="100"></path>';
+    const ringStroke = type === "circle" ? 12 : 8;
+    return `<div class="ui-progress ui-progress--${type} ${colorClass}" data-component="progress" role="progressbar" aria-label="${escapeHTML(ariaLabel)}" aria-valuemin="0" aria-valuemax="${safeMax}" aria-valuenow="${safeValue}" style="--ui-progress-size:${size}px;--ui-progress-value:${percent};--ui-progress-ring-stroke:${ringStroke}px"><svg class="ui-progress__ring" viewBox="0 0 120 ${type === "circle" ? 120 : 68}" aria-hidden="true">${circularPath}</svg>${showLabel ? `<output>${label}</output>` : ""}</div>`;
+  }
+
+  function toast(props = {}) {
+    assertProps("toast", props);
+    const { id = "", tone = "info", title = "", description = "", action = "", duration = 0, closable = true, open = true, ariaLabel = "" } = props;
+    enumValue("toast", "tone", tone);
+    const iconByTone = { info: "Assets/Icons/info.svg", success: "Assets/Icons/check.svg", warning: "Assets/Icons/warning.svg", error: "Assets/Icons/error.svg" };
+    const close = closable ? `<button class="ui-toast__close" type="button" data-demo="ui-toast-close" aria-label="Dismiss notification">${icon("Assets/Icons/cross.svg", "ui-toast__close-icon")}</button>` : "";
+    return `<section class="ui-toast ui-toast--${tone}${open ? " is-open" : ""}" data-component="toast"${id ? ` id="${escapeHTML(id)}"` : ""}${duration ? ` data-duration="${Math.max(0, Number(duration))}"` : ""} role="status" aria-live="polite" aria-label="${escapeHTML(ariaLabel || title || "Notification")}">${icon(iconByTone[tone], "ui-toast__icon")}<div class="ui-toast__copy">${title ? `<strong>${escapeHTML(title)}</strong>` : ""}${description ? `<p>${escapeHTML(description)}</p>` : ""}${action ? `<div class="ui-toast__action">${action}</div>` : ""}</div>${close}</section>`;
+  }
+
+  function notification(props = {}) {
+    assertProps("notification", props);
+    const { id = "", tone = "info", title = "", description = "", action = "", closable = true, open = true, ariaLabel = "" } = props;
+    enumValue("notification", "tone", tone);
+    const iconByTone = { info: "Assets/Icons/info.svg", success: "Assets/Icons/check.svg", warning: "Assets/Icons/warning.svg", error: "Assets/Icons/error.svg" };
+    const close = closable ? `<button class="ui-notification__close" type="button" data-demo="ui-notification-close" aria-label="Dismiss notification">${icon("Assets/Icons/cross.svg", "ui-notification__close-icon")}</button>` : "";
+    const role = tone === "error" ? "alert" : "status";
+    return `<section class="ui-notification ui-notification--${tone}${open ? " is-open" : ""}" data-component="notification"${id ? ` id="${escapeHTML(id)}"` : ""} role="${role}" aria-live="polite" aria-label="${escapeHTML(ariaLabel || title || "Notification")}">${icon(iconByTone[tone], "ui-notification__icon")}<div class="ui-notification__copy">${title ? `<strong>${escapeHTML(title)}</strong>` : ""}${description ? `<p>${escapeHTML(description)}</p>` : ""}${action ? `<div class="ui-notification__action">${action}</div>` : ""}</div>${close}</section>`;
+  }
+
+  function result(props = {}) {
+    assertProps("result", props);
+    const { id = "", tone = "success", title = "", description = "", action = "", secondaryAction = "", ariaLabel = "" } = props;
+    enumValue("result", "tone", tone);
+    const iconByTone = { info: "Assets/Icons/info.svg", success: "Assets/Icons/check.svg", warning: "Assets/Icons/warning.svg", error: "Assets/Icons/error.svg" };
+    const titleId = id ? `${id}-title` : "";
+    const actions = action || secondaryAction ? `<div class="ui-result__actions">${action}${secondaryAction}</div>` : "";
+    return `<section class="ui-result ui-result--${tone}" data-component="result"${id ? ` id="${escapeHTML(id)}"` : ""} role="${tone === "error" ? "alert" : "status"}"${titleId ? ` aria-labelledby="${escapeHTML(titleId)}"` : ` aria-label="${escapeHTML(ariaLabel || title || "Result")}"`}><span class="ui-result__icon">${icon(iconByTone[tone], "ui-result__icon-image")}</span><div class="ui-result__copy">${title ? `<h3${titleId ? ` id="${escapeHTML(titleId)}"` : ""}>${escapeHTML(title)}</h3>` : ""}${description ? `<p>${escapeHTML(description)}</p>` : ""}</div>${actions}</section>`;
+  }
+
+  function skeleton(props = {}) {
+    assertProps("skeleton", props);
+    const { type = "text", lines, width = "", height = "", title = true, avatar = false, lastLineWidth = "", shape = "default", round = false, animated = true, ariaLabel = "Loading content" } = props;
+    enumValue("skeleton", "type", type);
+    enumValue("skeleton", "shape", shape);
+    const resolvedLines = Math.max(1, Number(lines) || (type === "content" ? 2 : 3));
+    const style = [width ? `--ui-skeleton-width:${escapeHTML(width)}` : "", height ? `--ui-skeleton-height:${escapeHTML(height)}` : ""].filter(Boolean).join(";");
+    const root = (name, content, extra = "") => `<div class="ui-skeleton ui-skeleton--${name}${round ? " is-round" : ""}${animated ? " is-animated" : ""}${extra}" data-component="skeleton" role="status" aria-label="${escapeHTML(ariaLabel)}" aria-busy="true"${style ? ` style="${style}"` : ""}>${content}</div>`;
+    const block = (className = "", blockStyle = "") => `<i class="ui-skeleton__block${className ? ` ${className}` : ""}"${blockStyle ? ` style="${blockStyle}"` : ""}></i>`;
+    const paragraph = (count = resolvedLines) => Array.from({ length: count }, (_, index) => {
+      const isLast = index === count - 1;
+      const lineWidth = isLast && count > 1 ? (lastLineWidth || "68%") : "";
+      return block("ui-skeleton__line", lineWidth ? `width:${escapeHTML(lineWidth)}` : "");
+    }).join("");
+    if (type === "avatar") return root("avatar", block("ui-skeleton__element"), ` ui-skeleton--${shape}`);
+    if (["button", "input", "image"].includes(type)) return root(type, block("ui-skeleton__element"), ` ui-skeleton--${shape}`);
+    if (type === "content") {
+      const header = avatar ? `<span class="ui-skeleton__header">${block("ui-skeleton__avatar")}</span>` : "";
+      const content = `<span class="ui-skeleton__content">${title ? block("ui-skeleton__title") : ""}<span class="ui-skeleton__paragraph">${paragraph()}</span></span>`;
+      return root("content", `${header}${content}`);
+    }
+    if (type === "card") return root("card", `${block("ui-skeleton__media")}<span class="ui-skeleton__content">${block("ui-skeleton__title")}<span class="ui-skeleton__paragraph">${paragraph()}</span></span>`);
+    return root("text", paragraph());
+  }
+
+  function dropdownMenu(props = {}) {
+    assertProps("dropdown-menu", props);
+    const { id = "", trigger = "", triggerLabel = "More actions", items = [], open = false, placement = "bottom-start", ariaLabel = "Menu" } = props;
+    enumValue("dropdown-menu", "placement", placement);
+    const menuId = id || `dropdown-${String(triggerLabel).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "menu"}`;
+    const triggerMarkup = trigger || button({ label: triggerLabel, variant: "secondary", size: 32, shape: "pill", demo: "ui-dropdown-toggle", ariaExpanded: open, ariaControls: `${menuId}-menu` });
+    const menuItems = items.map((item, index) => {
+      const normalized = typeof item === "string" ? { label: item } : item || {};
+      return `<button class="ui-dropdown-menu__item${normalized.danger ? " is-danger" : ""}" type="button" role="menuitem" data-demo="ui-dropdown-item"${normalized.disabled ? " disabled" : ""}>${normalized.icon ? icon(normalized.icon, "ui-dropdown-menu__item-icon") : ""}<span>${escapeHTML(normalized.label || `Action ${index + 1}`)}</span></button>`;
+    }).join("");
+    return `<div class="ui-dropdown-menu${open ? " is-open" : ""}" data-component="dropdown-menu" data-ui-dropdown${id ? ` id="${escapeHTML(menuId)}"` : ""}>${triggerMarkup}<div class="ui-dropdown-menu__surface" id="${escapeHTML(menuId)}-menu" data-placement="${placement}" role="menu" aria-label="${escapeHTML(ariaLabel)}"${open ? "" : " aria-hidden=\"true\""}>${menuItems}</div></div>`;
+  }
+
+  function disclosure(props = {}) {
+    assertProps("disclosure", props);
+    const { id = "", title = "Details", content = "", open = false, disabled = false, kind = "accordion", ariaLabel = "" } = props;
+    enumValue("disclosure", "kind", kind);
+    const disclosureId = id || `disclosure-${String(title).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "details"}`;
+    return `<section class="ui-disclosure ui-disclosure--${kind}${open ? " is-open" : ""}${disabled ? " is-disabled" : ""}" data-component="disclosure" data-ui-disclosure${id ? ` id="${escapeHTML(disclosureId)}"` : ""}><button class="ui-disclosure__trigger" type="button" data-demo="ui-disclosure-toggle" aria-expanded="${open}" aria-controls="${escapeHTML(disclosureId)}-content"${ariaLabel ? ` aria-label="${escapeHTML(ariaLabel)}"` : ""}${disabled ? " disabled" : ""}><span>${escapeHTML(title)}</span>${icon("Assets/Icons/arrow-down-sm.svg", "ui-disclosure__icon")}</button><div class="ui-disclosure__content" id="${escapeHTML(disclosureId)}-content"${open ? "" : " hidden"}>${content}</div></section>`;
+  }
+
+  function segmentedControl(props = {}) {
+    assertProps("segmented-control", props);
+    /* 32 by default: a segmented control sits above a list it filters, and at 40 it
+       stands taller than the rows it belongs to. */
+    const { id = "", options = [], selected = "", size = 32, shape = "pill", contentType = "text", disabled = false, ariaLabel = "Segmented control" } = props;
+    enumValue("segmented-control", "size", size);
+    enumValue("segmented-control", "shape", shape);
+    enumValue("segmented-control", "contentType", contentType);
+    const normalized = options.map((option) => typeof option === "string" ? { label: option, value: option } : { ...option, label: option?.label || option?.value || "", value: option?.value || option?.label || "" });
+    if (["icon", "role"].includes(contentType) && normalized.some((option) => !option.icon)) throw new Error("Icon segmented-control options require an approved icon and accessible label");
+    if (contentType === "role" && normalized.length !== 2) throw new Error("Role segmented-control requires exactly two options");
+    const selectedValue = String(selected || normalized.find((option) => option.selected)?.value || normalized[0]?.value || "");
+    const buttons = normalized.map((option) => {
+      const content = contentType === "icon" ? icon(option.icon, "ui-segmented-control__icon") : (contentType === "role" ? `<span class="ui-segmented-control__role-content">${icon(option.icon, `ui-segmented-control__role-icon ui-segmented-control__role-icon--${escapeHTML(option.value)}`)}<span>${escapeHTML(option.label)}</span></span>` : escapeHTML(option.label));
+      return `<button type="button" data-demo="ui-segmented-control" data-segment-value="${escapeHTML(option.value)}" aria-label="${escapeHTML(option.label)}" aria-pressed="${String(option.value) === selectedValue}"${disabled || option.disabled ? " disabled" : ""}>${content}</button>`;
+    }).join("");
+    const roleSwitch = contentType === "role" ? `<span class="ui-segmented-control__role-switch" aria-hidden="true">${icon("Assets/Icons/role-switch.svg", "ui-segmented-control__role-switch-icon")}</span>` : "";
+    return `<div class="ui-segmented-control ui-segmented-control--${size} ui-segmented-control--${shape} ui-segmented-control--${contentType}" data-component="segmented-control" data-ui-segmented-control${id ? ` id="${escapeHTML(id)}"` : ""} role="group" aria-label="${escapeHTML(ariaLabel)}">${buttons}${roleSwitch}</div>`;
+  }
+
+  function timeSlot(props = {}) {
+    assertProps("time-slot", props);
+    const { id = "", label = "09:00", time = "", secondary = "", month = "", day = "", weekday = "", appearance = "availability", state = "available", selected = false, unavailable = false, held = false, loading = false, disabled = false, duration = 15, teacher = "", calendarDay = "", calendarMinute = null, ariaLabel = "", tooltip: tooltipContent = "", demo = "" } = props;
+    enumValue("time-slot", "appearance", appearance);
+    enumValue("time-slot", "duration", duration);
+    const resolvedState = loading ? "loading" : (selected ? "selected" : (unavailable || disabled ? "unavailable" : (held ? "booked-by-others" : state)));
+    enumValue("time-slot", "state", resolvedState);
+    const unavailableState = resolvedState === "unavailable" || resolvedState === "booked-by-others" || resolvedState === "booked-by-you" || resolvedState === "loading";
+    const stateLabel = { available: "Available", selected: "Selected", unavailable: "Unavailable", "booked-by-others": "Booked by another student", "booked-by-you": "Booked by you", loading: "Loading" }[resolvedState];
+    const interval = String(time || label || "Time");
+    const tooltipCopy = {
+      available: `Book from ${interval}`,
+      selected: `Selected: ${interval}`,
+      unavailable: "No available time slots",
+      "booked-by-others": `Booked by others\n${interval}`,
+      "booked-by-you": `You've booked${teacher ? ` with ${teacher}` : ""}\n${interval}`,
+      loading: `Checking availability for ${interval}`
+    }[resolvedState];
+    const slotId = id || `time-slot-${interval.toLowerCase().replace(/[^a-z0-9]+/g, "-") || "interval"}-${resolvedState}`;
+    const tooltipId = `${slotId}-tooltip`;
+    const classes = ["ui-time-slot", `ui-time-slot--${appearance}`, `ui-time-slot--${duration}`, `is-${resolvedState}`,
+      secondary && appearance === "option" ? "has-secondary" : ""].filter(Boolean).join(" ");
+    const slotLabel = loading ? '<i class="ui-time-slot__spinner" aria-hidden="true"></i>' : (appearance === "availability" ? "" : escapeHTML(label));
+    const calendarMetadata = calendarDay ? ` data-calendar-day="${escapeHTML(calendarDay)}"${calendarMinute === null || calendarMinute === undefined ? "" : ` data-calendar-minute="${escapeHTML(calendarMinute)}"`}` : "";
+    const tooltipDisabled = appearance === "availability" && resolvedState === "selected";
+    /* Scheduled is not a cell you pick — it is the lesson you already have: a
+       date tile beside the day and the interval. So it is not a button either,
+       and it carries no pressed state; the row states what is booked. */
+    if (appearance === "scheduled") {
+      const dateTile = `<span class="ui-time-slot__date" aria-hidden="true"><span class="ui-time-slot__month">${escapeHTML(month)}</span><span class="ui-time-slot__day">${escapeHTML(day)}</span></span>`;
+      const readable = ariaLabel || [weekday, month && day ? `${day} ${month}` : "", interval].filter(Boolean).join(", ");
+      return `<div class="${classes}" data-component="time-slot" data-time-slot-state="${resolvedState}" data-time-slot-time="${escapeHTML(interval)}"${calendarMetadata} id="${escapeHTML(slotId)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""} role="group" aria-label="${escapeHTML(readable)}">${dateTile}<span class="ui-time-slot__schedule"><strong>${escapeHTML(weekday)}</strong><span>${escapeHTML(interval)}</span></span></div>`;
+    }
+
+    const slotControl = `<button class="${classes}" type="button" data-component="time-slot" data-time-slot-state="${resolvedState}" data-time-slot-duration="${escapeHTML(duration)}" data-time-slot-time="${escapeHTML(interval)}"${calendarMetadata} id="${escapeHTML(slotId)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""} aria-pressed="${resolvedState === "selected"}" aria-label="${escapeHTML(ariaLabel || `${interval}, ${stateLabel}`)}"${appearance === "availability" && !tooltipDisabled ? ` aria-describedby="${escapeHTML(tooltipId)}"` : ""}${disabled || unavailableState ? " disabled" : ""}><span class="ui-time-slot__label">${slotLabel}</span>${secondary && appearance !== "availability" ? `<small>${escapeHTML(secondary)}</small>` : ""}</button>`;
+    if (appearance !== "availability") return slotControl;
+    return tooltip({ id: tooltipId, content: tooltipContent || tooltipCopy, placement: "bottom", trigger: slotControl }).replace('class="ui-tooltip-wrap"', `class="ui-tooltip-wrap ui-time-slot__tooltip-wrap${tooltipDisabled ? " is-tooltip-disabled" : ""}"`);
+  }
+
+  function timePicker(props = {}) {
+    assertProps("time-picker", props);
+    const { id = "", label = "Time", placeholder = "Choose a time", slots = [], selected = "", selectionMode = "single", disabled = false, open = false, state = "default", ariaLabel = "" } = props;
+    enumValue("time-picker", "state", disabled ? "disabled" : state);
+    enumValue("time-picker", "selectionMode", selectionMode);
+    const pickerId = id || `time-picker-${String(label).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "time"}`;
+    const selectedValues = new Set((Array.isArray(selected) ? selected : [selected]).filter((value) => value !== "" && value !== undefined && value !== null).map(String));
+    const normalizedSlots = slots.map((slot, index) => {
+      const normalized = typeof slot === "string" ? { label: slot } : slot || {};
+      return { ...normalized, value: String(normalized.value || normalized.label || `slot-${index}`), label: String(normalized.label || normalized.value || `slot-${index}`) };
+    });
+    const selectedLabels = normalizedSlots.filter((slot) => selectedValues.has(slot.value)).map((slot) => slot.label);
+    const triggerLabel = selectedLabels.join(", ") || placeholder;
+    const triggerIcon = icon("Assets/Icons/16px/time-sm.svg", `ui-time-picker__icon${selectedLabels.length ? "" : " is-placeholder"}`);
+    const slotMarkup = normalizedSlots.map((slot) => timeSlot({ id: `${pickerId}-${slot.value}`, label: slot.label, secondary: slot.secondary || "", appearance: "option", state: slot.state || "available", selected: selectedValues.has(slot.value), unavailable: Boolean(slot.unavailable), held: Boolean(slot.held), loading: Boolean(slot.loading), disabled: Boolean(slot.disabled), demo: "ui-time-picker-slot" }).replace('data-demo="ui-time-picker-slot"', `data-demo="ui-time-picker-slot" data-time-picker-value="${escapeHTML(slot.value)}"`)).join("");
+    const classes = ["ui-time-picker", `ui-time-picker--${selectionMode}`, open ? "is-open" : "", disabled ? "is-disabled" : "", state === "default" ? "" : `is-${state}`].filter(Boolean).join(" ");
+    return `<div class="${classes}" data-component="time-picker" data-ui-time-picker data-time-picker-selection-mode="${selectionMode}" data-time-picker-placeholder="${escapeHTML(placeholder)}"${id ? ` id="${escapeHTML(pickerId)}"` : ""}><button class="ui-time-picker__trigger" type="button" data-demo="ui-time-picker-toggle" role="combobox" aria-label="${escapeHTML(ariaLabel || label)}" aria-expanded="${open}" aria-controls="${escapeHTML(pickerId)}-menu"${disabled ? " disabled" : ""}>${triggerIcon}<span class="${selectedLabels.length ? "" : "ui-time-picker__placeholder"}">${escapeHTML(triggerLabel)}</span>${icon("Assets/Icons/arrow-down-sm.svg", "ui-time-picker__suffix")}</button><div class="ui-time-picker__menu" id="${escapeHTML(pickerId)}-menu" role="listbox" aria-label="${escapeHTML(label)} options"${selectionMode === "multiple" ? ' aria-multiselectable="true"' : ""}${open ? "" : " aria-hidden=\"true\""}>${slotMarkup}</div></div>`;
+  }
+
+  function calendar(props = {}) {
+    assertProps("calendar", props);
+    const { id = "", variant = "availability", timezone = "Asia/Shanghai", weekLabel = "15–21 December 2025", todayLabel = "Today", dates = [], rows = [], weekViews = [], activeWeek = 0, todayWeek = 0, timePicker: timePickerProps = null, availabilityLabel = "", teacherAvailability = [], recordTitle = "My lessons", recordMonths = [], recordStats = [], weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], disabled = false, ariaLabel = "Weekly availability", demo = "" } = props;
+    enumValue("calendar", "variant", variant);
+    if (variant === "lesson-record") {
+      if (!Array.isArray(recordMonths) || !recordMonths.length) throw new Error("lesson-record calendar requires ordered recordMonths");
+      if (!Array.isArray(weekdays) || weekdays.length !== 7) throw new Error("lesson-record calendar requires seven weekday labels");
+      if (!Array.isArray(recordStats)) throw new Error("lesson-record calendar recordStats must be an array");
+      const validRecordStates = new Set(["empty", "info", "success", "mixed", "selected", "out-of-range"]);
+      const calendarId = id || `calendar-${String(recordTitle).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "lesson-record"}`;
+      const normalizedMonths = recordMonths.map((month, monthIndex) => {
+        if (!month || !month.label || !Array.isArray(month.weeks) || !month.weeks.length) throw new Error(`lesson-record month ${monthIndex + 1} requires a label and ordered weeks`);
+        const weeks = month.weeks.map((week, weekIndex) => {
+          if (!Array.isArray(week) || week.length !== 7) throw new Error(`lesson-record month ${monthIndex + 1} week ${weekIndex + 1} requires seven cells`);
+          return week.map((cell, dayIndex) => {
+            const normalized = typeof cell === "string" ? { state: cell } : (cell || {});
+            const state = normalized.state || "empty";
+            if (!validRecordStates.has(state)) throw new Error(`Unknown lesson-record cell state: ${state}`);
+            return { state, label: normalized.label || `${month.label}, ${weekdays[dayIndex]}, ${state.replaceAll("-", " ")}` };
+          });
+        });
+        return { id: month.id || `month-${monthIndex + 1}`, label: month.label, current: Boolean(month.current), weeks };
+      });
+      const stats = recordStats.map((stat, index) => {
+        if (!stat || !stat.label || stat.value === undefined || stat.value === null) throw new Error(`lesson-record stat ${index + 1} requires a label and value`);
+        const tone = stat.tone === "success" ? "success" : "info";
+        return `<div class="ui-calendar__record-stat"><span class="ui-calendar__record-stat-label"><i class="is-${tone}" aria-hidden="true"></i>${escapeHTML(stat.label)}</span><strong>${escapeHTML(String(stat.value))}</strong></div>`;
+      }).join("");
+      const monthMarkup = normalizedMonths.map((month) => {
+        const cells = month.weeks.flat().map((cell) => `<span class="ui-calendar__record-cell is-${escapeHTML(cell.state)}" aria-label="${escapeHTML(cell.label)}"></span>`).join("");
+        return `<section class="ui-calendar__record-month${month.current ? " is-current" : ""}" aria-label="${escapeHTML(month.label)}"><h3>${escapeHTML(month.label)}</h3><div class="ui-calendar__record-weeks">${cells}</div></section>`;
+      }).join("");
+      return `<section class="ui-calendar ui-calendar--lesson-record${disabled ? " is-disabled" : ""}" data-component="calendar" data-ui-calendar data-calendar-variant="lesson-record" id="${escapeHTML(calendarId)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""} aria-label="${escapeHTML(ariaLabel)}"><header class="ui-calendar__record-header"><h2>${escapeHTML(recordTitle)}</h2>${stats ? `<div class="ui-calendar__record-summary">${stats}</div>` : ""}</header><div class="ui-calendar__record-scroll"><div class="ui-calendar__record-grid" role="img" aria-label="${escapeHTML(ariaLabel)}" style="--ui-record-month-count:${normalizedMonths.length}"><div class="ui-calendar__record-days">${weekdays.map((day) => `<span>${escapeHTML(day)}</span>`).join("")}</div>${monthMarkup}</div></div></section>`;
+    }
+    if (variant === "compact-availability") {
+      if (!Array.isArray(dates) || dates.length !== 7) throw new Error("compact-availability calendar requires seven ordered date headers");
+      if (!Array.isArray(rows) || !rows.length) throw new Error("compact-availability calendar requires ordered time-band rows");
+      const validCompactStates = new Set(["available", "unavailable"]);
+      const calendarId = id || `calendar-${String(weekLabel).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "compact-availability"}`;
+      const normalizedDates = dates.map((date, index) => typeof date === "string" ? { id: `day-${index + 1}`, label: date, date: "" } : { ...date, id: date?.id || `day-${index + 1}`, label: date?.label || `Day ${index + 1}`, date: date?.date || "" });
+      const normalizedRows = rows.map((row, index) => {
+        const normalized = typeof row === "string" ? { id: `time-${index + 1}`, label: row, slots: [] } : (row || {});
+        if (!Array.isArray(normalized.slots) || normalized.slots.length !== 7) throw new Error(`compact-availability row ${index + 1} requires seven supplied cells`);
+        return { ...normalized, id: normalized.id || `time-${index + 1}`, label: normalized.label || `Time ${index + 1}` };
+      });
+      const durationForBand = (label) => {
+        const values = String(label).match(/\d{1,2}/g)?.map(Number) || [];
+        if (values.length < 2) return 0;
+        const duration = (values[1] - values[0] + 24) % 24;
+        return duration || 24;
+      };
+      const durationLabel = (hours) => `${hours} ${hours === 1 ? "hour" : "hours"}`;
+      const dateHeader = normalizedDates.map((date) => `<div class="ui-calendar__compact-date" role="columnheader"><span>${escapeHTML(date.label)}</span>${date.date ? `<strong>${escapeHTML(date.date)}</strong>` : ""}</div>`).join("");
+      const timeRows = normalizedRows.map((row) => {
+        const cells = row.slots.map((supplied, index) => {
+          const cell = typeof supplied === "string" ? { state: supplied } : (supplied || {});
+          const state = cell.state || "unavailable";
+          if (!validCompactStates.has(state)) throw new Error(`Unknown compact-availability cell state: ${state}`);
+          const date = normalizedDates[index];
+          const suppliedHours = Number(cell.hours);
+          const hours = Number.isFinite(suppliedHours) && suppliedHours > 0 ? suppliedHours : durationForBand(row.label);
+          const duration = durationLabel(hours);
+          const label = cell.ariaLabel || `${row.label}, ${date.label}${date.date ? ` ${date.date}` : ""}, ${state === "available" ? `${duration} available` : state}`;
+          const cellMarkup = `<span class="ui-calendar__compact-cell is-${escapeHTML(state)}" role="gridcell" aria-label="${escapeHTML(label)}"></span>`;
+          const tooltipPlacement = index === 0 ? "top-left" : (index === row.slots.length - 1 ? "top-right" : "top");
+          const tooltipEdge = index === 0 ? " is-start-edge" : (index === row.slots.length - 1 ? " is-end-edge" : "");
+          return state === "available"
+            ? tooltip({ id: `${calendarId}-${row.id}-${date.id}-availability`, content: cell.tooltip || duration, placement: tooltipPlacement, trigger: cellMarkup }).replace('class="ui-tooltip-wrap"', `class="ui-tooltip-wrap ui-calendar__compact-tooltip${tooltipEdge}"`)
+            : cellMarkup;
+        }).join("");
+        return `<div class="ui-calendar__compact-row" role="row"><div class="ui-calendar__compact-time" role="rowheader">${escapeHTML(row.label)}</div>${cells}</div>`;
+      }).join("");
+      return `<section class="ui-calendar ui-calendar--compact-availability${disabled ? " is-disabled" : ""}" data-component="calendar" data-ui-calendar data-calendar-variant="compact-availability" id="${escapeHTML(calendarId)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""} aria-label="${escapeHTML(ariaLabel)}"><div class="ui-calendar__compact-scroll"><div class="ui-calendar__compact-grid" role="grid" aria-label="${escapeHTML(ariaLabel)}"><div class="ui-calendar__compact-header" role="row"><div class="ui-calendar__compact-corner" aria-hidden="true"></div>${dateHeader}</div>${timeRows}</div></div><p class="ui-calendar__compact-timezone">Based on your timezone: ${escapeHTML(timezone)}</p></section>`;
+    }
+    if (variant === "teacher-availability") {
+      if (!Array.isArray(teacherAvailability) || teacherAvailability.length !== 7) throw new Error("teacher-availability calendar requires seven ordered day entries");
+      const validTeacherStates = new Set(["available", "unavailable"]);
+      const calendarId = id || `calendar-${String(weekLabel).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "teacher-availability"}`;
+      const normalizedDays = teacherAvailability.map((day, dayIndex) => {
+        if (!day || !day.label || day.date === undefined || !Array.isArray(day.slots)) throw new Error(`teacher-availability day ${dayIndex + 1} requires label, date, and slots`);
+        const slots = day.slots.map((supplied, slotIndex) => {
+          const slot = typeof supplied === "string" ? { label: supplied, state: "available" } : (supplied || {});
+          const state = slot.state || (slot.label ? "available" : "unavailable");
+          if (!validTeacherStates.has(state)) throw new Error(`Unknown teacher-availability cell state: ${state}`);
+          if (state === "available" && !slot.label) throw new Error(`teacher-availability available cell ${dayIndex + 1}:${slotIndex + 1} requires a label`);
+          return { state, label: slot.label || "", ariaLabel: slot.ariaLabel || "" };
+        });
+        return { id: day.id || `day-${dayIndex + 1}`, label: day.label, date: String(day.date), current: Boolean(day.current), slots };
+      });
+      const rowCount = Math.max(1, ...normalizedDays.map((day) => day.slots.length));
+      const action = (actionName, buttonProps) => button({ ...buttonProps, demo: "ui-calendar-action" }).replace('data-demo="ui-calendar-action"', `data-demo="ui-calendar-action" data-calendar-action="${actionName}"`);
+      const activeDayIndex = Math.max(0, normalizedDays.findIndex((day) => day.current));
+      const previous = action("previous-date", { label: "Previous date", variant: "secondary", size: 32, shape: "pill", leadingIcon: "Assets/Icons/arrow-left-sm.svg", iconOnly: true, ariaLabel: "Previous date" });
+      const next = action("next-date", { label: "Next date", variant: "secondary", size: 32, shape: "pill", leadingIcon: "Assets/Icons/arrow-right-sm.svg", iconOnly: true, ariaLabel: "Next date" });
+      const header = normalizedDays.map((day, index) => `<button class="ui-calendar__teacher-date${day.current ? " is-current" : ""}${index === activeDayIndex ? " is-selected-date" : ""}" type="button" role="columnheader" data-demo="ui-teacher-date" data-teacher-date-index="${index}" data-teacher-date-label="${escapeHTML(`${day.label} ${day.date}`)}" aria-pressed="${index === activeDayIndex}"><span>${escapeHTML(day.label)}</span><strong>${escapeHTML(day.date)}</strong></button>`).join("");
+      const scheduleRows = Array.from({ length: rowCount }, (_, rowIndex) => {
+        const cells = normalizedDays.map((day, dayIndex) => {
+          const slot = day.slots[rowIndex] || { state: "unavailable", label: "" };
+          const cellLabel = slot.ariaLabel || `${day.label} ${day.date}, ${slot.label || "unavailable"}`;
+          return `<div class="ui-calendar__teacher-cell is-${escapeHTML(slot.state)}${dayIndex === activeDayIndex ? " is-active-date" : ""}" role="gridcell" data-teacher-date-index="${dayIndex}" aria-label="${escapeHTML(cellLabel)}">${slot.label ? `<span>${escapeHTML(slot.label)}</span>` : ""}</div>`;
+        }).join("");
+        return `<div class="ui-calendar__teacher-row" role="row">${cells}</div>`;
+      }).join("");
+      return `<section class="ui-calendar ui-calendar--teacher-availability${disabled ? " is-disabled" : ""}" data-component="calendar" data-ui-calendar data-calendar-variant="teacher-availability" data-teacher-active-date="${activeDayIndex}" id="${escapeHTML(calendarId)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""} aria-label="${escapeHTML(ariaLabel)}"><header class="ui-calendar__teacher-controls"><p class="ui-calendar__teacher-availability-label" role="status">${escapeHTML(availabilityLabel)}</p><nav class="ui-calendar__teacher-week-navigation" aria-label="Date navigation">${previous}${next}</nav></header><div class="ui-calendar__teacher-grid-shell"><div class="ui-calendar__teacher-grid" role="grid" aria-label="${escapeHTML(ariaLabel)}"><div class="ui-calendar__teacher-header" role="row">${header}</div><div class="ui-calendar__teacher-scroll"><div class="ui-calendar__teacher-schedule" role="rowgroup">${scheduleRows}</div></div></div></div></section>`;
+    }
+    const suppliedViews = Array.isArray(weekViews) && weekViews.length ? weekViews : [{ weekLabel, dates, rows }];
+    const normalizeAvailabilityView = (view, viewIndex) => {
+      if (!view || !Array.isArray(view.dates) || !view.dates.length) throw new Error(`calendar week view ${viewIndex + 1} requires ordered dates`);
+      if (!Array.isArray(view.rows) || !view.rows.length) throw new Error(`calendar week view ${viewIndex + 1} requires ordered time rows`);
+      return {
+        weekLabel: view.weekLabel || weekLabel,
+        dates: view.dates.map((date, index) => typeof date === "string" ? { id: `day-${index + 1}`, label: date, date: "" } : { ...date, id: date?.id || `day-${index + 1}`, label: date?.label || `Day ${index + 1}`, date: date?.date || "" }),
+        rows: view.rows.map((row, index) => typeof row === "string" ? { id: `time-${index + 1}`, label: row, slots: [] } : { ...row, id: row?.id || `time-${index + 1}`, label: row?.label || `Time ${index + 1}`, slots: Array.isArray(row?.slots) ? row.slots : [] })
+      };
+    };
+    const normalizedWeekViews = suppliedViews.map(normalizeAvailabilityView);
+    const activeWeekIndex = Math.max(0, Math.min(normalizedWeekViews.length - 1, Number(activeWeek) || 0));
+    const todayWeekIndex = Math.max(0, Math.min(normalizedWeekViews.length - 1, Number(todayWeek) || 0));
+    const currentView = normalizedWeekViews[activeWeekIndex];
+    const displayedWeekLabel = currentView.weekLabel;
+    const calendarId = id || `calendar-${String(displayedWeekLabel).toLowerCase().replace(/[^a-z0-9]+/g, "-") || "availability"}`;
+    const normalizedDates = currentView.dates;
+    const normalizedRows = currentView.rows;
+    const timeAtOffset = (label, offset) => {
+      const match = String(label).trim().match(/^(\d{1,2}):(\d{2})(?:\s*([AaPp][Mm]))?$/);
+      if (!match) return String(label);
+      const [, rawHour, rawMinute, suffix = ""] = match;
+      let minutes = Number(rawHour) * 60 + Number(rawMinute) + offset;
+      if (suffix) {
+        const initialHour = Number(rawHour) % 12;
+        minutes = (initialHour + (suffix.toLowerCase() === "pm" ? 12 : 0)) * 60 + Number(rawMinute) + offset;
+      }
+      minutes = ((minutes % 1440) + 1440) % 1440;
+      const hour = Math.floor(minutes / 60);
+      const minute = minutes % 60;
+      const displayHour = suffix ? (rawHour === "00" && hour < 12 ? hour : (hour % 12 || 12)) : hour;
+      const paddedHour = rawHour.length === 2 ? String(displayHour).padStart(2, "0") : String(displayHour);
+      const displaySuffix = suffix ? ` ${hour >= 12 ? "PM" : "AM"}` : "";
+      return `${paddedHour}:${String(minute).padStart(2, "0")}${displaySuffix}`;
+    };
+    const timeOfDayMinutes = (label) => {
+      const match = String(label).trim().match(/^(\d{1,2}):(\d{2})(?:\s*([AaPp][Mm]))?$/);
+      if (!match) return 0;
+      const [, rawHour, rawMinute, suffix = ""] = match;
+      const parsedHour = Number(rawHour);
+      const minute = Number(rawMinute);
+      if (!suffix) return parsedHour * 60 + minute;
+      return ((parsedHour % 12) + (suffix.toLowerCase() === "pm" ? 12 : 0)) * 60 + minute;
+    };
+    const normalizeQuarterHours = (supplied, rowLabel) => {
+      const values = (Array.isArray(supplied) ? supplied : [supplied]).map((slot) => typeof slot === "string" ? { state: slot } : (slot || {}));
+      const source = values.length ? values : [{}];
+      // Calendar accepts quarter-hour source data, but its visible grid groups it
+      // into two 30-minute rows so 15-minute separator lines never appear.
+      const quarters = source.length === 4
+        ? source
+        : source.length === 2
+          ? [source[0], source[0], source[1], source[1]]
+          : Array.from({ length: 4 }, (_, index) => source[Math.min(Math.floor(index * source.length / 4), source.length - 1)]);
+      return quarters.map((slot, index) => ({
+        ...slot,
+        time: source.length === 4 ? (slot.time || slot.label || timeAtOffset(rowLabel, index * 15)) : timeAtOffset(rowLabel, index * 15)
+      }));
+    };
+    const dateHeader = normalizedDates.map((date) => `<div class="ui-calendar__date${date.current ? " is-current" : ""}" role="columnheader"><span>${escapeHTML(date.label)}</span>${date.date ? `<strong>${escapeHTML(date.date)}</strong>` : ""}</div>`).join("");
+    const timeRows = normalizedRows.map((row) => {
+      const rowStartMinute = timeOfDayMinutes(row.label);
+      const cells = normalizedDates.map((date, index) => {
+        const quarterHours = normalizeQuarterHours(row.slots[index], row.label);
+        const groups = [0, 2].map((startIndex) => {
+          const units = quarterHours.slice(startIndex, startIndex + 2);
+          const primary = units[0] || {};
+          return { state: primary.state || "available", disabled: units.some((slot) => Boolean(slot.disabled)), tooltip: primary.tooltip || "", teacher: primary.teacher || "", units, startIndex };
+        });
+        const segments = groups.map((group) => {
+          /* The segment paints as one 30-minute block, but each quarter stays
+             its own control so hover previews and booking can start on any
+             15-minute boundary. */
+          const controls = group.units.map((slot, unitIndex) => {
+            const quarterIndex = group.startIndex + unitIndex;
+            const start = slot.time;
+            const end = timeAtOffset(row.label, (quarterIndex + 1) * 15);
+            const interval = `${start} – ${end}`;
+            const minute = rowStartMinute + quarterIndex * 15;
+            const state = slot.state || group.state;
+            return timeSlot({ id: `${calendarId}-${row.id}-${date.id}-${quarterIndex + 1}`, time: interval, label: interval, secondary: slot.secondary || "", appearance: "availability", duration: 15, state, disabled: Boolean(disabled || slot.disabled || group.disabled), teacher: slot.teacher || group.teacher || "", calendarDay: date.id, calendarMinute: minute, ariaLabel: slot.ariaLabel || `${date.label}${date.date ? ` ${date.date}` : ""}, ${interval}, ${state.replaceAll("-", " ")}`, tooltip: slot.tooltip || group.tooltip || "", demo: "ui-calendar-slot" });
+          }).join("");
+          return `<div class="ui-calendar__slot-segment" role="gridcell">${controls}</div>`;
+        }).join("");
+        return `<div class="ui-calendar__slot">${segments}</div>`;
+      }).join("");
+      return `<div class="ui-calendar__row" role="row"><div class="ui-calendar__time" role="rowheader">${escapeHTML(row.label)}</div>${cells}</div>`;
+    }).join("");
+    const selectedTime = timePickerProps ? timePicker({ id: `${calendarId}-time-picker`, ...timePickerProps }) : "";
+    const action = (actionName, buttonProps) => button({ ...buttonProps, demo: "ui-calendar-action" }).replace('data-demo="ui-calendar-action"', `data-demo="ui-calendar-action" data-calendar-action="${actionName}"`);
+    const hasWeekViews = normalizedWeekViews.length > 1;
+    const previous = action("previous-week", { label: "Previous week", variant: "secondary", size: 32, shape: "pill", leadingIcon: "Assets/Icons/arrow-left-sm.svg", iconOnly: true, ariaLabel: "Previous week", disabled: hasWeekViews && activeWeekIndex === 0 });
+    const next = action("next-week", { label: "Next week", variant: "secondary", size: 32, shape: "pill", leadingIcon: "Assets/Icons/arrow-right-sm.svg", iconOnly: true, ariaLabel: "Next week", disabled: hasWeekViews && activeWeekIndex === normalizedWeekViews.length - 1 });
+    const today = action("today", { label: todayLabel, variant: "secondary", size: 32, shape: "pill", leadingIcon: "Assets/Icons/16px/today-sm.svg" });
+    const scrollable = normalizedRows.length > 12;
+    const calendarConfig = hasWeekViews ? escapeHTML(JSON.stringify({ id: calendarId, variant, timezone, weekLabel, todayLabel, weekViews, todayWeek: todayWeekIndex, timePicker: timePickerProps, disabled, ariaLabel, demo })) : "";
+    return `<section class="ui-calendar${scrollable ? " ui-calendar--scrollable" : ""}${disabled ? " is-disabled" : ""}" data-component="calendar" data-ui-calendar data-calendar-week-index="${activeWeekIndex}" data-calendar-today-week="${todayWeekIndex}"${calendarConfig ? ` data-calendar-config="${calendarConfig}"` : ""} id="${escapeHTML(calendarId)}"${demo ? ` data-demo="${escapeHTML(demo)}"` : ""} aria-label="${escapeHTML(ariaLabel)}"><header class="ui-calendar__controls"><div class="ui-calendar__context"><span class="ui-calendar__timezone"><span class="ui-calendar__timezone-icon" style="${maskStyle("Assets/Icons/16px/location-sm.svg")}" aria-hidden="true"></span><span>${escapeHTML(timezone)}</span></span>${selectedTime ? `<div class="ui-calendar__time-picker">${selectedTime}</div>` : ""}</div><div class="ui-calendar__actions">${today}<div class="ui-calendar__week-navigation">${previous}<strong>${escapeHTML(displayedWeekLabel)}</strong>${next}</div></div></header><div class="ui-calendar__scroll"><div class="ui-calendar__grid" role="grid" aria-label="${escapeHTML(ariaLabel)}" style="--ui-calendar-day-count:${normalizedDates.length};--ui-calendar-grid-height:${(normalizedRows.length + 1) * 40}px"><div class="ui-calendar__row ui-calendar__row--header" role="row"><div class="ui-calendar__corner" aria-hidden="true"></div>${dateHeader}</div>${timeRows}</div></div></section>`;
+  }
+
+  function popover(props = {}) {
+    assertProps("popover", props);
+    return popup(props).replace('data-component="popup"', 'data-component="popover"').replace('data-ui-popup', 'data-ui-popup data-ui-popover');
+  }
+
+  function sideNav(props = {}) {
+    assertProps("side-nav", props);
+    const { id = "", items = [], activeId = "", ariaLabel = "Sections", demo = "" } = props;
+    if (!Array.isArray(items) || !items.length) throw new Error("side-nav requires at least one item");
+    /* The marker is in every row, not only the active one: it is 4px wide with a
+       12px gap, which is exactly the 16px inset an inactive row has — so the
+       labels line up and nothing shifts sideways when the section changes. */
+    const rows = items.map((item, index) => {
+      const { id: itemId = `item-${index + 1}`, label = "", disabled = false } = typeof item === "string" ? { id: item, label: item } : (item || {});
+      if (!label) throw new Error("side-nav items require a label");
+      const active = String(activeId) === String(itemId);
+      return `<button class="ui-side-nav__item${active ? " is-active" : ""}" type="button" data-demo="${escapeHTML(demo || "ui-side-nav-item")}" data-side-nav-item="${escapeHTML(itemId)}"${active ? ' aria-current="page"' : ""}${disabled ? " disabled" : ""}><i class="ui-side-nav__indicator" aria-hidden="true"></i><span>${escapeHTML(label)}</span></button>`;
+    }).join("");
+    return `<nav class="ui-side-nav" data-component="side-nav" data-ui-side-nav${id ? ` id="${escapeHTML(id)}"` : ""} aria-label="${escapeHTML(ariaLabel)}">${rows}</nav>`;
+  }
+
+  function footer(props = {}) {
+    assertProps("footer", props);
+    const { id = "", columns = [], utilities = "", copyright = "", legalLinks = [], socialLinks = [], ariaLabel = "Footer", demo = "" } = props;
+    if (!Array.isArray(columns) || !columns.length) throw new Error("footer requires at least one supplied column");
+    if (!Array.isArray(legalLinks) || !Array.isArray(socialLinks)) throw new Error("footer legalLinks and socialLinks must be arrays");
+    const footerLinks = (links, context) => {
+      if (!Array.isArray(links)) throw new Error(`${context} requires a link list`);
+      return links.map((link) => {
+        const normalized = typeof link === "string" ? { label: link } : link || {};
+        if (!normalized.label) throw new Error("footer links require a label");
+        return `<a class="ui-footer__link" href="${escapeHTML(normalized.href || "#")}">${escapeHTML(normalized.label)}</a>`;
+      }).join("");
+    };
+    const renderedColumns = columns.map((column, index) => {
+      if (!column) throw new Error(`footer column ${index + 1} is required`);
+      const groups = Array.isArray(column.groups)
+        ? column.groups
+        : (column.heading && Array.isArray(column.links) ? [{ heading: column.heading, links: column.links }] : []);
+      if (!groups.length) throw new Error(`footer column ${index + 1} requires a group or heading and links`);
+      const groupMarkup = groups.map((group, groupIndex) => {
+        if (!group || !group.heading) throw new Error(`footer column ${index + 1} group ${groupIndex + 1} requires a heading`);
+        return `<section class="ui-footer__group"><h2>${escapeHTML(group.heading)}</h2><div class="ui-footer__links">${footerLinks(group.links, `footer column ${index + 1} group ${groupIndex + 1}`)}</div></section>`;
+      }).join("");
+      return `<nav class="ui-footer__column" aria-label="Footer navigation group ${index + 1}">${groupMarkup}</nav>`;
+    }).join("");
+    const legalMarkup = legalLinks.map((link) => {
+      const normalized = typeof link === "string" ? { label: link } : link || {};
+      if (!normalized.label) throw new Error("footer legal links require a label");
+      return `<a class="ui-footer__legal-link" href="${escapeHTML(normalized.href || "#")}">${escapeHTML(normalized.label)}</a>`;
+    }).join("");
+    const socialMarkup = socialLinks.map((link) => {
+      if (!link?.label || !link?.icon) throw new Error("footer social links require label and approved icon");
+      if (!approvedAsset(link.icon)) throw new Error(`Unapproved asset: ${link.icon}`);
+      return `<a class="ui-footer__social-link" href="${escapeHTML(link.href || "#")}" aria-label="${escapeHTML(link.label)}">${icon(link.icon, "ui-footer__social-icon")}</a>`;
+    }).join("");
+    const copyrightBand = copyright ? `<div class="ui-footer__copyright-band"><span class="ui-footer__copyright">${escapeHTML(copyright)}</span></div>` : "";
+    const lower = legalMarkup || socialMarkup ? `<div class="ui-footer__bottom"><div class="ui-footer__bottom-inner">${legalMarkup ? `<nav class="ui-footer__legal" aria-label="Footer legal links">${legalMarkup}</nav>` : ""}${socialMarkup ? `<div class="ui-footer__social" aria-label="Footer social links">${socialMarkup}</div>` : ""}</div></div>` : "";
+    const columnCount = columns.length + (utilities ? 1 : 0);
+    return `<footer class="ui-footer" data-component="footer"${id ? ` id="${escapeHTML(id)}"` : ""}${demo ? ` data-demo="${escapeHTML(demo)}"` : ""} aria-label="${escapeHTML(ariaLabel)}"><div class="ui-footer__upper" style="--ui-footer-column-count:${columnCount}"><div class="ui-footer__columns">${renderedColumns}</div>${utilities ? `<div class="ui-footer__utilities">${utilities}</div>` : ""}</div>${copyrightBand}${lower}</footer>`;
+  }
+
+  const drawerRoot = (element) => element?.closest?.("[data-ui-drawer]");
+  const drawerTrigger = (root) => root?.querySelector?.('[data-demo="ui-drawer-open"]');
+
+  function setDrawerOpen(element, open) {
+    const root = drawerRoot(element) || element;
+    if (!root?.classList?.contains("ui-drawer-stage")) return false;
+    root.classList.toggle("is-open", Boolean(open));
+    root.querySelector(".ui-drawer__layer")?.toggleAttribute("aria-hidden", !open);
+    drawerTrigger(root)?.setAttribute("aria-expanded", String(Boolean(open)));
+    if (open) {
+      global.setTimeout?.(() => {
+        const dialog = root.querySelector('[role="dialog"]');
+        // Opening a transformed inline Drawer must not ask the browser to scroll
+        // its trigger or the catalog viewport into a new position.
+        dialog?.focus?.({ preventScroll: true });
+      }, 0);
+    }
+    else drawerTrigger(root)?.focus();
+    return true;
+  }
+
+  function openDrawer(control) { return setDrawerOpen(control, true); }
+  function closeDrawer(control) { return setDrawerOpen(control, false); }
+  function handleDrawerKeydown(event) {
+    if (event.key !== "Escape") return false;
+    const root = drawerRoot(event.target) || global.document?.querySelector?.("[data-ui-drawer].is-open");
+    if (!root?.classList?.contains("is-open") || root.dataset.keyboardClosable === "false") return false;
+    event.preventDefault();
+    return closeDrawer(root);
+  }
+
+  function setNumberStepperValue(control, nextValue) {
+    const root = control?.closest?.("[data-ui-number-stepper]") || control;
+    if (!root || root.classList.contains("is-disabled")) return false;
+    const min = Number(root.dataset.min || 0);
+    const max = Number(root.dataset.max || 0);
+    const step = Math.max(1, Number(root.dataset.step || 1));
+    const value = Math.max(min, Math.min(max, Number(nextValue)));
+    root.querySelector("[data-ui-number-stepper-value]").textContent = value;
+    const decrement = root.querySelector('[data-demo="ui-number-stepper-decrement"]');
+    const increment = root.querySelector('[data-demo="ui-number-stepper-increment"]');
+    if (decrement) decrement.disabled = value <= min;
+    if (increment) increment.disabled = value >= max;
+    root.dataset.value = String(value);
+    root.dataset.step = String(step);
+    return true;
+  }
+
+  function adjustNumberStepper(control, direction) {
+    const root = control?.closest?.("[data-ui-number-stepper]");
+    if (!root) return false;
+    const current = Number(root.querySelector("[data-ui-number-stepper-value]")?.textContent || 0);
+    return setNumberStepperValue(root, current + (Math.max(1, Number(root.dataset.step || 1)) * direction));
+  }
+
+  function toggleDropdownMenu(control) {
+    const root = control?.closest?.("[data-ui-dropdown]");
+    if (!root) return false;
+    const open = !root.classList.contains("is-open");
+    global.document?.querySelectorAll?.("[data-ui-dropdown].is-open").forEach((menu) => { if (menu !== root) menu.classList.remove("is-open"); });
+    root.classList.toggle("is-open", open);
+    root.querySelector(".ui-dropdown-menu__surface")?.toggleAttribute("aria-hidden", !open);
+    root.querySelector('[data-demo="ui-dropdown-toggle"]')?.setAttribute("aria-expanded", String(open));
+    return open;
+  }
+
+  function closeDropdownMenus(except = null) {
+    global.document?.querySelectorAll?.("[data-ui-dropdown].is-open").forEach((root) => {
+      if (root !== except) {
+        root.classList.remove("is-open");
+        root.querySelector(".ui-dropdown-menu__surface")?.setAttribute("aria-hidden", "true");
+        root.querySelector('[data-demo="ui-dropdown-toggle"]')?.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  function toggleDisclosure(control) {
+    const root = control?.closest?.("[data-ui-disclosure]");
+    if (!root || root.classList.contains("is-disabled")) return false;
+    const open = !root.classList.contains("is-open");
+    root.classList.toggle("is-open", open);
+    root.querySelector(".ui-disclosure__trigger")?.setAttribute("aria-expanded", String(open));
+    root.querySelector(".ui-disclosure__content")?.toggleAttribute("hidden", !open);
+    return open;
+  }
+
+  function selectSegmentedControl(control) {
+    const root = control?.closest?.("[data-ui-segmented-control]");
+    if (!root || control.disabled) return false;
+    root.querySelectorAll("button").forEach((button) => button.setAttribute("aria-pressed", String(button === control)));
+    return true;
+  }
+
+  function toggleTimePicker(control) {
+    const root = control?.closest?.("[data-ui-time-picker]");
+    if (!root || root.classList.contains("is-disabled")) return false;
+    const open = !root.classList.contains("is-open");
+    closeTimePickers(root);
+    root.classList.toggle("is-open", open);
+    root.querySelector(".ui-time-picker__trigger")?.setAttribute("aria-expanded", String(open));
+    root.querySelector(".ui-time-picker__menu")?.toggleAttribute("aria-hidden", !open);
+    return open;
+  }
+
+  function closeTimePickers(except = null) {
+    global.document?.querySelectorAll?.("[data-ui-time-picker].is-open").forEach((root) => {
+      if (root !== except) {
+        root.classList.remove("is-open");
+        root.querySelector(".ui-time-picker__trigger")?.setAttribute("aria-expanded", "false");
+        root.querySelector(".ui-time-picker__menu")?.setAttribute("aria-hidden", "true");
+      }
+    });
+  }
+
+  function selectTimePickerSlot(control) {
+    const root = control?.closest?.("[data-ui-time-picker]");
+    if (!root || control.disabled) return false;
+    const multiple = root.dataset.timePickerSelectionMode === "multiple";
+    if (multiple) {
+      const selected = !control.classList.contains("is-selected");
+      control.setAttribute("aria-pressed", String(selected));
+      control.classList.toggle("is-selected", selected);
+    } else root.querySelectorAll(".ui-time-slot").forEach((slot) => {
+      const selected = slot === control;
+      slot.setAttribute("aria-pressed", String(selected));
+      slot.classList.toggle("is-selected", selected);
+    });
+    const selectedLabels = [...root.querySelectorAll(".ui-time-slot.is-selected")].map((slot) => slot.querySelector(".ui-time-slot__label")?.textContent || "").filter(Boolean);
+    const trigger = root.querySelector(".ui-time-picker__trigger span");
+    if (trigger) {
+      trigger.textContent = selectedLabels.join(", ") || root.dataset.timePickerPlaceholder || "Choose a time";
+      trigger.classList.toggle("ui-time-picker__placeholder", selectedLabels.length === 0);
+    }
+    root.querySelector(".ui-time-picker__icon")?.classList.toggle("is-placeholder", selectedLabels.length === 0);
+    if (!multiple) {
+      root.classList.remove("is-open");
+      root.querySelector(".ui-time-picker__trigger")?.setAttribute("aria-expanded", "false");
+      root.querySelector(".ui-time-picker__menu")?.setAttribute("aria-hidden", "true");
+    }
+    return true;
+  }
+
+  function selectCalendarSlot(control) {
+    const root = control?.closest?.("[data-ui-calendar]");
+    if (!root || control.disabled || root.classList.contains("is-disabled")) return false;
+    const day = control.dataset.calendarDay;
+    const startMinute = Number(control.dataset.calendarMinute);
+    if (!day || !Number.isFinite(startMinute)) return false;
+    const daySlots = [...root.querySelectorAll(`.ui-calendar__slot .ui-time-slot[data-calendar-day="${day}"]`)]
+      .sort((left, right) => Number(left.dataset.calendarMinute) - Number(right.dataset.calendarMinute));
+    const unitMinutes = daySlots.reduce((smallest, slot, index) => {
+      if (!index) return smallest;
+      const gap = Number(slot.dataset.calendarMinute) - Number(daySlots[index - 1].dataset.calendarMinute);
+      return Number.isFinite(gap) && gap > 0 ? Math.min(smallest, gap) : smallest;
+    }, 60);
+    const selectedRange = daySlots
+      .filter((slot) => {
+        const minute = Number(slot.dataset.calendarMinute);
+        return Number.isFinite(minute) && minute >= startMinute && minute < startMinute + 60;
+      })
+      .sort((left, right) => Number(left.dataset.calendarMinute) - Number(right.dataset.calendarMinute));
+    const expectedUnits = Math.round(60 / unitMinutes);
+    if (selectedRange.length !== expectedUnits || selectedRange.some((slot) => slot.disabled || !slot.classList.contains("is-available") && slot !== control && !slot.classList.contains("is-selected"))) return false;
+    root.querySelectorAll(".ui-calendar__slot-segment.is-calendar-selected-range").forEach((segment) => segment.classList.remove("is-calendar-selected-range"));
+    root.querySelectorAll(".ui-calendar__slot .ui-time-slot.is-selected").forEach((slot) => {
+      slot.classList.remove("is-selected");
+      slot.classList.add("is-available");
+      slot.dataset.timeSlotState = "available";
+      slot.setAttribute("aria-pressed", "false");
+      slot.setAttribute("aria-describedby", `${slot.id}-tooltip`);
+      slot.closest(".ui-time-slot__tooltip-wrap")?.classList.remove("is-tooltip-disabled");
+    });
+    selectedRange.forEach((slot) => {
+      slot.classList.remove("is-available");
+      slot.classList.add("is-selected");
+      slot.dataset.timeSlotState = "selected";
+      slot.setAttribute("aria-pressed", "true");
+      slot.removeAttribute("aria-describedby");
+      slot.closest(".ui-time-slot__tooltip-wrap")?.classList.add("is-tooltip-disabled");
+      slot.closest(".ui-calendar__slot-segment")?.classList.add("is-calendar-selected-range");
+    });
+    if (typeof global.CustomEvent === "function") root.dispatchEvent(new global.CustomEvent("italki:calendar-change", { bubbles: true, detail: { id: control.id, value: control.getAttribute("aria-label"), duration: 60 } }));
+    return true;
+  }
+
+  function positionCalendarTooltip(wrapper) {
+    const calendar = wrapper?.closest?.(".ui-calendar--scrollable");
+    const tooltipElement = wrapper?.querySelector?.(".ui-tooltip");
+    if (!calendar || !tooltipElement) return false;
+    const rect = wrapper.getBoundingClientRect();
+    const viewportWidth = global.innerWidth || global.document?.documentElement?.clientWidth || 0;
+    const viewportHeight = global.innerHeight || global.document?.documentElement?.clientHeight || 0;
+    const left = Math.max(12, Math.min(viewportWidth - 12, rect.left + rect.width / 2));
+    const top = Math.min(viewportHeight - 12, rect.bottom + 8);
+    wrapper.style.setProperty("--ui-calendar-tooltip-left", `${left}px`);
+    wrapper.style.setProperty("--ui-calendar-tooltip-top", `${top}px`);
+    wrapper.classList.add("is-calendar-tooltip-positioned");
+    return true;
+  }
+
+  function setActiveCalendarTooltip(wrapper) {
+    const calendar = wrapper?.closest?.("[data-ui-calendar]");
+    if (!calendar) return false;
+    calendar.querySelectorAll(".ui-time-slot__tooltip-wrap.is-calendar-tooltip-active").forEach((candidate) => {
+      candidate.classList.toggle("is-calendar-tooltip-active", candidate === wrapper);
+    });
+    wrapper?.classList.add("is-calendar-tooltip-active");
+    return true;
+  }
+
+  function clearCalendarTooltips(root) {
+    root?.querySelectorAll?.(".is-calendar-tooltip-active")
+      .forEach((node) => node.classList.remove("is-calendar-tooltip-active"));
+  }
+
+  function syncCalendarTooltipPosition(target) {
+    const scrollRoot = target?.matches?.(".ui-calendar__scroll") ? target : target?.closest?.(".ui-calendar__scroll");
+    const wrapper = scrollRoot?.querySelector?.(".ui-tooltip-wrap:hover");
+    /* Nothing under the pointer: the tooltip that was showing has to go. Without
+       this it stayed behind after the mouse left the grid. */
+    if (!wrapper) {
+      clearCalendarTooltips(scrollRoot?.closest?.("[data-ui-calendar]") ?? scrollRoot);
+      return false;
+    }
+    setActiveCalendarTooltip(wrapper);
+    return positionCalendarTooltip(wrapper);
+  }
+
+  function setTeacherAvailabilityDate(root, requestedIndex) {
+    if (!root || root.dataset.calendarVariant !== "teacher-availability") return false;
+    const dates = [...root.querySelectorAll(".ui-calendar__teacher-date")];
+    if (!dates.length) return false;
+    const index = Math.max(0, Math.min(dates.length - 1, Number(requestedIndex)));
+    dates.forEach((date, dateIndex) => {
+      const active = dateIndex === index;
+      date.classList.toggle("is-selected-date", active);
+      date.setAttribute("aria-pressed", String(active));
+    });
+    root.querySelectorAll(".ui-calendar__teacher-cell").forEach((cell) => {
+      cell.classList.toggle("is-active-date", Number(cell.dataset.teacherDateIndex) === index);
+    });
+    root.dataset.teacherActiveDate = String(index);
+    const activeDate = dates[index];
+    const activeDateLabel = activeDate?.dataset.teacherDateLabel || "";
+    if (typeof global.CustomEvent === "function") root.dispatchEvent(new global.CustomEvent("italki:teacher-availability-date-change", { bubbles: true, detail: { index, label: activeDateLabel } }));
+    return true;
+  }
+
+  function selectTeacherAvailabilityDate(control) {
+    const root = control?.closest?.("[data-ui-calendar]");
+    return setTeacherAvailabilityDate(root, control?.dataset?.teacherDateIndex);
+  }
+
+  function setCalendarWeekView(root, requestedIndex) {
+    if (!root?.dataset?.calendarConfig) return false;
+    let config;
+    try {
+      config = JSON.parse(root.dataset.calendarConfig);
+    } catch {
+      return false;
+    }
+    if (!Array.isArray(config.weekViews) || !config.weekViews.length) return false;
+    const index = Math.max(0, Math.min(config.weekViews.length - 1, Number(requestedIndex)));
+    const markup = calendar({ ...config, activeWeek: index });
+    root.outerHTML = markup;
+    const updatedRoot = global.document?.getElementById?.(config.id);
+    if (updatedRoot && typeof global.CustomEvent === "function") updatedRoot.dispatchEvent(new global.CustomEvent("italki:calendar-week-change", { bubbles: true, detail: { index, weekLabel: config.weekViews[index]?.weekLabel || "" } }));
+    return Boolean(updatedRoot);
+  }
+
+  function notifyCalendarAction(control) {
+    const root = control?.closest?.("[data-ui-calendar]");
+    if (!root || control.disabled || root.classList.contains("is-disabled")) return false;
+    const action = control.dataset.calendarAction || "";
+    if (root.dataset.calendarVariant === "teacher-availability" && (action === "previous-date" || action === "next-date")) {
+      const dayCount = root.querySelectorAll(".ui-calendar__teacher-date").length;
+      const current = Number(root.dataset.teacherActiveDate || 0);
+      return setTeacherAvailabilityDate(root, Math.max(0, Math.min(dayCount - 1, current + (action === "previous-date" ? -1 : 1))));
+    }
+    if (root.dataset.calendarConfig && (action === "previous-week" || action === "next-week" || action === "today")) {
+      const current = Number(root.dataset.calendarWeekIndex || 0);
+      const today = Number(root.dataset.calendarTodayWeek || 0);
+      const next = action === "previous-week" ? current - 1 : action === "next-week" ? current + 1 : today;
+      return setCalendarWeekView(root, next);
+    }
+    if (typeof global.CustomEvent === "function") root.dispatchEvent(new global.CustomEvent("italki:calendar-action", { bubbles: true, detail: { action } }));
+    return true;
+  }
+
+  function dismissToast(control) {
+    const root = control?.closest?.("[data-component=toast]");
+    if (!root) return false;
+    root.remove();
+    return true;
+  }
+
+  function dismissNotification(control) {
+    const root = control?.closest?.("[data-component=notification]");
+    if (!root) return false;
+    root.remove();
+    return true;
+  }
+
+  global.document?.addEventListener?.("pointerover", (event) => {
+    const lessonCard = event.target?.closest?.("[data-lesson-course-card]");
+    if (lessonCard) previewLessonOptions(lessonCard, true);
+    const wrapper = event.target?.closest?.(".ui-calendar .ui-tooltip-wrap");
+    setActiveCalendarTooltip(wrapper);
+    positionCalendarTooltip(wrapper);
+  });
+  global.document?.addEventListener?.("pointerout", (event) => {
+    const lessonCard = event.target?.closest?.("[data-lesson-course-card]");
+    if (lessonCard && !lessonCard.contains(event.relatedTarget)) previewLessonOptions(lessonCard, false);
+  });
+  global.document?.addEventListener?.("focusin", (event) => {
+    const lessonCard = event.target?.closest?.("[data-lesson-course-card]");
+    if (lessonCard) previewLessonOptions(lessonCard, true);
+  });
+  global.document?.addEventListener?.("focusout", (event) => {
+    const lessonCard = event.target?.closest?.("[data-lesson-course-card]");
+    if (lessonCard && !lessonCard.contains(event.relatedTarget)) previewLessonOptions(lessonCard, false);
+  });
+  global.document?.addEventListener?.("scroll", (event) => {
+    syncCalendarTooltipPosition(event.target);
+  }, true);
+  global.document?.addEventListener?.("mouseover", (event) => {
+    const scroller = event.target?.closest?.(".ui-calendar__scroll");
+    if (scroller) syncCalendarTooltipPosition(scroller);
+  });
+  global.document?.addEventListener?.("mouseout", (event) => {
+    const scroller = event.target?.closest?.(".ui-calendar__scroll");
+    if (scroller && !scroller.contains(event.relatedTarget)) clearCalendarTooltips(scroller.closest("[data-ui-calendar]") ?? scroller);
+  });
+
+  global.ITalkiUI = Object.freeze({
+    contracts,
+    approvedAsset,
+    appShellNav,
+    button,
+    chip,
+    tag,
+    link,
+    video,
+    checkbox,
+    checkboxGroup,
+    radio,
+    radioGroup,
+    selection,
+    selectionGroup,
+    datePicker,
+    tooltip,
+    divider,
+    sectionIntro,
+    avatar,
+    flag,
+    avatarGroup,
+    badge,
+    breadcrumb,
+    card,
+    list,
+    alert,
+    tabs,
+    pagination,
+    rate,
+    sidebar,
+    statistic,
+    table,
+    timeline,
+    topNav,
+    topNavContext,
+    topNavSearch,
+    modal,
+    popup,
+    popconfirm,
+    slider,
+    sliderRange,
+    sliderVertical,
+    panel,
+    search,
+    select,
+    switchControl,
+    drawer,
+    formField,
+    textInput,
+    textarea,
+    numberStepper,
+    combobox,
+    upload,
+    stepper,
+    progress,
+    toast,
+    notification,
+    result,
+    skeleton,
+    dropdownMenu,
+    disclosure,
+    segmentedControl,
+    timeSlot,
+    timePicker,
+    calendar,
+    popover,
+    sideNav,
+    footer,
+    setCheckboxValue,
+    toggleCheckbox,
+    syncCheckboxGroup,
+    toggleCheckboxGroup,
+    selectRadio,
+    handleRadioKeydown,
+    toggleSelectionCard,
+    toggleLessonOptions,
+    previewLessonOptions,
+    handleSelectionCardKeydown,
+    toggleBreadcrumb,
+    closeBreadcrumbs,
+    dismissAlert,
+    selectTab,
+    handleTabsKeydown,
+    selectPaginationPage,
+    setRateVisual,
+    setRateValue,
+    rateValueFromPointer,
+    selectRate,
+    previewRate,
+    resetRatePreview,
+    handleRateKeydown,
+    setSidebarVariant,
+    setSidebarCollapsed,
+    toggleSidebar,
+    selectSidebarItem,
+    unpinSidebarItem,
+    pinSidebarItem,
+    startSidebarDrag,
+    moveSidebarDrag,
+    endSidebarDrag,
+    toggleSidebarSection,
+    closeSidebarMore,
+    toggleSidebarMore,
+    cancelSidebarMoreClose,
+    scheduleSidebarMoreClose,
+    setDatePickerOpen,
+    toggleDatePicker,
+    navigateDatePicker,
+    selectDatePickerDay,
+    closeDatePickers,
+    setModalOpen,
+    openModal,
+    closeModal,
+    handleModalKeydown,
+    setPopupOpen,
+    openPopup,
+    closePopup,
+    closePopups,
+    togglePopup,
+    cancelPopupClose,
+    schedulePopupClose,
+    handlePopupKeydown,
+    setPopconfirmOpen,
+    openPopconfirm,
+    closePopconfirm,
+    closePopconfirms,
+    togglePopconfirm,
+    handlePopconfirmKeydown,
+    toggleChip,
+    toggleFilterCategoryChild,
+    toggleFilterCategoryParent,
+    toggleSwitch,
+    clearSearch,
+    syncSearchInput,
+    closeSelects,
+    setSelectOpen,
+    toggleSelect,
+    selectOption,
+    clearSelect,
+    removeSelectValue,
+    filterSelectOptions,
+    handleSelectKeydown,
+    setSelectPresentation,
+    setTextInputPresentation,
+    setNumberStepperPresentation,
+    setTextareaPresentation,
+    setDatePickerPresentation,
+    openUploadPicker,
+    setUploadFiles,
+    removeUploadFile,
+    setTagPresentation,
+    setChipPresentation,
+    syncSliderInput,
+    syncSliderRange,
+    syncFilterPrice,
+    startSliderRangeDrag,
+    setTimelineReverse,
+    setTimelineTone,
+    setTopNavContextOpen,
+    closeTopNavContexts,
+    selectTopNavContext,
+    setTopNavSearchFocus,
+    syncTopNavSearch,
+    clearTopNavSearch,
+    toggleTopNavFilter,
+    setTopNavFilterCount,
+    countFilterSelections,
+    resetFilters,
+    syncTopNavFilterCue,
+    setDrawerOpen,
+    openDrawer,
+    closeDrawer,
+    handleDrawerKeydown,
+    setNumberStepperValue,
+    adjustNumberStepper,
+    toggleDropdownMenu,
+    closeDropdownMenus,
+    toggleDisclosure,
+    selectSegmentedControl,
+    toggleTimePicker,
+    closeTimePickers,
+    selectTimePickerSlot,
+    selectCalendarSlot,
+    selectTeacherAvailabilityDate,
+    setTeacherAvailabilityDate,
+    setCalendarWeekView,
+    setActiveCalendarTooltip,
+    positionCalendarTooltip,
+    syncCalendarTooltipPosition,
+    notifyCalendarAction,
+    dismissToast,
+    dismissNotification
+  });
+})(global);
+  var UI = global.ITalkiUI;
+  // React is read when a component renders, not when this file is evaluated.
+  // It used to be captured here and the bundle threw without it, which made
+  // load order decide whether the kit existed: a host that installs React after
+  // this script got window.ITalkiUI and no window.ItalkiUI, so every component
+  // mounted through the React namespace — Sidebar, TopNav, Video — silently
+  // rendered nothing while the stylesheet made the rest of the page look fine.
+  // Nothing here needs React until createElement is called.
+  // Each component renders the runtime's HTML string. The renderers are pure
+  // string builders, so this is a faithful mount — interactive behaviour comes
+  // from the runtime's own delegated document listeners.
+  /* React always supplies props the contract has never heard of — a "children"
+     whenever a consumer writes <Sidebar>…</Sidebar> or passes a third argument
+     to createElement, and the editor's own tracking attributes on every mount.
+     The renderers assert their props strictly and throw on anything unknown,
+     so the boundary between React and the contract is exactly here: forward
+     only what the component accepts. Without this the teacher-search template
+     rendered "sidebar does not accept prop children" in place of its shell. */
+  var REACT_ONLY = /^(children|key|ref|className|style|dangerouslySetInnerHTML)$|^(data-|aria-|on[A-Z])/;
+  /* The slot runtime, from the same string Kit.jsx gets it from — the two
+     artefacts cannot disagree about how a slot renders. See the constant's own
+     comment for why it is shared rather than written here. */
+/* Which props each renderer interpolates as raw markup, probed at build time.
+   Only these may hold a React element: every other string prop goes through
+   escapeHTML, so an element handed to one would print as escaped text rather
+   than render. Passing JSX to a non-slot prop is a mistake worth naming. */
+var ITALKI_SLOTS = {"formField":["control"],"textInput":["trailingAction"],"selection":["leading"],"badge":["anchor"],"disclosure":["content"],"panel":["body","extra"],"tooltip":["trigger"],"modal":["body","footer","trigger"],"drawer":["titleLeading","subtitle","body","footer","trigger"],"popconfirm":["trigger","confirm","cancel"],"popup":["actions","trigger"],"popover":["actions","trigger"],"dropdownMenu":["trigger"],"toast":["action"],"notification":["action"],"result":["action","secondaryAction"],"topNav":["leading","center","trailing"],"sidebar":["footer"]};
+var italkiSlotSeq = 0;
+
+function italkiSplitSlots(fn, props, instanceId, React) {
+  var accepted = ITALKI_SLOTS[fn] || [];
+  var clean = {};
+  var slots = [];
+  for (var name in props) {
+    if (REACT_ONLY.test(name)) continue;
+    var value = props[name];
+    if (value === undefined) continue;
+    var isElement = React.isValidElement(value)
+      || (Array.isArray(value) && value.length > 0 && value.every(React.isValidElement));
+    if (!isElement) { clean[name] = value; continue; }
+    if (accepted.indexOf(name) === -1) {
+      throw new Error(fn + '.' + name + ' takes text, not an element'
+        + (accepted.length ? ' — the slots that take one are ' + accepted.join(', ') : ''));
+    }
+    var id = 'ui-slot-' + instanceId + '-' + name;
+    clean[name] = '<span data-ui-slot="' + id + '" style="display:contents"></span>';
+    slots.push({ id: id, node: value });
+  }
+  return { props: clean, slots: slots };
+}
+
+/* The one place a kit component is mounted. Every per-component wrapper and the
+   bundle's own React namespace go through this, so there is a single answer to
+   "how does a slot render". */
+function italkiMount(fn, props) {
+  var React = window.React;
+  var ReactDOM = window.ReactDOM;
+  if (!React) return null;
+
+  /* Stable for the life of the mount, so the placeholder ids — and with them the
+     html string — do not change on every render. If they did, React would reset
+     innerHTML each time and the portals would thrash. */
+  var idRef = React.useRef(0);
+  if (!idRef.current) idRef.current = ++italkiSlotSeq;
+  var hostRef = React.useRef(null);
+
+  var html = '';
+  var slots = [];
+  try {
+    var split = italkiSplitSlots(fn, props, idRef.current, React);
+    slots = split.slots;
+    var render = window.ITalkiUIRender;
+    html = typeof render === 'function'
+      ? render(fn, split.props)
+      : (window.ITalkiUI && typeof window.ITalkiUI[fn] === 'function' ? window.ITalkiUI[fn](split.props) : '');
+  } catch (e) { html = '<div style="color:var(--ui-color-error);font:12px system-ui">' + (e && e.message || e) + '</div>'; }
+
+  /* The placeholder spans only exist after the html has been committed, so the
+     portals need one more render to find them. Keyed on the html: when props
+     change React replaces the spans, and the portals must re-query rather than
+     keep pointing at nodes no longer in the document. */
+  var tick = React.useState(0);
+  var bump = tick[1];
+  React.useEffect(function () {
+    if (slots.length) bump(function (n) { return n + 1; });
+  }, [html]);
+
+  /* display:contents so the wrapper generates no box. dangerouslySetInnerHTML
+     needs a host element, but a real box becomes the containing block for
+     everything inside it, and position:sticky can only travel within its
+     containing block — so a consumer that stuck a sidebar or a top nav to the
+     viewport got an element that scrolled away with its own wrapper. */
+  var embed = React.createElement('div', {
+    ref: hostRef,
+    className: 'italki-ui-embed',
+    style: { display: 'contents' },
+    dangerouslySetInnerHTML: { __html: html },
+  });
+  if (!slots.length || !ReactDOM || !ReactDOM.createPortal || !hostRef.current) return embed;
+
+  var portals = [];
+  for (var i = 0; i < slots.length; i++) {
+    var target = hostRef.current.querySelector('[data-ui-slot="' + slots[i].id + '"]');
+    if (target) portals.push(ReactDOM.createPortal(slots[i].node, target, slots[i].id));
+  }
+  return React.createElement(React.Fragment, null, embed, portals);
+}
+window.ITalkiUIMount = italkiMount;
+
+  function wrap(fn) {
+    function Component(props) { return italkiMount(fn, props); }
+    Component.displayName = fn;
+    return Component;
+  }
+  global.ItalkiUI = Object.assign({}, {
+    Button: wrap("button"),
+    Link: wrap("link"),
+    Chip: wrap("chip"),
+    SegmentedControl: wrap("segmentedControl"),
+    FormField: wrap("formField"),
+    TextInput: wrap("textInput"),
+    Textarea: wrap("textarea"),
+    NumberStepper: wrap("numberStepper"),
+    Upload: wrap("upload"),
+    Search: wrap("search"),
+    Combobox: wrap("combobox"),
+    Select: wrap("select"),
+    Checkbox: wrap("checkbox"),
+    CheckboxGroup: wrap("checkboxGroup"),
+    Radio: wrap("radio"),
+    DatePicker: wrap("datePicker"),
+    TimePicker: wrap("timePicker"),
+    TimeSlot: wrap("timeSlot"),
+    Rate: wrap("rate"),
+    Selection: wrap("selection"),
+    Slider: wrap("slider"),
+    Switch: wrap("switchControl"),
+    Card: wrap("card"),
+    List: wrap("list"),
+    Video: wrap("video"),
+    Avatar: wrap("avatar"),
+    Badge: wrap("badge"),
+    Tag: wrap("tag"),
+    Tabs: wrap("tabs"),
+    Statistic: wrap("statistic"),
+    Table: wrap("table"),
+    Calendar: wrap("calendar"),
+    Timeline: wrap("timeline"),
+    Disclosure: wrap("disclosure"),
+    SectionIntro: wrap("sectionIntro"),
+    Divider: wrap("divider"),
+    Panel: wrap("panel"),
+    Stepper: wrap("stepper"),
+    Tooltip: wrap("tooltip"),
+    Modal: wrap("modal"),
+    Drawer: wrap("drawer"),
+    Popconfirm: wrap("popconfirm"),
+    Popup: wrap("popup"),
+    Popover: wrap("popover"),
+    DropdownMenu: wrap("dropdownMenu"),
+    Alert: wrap("alert"),
+    Toast: wrap("toast"),
+    Notification: wrap("notification"),
+    Result: wrap("result"),
+    Progress: wrap("progress"),
+    Skeleton: wrap("skeleton"),
+    TopNav: wrap("topNav"),
+    Breadcrumb: wrap("breadcrumb"),
+    Sidebar: wrap("sidebar"),
+    Footer: wrap("footer"),
+    Pagination: wrap("pagination"),
+    SideNav: wrap("sideNav"),
+  }, { raw: UI, contracts: global.ITalkiUIContracts });
+})(window);

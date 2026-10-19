@@ -1,0 +1,45 @@
+/* Booking flow layout. Everything that draws a control comes from the kit; what
+   lives here is the arrangement the kit cannot know — the page's column, and the
+   drawer's step canvas. Tokens only. */
+.booking-page { width: min(100%, 720px); margin: 0 auto; display: grid; gap: var(--ui-space-6); padding: var(--ui-space-8) var(--ui-space-6) var(--ui-space-12); }
+.booking-teacher { display: flex; align-items: center; gap: var(--ui-space-4); }
+.booking-teacher__copy { min-width: 0; display: grid; gap: var(--ui-space-1); }
+.booking-teacher__copy h1 { margin: 0; color: var(--ui-color-title); font-size: var(--ui-font-size-20); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-28); }
+.booking-teacher__copy p { margin: 0; color: var(--ui-color-secondary); font-size: var(--ui-font-size-14); line-height: var(--ui-line-height-22); }
+.booking-teacher__meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ui-space-3); color: var(--ui-color-secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
+.booking-cta { display: grid; gap: var(--ui-space-2); }
+
+/* The drawer is the whole flow, so its body scrolls and its footer stays put. */
+#booking-drawer .ui-drawer { height: min(88vh, 760px); }
+#booking-drawer .ui-drawer__body { min-height: 0; flex: 1; overflow-y: auto; background: var(--ui-color-divider); }
+#booking-drawer .ui-drawer__footer { flex: 0 0 auto; }
+.booking-step { display: grid; gap: var(--ui-space-6); padding: var(--ui-space-6); }
+.booking-step__head { display: grid; gap: var(--ui-space-1); }
+.booking-step__head h4 { margin: 0; color: var(--ui-color-title); font-size: var(--ui-font-size-18); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-24); }
+.booking-step__head p { margin: 0; color: var(--ui-color-secondary); font-size: var(--ui-font-size-14); line-height: var(--ui-line-height-22); }
+.booking-card { display: grid; gap: var(--ui-space-4); border-radius: var(--ui-radius-lg); padding: var(--ui-space-6); background: var(--ui-color-card); }
+.booking-card > h5 { margin: 0; color: var(--ui-color-title); font-size: var(--ui-font-size-16); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-24); }
+.booking-caption { margin: 0; color: var(--ui-color-placeholder); font-size: var(--ui-font-size-12); font-weight: var(--ui-font-weight-medium); line-height: var(--ui-line-height-18); }
+.booking-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--ui-space-3); }
+.booking-slots { display: flex; flex-wrap: wrap; gap: var(--ui-space-2); }
+.booking-summary { display: grid; gap: var(--ui-space-3); }
+.booking-summary__row { display: flex; align-items: baseline; justify-content: space-between; gap: var(--ui-space-4); color: var(--ui-color-text); font-size: var(--ui-font-size-14); line-height: var(--ui-line-height-22); }
+.booking-summary__row dt { color: var(--ui-color-secondary); }
+.booking-summary__row dd { margin: 0; color: var(--ui-color-title); font-weight: var(--ui-font-weight-semibold); text-align: right; }
+.booking-summary__total { border-top: 1px solid var(--ui-color-divider); padding-top: var(--ui-space-3); font-size: var(--ui-font-size-16); }
+.booking-summary__total dd { color: var(--ui-color-title); font-size: var(--ui-font-size-20); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-28); }
+.booking-footer { display: flex; align-items: center; justify-content: space-between; gap: var(--ui-space-4); width: 100%; }
+.booking-footer__spend { display: grid; gap: var(--ui-space-half); color: var(--ui-color-secondary); font-size: var(--ui-font-size-12); line-height: var(--ui-line-height-18); }
+.booking-footer__spend strong { color: var(--ui-color-title); font-size: var(--ui-font-size-16); font-weight: var(--ui-font-weight-bold); line-height: var(--ui-line-height-24); }
+.booking-footer__actions { display: flex; align-items: center; gap: var(--ui-space-2); }
+
+/* A trial lesson's length is the teacher's decision, so it is stated rather than
+   offered — the row reads as information, not as a control that refuses to move. */
+.booking-fixed { display: flex; align-items: center; justify-content: space-between; gap: var(--ui-space-4); border: 1px solid var(--ui-color-border); border-radius: var(--ui-radius-md); padding: var(--ui-space-3) var(--ui-space-4); color: var(--ui-color-text); font-size: var(--ui-font-size-14); line-height: var(--ui-line-height-22); }
+.booking-fixed strong { color: var(--ui-color-title); font-weight: var(--ui-font-weight-bold); }
+
+@media (max-width: 720px) {
+  .booking-page { padding: var(--ui-space-6) var(--ui-space-4) var(--ui-space-10); }
+  .booking-step { padding: var(--ui-space-4); }
+  .booking-card { padding: var(--ui-space-4); }
+}

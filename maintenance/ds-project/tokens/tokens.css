@@ -1,0 +1,182 @@
+:root {
+  --ui-color-page: #F5F6F9;
+  --ui-color-card: #FFFFFF;
+  --ui-color-title: #313140;
+  --ui-color-text: #515164;
+  --ui-color-secondary: #767687;
+  --ui-color-placeholder: #9C9CAC;
+  --ui-color-disabled: #C7CBD3;
+  --ui-color-border: #E5E8ED;
+  --ui-color-divider: #F5F6F9;
+  --ui-color-hover: #EBEDF1;
+  --ui-color-primary: #FF4338;
+  --ui-color-primary-hover: #D3382F;
+  --ui-color-primary-shade-1: #FF8E87;
+  --ui-color-primary-surface: #FFF1F1;
+  --ui-color-link: #59779A;
+  --ui-color-link-hover: #4B647D;
+  --ui-color-info: #00B3BD;
+  --ui-color-info-surface: #EDFAFA;
+  --ui-color-accessory-1: #FFF9E6;
+  --ui-color-accessory-2: #E6F7F8;
+  --ui-color-accessory-3: #FFF1F1;
+  --ui-color-accessory-4: #E7FCF5;
+  --ui-color-available: #98D45F;
+  --ui-color-available-surface: #F4FBEA;
+  --ui-color-available-current-day-surface: #E7FCF5;
+  --ui-color-success: #0DE298;
+  --ui-color-success-surface: #ECFFF9;
+  --ui-color-warning: #FFC400;
+  --ui-color-warning-surface: #FFF9E6;
+  --ui-color-error: #D3382F;
+  --ui-color-error-surface: #FFF1F1;
+  --ui-color-on-primary: #FFFFFF;
+  --ui-color-modal-mask: rgb(0 0 0 / 60%);
+  --ui-color-upload-overlay: rgb(49 49 64 / 68%);
+  --ui-color-upload-loading: rgb(49 49 64 / 68%);
+  --ui-color-on-primary-muted: rgb(255 255 255 / 45%);
+  --ui-gradient-pro: linear-gradient(88deg, #FF4338 0%, #1C07FF 100%);
+  --ui-gradient-pro-motion: linear-gradient(88deg, #1C07FF 4.74%, #FF4338 49.715%, #FF4338 54.74%, #1C07FF 99.715%);
+  /* A light wash for the BETA badge, and light at both ends: the two light blues
+     the system already declares — the info surface and accessory 2 — at the same
+     88deg as the other gradients. The word on it takes the info colour, which is
+     the step darker that keeps it readable. Deepen the end stop with
+     color-mix(in srgb, var(--ui-color-info) 12%, var(--ui-color-card)) if it wants
+     more separation. */
+  --ui-gradient-skeleton: linear-gradient(90deg, #EBEDF1 25%, #F5F6F9 37%, #EBEDF1 63%);
+  --ui-color-on-emphasis-muted: rgb(255 255 255 / 55%);
+  --ui-color-emphasis-weak: #C7CBD3;
+  --ui-color-disabled-weak: #E5E8ED;
+  --ui-color-hover-overlay: #EBEDF1;
+  --ui-shadow-card-hover: 0 1px 2px 0 #0F172A00, 0 4px 12px 0 #0F172A0A;
+  --ui-shadow-card: 0 0 0 0 #0F172A00;
+  --ui-shadow-md: 0 2px 4px 0 #001A5608, 0 4px 8px 0 #00174E0A;
+  --ui-shadow-lg: 0 4px 8px 0 #00174F08, 0 12px 24px 0 #0019530E;
+  --ui-shadow-xl: 0 8px 16px 0 #00195309, 0 24px 48px 0 #00195312;
+  --ui-shadow-thumb: 0 1px 3px rgb(49 49 64 / 12%);
+  --ui-shadow-thumb-focus: 0 0 0 4px rgb(49 49 64 / 12%);
+  --ui-shadow-switch: 0 1px 3px rgb(49 49 64 / 18%);
+  /* Stacking order. Four rungs, and the only rule is that a thing never shares
+     a rung with a thing it has to cover — two elements on the same rung are
+     ordered by their position in the document, which is not a decision anyone
+     made. That is exactly how the top nav's language menu ended up underneath
+     a profile page's pinned tab bar: both sat at 30, and the tab bar came
+     later in the markup.
+       content — anything a page pins or floats above its own body
+       shell   — the app frame, which covers page content
+       overlay — masks and drawers, which cover the frame as well */
+  --ui-layer-content: 30;
+  --ui-layer-top-nav: 40;
+  --ui-layer-sidebar: 41;
+  --ui-layer-overlay: 60;
+  /* Above what a page can stick: a scrollable calendar's header sits at 101 so
+     hovering a slot cannot paint over it, and a drawer has to clear that. */
+  --ui-layer-drawer: 120;
+  --ui-radius-xs: 4px;
+  --ui-radius-md: 8px;
+  --ui-radius-lg: 12px;
+  --ui-radius-xl: 16px;
+  --ui-radius-full: 9999px;
+  --ui-space-0: 0px;
+  --ui-space-half: 2px;
+  --ui-space-1: 4px;
+  --ui-space-2: 8px;
+  --ui-space-3: 12px;
+  --ui-space-4: 16px;
+  --ui-space-6: 24px;
+  --ui-space-7: 32px;
+  --ui-space-8: 40px;
+  --ui-space-9: 48px;
+  --ui-space-10: 64px;
+  --ui-space-11: 80px;
+  --ui-space-12: 96px;
+  /* Typography. The Foundation had no type tokens at all, so italki-ui.css
+     shipped no font-family and every consumer had to restate the stack.
+     Sizes are COMPONENTS.md's "Available size tokens" plus the 10px the tier
+     table documents as {typography.micro}; line heights are the values that
+     table pairs with them; weight names are its own. */
+  --ui-font-family: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --ui-font-weight-regular: 400;
+  --ui-font-weight-medium: 500;
+  --ui-font-weight-semibold: 600;
+  --ui-font-weight-bold: 700;
+  --ui-font-weight-extrabold: 800;
+  --ui-font-size-10: 10px;
+  --ui-font-size-12: 12px;
+  --ui-font-size-14: 14px;
+  --ui-font-size-16: 16px;
+  --ui-font-size-18: 18px;
+  --ui-font-size-20: 20px;
+  --ui-font-size-24: 24px;
+  --ui-font-size-28: 28px;
+  --ui-font-size-32: 32px;
+  --ui-font-size-36: 36px;
+  --ui-font-size-40: 40px;
+  --ui-font-size-44: 44px;
+  --ui-font-size-48: 48px;
+  --ui-font-size-52: 52px;
+  --ui-font-size-60: 60px;
+  --ui-line-height-14: 14px;
+  --ui-line-height-16: 16px;
+  --ui-line-height-18: 18px;
+  --ui-line-height-20: 20px;
+  --ui-line-height-22: 22px;
+  --ui-line-height-24: 24px;
+  --ui-line-height-28: 28px;
+  --ui-line-height-30: 30px;
+  --ui-line-height-32: 32px;
+  --ui-line-height-34: 34px;
+  --ui-line-height-40: 40px;
+  --ui-line-height-48: 48px;
+  --ui-line-height-60: 60px;
+  --ui-width-control-compact: 224px;
+  --ui-width-control-default: 336px;
+  --ui-width-control-wide: 440px;
+  --ui-layout-content-max-width: 1240px;
+  --ui-layout-grid-columns-desktop: 12;
+  --ui-layout-grid-columns-tablet: 8;
+  --ui-layout-grid-columns-mobile: 4;
+  --ui-layout-grid-gutter-desktop: 24px;
+  --ui-layout-grid-gutter-tablet: 24px;
+  --ui-layout-grid-gutter-mobile: 16px;
+}
+
+[data-theme="dark"] {
+  --ui-color-page: #1A1A26;
+  --ui-color-card: #313140;
+  --ui-color-title: #FFFFFF;
+  --ui-color-text: #E5E8ED;
+  --ui-color-secondary: #9C9CAC;
+  --ui-color-placeholder: #767687;
+  --ui-color-disabled: #515164;
+  --ui-color-border: #3C3C4F;
+  --ui-color-divider: #3A3A4D;
+  --ui-color-hover: #3C3C4F;
+  --ui-color-primary: #D3382F;
+  --ui-color-primary-hover: #8F2620;
+  --ui-color-primary-shade-1: #CC352C;
+  --ui-color-primary-surface: #8F2620;
+  --ui-color-link: #7DA9C0;
+  --ui-color-link-hover: #A1C7DA;
+  --ui-color-info: #009897;
+  --ui-color-info-surface: #00504F;
+  --ui-color-accessory-1: #3D2E00;
+  --ui-color-accessory-2: #3D5577;
+  --ui-color-accessory-3: #8F2620;
+  --ui-color-accessory-4: #003F2B;
+  --ui-color-available: #77B23F;
+  --ui-color-available-surface: #2F471B;
+  --ui-color-available-current-day-surface: #2F471B;
+  --ui-color-success: #00B377;
+  --ui-color-success-surface: #003F2B;
+  --ui-color-warning: #E5AC00;
+  --ui-color-warning-surface: #3D2E00;
+  --ui-color-error: #CC352C;
+  --ui-color-error-surface: #8F2620;
+  --ui-color-modal-mask: rgb(0 0 0 / 80%);
+  --ui-color-upload-overlay: rgb(49 49 64 / 68%);
+  --ui-color-upload-loading: rgb(49 49 64 / 68%);
+  --ui-color-emphasis-weak: #515164;
+  --ui-color-disabled-weak: #767687;
+  --ui-color-hover-overlay: #3C3C4F;
+}
