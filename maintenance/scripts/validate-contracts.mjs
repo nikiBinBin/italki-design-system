@@ -1237,6 +1237,13 @@ if (insideGit) {
       assert(tracked(`${framedRoot}/${reference}`), `A framed pattern page loads an untracked file: ${framedRoot}/${reference}`);
     }
   }
+  /* Tracked is necessary and was not sufficient. GitHub Pages runs Jekyll,
+     which drops every path with a leading underscore from what it publishes —
+     so patterns/_dc/ and _ds_bundle.js were committed, served 404, and the
+     framed pages rendered as unstyled markup with broken icons. .nojekyll at
+     the root turns that off, and the kit names enough underscore paths that
+     the file is not optional. */
+  assert(fs.existsSync(path.join(root, ".nojekyll")), "The published kit names underscore paths, which Jekyll drops: the site needs .nojekyll at the repository root");
   /* ds-base.js resolves these against the payload root, so they ship with it. */
   for (const file of ["_ds_bundle.js", "_ds_bundle.css", "styles.css", "tokens/tokens.css"]) {
     assert(tracked(`maintenance/ds-project/${file}`), `The framed pages need the kit they were built against: maintenance/ds-project/${file} is not tracked`);
