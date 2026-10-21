@@ -1213,4 +1213,34 @@ for (const reference of [
   assert(catalog.includes(reference), `Catalog is not consuming shared UI implementation: ${reference}`);
 }
 
+/* 2026-10-19: the pattern routes stopped describing the rendering and started
+   framing it (1e3b95a), and the pages they frame are build output under
+   maintenance/ds-project/, which .gitignore excludes. The site is GitHub Pages
+   serving this repository, so an untracked file is a file the site does not
+   have: all three cards were a 404 for two months and nothing here noticed.
+   A path the Catalog frames has to be a path the site can serve. */
+const tracked = (relative) => childProcess.spawnSync("git", ["ls-files", "--error-unmatch", relative], { cwd: root, encoding: "utf8" }).status === 0;
+const insideGit = childProcess.spawnSync("git", ["rev-parse", "--is-inside-work-tree"], { cwd: root, encoding: "utf8" }).status === 0;
+if (insideGit) {
+  const framedRoot = "maintenance/ds-project/patterns";
+  assert(catalog.includes(`src="${framedRoot}/${"${card}"}/${"${card}"}.html"`), `The pattern routes must frame a built page under ${framedRoot}/`);
+  const cardMap = catalog.match(/const card = \{([^}]*)\}\[byName\(entry\)\]/);
+  assert(cardMap, "The pattern routes must name their cards in one map the publish check can read");
+  const cards = [...cardMap[1].matchAll(/"\s*:\s*"([A-Za-z]+)"/g)].map((match) => match[1]);
+  assert(cards.length, "The pattern card map named no cards");
+  for (const card of cards) {
+    const page = `${framedRoot}/${card}/${card}.html`;
+    assert(tracked(page), `The Catalog frames a page the published site cannot serve: ${page} is not tracked`);
+    /* The pages share one runtime, and a framed page without it renders as
+       unstyled markup — which is what a reader sees, not an error. */
+    for (const reference of new Set([...read(page).matchAll(/(?:src|href)="\.\.\/(_dc\/[^"]+)"/g)].map((match) => match[1]))) {
+      assert(tracked(`${framedRoot}/${reference}`), `A framed pattern page loads an untracked file: ${framedRoot}/${reference}`);
+    }
+  }
+  /* ds-base.js resolves these against the payload root, so they ship with it. */
+  for (const file of ["_ds_bundle.js", "_ds_bundle.css", "styles.css", "tokens/tokens.css"]) {
+    assert(tracked(`maintenance/ds-project/${file}`), `The framed pages need the kit they were built against: maintenance/ds-project/${file} is not tracked`);
+  }
+}
+
 console.log("Contract, token, asset, runtime, and Catalog-consumption checks passed.");
