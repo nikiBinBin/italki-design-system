@@ -79,7 +79,10 @@ button{font:inherit;cursor:pointer;color:inherit}
 .menu.open{display:block}
 .menu label{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;cursor:pointer;color:var(--title)}
 .menu label:hover{background:var(--ground)}
-.menu input{width:16px;height:16px;accent-color:var(--text);margin:0}
+.menu input{appearance:none;-webkit-appearance:none;width:18px;height:18px;flex:none;margin:0;border:1px solid #C7CBD3;border-radius:4px;background:transparent center/14px no-repeat;cursor:pointer}
+/* DS 3.0 checkbox: Disabled-grey outline when off, Text fill with a white tick when on. */
+.menu label:hover input:not(:checked){background-color:var(--line)}
+.menu input:checked{border-color:var(--text);background-color:var(--text);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.2 6.6 11.2 12.5 4.8' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
 .menu img{width:20px;height:20px}
 .list{flex:1;overflow-y:auto}
 .inner{max-width:752px;margin:0 auto;padding:8px 32px 40px}
