@@ -79,7 +79,7 @@ button{font:inherit;cursor:pointer;color:inherit}
 .inner{max-width:752px;margin:0 auto;padding:8px 32px 40px}
 .keep{text-align:center;color:var(--faint);font-size:12px;margin:16px 0 0}
 .card{background:#fff;border-radius:16px;padding:16px;margin-top:16px}
-.time{color:var(--faint);font-size:12px;margin:24px 0 8px}
+.time{color:var(--faint);font-size:12px;margin:24px 0 8px;text-align:center}
 .chd{display:flex;align-items:center;gap:8px;margin-bottom:12px}
 .chd img{width:20px;height:20px}
 .chd b{flex:1;font-size:12px;color:var(--text)}
@@ -154,9 +154,17 @@ const UNREAD = { lesson: 2, promotion: 1, service: 0, community: 0, account: 1, 
 
 // Placeholder messages, chat order (newest at the bottom).
 const SLOTS = [
-  { type: 'account', time: 'Oct 26' }, { type: 'community', time: 'Oct 27' },
-  { type: 'learning', time: 'Oct 28' }, { type: 'promotion', time: 'Yesterday' },
-  { type: 'service', time: 'Yesterday' }, { type: 'lesson', time: '09:10' },
+  { type: 'account', time: 'Oct 18' }, { type: 'promotion', time: 'Oct 19' },
+  { type: 'lesson', time: 'Oct 20' }, { type: 'community', time: 'Oct 21' },
+  { type: 'learning', time: 'Oct 21' }, { type: 'service', time: 'Oct 22' },
+  { type: 'account', time: 'Oct 23' }, { type: 'lesson', time: 'Oct 24' },
+  { type: 'promotion', time: 'Oct 25' }, { type: 'community', time: 'Oct 25' },
+  { type: 'learning', time: 'Oct 26' }, { type: 'service', time: 'Oct 27' },
+  { type: 'account', time: 'Oct 28' }, { type: 'community', time: 'Oct 29' },
+  { type: 'promotion', time: 'Oct 30' }, { type: 'learning', time: 'Oct 31' },
+  { type: 'service', time: 'Yesterday' }, { type: 'promotion', time: 'Yesterday' },
+  { type: 'lesson', time: '08:30' }, { type: 'community', time: '09:05' },
+  { type: 'lesson', time: '09:10' }, { type: 'account', time: '09:40' },
   { type: 'lesson', time: '10:24' }, { type: 'learning', time: '10:40' },
 ];
 
