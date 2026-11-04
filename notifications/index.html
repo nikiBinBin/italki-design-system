@@ -154,6 +154,12 @@ button{font:inherit;cursor:pointer;color:inherit}
 .nb .grp{display:flex;align-items:center}
 .nb .grp > *{box-shadow:0 0 0 2px var(--ground)}
 .nb .grp > * + *{margin-left:-4px}
+.nb .grp > *{position:relative}
+/* The site's avatar hover: a 2px #E5E8ED outline. In the overlapping group the hovered
+   avatar rises above its neighbours so the outline is never cut off. */
+.nb .av,.nb .a32{transition:box-shadow .2s}
+.nb .av:hover,.nb .a32:hover{box-shadow:0 0 0 2px #E5E8ED}
+.nb .grp > .a32:hover{z-index:1;box-shadow:0 0 0 2px #E5E8ED}
 .nb .more{width:32px;height:32px;border-radius:999px;background:var(--line);display:flex;align-items:center;justify-content:center;gap:4px;flex:none}
 .nb .more span{width:4px;height:4px;border-radius:999px;background:var(--faint)}
 .nb .sum{margin:8px 0 0;font-size:14px;line-height:20px;font-weight:600;color:var(--text)}
