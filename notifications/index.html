@@ -195,12 +195,12 @@ button{font:inherit;cursor:pointer;color:inherit}
 .snav div.on{color:var(--title);font-weight:600;border-left-color:var(--primary)}
 .scard{flex:1;min-width:0;max-width:880px;background:#fff;border-radius:12px;padding:20px 24px}
 .scard h2{margin:0 0 8px;font-size:20px;line-height:28px;color:var(--title)}
-.ssec{display:flex;gap:16px;padding:24px 0;border-bottom:1px solid var(--line)}
+.ssec{display:flex;gap:16px;padding:24px 0;border-bottom:1px solid var(--ground)}
 .ssec:last-child{border-bottom:0}
 .ssec h6{margin:0;flex:1;font-size:14px;line-height:20px;color:var(--title)}
 .ssec .body{flex:2;min-width:0}
 .ssec .new{display:inline-block;margin-left:6px;font-size:10px;font-weight:700;line-height:16px;padding:0 6px;border-radius:999px;background:var(--primary);color:#fff;vertical-align:1px}
-.srow{display:flex;gap:12px;align-items:flex-start;padding:24px 0;border-bottom:1px solid var(--line)}
+.srow{display:flex;gap:12px;align-items:flex-start;padding:24px 0;border-bottom:1px solid var(--ground)}
 .srow:first-child,.lang+.srow{padding-top:0}
 .srow:last-child{border-bottom:0;padding-bottom:0}
 .srow input{appearance:none;-webkit-appearance:none;width:18px;height:18px;flex:none;margin:1px 0 0;border:1px solid #C7CBD3;border-radius:4px;background:transparent center/14px no-repeat;cursor:pointer}
@@ -212,7 +212,7 @@ button{font:inherit;cursor:pointer;color:inherit}
 .srow p{margin:4px 0 0;color:var(--faint)}
 .closed{display:flex;align-items:center;gap:6px;font-weight:700;color:var(--title)}
 .closed i{width:16px;height:16px;border-radius:999px;background:var(--primary);color:#fff;font-style:normal;font-size:11px;line-height:16px;text-align:center}
-.lang{display:flex;align-items:center;justify-content:space-between;padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:24px;color:var(--title);font-weight:500}
+.lang{display:flex;align-items:center;justify-content:space-between;padding-bottom:24px;border-bottom:1px solid var(--ground);margin-bottom:24px;color:var(--title);font-weight:500}
 .lang span{border:1px solid var(--line);border-radius:8px;padding:8px 12px;width:50%;color:var(--title);font-weight:400}
 
 @media (max-width:760px){.side{width:220px}.inner{padding:8px 16px 40px}}
@@ -361,14 +361,21 @@ function page() {
     ? DATA.cards.filter(c => show(c.channel)).map(c => ({ html: head(c.channel, c.time) + body(c), link: c.buttons.length > 0 }))
     : SK_KINDS.map(k => ({ html: skHead + SKETCH[k], link: false }));
   let h = items.map((x, i) => `<div class="card enter ${x.link ? 'link' : ''}" style="animation-delay:${Math.min(i, 8) * 50}ms">${x.html}</div>`).join('');
-  if (state.loaded) h += items.length ? `<p class="keep">Notifications are kept for 6 months.</p>` : `<p class="keep">No notifications yet</p>`;
+  if (state.loaded) h += items.length ? `<p class="keep">Notifications are kept for 6 months.</p>` : `<p class="keep">${state.filter.length ? 'No notifications yet' : 'No channel selected'}</p>`;
   $('#inner').innerHTML = h;
   $('#list').scrollTop = 0;
 }
 
 // Opening the page shows the skeleton first, then the loaded cards.
 let loadTimer;
+// The filter always starts from Settings: channels switched off there start unticked.
+// Changing the filter on the page never touches Settings and is not remembered, so the
+// next visit starts from Settings again (Niki, 2026-11-04).
+const filterFromSettings = () => DATA.types.map(t => t.key).filter(k => !muted(k));
+
 function load() {
+  state.filter = filterFromSettings();
+  state.menu = false;
   state.loaded = false;
   clearTimeout(loadTimer);
   loadTimer = setTimeout(() => { state.loaded = true; if (state.view === 'notifications') page(); }, 900);
@@ -421,11 +428,8 @@ document.addEventListener('click', e => {
   if (e.target.closest('[data-open-notifications]')) { if (state.view !== 'notifications') load(); state.view = 'notifications'; state.avatar = false; render(); return; }
   const inn = e.target.closest('[data-internal]');
   if (inn) {
-    // Switching a channel off in Settings also unticks it in the page's filter; switching
-    // it back on ticks it again. Ticking it in the filter still shows its history.
+    // Settings only; the page's filter picks this up the next time the page is entered.
     state.internal[inn.dataset.internal] = inn.checked;
-    const on = DATA.types.map(t => t.key).filter(k => !muted(k));
-    state.filter = on;
     sidebar();
     return;
   }
