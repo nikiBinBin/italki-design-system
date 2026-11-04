@@ -90,14 +90,15 @@ button{font:inherit;cursor:pointer;color:inherit}
 .menu label:hover input:not(:checked){background-color:var(--line)}
 .menu input:checked{border-color:var(--text);background-color:var(--text);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.2 6.6 11.2 12.5 4.8' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
 .menu img{width:20px;height:20px}
-.menu .lbl{display:flex;flex-direction:column}
+.menu label{align-items:flex-start}
+.menu label input{margin-top:1px}
+.menu .lbl{display:flex;flex-direction:column;line-height:20px}
 .menu .lbl small{color:var(--faint);font-size:12px;line-height:16px}
 .list{flex:1;overflow-y:auto}
 .inner{max-width:752px;margin:0 auto;padding:8px 32px 40px}
 .keep{text-align:center;color:var(--faint);font-size:12px;margin:16px 0 0}
 .card{background:#fff;border-radius:16px;padding:16px;margin-top:16px}
-/* Entrance: cards rise 8px and fade in one after another. The page opens at the bottom,
-   so the stagger runs from the newest (bottom) card upward. */
+/* Entrance: cards rise 8px and fade in one after another, newest (top) first. */
 @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .card.enter{animation:rise .36s cubic-bezier(.2,.7,.3,1) both}
 @media (prefers-reduced-motion:reduce){.card.enter{animation:none}}
@@ -222,7 +223,7 @@ const unreadTotal = () => Object.entries(UNREAD_BY).reduce((n, [k, v]) => n + (m
 // Service & Account, promotion under Learning & Tips.
 const CHANNEL_OF = { lesson: 'lesson', service: 'service', account: 'service', community: 'community', learning: 'learning', promotion: 'learning' };
 
-// Placeholder messages, chat order (newest at the bottom).
+// Placeholder messages, listed oldest to newest; the page shows them newest first.
 const SLOTS = [
   { kind: 'account', time: 'Oct 18' }, { kind: 'promotion', time: 'Oct 19' },
   { kind: 'lesson', time: 'Oct 20' }, { kind: 'community', time: 'Oct 21' },
@@ -285,14 +286,14 @@ function filterUi() {
 }
 
 function page() {
-  const slots = SLOTS.filter(s => !state.filter.length || state.filter.includes(CHANNEL_OF[s.kind]));
-  let h = `<p class="keep">Notifications are kept for 6 months.</p>`;
-  h += slots.map((s, i) => {
+  const slots = SLOTS.filter(s => !state.filter.length || state.filter.includes(CHANNEL_OF[s.kind])).reverse();
+  let h = slots.map((s, i) => {
     const t = TYPE[CHANNEL_OF[s.kind]];
-    return `<div class="card enter" style="animation-delay:${Math.min(slots.length - 1 - i, 8) * 50}ms"><div class="chd"><img src="${t.icon}" alt=""><b>${t.label}</b><span>${s.time}</span></div>${SKETCH[s.kind]}</div>`;
+    return `<div class="card enter" style="animation-delay:${Math.min(i, 8) * 50}ms"><div class="chd"><img src="${t.icon}" alt=""><b>${t.label}</b><span>${s.time}</span></div>${SKETCH[s.kind]}</div>`;
   }).join('');
+  h += `<p class="keep">Notifications are kept for 6 months.</p>`;
   $('#inner').innerHTML = h;
-  const l = $('#list'); l.scrollTop = l.scrollHeight;
+  $('#list').scrollTop = 0;
 }
 
 const MENU = [['My italki Plus'], ['My test'], ['Refer a Friend'], ['Support'], ['Become a teacher'], null, ['Language & Currency'], ['Settings', 'data-open-settings'], ['Log Out']];
@@ -358,9 +359,9 @@ document.addEventListener('click', e => {
   const f = e.target.closest('[data-f]');
   if (f) {
     const k = f.dataset.f;
-    // With a channel switched off in Settings, "All" means every channel still on.
-    const on = DATA.types.map(t => t.key).filter(c => !muted(c));
-    if (k === 'all') state.filter = on.length === DATA.types.length ? [] : on;
+    // "All" always shows every channel, switched-off ones included: switching a channel
+    // off only stops its new notifications, it never hides what is there.
+    if (k === 'all') state.filter = [];
     else {
       state.filter = state.filter.includes(k) ? state.filter.filter(x => x !== k) : [...state.filter, k];
       if (state.filter.length === DATA.types.length) state.filter = [];
