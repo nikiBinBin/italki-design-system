@@ -227,6 +227,25 @@ button{font:inherit;cursor:pointer;color:inherit}
 .lang span{border:1px solid var(--line);border-radius:8px;padding:8px 12px;width:50%;color:var(--title);font-weight:400}
 
 @media (max-width:760px){.side{width:220px}.inner{padding:8px 16px 40px}}
+
+/* ---------- Phone (≤768px), as the code's mobile web: no sidebar, 16px gutters and card
+   padding, 24px channel avatars; Settings stacks with a Back link. ---------- */
+.mback{display:none}
+@media (max-width:768px){
+  .side,.amenu{display:none!important}
+  .bar{padding:0 16px}
+  .inner{padding:8px 16px 32px}
+  .card{padding:16px}
+  .chd img{width:24px;height:24px}
+  .menu{right:0;max-width:calc(100vw - 32px)}
+  .settings{flex-direction:column;align-items:stretch;padding:16px;gap:16px}
+  .snav{width:auto;display:flex;overflow-x:auto;padding:0 8px}
+  .snav div{border-left:0;border-bottom:2px solid transparent;white-space:nowrap}
+  .snav div.on{border-bottom-color:var(--primary)}
+  .scard{padding:16px}
+  .ssec{flex-direction:column;gap:12px}
+  .mback{display:flex;align-items:center;gap:4px;color:var(--title);font-weight:600;cursor:pointer}
+}
 </style>
 </head>
 <body>
@@ -416,7 +435,7 @@ const EMAIL = [
 const LOCK_TIP = 'These notifications are important and cannot be disabled.';
 const srow = (r, checked, attr = '') => `<div class="srow ${r.locked ? 'locked' : ''}"><input type="checkbox" ${checked ? 'checked' : ''} ${r.locked ? 'disabled' : ''} ${attr}><div><b>${r.label}${r.locked || r.q ? `<span class="q" title="${r.locked ? LOCK_TIP : ''}">?</span>` : ''}</b><p>${r.desc}</p></div></div>`;
 function settings() {
-  $('#viewSettings').innerHTML = `<div class="settings">
+  $('#viewSettings').innerHTML = `<div class="settings"><div class="mback" data-open-notifications>‹ Notifications</div>
     <div class="snav"><div>General</div><div>Privacy</div><div class="on">Notifications</div><div>Payment</div></div>
     <div class="scard"><h2>Notifications</h2>
       <div class="ssec"><h6>Internal Notifications<span class="new">NEW</span></h6><div class="body">${INTERNAL.map(r => srow(r, r.locked || state.internal[r.key], r.locked ? '' : `data-internal="${r.key}"`)).join('')}</div></div>
