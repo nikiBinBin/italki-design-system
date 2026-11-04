@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href="https://design.italkiux.com/Assets/Icons/favicon-32.png" sizes="32x32"><link rel="apple-touch-icon" href="https://design.italkiux.com/Assets/Icons/apple-touch-icon.png"><meta property="og:type" content="website"><meta property="og:title" content="Notifications · italki notification channel"><meta property="og:image" content="https://design.italkiux.com/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">
-<title>Notifications · italki notification channel</title>
+<link rel="icon" href="https://design.italkiux.com/Assets/Icons/favicon-32.png" sizes="32x32"><link rel="apple-touch-icon" href="https://design.italkiux.com/Assets/Icons/apple-touch-icon.png"><meta property="og:type" content="website"><meta property="og:title" content="Notifications · italki notifications channel"><meta property="og:image" content="https://design.italkiux.com/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">
+<title>Notifications · italki notifications channel</title>
 <!--
   IPD-210: where system notifications live once they leave Mira. Option A, chosen
   2026-11-04: one "italki notification" row pinned in Messages, opening a Notifications
@@ -183,7 +183,7 @@ const chatRow = (c, i) => `<div class="row ${c.unread ? 'unread' : ''}"><img src
 
 function sidebar() {
   let h = NAV.map(n => `<div class="nav">${DATA.nav[n]}${n}</div>`).join('');
-  const rows = [`<div class="row note on"><img src="${DATA.channelIcon}" alt=""><span class="t">italki notification</span>${badge(UNREAD)}</div>`, ...CHATS.map(chatRow)];
+  const rows = [`<div class="row note on"><img src="${DATA.channelIcon}" alt=""><span class="t">italki notifications</span>${badge(UNREAD)}</div>`, ...CHATS.map(chatRow)];
   const shown = state.seeMore ? rows : rows.slice(0, 6);
   h += `<div class="sec"><div class="sec-h ${state.open.messages ? '' : 'closed'}" data-sec="messages">Messages ${chev}</div>`;
   if (state.open.messages) h += shown.join('') + `<div class="more" data-more>${state.seeMore ? 'See less' : 'See more'}</div>`;
