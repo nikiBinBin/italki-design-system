@@ -320,7 +320,7 @@ function filterUi() {
   $('#filter').innerHTML = `<button data-menu>${icon}Filter${on ? ` · ${state.filter.length}` : ''}</button>
     <div class="menu ${state.menu ? 'open' : ''}">
       <label><input type="checkbox" data-f="all" ${on ? '' : 'checked'}>All</label>
-      ${DATA.types.map(t => `<label><input type="checkbox" data-f="${t.key}" ${state.filter.includes(t.key) ? 'checked' : ''}><img src="${t.icon}" alt=""><span class="lbl">${t.label}${muted(t.key) ? '<small>Off in settings</small>' : ''}</span></label>`).join('')}
+      ${DATA.types.map(t => `<label><input type="checkbox" data-f="${t.key}" ${!on || state.filter.includes(t.key) ? 'checked' : ''}><img src="${t.icon}" alt=""><span class="lbl">${t.label}${muted(t.key) ? '<small>Off in settings</small>' : ''}</span></label>`).join('')}
       <div class="tosettings" data-open-settings>${DATA.menu.Settings}Notification settings</div>
     </div>`;
 }
@@ -440,8 +440,10 @@ document.addEventListener('click', e => {
     // off only stops its new notifications, it never hides what is there.
     if (k === 'all') state.filter = [];
     else {
-      state.filter = state.filter.includes(k) ? state.filter.filter(x => x !== k) : [...state.filter, k];
-      if (state.filter.length === DATA.types.length) state.filter = [];
+      // All ticks every channel, so unticking one keeps the rest; all ticked again is All.
+      const ticked = state.filter.length ? state.filter : DATA.types.map(t => t.key);
+      const next = ticked.includes(k) ? ticked.filter(x => x !== k) : [...ticked, k];
+      if (next.length) state.filter = next.length === DATA.types.length ? [] : next;
     }
     filterUi(); page(); return;
   }
