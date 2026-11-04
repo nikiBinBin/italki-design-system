@@ -29,7 +29,7 @@ button{font:inherit;cursor:pointer;color:inherit}
 
 /* ---------- shell ---------- */
 .app{flex:1;min-height:0;display:flex}
-.side{width:280px;flex:none;background:var(--white);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.side{width:324px;flex:none;background:var(--white);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
 .side .top{height:73px;flex:none;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 20px}
 .side .top{justify-content:space-between}
 .side .toggle{opacity:.85;cursor:pointer;display:flex}
@@ -37,11 +37,14 @@ button{font:inherit;cursor:pointer;color:inherit}
 .side{transition:width .2s ease}
 .side.collapsed{width:81px}
 .side.collapsed .top{justify-content:center;padding:0}
-.side.collapsed .top > img,.side.collapsed .nav span,.side.collapsed .row .t,.side.collapsed .row .badge,
+.side .mark{display:none;cursor:pointer}
+.side.collapsed .mark{display:block}
+.side.collapsed .toggle,.side.collapsed .top > img.word,.side.collapsed .nav span,.side.collapsed .row .t,.side.collapsed .row .badge,
 .side.collapsed .sec-h,.side.collapsed .more,.side.collapsed .lessons-sec,.side.collapsed .wallet span{display:none}
 .side.collapsed .nav,.side.collapsed .row{justify-content:center}
 .side.collapsed .foot{flex-direction:column;gap:12px;padding:12px 0}
-.side.collapsed .wallet{padding:6px}
+.side.collapsed .wallet{width:40px;height:40px;padding:0;justify-content:center;border-radius:999px}
+.side.collapsed .me{width:40px;height:40px}
 .foot{flex:none;border-top:1px solid var(--line);padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
 .wallet{display:flex;align-items:center;gap:6px;background:var(--ground);border-radius:999px;padding:6px 12px 6px 8px;font-size:12px;font-weight:700;color:var(--title)}
 .me{width:32px;height:32px;border-radius:999px;object-fit:cover}
@@ -175,7 +178,7 @@ button{font:inherit;cursor:pointer;color:inherit}
 <body>
 <div class="app">
   <aside class="side">
-    <div class="top"><img src="../Assets/Icons/logo-italki-wordmark.svg" width="56" height="40" alt="italki"><span class="toggle" id="toggle" data-collapse></span></div>
+    <div class="top"><img class="word" src="../Assets/Icons/logo-italki-wordmark.svg" width="56" height="40" alt="italki"><img class="mark" data-collapse src="../Assets/Icons/logo-italki-logomark.svg" width="24" height="24" alt="italki"><span class="toggle" id="toggle" data-collapse></span></div>
     <div class="scroll" id="side"></div>
     <div class="foot"><span class="wallet"><img src="../Assets/Icons/wallet.svg" width="20" height="20" alt=""><span>USD 120.00</span></span><img class="me" data-avatar src="../Assets/Images/faces/08.jpg" alt=""></div>
     <div class="amenu" id="amenu"></div>
@@ -252,7 +255,9 @@ function sidebar() {
   // among them; here its latest notification is newer than all but two chats.
   const rows = CHATS.map(chatRow);
   rows.splice(2, 0, `<div class="row note ${state.view === 'notifications' ? 'on' : ''}" data-open-notifications><img src="${DATA.channelIcon}" alt=""><span class="t">italki notifications</span>${badge(UNREAD)}</div>`);
-  const shown = state.seeMore ? rows : rows.slice(0, 6);
+  // The collapsed rail lists every conversation; the expanded section caps at 6.
+  const collapsed = document.querySelector('.side')?.classList.contains('collapsed');
+  const shown = state.seeMore || collapsed ? rows : rows.slice(0, 6);
   h += `<div class="sec"><div class="sec-h ${state.open.messages ? '' : 'closed'}" data-sec="messages">Messages ${chev}</div>`;
   if (state.open.messages) h += shown.join('') + `<div class="more" data-more>${state.seeMore ? 'See less' : 'See more'}</div>`;
   h += `</div>`;
@@ -325,7 +330,7 @@ function render() {
 }
 
 document.addEventListener('click', e => {
-  if (e.target.closest('[data-collapse]')) { document.querySelector('.side').classList.toggle('collapsed'); state.avatar = false; avatarMenu(); return; }
+  if (e.target.closest('[data-collapse]')) { document.querySelector('.side').classList.toggle('collapsed'); state.avatar = false; sidebar(); avatarMenu(); return; }
   if (e.target.closest('[data-avatar]')) { state.avatar = !state.avatar; avatarMenu(); return; }
   if (e.target.closest('[data-open-settings]')) { state.view = 'settings'; state.avatar = false; state.menu = false; render(); return; }
   if (e.target.closest('[data-open-notifications]')) { state.view = 'notifications'; state.avatar = false; render(); return; }
