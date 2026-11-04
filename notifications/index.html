@@ -91,9 +91,10 @@ button{font:inherit;cursor:pointer;color:inherit}
 .menu input:checked{border-color:var(--text);background-color:var(--text);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.2 6.6 11.2 12.5 4.8' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
 .menu img{width:20px;height:20px}
 /* All: the four channel avatars overlapping, 8px overlap, 2px white ring between them. */
-.menu .stack{display:flex;flex:none}
-.menu .stack img{border-radius:999px;box-shadow:0 0 0 2px #fff}
-.menu .stack img + img{margin-left:-8px}
+.menu .avstack{display:flex;flex:none;width:56px}
+.menu .avstack img{flex:none}
+.menu .avstack img{border-radius:999px;box-shadow:0 0 0 2px #fff}
+.menu .avstack img + img{margin-left:-8px}
 .menu label{align-items:flex-start}
 .menu label input{margin-top:1px}
 .menu .lbl{display:flex;flex-direction:column;line-height:20px}
@@ -330,7 +331,7 @@ function filterUi() {
   const icon = `<span class="ic"><img src="../Assets/Icons/16px/filter-sm.svg" width="16" height="16" alt="">${on ? '<span class="dot"></span>' : ''}</span>`;
   $('#filter').innerHTML = `<button data-menu>${icon}Filter${on ? ` · ${state.filter.length}` : ''}</button>
     <div class="menu ${state.menu ? 'open' : ''}">
-      <label><input type="checkbox" data-f="all" ${on ? '' : 'checked'}><span class="stack">${DATA.types.map(t => `<img src="${t.icon}" alt="">`).join('')}</span>All</label>
+      <label><input type="checkbox" data-f="all" ${on ? '' : 'checked'}><span class="avstack">${DATA.types.map(t => `<img src="${t.icon}" alt="">`).join('')}</span>All</label>
       ${DATA.types.map(t => `<label><input type="checkbox" data-f="${t.key}" ${state.filter.includes(t.key) ? 'checked' : ''}><img src="${t.icon}" alt=""><span class="lbl">${t.label}${muted(t.key) ? '<small>Off in settings</small>' : ''}</span></label>`).join('')}
       <div class="tosettings" data-open-settings>${DATA.menu.Settings}Notification settings</div>
     </div>`;
