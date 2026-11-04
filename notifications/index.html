@@ -90,6 +90,8 @@ button{font:inherit;cursor:pointer;color:inherit}
 .menu label:hover input:not(:checked){background-color:var(--line)}
 .menu input:checked{border-color:var(--text);background-color:var(--text);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.2 6.6 11.2 12.5 4.8' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
 .menu img{width:20px;height:20px}
+.menu .lbl{display:flex;flex-direction:column}
+.menu .lbl small{color:var(--faint);font-size:12px;line-height:16px}
 .list{flex:1;overflow-y:auto}
 .inner{max-width:752px;margin:0 auto;padding:8px 32px 40px}
 .keep{text-align:center;color:var(--faint);font-size:12px;margin:16px 0 0}
@@ -210,7 +212,11 @@ const CHATS = [
   { text: 'You have a lesson invitation', unread: 0 },
 ];
 // Mock unread across the channel.
-const UNREAD = 7;
+// Mock unread per channel. A channel switched off in Settings stops receiving new
+// notifications, so it adds nothing to the count.
+const UNREAD_BY = { lesson: 2, service: 1, community: 1, learning: 3 };
+const muted = k => (k === 'community' || k === 'learning') && !state.internal[k];
+const unreadTotal = () => Object.entries(UNREAD_BY).reduce((n, [k, v]) => n + (muted(k) ? 0 : v), 0);
 
 // What a placeholder imitates, and the channel it belongs to: account sits under
 // Service & Account, promotion under Learning & Tips.
@@ -254,7 +260,7 @@ function sidebar() {
   // The channel sorts with the conversations by its latest message time, so it sits
   // among them; here its latest notification is newer than all but two chats.
   const rows = CHATS.map(chatRow);
-  rows.splice(2, 0, `<div class="row note ${state.view === 'notifications' ? 'on' : ''}" data-open-notifications><img src="${DATA.channelIcon}" alt=""><span class="t">italki notifications</span>${badge(UNREAD)}</div>`);
+  rows.splice(2, 0, `<div class="row note ${state.view === 'notifications' ? 'on' : ''}" data-open-notifications><img src="${DATA.channelIcon}" alt=""><span class="t">italki notifications</span>${badge(unreadTotal())}</div>`);
   // The collapsed rail lists every conversation; the expanded section caps at 6.
   const collapsed = document.querySelector('.side')?.classList.contains('collapsed');
   const shown = state.seeMore || collapsed ? rows : rows.slice(0, 6);
@@ -273,7 +279,7 @@ function filterUi() {
   $('#filter').innerHTML = `<button data-menu>${icon}Filter${on ? ` · ${state.filter.length}` : ''}</button>
     <div class="menu ${state.menu ? 'open' : ''}">
       <label><input type="checkbox" data-f="all" ${on ? '' : 'checked'}>All</label>
-      ${DATA.types.map(t => `<label><input type="checkbox" data-f="${t.key}" ${state.filter.includes(t.key) ? 'checked' : ''}><img src="${t.icon}" alt="">${t.label}</label>`).join('')}
+      ${DATA.types.map(t => `<label><input type="checkbox" data-f="${t.key}" ${state.filter.includes(t.key) ? 'checked' : ''}><img src="${t.icon}" alt=""><span class="lbl">${t.label}${muted(t.key) ? '<small>Off in settings</small>' : ''}</span></label>`).join('')}
       <div class="tosettings" data-open-settings>${DATA.menu.Settings}Notification settings</div>
     </div>`;
 }
@@ -335,7 +341,15 @@ document.addEventListener('click', e => {
   if (e.target.closest('[data-open-settings]')) { state.view = 'settings'; state.avatar = false; state.menu = false; render(); return; }
   if (e.target.closest('[data-open-notifications]')) { state.view = 'notifications'; state.avatar = false; render(); return; }
   const inn = e.target.closest('[data-internal]');
-  if (inn) { state.internal[inn.dataset.internal] = inn.checked; return; }
+  if (inn) {
+    // Switching a channel off in Settings also unticks it in the page's filter; switching
+    // it back on ticks it again. Ticking it in the filter still shows its history.
+    state.internal[inn.dataset.internal] = inn.checked;
+    const on = DATA.types.map(t => t.key).filter(k => !muted(k));
+    state.filter = on.length === DATA.types.length ? [] : on;
+    sidebar();
+    return;
+  }
   if (state.avatar && !e.target.closest('#amenu')) { state.avatar = false; avatarMenu(); }
   const sec = e.target.closest('[data-sec]');
   if (sec) { state.open[sec.dataset.sec] = !state.open[sec.dataset.sec]; sidebar(); return; }
@@ -344,7 +358,9 @@ document.addEventListener('click', e => {
   const f = e.target.closest('[data-f]');
   if (f) {
     const k = f.dataset.f;
-    if (k === 'all') state.filter = [];
+    // With a channel switched off in Settings, "All" means every channel still on.
+    const on = DATA.types.map(t => t.key).filter(c => !muted(c));
+    if (k === 'all') state.filter = on.length === DATA.types.length ? [] : on;
     else {
       state.filter = state.filter.includes(k) ? state.filter.filter(x => x !== k) : [...state.filter, k];
       if (state.filter.length === DATA.types.length) state.filter = [];
