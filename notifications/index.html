@@ -288,7 +288,7 @@ const SKETCH = {
   learning: `<div class="sk"><div class="ln w66"></div><div class="tiles"><div><div class="big w50"></div><div class="ln w75"></div></div><div><div class="big w50"></div><div class="ln w75"></div></div><div><div class="big w50"></div><div class="ln w75"></div></div></div><div class="btn"></div></div>`,
 };
 
-let state = { loaded: false, view: 'notifications', filter: [], open: { messages: true, lessons: true }, seeMore: false, menu: false, avatar: false, internal: { community: true, learning: true } };
+let state = { loaded: false, view: 'notifications', filter: ['lesson', 'service', 'community', 'learning'], open: { messages: true, lessons: true }, seeMore: false, menu: false, avatar: false, internal: { community: true, learning: true } };
 
 const $ = s => document.querySelector(s);
 const chev = `<img class="chev" src="../Assets/Icons/arrow-down-sm.svg" alt="">`;
@@ -315,12 +315,13 @@ function sidebar() {
 }
 
 function filterUi() {
-  const on = state.filter.length > 0;
+  // Narrowed = not every channel ticked; All is ticked exactly when every channel is.
+  const on = state.filter.length !== DATA.types.length;
   const icon = `<span class="ic"><img src="../Assets/Icons/16px/filter-sm.svg" width="16" height="16" alt="">${on ? '<span class="dot"></span>' : ''}</span>`;
   $('#filter').innerHTML = `<button data-menu>${icon}Filter${on ? ` · ${state.filter.length}` : ''}</button>
     <div class="menu ${state.menu ? 'open' : ''}">
       <label><input type="checkbox" data-f="all" ${on ? '' : 'checked'}>All</label>
-      ${DATA.types.map(t => `<label><input type="checkbox" data-f="${t.key}" ${!on || state.filter.includes(t.key) ? 'checked' : ''}><img src="${t.icon}" alt=""><span class="lbl">${t.label}${muted(t.key) ? '<small>Off in settings</small>' : ''}</span></label>`).join('')}
+      ${DATA.types.map(t => `<label><input type="checkbox" data-f="${t.key}" ${state.filter.includes(t.key) ? 'checked' : ''}><img src="${t.icon}" alt=""><span class="lbl">${t.label}${muted(t.key) ? '<small>Off in settings</small>' : ''}</span></label>`).join('')}
       <div class="tosettings" data-open-settings>${DATA.menu.Settings}Notification settings</div>
     </div>`;
 }
@@ -350,7 +351,7 @@ function body(c) {
 
 const head = (key, time) => { const t = TYPE[key]; return `<div class="chd"><img src="${t.icon}" alt=""><b>${t.label}</b><span>${time}</span></div>`; };
 const skHead = `<div class="sk"><div class="skh"><div class="s20"></div><div class="grow"><div class="ln w80p"></div></div><div class="ln w40p"></div></div></div>`;
-const show = key => !state.filter.length || state.filter.includes(key);
+const show = key => state.filter.includes(key);
 // Loading shapes: fixed mix, no channel and no filter, since nothing has loaded yet.
 const SK_KINDS = ['lesson', 'community', 'service', 'lesson', 'promotion', 'account', 'learning', 'lesson'];
 
@@ -424,7 +425,7 @@ document.addEventListener('click', e => {
     // it back on ticks it again. Ticking it in the filter still shows its history.
     state.internal[inn.dataset.internal] = inn.checked;
     const on = DATA.types.map(t => t.key).filter(k => !muted(k));
-    state.filter = on.length === DATA.types.length ? [] : on;
+    state.filter = on;
     sidebar();
     return;
   }
@@ -438,13 +439,10 @@ document.addEventListener('click', e => {
     const k = f.dataset.f;
     // "All" always shows every channel, switched-off ones included: switching a channel
     // off only stops its new notifications, it never hides what is there.
-    if (k === 'all') state.filter = [];
-    else {
-      // All ticks every channel, so unticking one keeps the rest; all ticked again is All.
-      const ticked = state.filter.length ? state.filter : DATA.types.map(t => t.key);
-      const next = ticked.includes(k) ? ticked.filter(x => x !== k) : [...ticked, k];
-      if (next.length) state.filter = next.length === DATA.types.length ? [] : next;
-    }
+    const ALL = DATA.types.map(t => t.key);
+    // Ticking All ticks every channel; unticking it clears them all (Niki, 2026-11-04).
+    if (k === 'all') state.filter = state.filter.length === ALL.length ? [] : ALL;
+    else state.filter = ALL.filter(x => (x === k ? !state.filter.includes(x) : state.filter.includes(x)));
     filterUi(); page(); return;
   }
   if (state.menu && !e.target.closest('.menu')) { state.menu = false; filterUi(); }
