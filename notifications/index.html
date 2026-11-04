@@ -7,7 +7,7 @@
 <title>Notifications · italki notifications channel</title>
 <!--
   IPD-210: where system notifications live once they leave Mira. Option A, chosen
-  2026-11-04: one "italki notification" row pinned in Messages, opening a Notifications
+  2026-11-04: one "italki notifications" row in Messages, sorted among the chats by time, opening a Notifications
   page with a channel filter, in a low-fi copy of the signed-in student shell. Message content is
   skeleton only; the real cards are Mira's own and are not redesigned.
   Built by scripts/build-notification-options.py from this template. Logo, nav icons,
@@ -82,6 +82,11 @@ button{font:inherit;cursor:pointer;color:inherit}
 .inner{max-width:752px;margin:0 auto;padding:8px 32px 40px}
 .keep{text-align:center;color:var(--faint);font-size:12px;margin:16px 0 0}
 .card{background:#fff;border-radius:16px;padding:16px;margin-top:16px}
+/* Entrance: cards rise 8px and fade in one after another. The page opens at the bottom,
+   so the stagger runs from the newest (bottom) card upward. */
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card.enter{animation:rise .36s cubic-bezier(.2,.7,.3,1) both}
+@media (prefers-reduced-motion:reduce){.card.enter{animation:none}}
 .time{color:var(--faint);font-size:12px;margin:24px 0 8px;text-align:center}
 .chd{display:flex;align-items:center;gap:8px;margin-bottom:12px}
 .chd img{width:20px;height:20px}
@@ -183,7 +188,10 @@ const chatRow = (c, i) => `<div class="row ${c.unread ? 'unread' : ''}"><img src
 
 function sidebar() {
   let h = NAV.map(n => `<div class="nav">${DATA.nav[n]}${n}</div>`).join('');
-  const rows = [`<div class="row note on"><img src="${DATA.channelIcon}" alt=""><span class="t">italki notifications</span>${badge(UNREAD)}</div>`, ...CHATS.map(chatRow)];
+  // The channel sorts with the conversations by its latest message time, so it sits
+  // among them; here its latest notification is newer than all but two chats.
+  const rows = CHATS.map(chatRow);
+  rows.splice(2, 0, `<div class="row note on"><img src="${DATA.channelIcon}" alt=""><span class="t">italki notifications</span>${badge(UNREAD)}</div>`);
   const shown = state.seeMore ? rows : rows.slice(0, 6);
   h += `<div class="sec"><div class="sec-h ${state.open.messages ? '' : 'closed'}" data-sec="messages">Messages ${chev}</div>`;
   if (state.open.messages) h += shown.join('') + `<div class="more" data-more>${state.seeMore ? 'See less' : 'See more'}</div>`;
@@ -207,9 +215,9 @@ function filterUi() {
 function page() {
   const slots = SLOTS.filter(s => !state.filter.length || state.filter.includes(CHANNEL_OF[s.kind]));
   let h = `<p class="keep">Notifications are kept for 6 months.</p>`;
-  h += slots.map(s => {
+  h += slots.map((s, i) => {
     const t = TYPE[CHANNEL_OF[s.kind]];
-    return `<div class="card"><div class="chd"><img src="${t.icon}" alt=""><b>${t.label}</b><span>${s.time}</span></div>${SKETCH[s.kind]}</div>`;
+    return `<div class="card enter" style="animation-delay:${Math.min(slots.length - 1 - i, 8) * 50}ms"><div class="chd"><img src="${t.icon}" alt=""><b>${t.label}</b><span>${s.time}</span></div>${SKETCH[s.kind]}</div>`;
   }).join('');
   $('#inner').innerHTML = h;
   const l = $('#list'); l.scrollTop = l.scrollHeight;
