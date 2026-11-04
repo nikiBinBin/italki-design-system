@@ -128,8 +128,8 @@ button{font:inherit;cursor:pointer;color:inherit}
 .amenu .it svg{width:24px;height:24px;flex:none}
 .amenu .sep{height:1px;background:var(--line);margin:8px 0}
 
-/* filter menu: a way into the settings */
-.menu .tosettings{display:flex;align-items:center;gap:8px;margin-top:6px;padding:10px 8px 8px;border-top:1px solid var(--line);border-radius:0 0 8px 8px;color:var(--title);cursor:pointer}
+/* filter menu: a way into the settings, under a Divider (#F5F6F9) line */
+.menu .tosettings{display:flex;align-items:center;gap:8px;margin-top:6px;padding:10px 8px 8px;border-top:1px solid var(--ground);color:var(--title);cursor:pointer;border-radius:0 0 8px 8px}
 .menu .tosettings:hover{background:var(--ground)}
 .menu .tosettings svg{width:20px;height:20px}
 
@@ -172,7 +172,7 @@ button{font:inherit;cursor:pointer;color:inherit}
     <div class="amenu" id="amenu"></div>
   </aside>
   <section class="main" id="viewNotifications">
-    <div class="bar"><h1 id="title"></h1><div class="filter" id="filter"></div></div>
+    <div class="bar"><h1>Notifications</h1><div class="filter" id="filter"></div></div>
     <div class="list" id="list"><div class="inner" id="inner"></div></div>
   </section>
   <section class="main" id="viewSettings" hidden></section>
@@ -339,7 +339,6 @@ document.addEventListener('click', e => {
   if (state.menu && !e.target.closest('.menu')) { state.menu = false; filterUi(); }
 });
 
-$('#title').textContent = 'Notifications';
 document.getElementById('toggle').innerHTML = DATA.nav.__toggle;
 render();
 </script>
