@@ -32,7 +32,16 @@ button{font:inherit;cursor:pointer;color:inherit}
 .side{width:280px;flex:none;background:var(--white);border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
 .side .top{height:73px;flex:none;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 20px}
 .side .top{justify-content:space-between}
-.side .toggle{opacity:.85}
+.side .toggle{opacity:.85;cursor:pointer;display:flex}
+/* Collapsed rail, as the live sidebar does it: 81px, icons and avatars only. */
+.side{transition:width .2s ease}
+.side.collapsed{width:81px}
+.side.collapsed .top{justify-content:center;padding:0}
+.side.collapsed .top > img,.side.collapsed .nav span,.side.collapsed .row .t,.side.collapsed .row .badge,
+.side.collapsed .sec-h,.side.collapsed .more,.side.collapsed .lessons-sec,.side.collapsed .wallet span{display:none}
+.side.collapsed .nav,.side.collapsed .row{justify-content:center}
+.side.collapsed .foot{flex-direction:column;gap:12px;padding:12px 0}
+.side.collapsed .wallet{padding:6px}
 .foot{flex:none;border-top:1px solid var(--line);padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
 .wallet{display:flex;align-items:center;gap:6px;background:var(--ground);border-radius:999px;padding:6px 12px 6px 8px;font-size:12px;font-weight:700;color:var(--title)}
 .me{width:32px;height:32px;border-radius:999px;object-fit:cover}
@@ -166,9 +175,9 @@ button{font:inherit;cursor:pointer;color:inherit}
 <body>
 <div class="app">
   <aside class="side">
-    <div class="top"><img src="../Assets/Icons/logo-italki-wordmark.svg" width="56" height="40" alt="italki"><span class="toggle" id="toggle"></span></div>
+    <div class="top"><img src="../Assets/Icons/logo-italki-wordmark.svg" width="56" height="40" alt="italki"><span class="toggle" id="toggle" data-collapse></span></div>
     <div class="scroll" id="side"></div>
-    <div class="foot"><span class="wallet"><img src="../Assets/Icons/wallet.svg" width="20" height="20" alt="">USD 120.00</span><img class="me" data-avatar src="../Assets/Images/faces/08.jpg" alt=""></div>
+    <div class="foot"><span class="wallet"><img src="../Assets/Icons/wallet.svg" width="20" height="20" alt=""><span>USD 120.00</span></span><img class="me" data-avatar src="../Assets/Images/faces/08.jpg" alt=""></div>
     <div class="amenu" id="amenu"></div>
   </aside>
   <section class="main" id="viewNotifications">
@@ -238,7 +247,7 @@ const badge = n => n ? `<span class="badge">${n}</span>` : '';
 const chatRow = (c, i) => `<div class="row ${c.unread ? 'unread' : ''}"><img src="../Assets/Images/faces/0${(i % 7) + 1}.jpg" alt=""><span class="t">${c.text}</span>${badge(c.unread)}</div>`;
 
 function sidebar() {
-  let h = NAV.map(n => `<div class="nav">${DATA.nav[n]}${n}</div>`).join('');
+  let h = NAV.map(n => `<div class="nav" title="${n}">${DATA.nav[n]}<span>${n}</span></div>`).join('');
   // The channel sorts with the conversations by its latest message time, so it sits
   // among them; here its latest notification is newer than all but two chats.
   const rows = CHATS.map(chatRow);
@@ -247,7 +256,7 @@ function sidebar() {
   h += `<div class="sec"><div class="sec-h ${state.open.messages ? '' : 'closed'}" data-sec="messages">Messages ${chev}</div>`;
   if (state.open.messages) h += shown.join('') + `<div class="more" data-more>${state.seeMore ? 'See less' : 'See more'}</div>`;
   h += `</div>`;
-  h += `<div class="sec"><div class="sec-h ${state.open.lessons ? '' : 'closed'}" data-sec="lessons">Lessons ${chev}</div>`;
+  h += `<div class="sec lessons-sec"><div class="sec-h ${state.open.lessons ? '' : 'closed'}" data-sec="lessons">Lessons ${chev}</div>`;
   if (state.open.lessons) h += `<div class="label">Today</div><div class="lesson"><b>337</b>Emma <span>· English</span></div><div class="label">Past 7 days</div><div class="lesson"><b>336</b>Lucas <span>· Spanish</span></div><div class="lesson"><b>335</b>Sofia <span>· English</span></div>`;
   h += `</div>`;
   $('#side').innerHTML = h;
@@ -316,6 +325,7 @@ function render() {
 }
 
 document.addEventListener('click', e => {
+  if (e.target.closest('[data-collapse]')) { document.querySelector('.side').classList.toggle('collapsed'); state.avatar = false; avatarMenu(); return; }
   if (e.target.closest('[data-avatar]')) { state.avatar = !state.avatar; avatarMenu(); return; }
   if (e.target.closest('[data-open-settings]')) { state.view = 'settings'; state.avatar = false; state.menu = false; render(); return; }
   if (e.target.closest('[data-open-notifications]')) { state.view = 'notifications'; state.avatar = false; render(); return; }
