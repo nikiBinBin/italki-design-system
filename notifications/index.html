@@ -141,8 +141,8 @@ button{font:inherit;cursor:pointer;color:inherit}
 .nb .acts{display:flex;justify-content:flex-end;gap:8px}
 /* Community: Mira's layout (two avatars, divider) at the cards' type sizes, in one grey quote block. */
 .nb .q{background:var(--ground);border-radius:12px;padding:12px}
-.nb .row{display:flex;gap:8px}
-.nb .row .mid{flex:1;min-width:0;align-self:center}
+.nb .qr{display:flex;gap:8px}
+.nb .qr .mid{flex:1;min-width:0;align-self:center}
 .nb .a32{width:32px;height:32px;border-radius:999px;object-fit:cover;flex:none}
 .nb .nm{display:flex;gap:8px;font-size:14px;line-height:20px;font-weight:600;color:var(--text)}
 .nb .nm i{font-style:normal;color:var(--faint)}
@@ -338,13 +338,13 @@ function body(c) {
   if (c.lesson) h += `<div class="blk">${face(c.lesson.teacher)}<div class="txt"><b>${c.lesson.lines[0]}</b><span>${c.lesson.lines[1]}</span></div></div>`;
   if (c.reply) {
     const r = c.reply;
-    h += `<div class="q"><div class="row">${face(r.name, 'a32')}<div class="mid"><div class="nm">${r.name}<i>${r.label}</i></div><p class="rt">${r.text}</p></div></div>`
-      + `<div class="dv"></div><div class="row">${face('me', 'a32')}<div class="mid">${r.post.title ? post(r.post) : `<p class="rt" style="margin:0">${r.post.content}</p>`}</div></div></div>`;
+    h += `<div class="q"><div class="qr">${face(r.name, 'a32')}<div class="mid"><div class="nm">${r.name}<i>${r.label}</i></div><p class="rt">${r.text}</p></div></div>`
+      + `<div class="dv"></div><div class="qr">${face('me', 'a32')}<div class="mid">${r.post.title ? post(r.post) : `<p class="rt" style="margin:0">${r.post.content}</p>`}</div></div></div>`;
   }
   if (c.likes) {
     const l = c.likes;
     h += `<div class="q"><div class="grp">${l.initials.map(k => face(k, 'a32')).join('')}${l.more ? '<div class="more"><span></span><span></span><span></span></div>' : ''}</div>`
-      + `<p class="sum">${l.summary}</p><div class="dv"></div><div class="row">${face('me', 'a32')}<div class="mid">${post(l.post)}</div></div></div>`;
+      + `<p class="sum">${l.summary}</p><div class="dv"></div><div class="qr">${face('me', 'a32')}<div class="mid">${post(l.post)}</div></div></div>`;
   }
   return `<div class="nb">${h}${acts(c)}</div>`;
 }
