@@ -74,7 +74,7 @@ button{font:inherit;cursor:pointer;color:inherit}
 
 /* ---------- notification page ---------- */
 .main{flex:1;min-width:0;display:flex;flex-direction:column;min-height:0}
-.bar{height:73px;flex:none;background:var(--white);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 24px;gap:12px}
+.bar{height:73px;flex:none;background:var(--white);border-bottom:1px solid var(--ground);display:flex;align-items:center;padding:0 24px;gap:12px}
 .bar h1{flex:1;margin:0;font-size:20px;line-height:28px;color:var(--title)}
 .filter{position:relative}
 .filter > button{border:0;background:var(--ground);height:32px;border-radius:999px;padding:0 12px 0 8px;display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--text)}
@@ -149,7 +149,8 @@ button{font:inherit;cursor:pointer;color:inherit}
 .nb .rt{margin:4px 0 0;font-size:12px;line-height:18px;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .nb .pt b{display:block;font-size:14px;line-height:20px;font-weight:600;color:var(--title);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nb .pt span{display:block;font-size:12px;line-height:18px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nb .dv{border-top:1px solid var(--line);margin:12px 0}
+/* Divider colour is #F5F6F9; inside the grey quote block that would vanish, so white there. */
+.nb .dv{border-top:1px solid var(--white);margin:12px 0}
 .nb .grp{display:flex;align-items:center}
 .nb .grp > *{box-shadow:0 0 0 2px var(--ground)}
 .nb .grp > * + *{margin-left:-4px}
