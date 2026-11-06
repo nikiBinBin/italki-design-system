@@ -2159,7 +2159,8 @@ body.cfover .hovc{pointer-events:none!important}
    what the band is for, so it is the one in brand red. */
 .cfsave{display:grid;place-items:center;width:44px;height:44px;margin-left:24px;
   border-radius:999px;background:var(--card);color:var(--body);cursor:pointer;
-  box-shadow:0 1px 3px rgba(49,49,64,.10),0 6px 18px rgba(49,49,64,.08);
+  /* flat, both buttons (Niki, 6 November): white on the band's grey reads without one */
+  box-shadow:none;
   transition:transform .12s ease,color .18s ease}
 /* the press answers on the press, before anything else happens */
 .cfsave:active,.cfbook:active{transform:scale(.94)}
@@ -2189,7 +2190,7 @@ body.cfover .hovc{pointer-events:none!important}
 .cfbook{display:inline-flex;align-items:center;height:44px;margin-left:10px;padding:0 24px;
   border-radius:999px;background:var(--primary);color:#fff;cursor:pointer;
   font-size:var(--ui-font-size-14);font-weight:var(--ui-font-weight-bold);line-height:20px;
-  box-shadow:0 6px 18px rgba(255,67,56,.26);
+  box-shadow:none;
   transition:transform .12s ease,background .15s ease}
 .cfbook:hover{background:var(--hover)}
 
