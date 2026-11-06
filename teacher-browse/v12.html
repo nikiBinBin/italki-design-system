@@ -2287,6 +2287,9 @@ html:not(.rsk-on) .row.resume .rsk{pointer-events:none}
 .row.resume .rref svg{width:16px;height:16px;transition:transform .45s cubic-bezier(.25,.8,.25,1)}
 /* the names take the tint on hover now, so they lose the underline */
 .row.resume .rr:hover b{text-decoration:none}
+/* the rows are anchors with no href, which browsers give the text cursor; they open the
+   teacher like every other card, so they take the hand */
+.row.resume .rr{cursor:pointer}
 @media (prefers-reduced-motion: reduce){
   .row.resume .rref svg{transition:none}
 }
@@ -2316,10 +2319,13 @@ html.rv section.row:not(.resume):not(.rvin){opacity:0}
 .c.wide,.c.lsn-card{border-color:transparent}
 
 /* ---- the hover panel's save button ---- */
-.hovc .sv{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:999px;
-  display:grid;place-items:center;line-height:0;background:rgba(255,255,255,.94);
-  color:var(--body);box-shadow:0 2px 10px rgba(49,49,64,.22);cursor:pointer;
-  transition:transform .12s ease,color .18s ease}
+/* at the end of the name's line, right-aligned (Niki moved it off the video's corner),
+   flat like the hero's */
+.hovc .hl .sv{position:relative;flex:0 0 auto;align-self:center;margin-left:auto;
+  width:32px;height:32px;border-radius:999px;display:grid;place-items:center;line-height:0;
+  background:var(--divider);color:var(--body);cursor:pointer;
+  transition:transform .12s ease,color .18s ease,background-color .15s ease}
+.hovc .hl .sv:hover{background:var(--border)}
 .hovc .sv:hover{color:var(--title)}
 .hovc .sv:active{transform:scale(.92)}
 .hovc .sv.on{color:var(--primary)}
@@ -2331,7 +2337,7 @@ html.rv section.row:not(.resume):not(.rvin){opacity:0}
 .hovc .sv .burst{position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none}
 .hovc .sv .burst i{position:absolute;left:-3px;top:-3px;width:5px;height:5px;border-radius:50%;
   background:var(--primary)}
-.hovc .sv .burst b{position:absolute;left:-18px;top:-18px;width:36px;height:36px;border-radius:50%;
+.hovc .sv .burst b{position:absolute;left:-16px;top:-16px;width:32px;height:32px;border-radius:50%;
   border:2px solid var(--primary);box-sizing:border-box}
 @media (prefers-reduced-motion: reduce){ .hovc .sv,.hovc .sv .ic{transition:none} }
 
@@ -2882,11 +2888,11 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
         '<path d="M4 9v6h4l5 4V5L8 9H4Z" fill="#fff"/>' +
         '<path d="M17 9l4 6M21 9l-4 6" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>' +
         '</svg></div>' +
-        '<div class="bar"><i></i></div>' + (window.__tbSaveBtn || '') + '</div>' +
+        '<div class="bar"><i></i></div></div>' +
       '<div class="bd">' +
         '<div class="hl"><b>' + (d.name || '') + '</b>' +
           (d.flag ? '<svg class="fl"><use href="#fl-' + d.flag + '"></use></svg>' : '') +
-        '</div>' +
+        (window.__tbSaveBtn || '') + '</div>' +
         '<div class="kind">' +
           (d.tt ? '<svg class="tt"><use href="#tt-' + d.tt + '"></use></svg>' : '') +
           '<span>' + (d.type || '') + '</span>' +
@@ -3690,9 +3696,9 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
       var a = k / 6 * Math.PI * 2 - Math.PI / 2, x = Math.cos(a), y = Math.sin(a);
       var dot = document.createElement('i'); bx.appendChild(dot);
       dot.animate([
-        { transform: 'translate(' + x * 18 + 'px,' + y * 18 + 'px) scale(.4)', opacity: 0 },
-        { transform: 'translate(' + x * 24 + 'px,' + y * 24 + 'px) scale(1)', opacity: 1, offset: .3 },
-        { transform: 'translate(' + x * 30 + 'px,' + y * 30 + 'px) scale(0)', opacity: 0 }],
+        { transform: 'translate(' + x * 16 + 'px,' + y * 16 + 'px) scale(.4)', opacity: 0 },
+        { transform: 'translate(' + x * 22 + 'px,' + y * 22 + 'px) scale(1)', opacity: 1, offset: .3 },
+        { transform: 'translate(' + x * 27 + 'px,' + y * 27 + 'px) scale(0)', opacity: 0 }],
         { duration: 600, delay: 60, easing: 'cubic-bezier(.2,.7,.3,1)', fill: 'both' });
     }
     setTimeout(function () { bx.remove(); }, 720);
