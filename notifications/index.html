@@ -221,6 +221,7 @@ button{font:inherit;cursor:pointer;color:inherit}
 .srow.locked b{color:var(--faint)}
 .srow b .q{width:14px;height:14px;border-radius:999px;border:1px solid currentColor;font-size:9px;line-height:12px;text-align:center;font-weight:700}
 .srow p{margin:4px 0 0;color:var(--faint)}
+.srow p.off{color:var(--text)}
 .closed{display:flex;align-items:center;gap:6px;font-weight:700;color:var(--title)}
 .closed i{width:16px;height:16px;border-radius:999px;background:var(--primary);color:#fff;font-style:normal;font-size:11px;line-height:16px;text-align:center}
 .lang{display:flex;align-items:center;justify-content:space-between;padding-bottom:24px;border-bottom:1px solid var(--ground);margin-bottom:24px;color:var(--title);font-weight:500}
@@ -283,8 +284,8 @@ const CHATS = [
   { text: 'You have a lesson invitation', unread: 0 },
 ];
 // Mock unread across the channel.
-// Mock unread per channel. A channel switched off in Settings stops receiving new
-// notifications, so it adds nothing to the count.
+// Mock unread per channel. A channel switched off in Settings still receives its
+// notifications, but they don't alert, so it adds nothing to the count.
 const UNREAD_BY = { lesson: 2, service: 1, community: 1, learning: 3 };
 const muted = k => (k === 'community' || k === 'learning') && !state.internal[k];
 const unreadTotal = () => Object.entries(UNREAD_BY).reduce((n, [k, v]) => n + (muted(k) ? 0 : v), 0);
@@ -433,12 +434,14 @@ const EMAIL = [
   { label: 'Promotions & Tips', desc: 'Official notifications for learning tips, newsletters, and feature updates, including exclusive promotions and offers', on: true },
 ];
 const LOCK_TIP = 'These notifications are important and cannot be disabled.';
-const srow = (r, checked, attr = '') => `<div class="srow ${r.locked ? 'locked' : ''}"><input type="checkbox" ${checked ? 'checked' : ''} ${r.locked ? 'disabled' : ''} ${attr}><div><b>${r.label}${r.locked || r.q ? `<span class="q" title="${r.locked ? LOCK_TIP : ''}">?</span>` : ''}</b><p>${r.desc}</p></div></div>`;
+// Off silences a channel, it does not stop it: a switched-off row says so.
+const offNote = r => `You'll still get ${r.label} messages in italki notifications, but they won't alert you or count as unread.`;
+const srow = (r, checked, attr = '', note = '') => `<div class="srow ${r.locked ? 'locked' : ''}"><input type="checkbox" ${checked ? 'checked' : ''} ${r.locked ? 'disabled' : ''} ${attr}><div><b>${r.label}${r.locked || r.q ? `<span class="q" title="${r.locked ? LOCK_TIP : ''}">?</span>` : ''}</b><p>${r.desc}</p>${note ? `<p class="off">${note}</p>` : ''}</div></div>`;
 function settings() {
   $('#viewSettings').innerHTML = `<div class="settings"><div class="mback" data-open-notifications>‹ Notifications</div>
     <div class="snav"><div>General</div><div>Privacy</div><div class="on">Notifications</div><div>Payment</div></div>
     <div class="scard"><h2>Notifications</h2>
-      <div class="ssec"><h6>Internal Notifications<span class="new">NEW</span></h6><div class="body">${INTERNAL.map(r => srow(r, r.locked || state.internal[r.key], r.locked ? '' : `data-internal="${r.key}"`)).join('')}</div></div>
+      <div class="ssec"><h6>Internal Notifications<span class="new">NEW</span></h6><div class="body">${INTERNAL.map(r => srow(r, r.locked || state.internal[r.key], r.locked ? '' : `data-internal="${r.key}"`, r.locked || state.internal[r.key] ? '' : offNote(r))).join('')}</div></div>
       <div class="ssec"><h6>Browser Notifications</h6><div class="body"><div class="closed"><i>×</i>Closed</div><p style="color:var(--text);margin:8px 0 0">italki browser notifications let you know when you have an important new notification or message. We strongly recommend enabling them.</p><p style="color:var(--text);margin:12px 0 0">To enable browser notifications, please visit your browser settings and give notification permissions to italki.</p></div></div>
       <div class="ssec"><h6>Email Notifications</h6><div class="body"><div class="lang">Email Language<span>English</span></div>${EMAIL.map(r => srow(r, r.locked || r.on)).join('')}</div></div>
     </div></div>`;
@@ -460,7 +463,7 @@ document.addEventListener('click', e => {
   if (inn) {
     // Settings only; the page's filter picks this up the next time the page is entered.
     state.internal[inn.dataset.internal] = inn.checked;
-    sidebar();
+    sidebar(); settings();
     return;
   }
   if (state.avatar && !e.target.closest('#amenu')) { state.avatar = false; avatarMenu(); }
@@ -472,7 +475,7 @@ document.addEventListener('click', e => {
   if (f) {
     const k = f.dataset.f;
     // "All" always shows every channel, switched-off ones included: switching a channel
-    // off only stops its new notifications, it never hides what is there.
+    // off only stops it alerting, its notifications still arrive.
     const ALL = DATA.types.map(t => t.key);
     // Ticking All ticks every channel; unticking it clears them all (Niki, 2026-11-04).
     if (k === 'all') state.filter = state.filter.length === ALL.length ? [] : ALL;
