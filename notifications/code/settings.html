@@ -11481,7 +11481,7 @@ a:hover .css-dev-only-do-not-override-k1gktb.DS2-badge .DS2-badge-count { backgr
   };
   const detach = (el) => el?.parentNode?.removeChild(el);
 
-  // Sidebar: the italki notifications row opens the list.
+  // Sidebar: the italki Notifications row opens the list.
   $('[data-cy="nv-side-notification-channel"]')?.addEventListener('click', () => { location.href = 'index.html'; });
 
   // Notifications page: filter menu.
@@ -11557,7 +11557,7 @@ a:hover .css-dev-only-do-not-override-k1gktb.DS2-badge .DS2-badge-count { backgr
   // Settings page: switches that are not locked toggle. Community and Learning & Tips under
   // Internal Notifications say what switching off means.
   const SILENCEABLE = ['Community', 'Learning & Tips'];
-  const NOTE = (name) => `You'll still get ${name} messages in italki notifications, but they won't alert you or count as unread.`;
+  const NOTE = (name) => `You'll still get ${name} messages in italki Notifications, but they won't alert you or count as unread.`;
   $$('.DS2-checkbox-wrapper').forEach((w) => {
     const row = w.closest('div.flex.items-start.gap-3');
     if (!row || w.classList.contains('DS2-checkbox-wrapper-disabled')) return;
