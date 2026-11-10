@@ -3864,6 +3864,26 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
       r.classList.add('rvin');
     });
   });
+
+  /* the band pulls back as it scrolls away */
+  var hero = document.querySelector('section.hero');
+  var hin = hero && hero.querySelector('.hin');
+  if (!hin) return;
+  var bar = document.querySelector('.top');
+  var RUN = 360, DEPTH = 0.08, queued = false;
+  function frame() {
+    queued = false;
+    /* how much of the band has gone under the bar. Read off the band, which a transform on
+       its own child cannot move, so the scale this writes cannot feed back into it. */
+    var edge = bar ? bar.getBoundingClientRect().bottom : 0;
+    var q = (edge - hero.getBoundingClientRect().top) / RUN;
+    q = q < 0 ? 0 : q > 1 ? 1 : q;
+    hin.style.transform = q ? 'scale(' + (1 - q * DEPTH).toFixed(4) + ')' : '';
+  }
+  function ask() { if (!queued) { queued = true; requestAnimationFrame(frame); } }
+  window.addEventListener('scroll', ask, { passive: true });
+  window.addEventListener('resize', ask);
+  frame();
 })();
 </script>
 <script>
