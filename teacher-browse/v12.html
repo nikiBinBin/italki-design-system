@@ -2089,17 +2089,6 @@ body{background:var(--divider)}
   object-fit:cover;pointer-events:none;background:transparent;
   opacity:0;transition:opacity .45s ease}
 .cfc .pv .vfr.on{opacity:1}
-/* ---- the panel, held off the deck ----
-   The page's hover card opens a hand's width from the pointer, which on a shelf is fine
-   and here put it straight over the card that is playing. While the pointer is on the
-   band it is pinned to the right edge of the window instead, level with the top of the
-   deck. It still covers the outermost card or two, which are nine tenths behind their
-   neighbours anyway, and never the one in the middle.
-   !important because the page writes left and top inline every time it places the panel,
-   and the opening animation's origin moves to the panel's own right edge, since it is no
-   longer coming out of the pointer. */
-body.cfpanel .hovc{left:auto!important;right:24px!important;
-  top:var(--cfpt,96px)!important;transform-origin:100% 22%!important}
 /* the country is read off the card in the middle, where the detail block names it in
    words; on the turned ones it would be a mark on a face you cannot identify yet */
 .cfc:not(.on) .flp{opacity:0;transition:opacity .3s ease}
@@ -2590,9 +2579,12 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
           c.dataset.o = o;
         }
         c.classList.toggle('on', o === 0);
-        /* only the middle card opens the hover panel: it is the one standing upright,
-           and the one the line underneath is about */
-        if (o === 0) { c.dataset.bio = c.dataset.pbio; } else { delete c.dataset.bio; }
+        /* No card on the deck opens the page's hover panel (10 November, "cover flow的
+           hover先不出卡片了"). It used to be the middle one, which is the card the line
+           underneath is about; then the panel covered the video playing in it, and was
+           pinned to the right edge of the window to keep off the deck; then off entirely.
+           The bio is still on every card as data-pbio, so this is one line to undo. */
+        delete c.dataset.bio;
         c.style.zIndex = 60 - Math.abs(o);
         c.setAttribute('aria-current', o === 0 ? 'true' : 'false');
       });
@@ -2724,29 +2716,8 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
       clearTimeout(idle);
       idle = setTimeout(run, IDLE);
     }
-    /* where the panel sits while the pointer is on this band: level with the top of the
-       deck, and never past the bottom of the window. Measured again once the panel has
-       opened, because until then it has no height to hold inside the window. */
-    function panelSpot() {
-      var el = document.querySelector('.hovc');
-      var r = stage.getBoundingClientRect();
-      var h = el ? el.offsetHeight : 640;
-      var t = Math.max(16, Math.min(r.top - 6, window.innerHeight - h - 16));
-      document.documentElement.style.setProperty('--cfpt', Math.round(t) + 'px');
-    }
-    stage.addEventListener('pointerenter', function () {
-      hover = true;
-      document.body.classList.add('cfpanel');
-      panelSpot();
-      setTimeout(panelSpot, 280);
-      setTimeout(panelSpot, 700);
-      stop();
-    });
-    stage.addEventListener('pointerleave', function () {
-      hover = false;
-      document.body.classList.remove('cfpanel');
-      touched();
-    });
+    stage.addEventListener('pointerenter', function () { hover = true; stop(); });
+    stage.addEventListener('pointerleave', function () { hover = false; touched(); });
     stage.addEventListener('focusin', function () { focused = true; stop(); });
     stage.addEventListener('focusout', function () { focused = false; touched(); });
     document.addEventListener('visibilitychange', function () {
