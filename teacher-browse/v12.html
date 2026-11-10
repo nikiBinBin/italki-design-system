@@ -1226,11 +1226,16 @@ a{text-decoration:none;color:inherit}
 .hovc .kind span:first-of-type{color:var(--title);font-weight:var(--ui-font-weight-semibold)}
 .hovc .kind span + span::before{content:"·";margin-right:6px;color:var(--muted)}
 /* one band, one figure per column, each with the word for what it is */
-.hovc .stats{display:flex;gap:16px;margin-top:12px;padding:12px 0;
+.hovc .stats{display:flex;justify-content:space-between;gap:16px;margin-top:12px;padding:12px 0;
   /* --divider, the same #F5F6F9 the empty cells of the week grid use: these rules are
      there to group the figures, not to draw a line across the card */
   border-top:1px solid var(--divider);border-bottom:1px solid var(--divider)}
-.hovc .stat{flex:1;min-width:0}
+/* Not three equal columns. The first two are a number and a word, the third carries a
+   sentence ("Teaching since 2019" over "why you see this") and was the only one ever cut
+   ("留后面那个多一点位置", 10 November). Each takes the width it needs and the slack goes
+   into the gaps, so the band still reaches both edges of the card instead of bunching
+   left. Under pressure they shrink in proportion, which gives up the long one first. */
+.hovc .stat{flex:0 1 auto;min-width:0}
 .hovc .stat b{display:block;color:var(--title);font-size:18px;
   font-weight:var(--ui-font-weight-bold);line-height:24px;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1247,7 +1252,11 @@ a{text-decoration:none;color:inherit}
    a half */
 .hovc .more{display:block;margin-top:2px;padding:0;border:0;background:none;cursor:pointer;
   color:var(--title);font-family:inherit;font-size:var(--ui-font-size-12);
-  font-weight:var(--ui-font-weight-semibold);line-height:16px;text-decoration:underline}
+  font-weight:var(--ui-font-weight-semibold);line-height:16px;text-decoration:underline;
+  transition:color .14s ease}
+/* a word, not a button, so it answers in colour the way the other text actions on the
+   page do rather than by moving */
+.hovc .more:hover{color:var(--primary)}
 .hovc .more[hidden]{display:none}
 .hovc .slots{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;margin-top:12px}
 .hovc .slots i{font-style:normal;border-radius:8px;padding:6px 4px;background:var(--divider);
@@ -1300,11 +1309,17 @@ a{text-decoration:none;color:inherit}
 .hovc .btns .s{padding:10px 16px}
 /* the secondary is the design system's light-grey button, not an outlined one: an
    outline next to a solid red reads as two buttons of equal weight */
-.hovc .btns span{transition:background .14s ease}
+/* Both of them answer the finger as well as the cursor: the colour is the hover and the
+   press is the approved 0.95 over 120ms, the same one the time chips and the save button
+   in this card already use. Without it the two biggest controls in the card were the only
+   ones that took a click in silence ("卡片内的按钮你没有写反馈", 10 November). */
+.hovc .btns span{transition:background .14s ease,transform .12s ease}
+.hovc .btns span:active{transform:scale(.95)}
 .hovc .btns .p{background:#FF4338;color:#fff}
 .hovc .btns .p:hover{background:#E8392E}
 .hovc .btns .s{background:#F5F6F9;color:var(--title)}
 .hovc .btns .s:hover{background:#E5E8ED}
+@media (prefers-reduced-motion: reduce){ .hovc .btns span{transition:background .14s ease} }
 
 /* ---- the tooltip over a cell of the week ----
    Dark and translucent so it reads as a layer over the card rather than another panel
