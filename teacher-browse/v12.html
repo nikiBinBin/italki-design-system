@@ -2432,6 +2432,15 @@ html:not(.rsk-on) .row.resume .rsk{pointer-events:none}
 
 /* ---- modules rise into place: see scripts/page_reveal.py ---- */
 html.rv section.row:not(.resume):not(.rvin){opacity:0}
+/* The band runs out of the bar rather than starting under it. What the reader sees once
+   a part of the hero has faded is the band itself, and a flat grey ending in the bar's
+   white edge read as a panel laid over the hero rather than as room the hero has left
+   ("把那个截断的灰色模块弄成渐变的"). The gradient is held to the window, not to the
+   band, so the wash stays under the bar at every scroll position; where Safari treats
+   that as scrolling it falls back to the same wash at the top of the band, which is
+   where it is at rest anyway. 72 is the bar, 232 is the deck's own top at rest. */
+.hero{background-image:linear-gradient(to bottom,#fff 72px,#F5F6F9 232px);
+  background-attachment:fixed;background-repeat:no-repeat}
 
 /* ---- interactive cards: no resting outline (DS card S-03) ---- */
 .c.wide,.c.lsn-card{border-color:transparent}
@@ -3882,13 +3891,13 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
     return y;
   }
   /* 0 while it is still clear of the sticky bar, 1 the moment its top reaches the bar's
-     bottom edge. The run is the last 60px before that edge, or the whole distance the
+     bottom edge. The run is the last 160px before that edge, or the whole distance the
      part has if it starts closer than that: the heading sits 48px under the bar on a tall
      window, and a fixed run had it already faded before anyone scrolled.
-     It was 160, which is most of a card: the deck was half gone while all 200px of it
-     were still in the clear, which is what made the empty band read as something laid
-     over the hero. At 60 a part only goes faint once it is about to meet the bar. */
-  var LEAD = 60;
+     Tried at 60 on 10 November, to keep the deck solid until it was about to go under:
+     it reads as the hero being switched off rather than leaving ("消失太快了"). The
+     length is the fade, so it stays at 160 and the band empties from the top. */
+  var LEAD = 160;
   function part(el, top) {
     var edge = bar ? bar.getBoundingClientRect().bottom : 0;
     var o = offTop(el);
