@@ -2432,11 +2432,6 @@ html:not(.rsk-on) .row.resume .rsk{pointer-events:none}
 
 /* ---- modules rise into place: see scripts/page_reveal.py ---- */
 html.rv section.row:not(.resume):not(.rvin){opacity:0}
-/* the mask the hand-over writes is a gradient, which has no size of its own: it is held
-   to the block and not tiled, so what the gradient does not cover is simply gone rather
-   than repeated back in above the bar */
-.hero .hb.cf{-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
-  -webkit-mask-size:100% 100%;mask-size:100% 100%}
 
 /* ---- interactive cards: no resting outline (DS card S-03) ---- */
 .c.wide,.c.lsn-card{border-color:transparent}
@@ -3840,8 +3835,9 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
 <script>
 (function () {
   var SOFT = 'cubic-bezier(.25,.8,.25,1)';
+  var MOVE = document.documentElement.classList.contains('rv');
 
-  if (document.documentElement.classList.contains('rv')) {
+  if (MOVE) {
   /* modules: once each, the first time a sixth of one is on screen */
   var first = true;
   var io = new IntersectionObserver(function (es) {
@@ -3871,32 +3867,54 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
   });
   }
 
-  /* the band dissolves into the bar rather than being cut by it */
+  /* the hero hands over to the page as it scrolls away */
   var hero = document.querySelector('section.hero');
   if (!hero) return;
   var bar = document.querySelector('.top');
   var queued = false;
-  /* The run under the bar's edge. 44 is a line and a half of the facts: long enough that
-     the edge is never a line, short enough that nothing is faint while it is in the
-     clear, which is what fading a whole block did. */
-  var FEATHER = 44;
+  function clamp(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
+  /* How far a part of the band sits below the top of the band, read off offsetTop so the
+     transforms this very function writes cannot feed back into it: a rect would include
+     them and the fade would chase itself. */
+  function offTop(el) {
+    var y = 0;
+    for (var e = el; e && e !== hero; e = e.offsetParent) y += e.offsetTop;
+    return y;
+  }
+  /* 0 while it is still clear of the sticky bar, 1 the moment its top reaches the bar's
+     bottom edge. The run is the last 60px before that edge, or the whole distance the
+     part has if it starts closer than that: the heading sits 48px under the bar on a tall
+     window, and a fixed run had it already faded before anyone scrolled.
+     It was 160, which is most of a card: the deck was half gone while all 200px of it
+     were still in the clear, which is what made the empty band read as something laid
+     over the hero. At 60 a part only goes faint once it is about to meet the bar. */
+  var LEAD = 60;
+  function part(el, top) {
+    var edge = bar ? bar.getBoundingClientRect().bottom : 0;
+    var o = offTop(el);
+    var rest = top + window.pageYOffset + o - edge;   // its gap under the bar at rest
+    var now = top + o - edge;                         // and now
+    var span = Math.min(LEAD, Math.max(1, rest));
+    return clamp((span - now) / span);
+  }
+  function set(el, q, sink, scale) {
+    el.style.transform = (q && MOVE)
+      ? 'translateY(' + (q * sink).toFixed(1) + 'px)' +
+        (scale ? ' scale(' + (1 - q * scale).toFixed(4) + ')' : '')
+      : '';
+    el.style.opacity = q ? (1 - q).toFixed(3) : '';
+  }
   function frame() {
     queued = false;
-    var edge = bar ? bar.getBoundingClientRect().bottom : 0;
+    var top = hero.getBoundingClientRect().top;
     [].forEach.call(hero.querySelectorAll('.hb.cf'), function (hb) {
-      var r = hb.getBoundingClientRect();
-      var d = edge - r.top;
-      /* clear of the bar: no mask at all, so nothing pays for one while the hero sits
-         where it opens */
-      if (d <= 0 || !r.height) {
-        if (hb.style.maskImage || hb.style.webkitMaskImage) {
-          hb.style.webkitMaskImage = ''; hb.style.maskImage = '';
-        }
-        return;
-      }
-      var g = 'linear-gradient(to bottom,rgba(0,0,0,0) ' + d.toFixed(1) +
-              'px,rgba(0,0,0,1) ' + (d + FEATHER).toFixed(1) + 'px)';
-      hb.style.webkitMaskImage = g; hb.style.maskImage = g;
+      var h2 = hb.querySelector('h2'), st = hb.querySelector('.cfstage'),
+          det = hb.querySelector('.cfdet');
+      /* each part answers its own distance from the bar, so none of them is ever faint
+         while it is in the clear and none is still there when it reaches the bar */
+      if (h2) set(h2, part(h2, top), 24, 0);
+      if (st) set(st, part(st, top), 60, 0.1);
+      if (det) set(det, part(det, top), 36, 0);
     });
   }
   function ask() { if (!queued) { queued = true; requestAnimationFrame(frame); } }
