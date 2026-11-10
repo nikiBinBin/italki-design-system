@@ -737,9 +737,9 @@ a{text-decoration:none;color:inherit}
 .hovc .kind .tt{flex:0 0 auto;display:block;width:18px;height:18px}
 .hovc .kind span:first-of-type{color:var(--title);font-weight:var(--ui-font-weight-semibold)}
 .hovc .kind span + span::before{content:"·";margin-right:6px;color:var(--muted)}
-.hovc .stats{display:flex;gap:16px;margin-top:12px;padding:12px 0;
+.hovc .stats{display:flex;justify-content:space-between;gap:16px;margin-top:12px;padding:12px 0;
   border-top:1px solid var(--divider);border-bottom:1px solid var(--divider)}
-.hovc .stat{flex:1;min-width:0}
+.hovc .stat{flex:0 1 auto;min-width:0}
 .hovc .stat b{display:block;color:var(--title);font-size:18px;
   font-weight:var(--ui-font-weight-bold);line-height:24px;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -754,7 +754,9 @@ a{text-decoration:none;color:inherit}
 .hovc .bio.open{-webkit-line-clamp:unset;overflow:visible}
 .hovc .more{display:block;margin-top:2px;padding:0;border:0;background:none;cursor:pointer;
   color:var(--title);font-family:inherit;font-size:var(--ui-font-size-12);
-  font-weight:var(--ui-font-weight-semibold);line-height:16px;text-decoration:underline}
+  font-weight:var(--ui-font-weight-semibold);line-height:16px;text-decoration:underline;
+  transition:color .14s ease}
+.hovc .more:hover{color:var(--primary)}
 .hovc .more[hidden]{display:none}
 .hovc .slots{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;margin-top:12px}
 .hovc .slots i{font-style:normal;border-radius:8px;padding:6px 4px;background:var(--divider);
@@ -788,11 +790,13 @@ a{text-decoration:none;color:inherit}
   cursor:pointer}
 .hovc .btns .p{padding:10px 28px}
 .hovc .btns .s{padding:10px 16px}
-.hovc .btns span{transition:background .14s ease}
+.hovc .btns span{transition:background .14s ease,transform .12s ease}
+.hovc .btns span:active{transform:scale(.95)}
 .hovc .btns .p{background:#FF4338;color:#fff}
 .hovc .btns .p:hover{background:#E8392E}
 .hovc .btns .s{background:#F5F6F9;color:var(--title)}
 .hovc .btns .s:hover{background:#E5E8ED}
+@media (prefers-reduced-motion: reduce){ .hovc .btns span{transition:background .14s ease} }
 .hovtip{position:fixed;z-index:201;max-width:260px;border-radius:12px;padding:8px 12px;
   background:rgba(0,0,0,.8);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
   color:#fff;font-size:var(--ui-font-size-12);line-height:16px;pointer-events:none;
