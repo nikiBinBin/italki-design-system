@@ -1400,8 +1400,6 @@ html:not(.rsk-on) .row.resume .rsk{pointer-events:none}
   .row.resume .rcol h3{align-self:start}
 }
 html.rv section.row:not(.resume):not(.rvin){opacity:0}
-.hero .hb.cf{-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
-  -webkit-mask-size:100% 100%;mask-size:100% 100%}
 .c.wide,.c.lsn-card{border-color:transparent}
 .hovc .hl .sv{position:relative;flex:0 0 auto;align-self:center;margin-left:auto;
   width:32px;height:32px;border-radius:999px;display:grid;place-items:center;line-height:0;
@@ -2509,7 +2507,8 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
 <script>
 (function () {
   var SOFT = 'cubic-bezier(.25,.8,.25,1)';
-  if (document.documentElement.classList.contains('rv')) {
+  var MOVE = document.documentElement.classList.contains('rv');
+  if (MOVE) {
   var first = true;
   var io = new IntersectionObserver(function (es) {
     es.forEach(function (e) {
@@ -2535,22 +2534,37 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
   if (!hero) return;
   var bar = document.querySelector('.top');
   var queued = false;
-  var FEATHER = 44;
+  function clamp(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
+  function offTop(el) {
+    var y = 0;
+    for (var e = el; e && e !== hero; e = e.offsetParent) y += e.offsetTop;
+    return y;
+  }
+  var LEAD = 60;
+  function part(el, top) {
+    var edge = bar ? bar.getBoundingClientRect().bottom : 0;
+    var o = offTop(el);
+    var rest = top + window.pageYOffset + o - edge;   
+    var now = top + o - edge;                         
+    var span = Math.min(LEAD, Math.max(1, rest));
+    return clamp((span - now) / span);
+  }
+  function set(el, q, sink, scale) {
+    el.style.transform = (q && MOVE)
+      ? 'translateY(' + (q * sink).toFixed(1) + 'px)' +
+        (scale ? ' scale(' + (1 - q * scale).toFixed(4) + ')' : '')
+      : '';
+    el.style.opacity = q ? (1 - q).toFixed(3) : '';
+  }
   function frame() {
     queued = false;
-    var edge = bar ? bar.getBoundingClientRect().bottom : 0;
+    var top = hero.getBoundingClientRect().top;
     [].forEach.call(hero.querySelectorAll('.hb.cf'), function (hb) {
-      var r = hb.getBoundingClientRect();
-      var d = edge - r.top;
-      if (d <= 0 || !r.height) {
-        if (hb.style.maskImage || hb.style.webkitMaskImage) {
-          hb.style.webkitMaskImage = ''; hb.style.maskImage = '';
-        }
-        return;
-      }
-      var g = 'linear-gradient(to bottom,rgba(0,0,0,0) ' + d.toFixed(1) +
-              'px,rgba(0,0,0,1) ' + (d + FEATHER).toFixed(1) + 'px)';
-      hb.style.webkitMaskImage = g; hb.style.maskImage = g;
+      var h2 = hb.querySelector('h2'), st = hb.querySelector('.cfstage'),
+          det = hb.querySelector('.cfdet');
+      if (h2) set(h2, part(h2, top), 24, 0);
+      if (st) set(st, part(st, top), 60, 0.1);
+      if (det) set(det, part(det, top), 36, 0);
     });
   }
   function ask() { if (!queued) { queued = true; requestAnimationFrame(frame); } }
