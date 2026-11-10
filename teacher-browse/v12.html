@@ -2089,6 +2089,18 @@ body{background:var(--divider)}
   object-fit:cover;pointer-events:none;background:transparent;
   opacity:0;transition:opacity .45s ease}
 .cfc .pv .vfr.on{opacity:1}
+/* Muted, and the card says so, in the page's own mark: the same dark glass disc and the
+   same speaker with a cross that the teacher card under a shelf carries, at the top right
+   of the one that is playing. It is a button as well as a mark, because a muted thing you
+   cannot unmute is a sign, and this is the teacher talking. */
+.cfc .pv .cfmute{position:absolute;z-index:3;right:10px;top:10px;width:28px;height:28px;
+  border-radius:999px;background:rgba(49,49,64,.55);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.16);display:grid;place-items:center;cursor:pointer;
+  opacity:0;transition:opacity .45s ease,background-color .15s ease}
+.cfc .pv .cfmute.on{opacity:1}
+.cfc .pv .cfmute:hover{background:rgba(49,49,64,.72)}
+.cfc .pv .cfmute svg{display:block;width:14px;height:14px}
 /* the country is read off the card in the middle, where the detail block names it in
    words; on the turned ones it would be a mark on a face you cannot identify yet */
 .cfc:not(.on) .flp{opacity:0;transition:opacity .3s ease}
@@ -2652,7 +2664,7 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
        instead of turning (6 November, "这样我就无法切换了"). */
     stage.addEventListener('click', function (e) {
       touched();
-      if (e.target.closest('.cfsave,.cfbook')) return;
+      if (e.target.closest('.cfsave,.cfbook,.cfmute')) return;
       e.preventDefault();
       e.stopPropagation();
       if (dragged) { dragged = false; return; }
@@ -2751,6 +2763,8 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
       var want = id && box && !tick && !still && seen && !document.hidden
         && (hover || focused);
       if (frame && (!want || frame.parentNode !== box)) {
+        var mark = frame.parentNode.querySelector('.cfmute');
+        if (mark) mark.parentNode.removeChild(mark);
         frame.parentNode.removeChild(frame);
         shape();
       }
@@ -2767,7 +2781,34 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
         f.setAttribute('playsinline', '');
         f.preload = 'auto';
         f.src = id;
-        f.addEventListener('playing', function () { f.classList.add('on'); });
+        var mk = document.createElement('button');
+        mk.type = 'button';
+        mk.className = 'cfmute';
+        mk.setAttribute('aria-label', 'Unmute');
+        mk.title = 'Unmute';
+        function glyph() {
+          mk.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">'
+            + '<path d="M4 9v6h4l5 4V5L8 9H4Z" fill="#fff"/>'
+            + (f.muted
+               ? '<path d="M17 9l4 6M21 9l-4 6" stroke="#fff" stroke-width="1.6"'
+                 + ' stroke-linecap="round"/>'
+               : '<path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" stroke="#fff"'
+                 + ' stroke-width="1.6" stroke-linecap="round"/>')
+            + '</svg>';
+        }
+        glyph();
+        mk.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          f.muted = !f.muted;
+          mk.setAttribute('aria-label', f.muted ? 'Unmute' : 'Mute');
+          mk.title = f.muted ? 'Unmute' : 'Mute';
+          glyph();
+        });
+        f.addEventListener('playing', function () {
+          f.classList.add('on');
+          mk.classList.add('on');
+        });
         /* The card takes the film's shape. Its layout width is read before anything is
            set, so this works at every breakpoint, and it is held between three quarters
            and 16:9 of that: a teacher who filmed on a phone would otherwise turn the
@@ -2781,6 +2822,7 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
           deck.style.setProperty('--push', Math.round((w - base) / 2) + 'px');
         });
         box.appendChild(f);
+        box.appendChild(mk);
         var go = f.play();
         if (go && go.catch) go.catch(function () { });
       }, 420);
