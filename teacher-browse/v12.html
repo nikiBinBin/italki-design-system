@@ -1174,7 +1174,7 @@ body{background:var(--divider)}
   margin-left:calc(var(--cw,200px) / -2);
   transform-style:preserve-3d;backface-visibility:hidden;cursor:pointer;
   transition:transform .52s cubic-bezier(.22,.61,.36,1),opacity .42s ease,
-    width .42s cubic-bezier(.25,.8,.25,1),margin-left .42s cubic-bezier(.25,.8,.25,1);
+    width .7s cubic-bezier(.25,.8,.25,1),margin-left .7s cubic-bezier(.25,.8,.25,1);
   --veil:0}
 .cfc .pv{position:relative;display:block;width:100%;height:100%;border-radius:14px;
   overflow:hidden;background:var(--border);
@@ -1189,13 +1189,13 @@ body{background:var(--divider)}
 .cfc .flp svg{display:block;width:100%;height:100%}
 .cfc .pv .vfr{position:absolute;z-index:1;inset:0;width:100%;height:100%;
   object-fit:cover;pointer-events:none;background:transparent;
-  opacity:0;transition:opacity .45s ease}
+  opacity:0;transition:opacity .7s cubic-bezier(.25,.8,.25,1)}
 .cfc .pv .vfr.on{opacity:1}
 .cfc .pv .cfmute{position:absolute;z-index:3;right:10px;top:10px;width:28px;height:28px;
   border-radius:999px;background:rgba(49,49,64,.55);
   -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
   border:1px solid rgba(255,255,255,.16);display:grid;place-items:center;cursor:pointer;
-  opacity:0;transition:opacity .45s ease,background-color .15s ease}
+  opacity:0;transition:opacity .7s cubic-bezier(.25,.8,.25,1),background-color .15s ease}
 .cfc .pv .cfmute.on{opacity:1}
 .cfc .pv .cfmute:hover{background:rgba(49,49,64,.72)}
 .cfc .pv .cfmute svg{display:block;width:14px;height:14px}
@@ -1691,16 +1691,19 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
           glyph();
         });
         f.addEventListener('playing', function () {
+          if (wide) {
+            card.style.setProperty('--cw', wide + 'px');
+            deck.style.setProperty('--push', Math.round((wide - from) / 2) + 'px');
+          }
           f.classList.add('on');
           mk.classList.add('on');
         });
+        var wide = 0, from = 0;
         f.addEventListener('loadedmetadata', function () {
           var r = f.videoWidth / f.videoHeight;
           if (!r || !isFinite(r)) return;
-          var base = card.offsetWidth;
-          var w = Math.round(base * Math.max(0.75, Math.min(1.78, r)));
-          card.style.setProperty('--cw', w + 'px');
-          deck.style.setProperty('--push', Math.round((w - base) / 2) + 'px');
+          from = card.offsetWidth;
+          wide = Math.round(from * Math.max(0.75, Math.min(1.78, r)));
         });
         box.appendChild(f);
         box.appendChild(mk);
