@@ -1436,6 +1436,16 @@ a{text-decoration:none;color:inherit}
    needs no correction. */
 .striprail:has(.strip.coll){margin-top:12px}
 .striprail > .strip{margin-top:0}
+
+/* .c > span:last-child is the small grey line under a card, "Films & TV Series . 48
+   teachers", and it carries a 2px top margin away from the thing above it. A card with
+   no such line has its picture as the last span, so the picture took the 2px instead:
+   every cover on the plan shelf and every tile in the goal row sat 2px lower than its
+   own box. On the covers it showed, because the two decorative sheets are placed against
+   the card and not against the cover, so the shelf with captions showed 8 and 4 of them
+   and the shelf without showed 10 and 6. One stack read taller than the other for no
+   reason anyone drew. */
+.c > .a:last-child{margin-top:0}
 /* A percentage in `top` resolves against the container's HEIGHT, so computing the
    artwork's centre that way was never going to land; it was out by 38 to 76px. A
    percentage in `padding-top` resolves against WIDTH, so the pager is given a box the
@@ -1830,12 +1840,15 @@ body{background:var(--divider)}
 .row.resume .rcols{display:flex;gap:20px;align-items:flex-start}
 .row.resume .rcol{flex:1 1 0;min-width:0;padding:20px;border-radius:16px;
   background:var(--card)}
-/* The same size as a shelf heading, which is what these are: three lists beside each
-   other, each with its own name. They started at 16 semibold, which at the top of a white
-   panel read as the first row's label rather than as the name of the list, then went to
-   20 to match the shelves, and both went up a step on 9 November. */
-.row.resume .rcol h3{margin:0 0 12px;color:var(--title);font-size:var(--ui-font-size-24);
-  font-weight:var(--ui-font-weight-bold);line-height:32px;letter-spacing:-.3px}
+/* One step under a shelf heading. These are three lists beside each other, each with its
+   own name: they started at 16 semibold, which at the top of a white panel read as the
+   first row's label rather than as the name of the list, then went to 20, then on 9
+   November both these and the shelves went up a step to 24. At 24 inside a 20-padded
+   panel they then read as loud as the section above them, so they come back to 20 and
+   the shelves keep the 24. Being a step under the shelf heading is right: a shelf names
+   a section of the page, one of these names a column inside one. */
+.row.resume .rcol h3{margin:0 0 12px;color:var(--title);font-size:var(--ui-font-size-20);
+  font-weight:var(--ui-font-weight-bold);line-height:28px;letter-spacing:-.2px}
 /* and the shelves themselves, which is where that size comes from: 20 was the kit's
    Title/H5 and read as a label on a page whose cards carry 16 bold names. */
 .row .rh h2{font-size:var(--ui-font-size-24);line-height:32px;letter-spacing:-.3px}
