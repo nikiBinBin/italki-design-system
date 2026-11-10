@@ -1191,8 +1191,6 @@ body{background:var(--divider)}
   object-fit:cover;pointer-events:none;background:transparent;
   opacity:0;transition:opacity .45s ease}
 .cfc .pv .vfr.on{opacity:1}
-body.cfpanel .hovc{left:auto!important;right:24px!important;
-  top:var(--cfpt,96px)!important;transform-origin:100% 22%!important}
 .cfc:not(.on) .flp{opacity:0;transition:opacity .3s ease}
 .cfc[data-o="0"]{transform:translate3d(0,0,40px) rotateY(0deg) scale(1);z-index:60}
 .cfc[data-o="1"]{transform:translate3d(calc(158px + var(--push,0px)),0,-20px) rotateY(-40deg) scale(.97);--veil:.10;z-index:59}
@@ -1529,7 +1527,7 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
           c.dataset.o = o;
         }
         c.classList.toggle('on', o === 0);
-        if (o === 0) { c.dataset.bio = c.dataset.pbio; } else { delete c.dataset.bio; }
+        delete c.dataset.bio;
         c.style.zIndex = 60 - Math.abs(o);
         c.setAttribute('aria-current', o === 0 ? 'true' : 'false');
       });
@@ -1621,26 +1619,8 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
       clearTimeout(idle);
       idle = setTimeout(run, IDLE);
     }
-    function panelSpot() {
-      var el = document.querySelector('.hovc');
-      var r = stage.getBoundingClientRect();
-      var h = el ? el.offsetHeight : 640;
-      var t = Math.max(16, Math.min(r.top - 6, window.innerHeight - h - 16));
-      document.documentElement.style.setProperty('--cfpt', Math.round(t) + 'px');
-    }
-    stage.addEventListener('pointerenter', function () {
-      hover = true;
-      document.body.classList.add('cfpanel');
-      panelSpot();
-      setTimeout(panelSpot, 280);
-      setTimeout(panelSpot, 700);
-      stop();
-    });
-    stage.addEventListener('pointerleave', function () {
-      hover = false;
-      document.body.classList.remove('cfpanel');
-      touched();
-    });
+    stage.addEventListener('pointerenter', function () { hover = true; stop(); });
+    stage.addEventListener('pointerleave', function () { hover = false; touched(); });
     stage.addEventListener('focusin', function () { focused = true; stop(); });
     stage.addEventListener('focusout', function () { focused = false; touched(); });
     document.addEventListener('visibilitychange', function () {
