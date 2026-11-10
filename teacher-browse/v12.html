@@ -1400,6 +1400,8 @@ html:not(.rsk-on) .row.resume .rsk{pointer-events:none}
   .row.resume .rcol h3{align-self:start}
 }
 html.rv section.row:not(.resume):not(.rvin){opacity:0}
+.hero{background-image:linear-gradient(to bottom,#fff 72px,#F5F6F9 232px);
+  background-attachment:fixed;background-repeat:no-repeat}
 .c.wide,.c.lsn-card{border-color:transparent}
 .hovc .hl .sv{position:relative;flex:0 0 auto;align-self:center;margin-left:auto;
   width:32px;height:32px;border-radius:999px;display:grid;place-items:center;line-height:0;
@@ -2540,7 +2542,7 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches)
     for (var e = el; e && e !== hero; e = e.offsetParent) y += e.offsetTop;
     return y;
   }
-  var LEAD = 60;
+  var LEAD = 160;
   function part(el, top) {
     var edge = bar ? bar.getBoundingClientRect().bottom : 0;
     var o = offTop(el);
