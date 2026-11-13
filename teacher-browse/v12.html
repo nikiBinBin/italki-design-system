@@ -2475,7 +2475,13 @@ html.rv section.row:not(.resume):not(.rvin){opacity:0}
 @media (prefers-reduced-motion: reduce){ .hovc .sv,.hovc .sv .ic{transition:none} }
 
 /* ---- the collection shelves, each on one white panel: see scripts/collection_panel.py ---- */
-.catp{background:var(--card);border-radius:16px;overflow:hidden;padding:16px 0 0}
+.catp{background:var(--card);border-radius:16px;padding:16px 0 0}
+/* The panel does not clip; the strip does. A strip hangs 20px out of its rail on both
+   sides so a card can be half scrolled out of view, and on the right that 20 is 20 past
+   the panel's edge. Taking it off the right makes the strip's own edge the panel's edge,
+   which leaves the arrow free to sit where it sits on every other shelf instead of
+   being cut in half by the panel's corner ("右箭头能不能和其他组对齐", 13 November). */
+.catp .strip{margin-right:0;padding-right:0}
 /* a .coll strip pads 20 above its cards for the sheets it draws over them, a .cat 8 */
 .catp:has(.strip.coll){padding-top:4px}
 .catp > .rh{display:block;padding:0 20px}
@@ -2506,11 +2512,13 @@ html.rv section.row:not(.resume):not(.rvin){opacity:0}
    whole last card with it, the grey one twice over, so inside the panel it is 56: enough
    to say the row goes on and to keep the arrow off a face, not enough to empty a card. */
 .catp .striprail::after,.catp .striprail::before{width:56px}
-.catp .striprail::after{background:linear-gradient(to right,rgba(255,255,255,0) 0%,#fff 72%)}
+.catp .striprail::after{right:0;background:linear-gradient(to right,rgba(255,255,255,0) 0%,#fff 72%)}
 .catp .striprail::before{background:linear-gradient(to left,rgba(255,255,255,0) 0%,#fff 72%)}
-/* the arrows live 20px outside the rail, which here is outside the panel */
-.catp .striprail > .pg span:last-child{right:12px}
-.catp .striprail > .pg span:first-child{left:12px}
+/* A .coll caption keeps a second line whether it needs one or not, so that a card whose
+   caption wraps lines up with one whose does not. Every card in the row is stretched to
+   the tallest anyway, so all the reserved line does here is put 20px of white under the
+   last line of every card ("底部padding咋那么多", 13 November). */
+.catp .strip.coll .c b{min-height:0}
 @media (min-width:1024px){
   .catp{display:flex;align-items:flex-start;gap:28px;padding:16px 0 0 32px}
   .catp:has(.strip.coll){padding-top:4px}
