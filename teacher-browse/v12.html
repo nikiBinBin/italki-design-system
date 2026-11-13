@@ -1424,7 +1424,8 @@ html.rv section.row:not(.resume):not(.rvin){opacity:0}
 .hovc .sv .burst b{position:absolute;left:-16px;top:-16px;width:32px;height:32px;border-radius:50%;
   border:2px solid var(--primary);box-sizing:border-box}
 @media (prefers-reduced-motion: reduce){ .hovc .sv,.hovc .sv .ic{transition:none} }
-.catp{background:var(--card);border-radius:16px;overflow:hidden;padding:16px 0 0}
+.catp{background:var(--card);border-radius:16px;padding:16px 0 0}
+.catp .strip{margin-right:0;padding-right:0}
 .catp:has(.strip.coll){padding-top:4px}
 .catp > .rh{display:block;padding:0 20px}
 .catp > .rh h2 .go-ico{display:none}
@@ -1438,10 +1439,9 @@ html.rv section.row:not(.resume):not(.rvin){opacity:0}
 .catp:has(.strip.coll) > .striprail{margin-top:0}
 .catp .strip{margin-bottom:0}
 .catp .striprail::after,.catp .striprail::before{width:56px}
-.catp .striprail::after{background:linear-gradient(to right,rgba(255,255,255,0) 0%,#fff 72%)}
+.catp .striprail::after{right:0;background:linear-gradient(to right,rgba(255,255,255,0) 0%,#fff 72%)}
 .catp .striprail::before{background:linear-gradient(to left,rgba(255,255,255,0) 0%,#fff 72%)}
-.catp .striprail > .pg span:last-child{right:12px}
-.catp .striprail > .pg span:first-child{left:12px}
+.catp .strip.coll .c b{min-height:0}
 @media (min-width:1024px){
   .catp{display:flex;align-items:flex-start;gap:28px;padding:16px 0 0 32px}
   .catp:has(.strip.coll){padding-top:4px}
