@@ -849,10 +849,13 @@ body.ghosts-off .hm-pixels, body.ghosts-off .hm-card, body.ghosts-off .hm-cursor
 .hm-run-1 { opacity: 0; transition: opacity .35s ease; }
 .hm-run-1.is-hover { opacity: 1; transition-duration: .15s; }
 body.heat-off .hm-run, body.ghosts-off .hm-run { display: none; }
-.hm-rec { position: absolute; left: 3px; right: 4px; z-index: 1; border-radius: 8px; cursor: pointer; }
-.hm-rec-open { position: absolute; right: 10px; bottom: 8px; font-size: 12px; line-height: 18px; font-weight: 700; color: rgb(49 49 64); opacity: 0; transition: opacity .15s ease; }
-.hm-rec:hover .hm-rec-open { opacity: 1; }
-.hm-rec:hover { background: rgba(13,190,130,.06); }
+.hm-rec { position: absolute; left: 3px; right: 4px; z-index: 1; border-radius: 8px; pointer-events: none; }
+.hm-rec-open { position: absolute; right: 10px; bottom: 8px; padding: 0; border: 0; background: none; font: inherit; font-size: 12px; line-height: 18px; font-weight: 700; color: rgb(49 49 64); cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .15s ease; }
+.hm-rec-open:hover { text-decoration: underline; }
+.hm-rec.is-hover .hm-rec-open { opacity: 1; pointer-events: auto; }
+.hm-rec.is-hover { background: rgba(13,190,130,.06); }
+.hm-run.is-flash { animation: hm-flash 1.2s ease-out; }
+@keyframes hm-flash { 30% { background-color: rgba(13,190,130,.28); } }
 .hm-card-rec { transition: opacity .18s ease, transform .08s linear; }
 body.heat-off .hm-rec, body.heat-off .hm-card-rec { display: none; }
 .hm-key i.hm-run-key { width: 16px; height: 12px; border-radius: 3px; border-width: 1px; border-style: dashed; box-sizing: border-box; background: none; }
@@ -1106,14 +1109,13 @@ body.heat-off .hm-legend { visibility: hidden; }
   });
   document.addEventListener('mouseup', () => {
     if (!drag) return;
-    const { d, box, moved } = drag;
-    const [from, to] = moved ? paint() : [0, 0];
+    const { d, box } = drag;
+    const [a, z] = paint();
     drag = null;
-    if (!moved) { box.remove(); return; }
     swallowClick = true;
-    openModal({ day: d, from, to, level: null, onConfirm: () => {
-      const undo = openTime(d, from, to);
-      showToast(`Availability added: ${label(d, from, to)}`, undo);
+    openModal({ day: d, from: a, to: z, level: null, onConfirm: () => {
+      const undo = openTime(d, a, z);
+      showToast(`Availability added: ${label(d, a, z)}`, undo);
     } });
     const watch = setInterval(() => { if (!modal.classList.contains('is-open')) { box.remove(); clearInterval(watch); } }, 100);
   });

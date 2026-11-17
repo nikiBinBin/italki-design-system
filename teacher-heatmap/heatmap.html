@@ -849,10 +849,13 @@ body.ghosts-off .hm-pixels, body.ghosts-off .hm-card, body.ghosts-off .hm-cursor
 .hm-run-1 { opacity: 0; transition: opacity .35s ease; }
 .hm-run-1.is-hover { opacity: 1; transition-duration: .15s; }
 body.heat-off .hm-run, body.ghosts-off .hm-run { display: none; }
-.hm-rec { position: absolute; left: 3px; right: 4px; z-index: 1; border-radius: 8px; cursor: pointer; }
-.hm-rec-open { position: absolute; right: 10px; bottom: 8px; font-size: 12px; line-height: 18px; font-weight: 700; color: rgb(49 49 64); opacity: 0; transition: opacity .15s ease; }
-.hm-rec:hover .hm-rec-open { opacity: 1; }
-.hm-rec:hover { background: rgba(13,190,130,.06); }
+.hm-rec { position: absolute; left: 3px; right: 4px; z-index: 1; border-radius: 8px; pointer-events: none; }
+.hm-rec-open { position: absolute; right: 10px; bottom: 8px; padding: 0; border: 0; background: none; font: inherit; font-size: 12px; line-height: 18px; font-weight: 700; color: rgb(49 49 64); cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .15s ease; }
+.hm-rec-open:hover { text-decoration: underline; }
+.hm-rec.is-hover .hm-rec-open { opacity: 1; pointer-events: auto; }
+.hm-rec.is-hover { background: rgba(13,190,130,.06); }
+.hm-run.is-flash { animation: hm-flash 1.2s ease-out; }
+@keyframes hm-flash { 30% { background-color: rgba(13,190,130,.28); } }
 .hm-card-rec { transition: opacity .18s ease, transform .08s linear; }
 body.heat-off .hm-rec, body.heat-off .hm-card-rec { display: none; }
 .hm-key i.hm-run-key { width: 16px; height: 12px; border-radius: 3px; border-width: 1px; border-style: dashed; box-sizing: border-box; background: none; }
@@ -888,7 +891,7 @@ body.heat-off .hm-legend { visibility: hidden; }
 
 
 <div style="visibility: visible;"><div></div><div></div></div><img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2264%22%20height%3D%2264%22%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2232%22%20fill%3D%22%23E5E8ED%22%2F%3E%3C%2Fsvg%3E" border="0" height="0" width="0" style="position: absolute; visibility: hidden;">
-<div class="ghost-note"><b>Prototype · sample data.</b> Hover a framed time for details; click it to open Set availability with the time filled in. Drag on empty time to add availability, as in the real calendar.</div><nav class="ghost-versions"><a href="ghost-grid.html" class="">Ghost grid</a><a href="heatmap.html" class="is-on">Demand glow</a></nav><script>
+<div class="ghost-note"><b>Prototype · sample data.</b> Hover a framed time for details; + Open this time opens the whole time. Click or drag anywhere, frames included, to pick your own time, as in the real calendar.</div><nav class="ghost-versions"><a href="ghost-grid.html" class="">Ghost grid</a><a href="heatmap.html" class="is-on">Demand glow</a></nav><script>
 (() => {
   const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const DATES = [15, 16, 17, 18, 19, 20, 21];
@@ -1106,14 +1109,13 @@ body.heat-off .hm-legend { visibility: hidden; }
   });
   document.addEventListener('mouseup', () => {
     if (!drag) return;
-    const { d, box, moved } = drag;
-    const [from, to] = moved ? paint() : [0, 0];
+    const { d, box } = drag;
+    const [a, z] = paint();
     drag = null;
-    if (!moved) { box.remove(); return; }
     swallowClick = true;
-    openModal({ day: d, from, to, level: null, onConfirm: () => {
-      const undo = openTime(d, from, to);
-      showToast(`Availability added: ${label(d, from, to)}`, undo);
+    openModal({ day: d, from: a, to: z, level: null, onConfirm: () => {
+      const undo = openTime(d, a, z);
+      showToast(`Availability added: ${label(d, a, z)}`, undo);
     } });
     const watch = setInterval(() => { if (!modal.classList.contains('is-open')) { box.remove(); clearInterval(watch); } }, 100);
   });
@@ -1298,7 +1300,7 @@ body.heat-off .hm-legend { visibility: hidden; }
   const side = sideBlock();
   const renderSide = () => {
     const list = runs();
-    side.innerHTML = '<div class="text-sm font-bold leading-5 text-gray1 mb-1">Recommended this week</div>'
+    side.innerHTML = '<div class="text-sm font-bold leading-5 text-gray1 mb-1">Times students want this week</div>'
       + (list.length
         ? `<div class="text-tiny leading-4dot5 text-gray3 mb-2">The busiest times for students that you haven't opened</div>${list.map((r, i) => `<button type="button" class="ghost-side-row" data-i="${i}"><span class="hm-key"><i class="hm-run-key hm-run-3"></i></span><span>${DAYS[r.day]} ${DATES[r.day]} · ${hm(r.from)}-${hm(r.to)}</span></button>`).join('')}`
         : '<div class="text-tiny leading-4dot5 text-gray3">You\'ve opened all high-demand times.</div>');
@@ -1306,33 +1308,12 @@ body.heat-off .hm-legend { visibility: hidden; }
       e.stopPropagation();
       const r = list[+b.dataset.i];
       scroller.scrollTo({ top: (r.from - 2) * 112, behavior: 'smooth' });
-      setTimeout(() => show(r.day, r.from), 350);
+      setTimeout(() => {
+        const f = [...cols[r.day].querySelectorAll('.hm-run')].find((n) => r.from >= +n.dataset.from && r.from < +n.dataset.to);
+        f.classList.remove('is-flash'); void f.offsetWidth; f.classList.add('is-flash');
+      }, 350);
     }));
   };
-  function show(d, h) {
-    const v = DEMAND[d][h];
-    const c = layers[d].children[h];
-    c.classList.add('is-active');
-    const pop = openPop(c.getBoundingClientRect(), popHtml(d, h, h + 1, LEVEL[v], 'Many students learning your language look for lessons at this time.'), () => c.classList.remove('is-active'));
-    pop.querySelector('[data-act=no]').textContent = 'Not now';
-    pop.querySelector('[data-act=no]').onclick = () => closePop();
-    pop.querySelector('[data-act=yes]').onclick = () => {
-      closePop();
-      openModal({ day: d, from: h, to: h + 1, level: LEVEL[v], reason: '', onConfirm: () => {
-        const undo = openTime(d, h, h + 1);
-        renderSide();
-        showToast(`Availability added: ${label(d, h, h + 1)}`, () => { undo(); renderSide(); });
-      } });
-    };
-  }
-  cols.forEach((col, d) => {
-    col.addEventListener('click', (e) => {
-      if (document.body.classList.contains('heat-off') || e.target.closest('[role=event-time]')) return;
-      const r = col.getBoundingClientRect();
-      const h = Math.floor(((e.clientY - r.top) / r.height) * 24);
-      if (DEMAND[d][h] >= 2 && !isOpen(d, h)) { e.stopPropagation(); show(d, h); }
-    });
-  });
   const px3 = (v) => `<span class="hm-px3" data-level="${v}">${'<i></i>'.repeat(9)}</span>`;
   const recCard = document.createElement('div');
   recCard.className = 'hm-card hm-card-rec';
@@ -1359,28 +1340,13 @@ body.heat-off .hm-legend { visibility: hidden; }
     runsNow.forEach((r) => {
       const el = document.createElement('div');
       el.className = 'hm-rec';
-      el.setAttribute('role', 'event-time');
+      el.dataset.from = r.from; el.dataset.to = r.to; el.dataset.v = r.v; el.dataset.id = r.id;
       el.style.top = `calc(${(r.from / 24) * 100}% + 3px)`; el.style.height = `calc(${((r.to - r.from) / 24) * 100}% - 6px)`;
-      el.innerHTML = '<span class="hm-rec-open">+ Open this time</span>';
-      el.addEventListener('mousemove', (e) => {
-        const box = scroller.getBoundingClientRect();
-        if (recCard.dataset.run !== r.id) {
-          recCard.dataset.run = r.id;
-          recCard.innerHTML = `<div class="hm-card-time">${DAYS[r.day]}, Nov ${DATES[r.day]} · ${hm(r.from)}-${hm(r.to)}</div>`
-            + `<div class="hm-card-level">${px3(r.v)}${LEVEL[r.v]} student demand</div>`
-            + `<div class="hm-card-hint">${reasonFor(r)}</div>`;
-        }
-        const x = e.clientX - box.left + scroller.scrollLeft; const y = e.clientY - box.top + scroller.scrollTop;
-        const flip = e.clientX + 20 + recCard.offsetWidth > innerWidth - 16;
-        recCard.style.transform = `translate(${flip ? x - 20 - recCard.offsetWidth : x + 20}px, ${y + 18}px)`;
-        recCard.classList.add('is-on');
-      });
-      el.addEventListener('mouseleave', () => { recCard.classList.remove('is-on'); recCard.dataset.run = ''; });
-      el.addEventListener('mousedown', (e) => e.stopPropagation()); 
-      el.addEventListener('click', (e) => {
+      el.innerHTML = '<button type="button" class="hm-rec-open" role="event-time">+ Open this time</button>';
+      el.querySelector('button').addEventListener('click', (e) => {
         e.stopPropagation();
-        recCard.classList.remove('is-on');
-        openModal({ day: r.day, from: r.from, to: r.to, level: LEVEL[r.v || 3], reason: reasonFor(r), onConfirm: () => {
+        hoverOff();
+        openModal({ day: r.day, from: r.from, to: r.to, level: LEVEL[r.v], reason: reasonFor(r), onConfirm: () => {
           const undo = openTime(r.day, r.from, r.to);
           renderSide();
           showToast(`Availability added: ${label(r.day, r.from, r.to)}`, () => { undo(); renderSide(); });
@@ -1391,22 +1357,26 @@ body.heat-off .hm-legend { visibility: hidden; }
   };
   renderRec();
   document.addEventListener('hm-schedule', renderRec);
-  let lowOn = null;
-  const lowOff = () => { if (lowOn) { lowOn.classList.remove('is-hover'); lowOn = null; recCard.classList.remove('is-on'); recCard.dataset.run = ''; } };
+  let hoverOn = null;
+  const hoverOff = () => { if (hoverOn) { hoverOn.classList.remove('is-hover'); hoverOn = null; recCard.classList.remove('is-on'); recCard.dataset.run = ''; } };
+  scroller.addEventListener('mousedown', hoverOff);
   scroller.addEventListener('mousemove', (e) => {
-    if (document.body.classList.contains('heat-off') || e.target.closest('[role=event-time]')) { lowOff(); return; }
+    if (e.target.closest('.hm-rec-open')) return;
+    if (e.buttons || document.body.classList.contains('heat-off') || e.target.closest('[role=event-time]')) { hoverOff(); return; }
     const d = cols.findIndex((c) => { const b = c.getBoundingClientRect(); return e.clientX >= b.left && e.clientX < b.right; });
-    if (d < 0) { lowOff(); return; }
+    if (d < 0) { hoverOff(); return; }
     const b = cols[d].getBoundingClientRect(); const h = ((e.clientY - b.top) / b.height) * 24;
-    const run = [...cols[d].querySelectorAll('.hm-run-1')].find((n) => h >= +n.dataset.from && h < +n.dataset.to);
-    if (run !== lowOn) { lowOff(); if (run) { lowOn = run; run.classList.add('is-hover'); } }
+    const run = [...cols[d].querySelectorAll('.hm-rec, .hm-run-1')].find((n) => h >= +n.dataset.from && h < +n.dataset.to);
+    if (run !== hoverOn) { hoverOff(); if (run) { hoverOn = run; run.classList.add('is-hover'); } }
     if (!run) return;
-    const id = `low${d}-${run.dataset.from}`;
+    const low = run.classList.contains('hm-run-1');
+    const id = low ? `low${d}-${run.dataset.from}` : run.dataset.id;
     if (recCard.dataset.run !== id) {
       recCard.dataset.run = id;
-      recCard.innerHTML = `<div class="hm-card-time">${DAYS[d]}, Nov ${DATES[d]} · ${hm(+run.dataset.from)}-${hm(+run.dataset.to)}</div>`
-        + `<div class="hm-card-level">${px3(1)}Low student demand</div>`
-        + '<div class="hm-card-hint">Few students look for lessons now</div>';
+      const r = { day: d, from: +run.dataset.from, to: +run.dataset.to, v: low ? 1 : +run.dataset.v };
+      recCard.innerHTML = `<div class="hm-card-time">${DAYS[d]}, Nov ${DATES[d]} · ${hm(r.from)}-${hm(r.to)}</div>`
+        + `<div class="hm-card-level">${px3(r.v)}${LEVEL[r.v]} student demand</div>`
+        + `<div class="hm-card-hint">${low ? 'Few students look for lessons now' : reasonFor(r)}</div>`;
     }
     const box = scroller.getBoundingClientRect();
     const x = e.clientX - box.left + scroller.scrollLeft; const y = e.clientY - box.top + scroller.scrollTop;
@@ -1414,9 +1384,9 @@ body.heat-off .hm-legend { visibility: hidden; }
     recCard.style.transform = `translate(${flip ? x - 20 - recCard.offsetWidth : x + 20}px, ${y + 18}px)`;
     recCard.classList.add('is-on');
   });
-  scroller.addEventListener('mouseleave', lowOff);
+  scroller.addEventListener('mouseleave', hoverOff);
   cursorGrid('heat-off', { line: 0.5, skip: (d, h) => (DEMAND[d][h] || 0) >= 2 });
-  levelCursor('heat-off', '[role=event-time]:not(.hm-rec)');
+  levelCursor('heat-off', '[role=event-time]');
   renderSide();
   scroller.scrollTop = 112 * 13.25;
 })();
