@@ -1009,11 +1009,12 @@ body.hm-side-collapsed .hm-hide-bar svg { transform: rotate(180deg); }
     });
     return out;
   };
-  const recommend = () => {
+  const recommend = (all = false) => {
     const rank = (list) => list.sort((a, b) => (b.peak >= RECOMMEND_MIN) - (a.peak >= RECOMMEND_MIN)
       || (b.next || b.before) - (a.next || a.before) || b.score - a.score);
     const high = runsWhere((_, level) => level === 3, 3);
-    return rank(high.length ? high : runsWhere((_, level) => level === 2, 2)).slice(0, MAX_RECOMMEND);
+    const ranked = rank(high.length ? high : runsWhere((_, level) => level === 2, 2));
+    return all ? ranked : ranked.slice(0, MAX_RECOMMEND);
   };
   const noBusyHours = () => DEMAND.every((hours) => hours.every((v) => !v || v < 2));
   document.querySelectorAll('.italki-day-slot .italki-event').forEach((n) => n.remove());
@@ -1403,7 +1404,7 @@ body.hm-side-collapsed .hm-hide-bar svg { transform: rotate(180deg); }
     });
     return { root, listBox: root.querySelector('.hm-side-list') };
   };
-  window.HM = { noBusyHours, demandSide, howGap, gridIcon, setCursorLevel, lowHoverFrames, levelCursor, cursorGrid, openModal, closeModal, DAYS, DATES, SCORE, DEMAND, LEVEL, recommend, hm, range, label, cols, scroller, place, availBlock, isOpen, heatLayer, addToToolbar, sideBlock, openPop, closePop, showToast, openTime, popHtml };
+  window.HM = { MAX_RECOMMEND, noBusyHours, demandSide, howGap, gridIcon, setCursorLevel, lowHoverFrames, levelCursor, cursorGrid, openModal, closeModal, DAYS, DATES, SCORE, DEMAND, LEVEL, recommend, hm, range, label, cols, scroller, place, availBlock, isOpen, heatLayer, addToToolbar, sideBlock, openPop, closePop, showToast, openTime, popHtml };
 })();
 </script><script>
 (() => {

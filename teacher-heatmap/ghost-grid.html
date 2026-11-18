@@ -1009,11 +1009,12 @@ body.hm-side-collapsed .hm-hide-bar svg { transform: rotate(180deg); }
     });
     return out;
   };
-  const recommend = () => {
+  const recommend = (all = false) => {
     const rank = (list) => list.sort((a, b) => (b.peak >= RECOMMEND_MIN) - (a.peak >= RECOMMEND_MIN)
       || (b.next || b.before) - (a.next || a.before) || b.score - a.score);
     const high = runsWhere((_, level) => level === 3, 3);
-    return rank(high.length ? high : runsWhere((_, level) => level === 2, 2)).slice(0, MAX_RECOMMEND);
+    const ranked = rank(high.length ? high : runsWhere((_, level) => level === 2, 2));
+    return all ? ranked : ranked.slice(0, MAX_RECOMMEND);
   };
   const noBusyHours = () => DEMAND.every((hours) => hours.every((v) => !v || v < 2));
   document.querySelectorAll('.italki-day-slot .italki-event').forEach((n) => n.remove());
@@ -1403,12 +1404,12 @@ body.hm-side-collapsed .hm-hide-bar svg { transform: rotate(180deg); }
     });
     return { root, listBox: root.querySelector('.hm-side-list') };
   };
-  window.HM = { noBusyHours, demandSide, howGap, gridIcon, setCursorLevel, lowHoverFrames, levelCursor, cursorGrid, openModal, closeModal, DAYS, DATES, SCORE, DEMAND, LEVEL, recommend, hm, range, label, cols, scroller, place, availBlock, isOpen, heatLayer, addToToolbar, sideBlock, openPop, closePop, showToast, openTime, popHtml };
+  window.HM = { MAX_RECOMMEND, noBusyHours, demandSide, howGap, gridIcon, setCursorLevel, lowHoverFrames, levelCursor, cursorGrid, openModal, closeModal, DAYS, DATES, SCORE, DEMAND, LEVEL, recommend, hm, range, label, cols, scroller, place, availBlock, isOpen, heatLayer, addToToolbar, sideBlock, openPop, closePop, showToast, openTime, popHtml };
 })();
 </script><script>
 window.HM_HOVER = 'grid';
 (() => {
-  const { noBusyHours, demandSide, howGap, gridIcon, setCursorLevel, openModal, cursorGrid, lowHoverFrames, DAYS, DATES, DEMAND, LEVEL, recommend, isOpen, hm, label, cols, scroller, place, sideBlock, openPop, closePop, showToast, openTime, popHtml } = window.HM;
+  const { MAX_RECOMMEND, noBusyHours, demandSide, howGap, gridIcon, setCursorLevel, openModal, cursorGrid, lowHoverFrames, DAYS, DATES, DEMAND, LEVEL, recommend, isOpen, hm, label, cols, scroller, place, sideBlock, openPop, closePop, showToast, openTime, popHtml } = window.HM;
   const GHOSTS = recommend();
   const P = 7; 
   const R = 220; 
@@ -1580,13 +1581,29 @@ window.HM_HOVER = 'grid';
     extras.forEach(makeBlock);
   };
   const dropExtras = () => { extras.forEach((g) => g.el.remove()); extras = []; };
+  const refill = () => {
+    const active = GHOSTS.filter((g) => !g.done);
+    while (active.length > MAX_RECOMMEND && active[active.length - 1].auto) {
+      const g = active.pop(); g.el.remove(); GHOSTS.splice(GHOSTS.indexOf(g), 1);
+    }
+    const taken = (r) => GHOSTS.some((g) => g.day === r.day && g.from < r.to && r.from < g.to);
+    let added = false;
+    for (const r of recommend(true)) {
+      if (active.length >= MAX_RECOMMEND) break;
+      if (r.v !== tier || taken(r)) continue;
+      const g = { ...r, auto: true };
+      GHOSTS.push(g); makeBlock(g); active.push(g); added = true;
+    }
+    if (added && showMore) { dropExtras(); showExtras(); }
+  };
   const renderSide = () => {
+    refill();
     const left = GHOSTS.filter((g) => !g.done);
     const row = (attrs, mark, d, f, to) => `<button type="button" class="ghost-side-row" ${attrs}>${mark}<span>${DAYS[d]} ${DATES[d]} · ${hm(f)}-${hm(to)}</span></button>`;
     listBox.innerHTML = '<div class="text-tiny font-medium leading-4dot5 text-gray3 hm-side-label">Suggested times to open</div>'
       + (left.length
         ? left.map((g) => row(`data-g="${g.id}"`, `<span class="hm-row-mark is-${g.v}">${px3(g.v)}</span>`, g.day, g.from, g.to)).join('')
-        : `<div class="text-tiny leading-4dot5 text-gray3">${noBusyHours() ? 'No busy times this week.' : 'You\'re open at every busy time this week.'}</div>`)
+        : `<div class="text-tiny leading-4dot5 text-gray3">${noBusyHours() ? 'No busy times this week.' : moreRuns().length ? 'No more suggestions this week.' : 'You\'re open at every busy time this week.'}</div>`)
       + extras.filter((g) => !g.done).map((g) => row(`data-g="${g.id}"`, `<span class="hm-row-mark is-${g.v}">${px3(g.v)}</span>`, g.day, g.from, g.to)).join('')
       + (showMore || moreRuns().length ? `<button type="button" class="hm-more">${showMore ? 'Show less' : `Show more (${moreRuns().length})`}</button>` : '');
     listBox.querySelectorAll('[data-g]').forEach((b) => b.addEventListener('click', (e) => {
