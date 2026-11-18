@@ -899,16 +899,21 @@ body.heat-off .hm-legend { visibility: hidden; }
 .hm-how-foot span { display: inline-flex; align-items: center; gap: 4px; }
 .hm-how-foot svg { width: 12px; height: 12px; color: rgb(156 156 172); }
 .hm-how-note { margin-top: 16px; padding-top: 12px; border-top: 1px solid rgb(245 246 249); font-size: 12px; line-height: 16px; color: rgb(156 156 172); }
+.hm-how-note.is-plain { margin-top: 12px; padding-top: 0; border-top: 0; }
 .hm-row-mark { display: inline-flex; flex: none; padding: 1px; border: 1px dashed rgb(13 190 130); border-radius: 4px; background: rgba(13,226,152,0.04); }
 .hm-row-mark svg { width: 14px; height: 14px; }
 .hm-row-mark.is-frame { width: 18px; height: 18px; padding: 0; box-sizing: border-box; border-color: rgba(8,160,108,.85); background: #fff; box-shadow: inset 0 0 6px rgba(13,190,130,.6); }
 .hm-side-pad { padding-left: 24px; padding-right: 24px; }
 .hm-side-body { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
 .hm-side-label { margin-bottom: 8px; }
-.hm-top-group { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 8px 0 12px; border-radius: 999px; background: rgb(245 246 249); }  
+.hm-views { display: inline-flex; align-items: center; height: 32px; margin-right: 16px; padding: 0 4px; border-radius: 999px; background: rgb(245 246 249); box-sizing: border-box; }
+.hm-views > div { position: relative; display: inline-flex; align-items: center; height: 32px; margin: 0 !important; padding: 0 14px; color: rgb(156 156 172); }
+.hm-views > div.is-on { color: rgb(49 49 64) !important; }  
+.hm-views > div + div::before { content: ''; position: absolute; left: 0; top: 10px; bottom: 10px; width: 1px; background: rgb(229 232 237); }
+.hm-top-group { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px 0 16px; border-radius: 999px; background: rgb(245 246 249); }  
 .hm-top-group { cursor: pointer; }
 .hm-top-group:hover .hm-info { color: rgb(81 81 100); }
-.hm-top-group .hm-info { margin-right: 4px; }
+.hm-top-group .hm-info { margin-right: 18px; }  
 .hm-top-toggle { display: inline-flex; align-items: center; }
 .hm-top-name { font-size: 14px; line-height: 20px; font-weight: 500; color: rgb(49 49 64); user-select: none; }
 .hm-top-group .ghost-switch { margin-right: 0; }
@@ -1341,7 +1346,7 @@ body.heat-off .hm-side-body, body.ghosts-off .hm-side-body { display: none; }
     const howHtml = () => '<div class="hm-how"><div class="hm-how-title">How student demand works</div>' + frames
       + (top ? '' : '<div class="hm-how-sub">How we pick suggested times</div>'
         + `<ul class="hm-how-rules">${rule('today-sm', 'You haven\'t opened it yet')}${rule('night-sm', 'Not overnight (00:00-07:00)')}${rule('upvote-sm', 'Next to your open hours first, up to 4')}</ul>`)
-      + '<div class="hm-how-note">From recent searches and bookings, updated weekly. Not a booking guarantee.</div></div>';
+      + `<div class="hm-how-note${top ? ' is-plain' : ''}">From recent searches and bookings, updated weekly. Not a booking guarantee.</div></div>`;
     const info = root.querySelector('.hm-info');
     const LEAVE_MS = 600; 
     let open = false; let leaveTimer = null;
@@ -1356,8 +1361,9 @@ body.heat-off .hm-side-body, body.ghosts-off .hm-side-body { display: none; }
       pop.style.maxHeight = ''; pop.style.overflowY = '';
       const h = pop.offsetHeight; const edge = 16;
       if (top) {
-        pop.style.left = `${Math.min(at.left - 16, innerWidth - edge - pop.offsetWidth)}px`;
-        pop.style.top = `${at.bottom + 8}px`;
+        const pill = root.querySelector('.hm-top-group').getBoundingClientRect();
+        pop.style.left = `${Math.min(pill.left, innerWidth - edge - pop.offsetWidth)}px`;
+        pop.style.top = `${pill.bottom + 8}px`;
         return;
       }
       const mid = at.top + at.height / 2;
@@ -1404,6 +1410,13 @@ body.heat-off .hm-side-body, body.ghosts-off .hm-side-body { display: none; }
     onToggle: () => {},
     top: true,
   });
+  const viewSwitch = ['Week', 'Month'].map((w) => [...document.querySelectorAll('div')].find((n) => n.textContent.trim() === w && n.children.length === 0));
+  const dates = viewSwitch[0].parentElement.parentElement.firstElementChild;
+  const views = document.createElement('div');
+  views.className = 'hm-views';
+  viewSwitch.forEach((n) => views.appendChild(n));
+  viewSwitch[0].classList.add('is-on'); 
+  dates.prepend(views); 
   const recCard = document.createElement('div');
   recCard.className = 'hm-card hm-card-rec';
   scroller.appendChild(recCard);
