@@ -753,6 +753,8 @@ a:hover .css-14h52wa.ant-badge .ant-badge-count { background: rgb(255, 67, 56); 
 .av-x { position: absolute; right: 14px; top: 12px; width: 28px; height: 28px; border: 0; background: none; font-size: 20px; color: rgb(81 81 100); cursor: pointer; }
 .av-body { padding: 16px 20px 20px; }
 .av-note { margin-bottom: 16px; padding: 10px 12px; border-radius: 8px; background: rgba(13,226,152,0.08); }
+.ghost-slot .ghost-tag { align-items: flex-start; margin-top: 6px; }  
+.ghost-slot .ghost-tag > :first-child { flex: none; margin-top: 1px; }  
 .av-note .ghost-tag { margin-top: 0; font-weight: 700; color: rgb(49 49 64); }
 .av-note-why { margin-top: 2px; font-size: 13px; line-height: 18px; color: rgb(81 81 100); }
 .av-note-small { margin-top: 6px; font-size: 12px; line-height: 16px; color: rgb(156 156 172); }
@@ -768,7 +770,7 @@ a:hover .css-14h52wa.ant-badge .ant-badge-count { background: rgb(255, 67, 56); 
 .av-foot { display: flex; justify-content: flex-end; padding: 12px 16px; border-top: 1px solid rgb(233 233 235); }
 .ghost-event:hover .ghost-open, .ghost-event:hover .ghost-x, .ghost-event.is-active .ghost-x { opacity: 1; }
 .ghost-event.is-leaving .ghost-slot { opacity: 0; }
-body.ghosts-off .ghost-event { display: none; }
+body.ghosts-off .ghost-event { display: none !important; }  
 .ghost-landed .event-available-time { animation: ghost-land .5s ease-out; }
 @keyframes ghost-land { from { background-color: rgba(13,226,152,0.28); } }
 .ghost-avatar { display: inline-block; width: 24px; height: 24px; border-radius: 50%; background: rgb(229 232 237); vertical-align: middle; }
@@ -778,15 +780,11 @@ body.ghosts-off .ghost-event { display: none; }
   box-shadow: 0 1px 2px rgba(0,0,0,.2); transition: transform .15s ease; }
 .ghost-switch.is-on .ghost-switch-track { background: rgb(81 81 100); }
 .ghost-switch.is-on .ghost-switch-thumb { transform: translateX(12px); }
-.ghost-side { padding-right: 24px; }
+.ghost-side { padding-right: 0; }
 .ghost-side-row { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; margin-left: -8px; border: 0; border-radius: 6px;
   background: transparent; font: inherit; font-size: 14px; line-height: 20px; font-weight: 500; color: rgb(49 49 64); text-align: left; cursor: pointer; }
 .ghost-side-row:hover { background: rgb(245 246 249); }
-.ghost-side-row { gap: 6px; white-space: nowrap; }
-.ghost-side-row .hm-key { flex: none; }
-.ghost-side-row .hm-key i.hm-run-key { width: 12px; height: 10px; }
-.ghost-side-row .hm-key i.px { width: 11px; height: 11px;
-  background-image: linear-gradient(90deg, transparent 5px, #fff 5px, #fff 6px, transparent 6px), linear-gradient(transparent 5px, #fff 5px, #fff 6px, transparent 6px); }
+.ghost-side-row { gap: 8px; white-space: nowrap; }
 .ghost-pop { position: fixed; z-index: 1000; width: 300px; padding: 16px; border-radius: 12px; background: #fff;
   box-shadow: 0 6px 24px rgba(0,0,0,.12), 0 0 0 1px rgba(0,0,0,.04); opacity: 0; transform: translateY(4px); pointer-events: none;
   transition: opacity .15s ease, transform .15s ease; }
@@ -797,7 +795,7 @@ body.ghosts-off .ghost-event { display: none; }
   background: rgb(49 49 64); color: #fff; font-size: 14px; line-height: 20px; opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease; }
 .ghost-toast.is-open { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
 .ghost-toast button { margin-left: 12px; border: 0; background: none; color: #fff; font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
-.ghost-note { position: fixed; z-index: 999; left: 16px; bottom: 56px; max-width: 200px; padding: 8px 10px; border-radius: 8px;
+.ghost-note { position: fixed; z-index: 999; right: 16px; bottom: 56px; max-width: 200px; padding: 8px 10px; border-radius: 8px;
   background: rgb(255 248 220); color: rgb(81 81 100); font-size: 12px; line-height: 16px; }
 @media (prefers-reduced-motion: reduce) { .ghost-pop, .ghost-toast, .ghost-slot { transition: none; } .ghost-landed .event-available-time { animation: none; } }
 .hm-layer { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
@@ -822,21 +820,9 @@ body.ghosts-off .hm-legend { visibility: hidden; }
 .hm-meter i:nth-child(1) { height: 6px; } .hm-meter i:nth-child(2) { height: 10px; } .hm-meter i:nth-child(3) { height: 14px; }
 .hm-meter i.is-on { background: rgb(13 190 130); }
 .hm-no-cursor, .hm-no-cursor * { cursor: none !important; }
-.hm-cursor { position: absolute; left: 0; top: 0; z-index: 7; pointer-events: none; display: grid; grid-template-columns: repeat(3, 4px); gap: 1px; padding: 1px;
-  border-radius: 3px; background: #fff; box-shadow: 0 0 0 1px rgba(49,49,64,.35), 0 1px 3px rgba(0,0,0,.15); opacity: 0; }
+.hm-cursor { position: absolute; left: 0; top: 0; z-index: 7; pointer-events: none; display: flex; padding: 2px;
+  border-radius: 4px; background: #fff; box-shadow: 0 0 0 1px rgba(49,49,64,.35), 0 1px 3px rgba(0,0,0,.15); opacity: 0; }
 .hm-cursor.is-on { opacity: 1; }
-.hm-cursor i { width: 4px; height: 4px; border-radius: 1px; background: rgb(233 233 235); transition: background-color .15s ease; }
-.hm-px3 { display: inline-grid; grid-template-columns: repeat(3, 3px); gap: 1px; flex: none; vertical-align: middle; }
-.hm-px3 i { width: 3px; height: 3px; border-radius: .5px; background: rgb(229 232 237); }
-.hm-px3[data-level="1"] i:is(:nth-child(5), :nth-child(8)) { background: rgba(13,190,130,.6); }
-.hm-px3[data-level="2"] i:is(:nth-child(2), :nth-child(4), :nth-child(5), :nth-child(6), :nth-child(8)) { background: rgb(13 190 130); }
-.hm-px3[data-level="3"] i { background: rgb(10 170 115); }
-.hm-key .hm-px3 i { width: 3px; height: 3px; border-radius: .5px; box-shadow: none; }
-.hm-card-level .hm-px3 { grid-template-columns: repeat(3, 4px); }
-.hm-card-level .hm-px3 i { width: 4px; height: 4px; }
-.hm-cursor[data-level="1"] i:nth-child(5), .hm-cursor[data-level="1"] i:nth-child(8) { background: rgba(13,190,130,.6); }
-.hm-cursor[data-level="2"] i:is(:nth-child(2), :nth-child(4), :nth-child(5), :nth-child(6), :nth-child(8)) { background: rgb(13 190 130); }
-.hm-cursor[data-level="3"] i { background: rgb(10 170 115); }
 .hm-cursor[data-level="3"] { animation: hm-cur 1.6s ease-in-out infinite; }
 @keyframes hm-cur { 50% { box-shadow: 0 0 0 1px rgba(10,170,115,.6), 0 0 0 4px rgba(13,190,130,.18); } }
 @media (prefers-reduced-motion: reduce) { .hm-cursor[data-level="3"] { animation: none; } .hm-card.is-swap > * { animation: none; } }
@@ -876,6 +862,51 @@ body.heat-off .hm-legend { visibility: hidden; }
 .hm-key { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; line-height: 16px; color: rgb(81 81 100); }
 .hm-key i { display: inline-block; width: 14px; height: 10px; border-radius: 2px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
 .hm-swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; flex: none; }
+.hm-side-head { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+.hm-side-head .ghost-switch { margin-right: 0; }
+.hm-side-title { display: inline-flex; align-items: center; gap: 6px; }
+.hm-info { display: inline-flex; width: 16px; height: 16px; padding: 0; border: 0; background: none; color: rgb(156 156 172); cursor: pointer; transition: color .15s ease; }  
+.hm-info:hover, .hm-info:focus-visible { color: rgb(81 81 100); }
+.hm-info:focus:not(:focus-visible) { outline: none; }
+.hm-how { padding: 4px 2px; color: rgb(81 81 100); }
+.hm-how-title { font-size: 16px; line-height: 22px; font-weight: 700; color: rgb(49 49 64); }
+.hm-how-sub { margin: 20px 0 8px; font-size: 12px; line-height: 16px; font-weight: 600; color: rgb(156 156 172); }
+.hm-how-ico { display: inline-flex; flex: none; width: 16px; height: 16px; color: rgb(81 81 100); }
+.hm-how-gap { margin-top: 12px; padding: 12px; border-radius: 12px; background: rgb(245 246 249); }  
+.hm-how-row { display: flex; align-items: center; gap: 8px; font-size: 13px; line-height: 18px; color: rgb(49 49 64); }
+.hm-how-row + .hm-how-row { margin-top: 6px; }
+.hm-how-label { flex: 1; }
+.hm-how-gap .hm-how-dots i { width: 7px; height: 7px; }
+.hm-how-level-row { font-weight: 600; }
+.hm-how-level-row + .hm-how-level-row { margin-top: 8px; }
+.hm-how-level-row.is-first { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgb(229 232 237); }
+.hm-how-area { display: block; width: 32px; height: 22px; border: 1px dashed; border-radius: 5px; box-sizing: border-box; background: #fff; }
+.hm-how-area.is-3 { border-color: rgba(8,160,108,.85); box-shadow: inset 0 0 10px rgba(13,190,130,.55); }
+.hm-how-area.is-2 { border-color: rgba(13,190,130,.55); box-shadow: inset 0 0 8px rgba(13,190,130,.3); }
+.hm-how-area.is-1 { border-color: rgba(13,190,130,.35); box-shadow: inset 0 0 5px rgba(13,190,130,.12); }
+.hm-how-mark { display: inline-flex; justify-content: flex-end; width: 68px; }
+.hm-how-mark > i.hm-run-key { width: 28px; height: 18px; border-radius: 4px; border-width: 1px; border-style: dashed; box-sizing: border-box; background: #fff; box-shadow: inset 0 0 7px rgba(13,190,130,.7); }
+.hm-how-dots { display: inline-flex; gap: 2px; }
+.hm-how-dots i { width: 6px; height: 6px; border-radius: 50%; background: rgb(229 232 237); }
+.hm-how-dots i.is-student { background: rgb(13 190 130); }
+.hm-how-dots i.is-teacher { background: rgb(81 81 100); }
+.hm-how-rules .hm-how-ico { align-items: center; justify-content: center; height: 18px; }  
+.hm-how-rules .hm-how-ico svg { width: 12px; height: 12px; }
+.hm-how-rules { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.hm-how-rules li { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 18px; color: rgb(49 49 64); }
+.hm-how-foot { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 16px; padding-top: 12px; border-top: 1px solid rgb(233 233 235); font-size: 12px; line-height: 16px; color: rgb(81 81 100); }
+.hm-how-foot span { display: inline-flex; align-items: center; gap: 4px; }
+.hm-how-foot svg { width: 12px; height: 12px; color: rgb(156 156 172); }
+.hm-how-note { margin-top: 16px; padding-top: 12px; border-top: 1px solid rgb(245 246 249); font-size: 12px; line-height: 16px; color: rgb(156 156 172); }
+.hm-row-mark { display: inline-flex; flex: none; padding: 1px; border: 1px dashed rgb(13 190 130); border-radius: 4px; background: rgba(13,226,152,0.04); }
+.hm-row-mark svg { width: 14px; height: 14px; }
+.hm-row-mark.is-frame { width: 18px; height: 18px; padding: 0; box-sizing: border-box; border-color: rgba(8,160,108,.85); background: #fff; box-shadow: inset 0 0 6px rgba(13,190,130,.6); }
+.hm-side-pad { padding-left: 24px; padding-right: 24px; }
+.hm-side-body { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+.hm-side-label { margin-bottom: 8px; }
+.hm-in-side .ghost-side-row { gap: 6px; padding-top: 3px; padding-bottom: 3px; }
+.hm-side-body .hm-legend { gap: 12px; }
+body.heat-off .hm-side-body, body.ghosts-off .hm-side-body { display: none; }
 .ghost-versions { position: fixed; z-index: 1002; left: 50%; bottom: 16px; transform: translateX(-50%); display: flex; gap: 4px; padding: 4px;
   border-radius: 999px; background: rgb(49 49 64); box-shadow: 0 4px 16px rgba(0,0,0,.2); }
 .ghost-versions a { padding: 6px 14px; border-radius: 999px; color: #fff; font-size: 13px; line-height: 18px; font-weight: 600; text-decoration: none; opacity: .7; }
@@ -891,7 +922,7 @@ body.heat-off .hm-legend { visibility: hidden; }
 
 
 <div style="visibility: visible;"><div></div><div></div></div><img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2264%22%20height%3D%2264%22%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2232%22%20fill%3D%22%23E5E8ED%22%2F%3E%3C%2Fsvg%3E" border="0" height="0" width="0" style="position: absolute; visibility: hidden;">
-<div class="ghost-note"><b>Prototype · sample data.</b> Hover a dashed block for the reason; click it to open Set availability with the time filled in. Moving over the grid lights the cells, brighter where demand is higher. Drag on empty time to add availability.</div><nav class="ghost-versions"><a href="ghost-grid.html" class="is-on">Ghost grid</a><a href="heatmap.html" class="">Demand glow</a></nav><script>
+<nav class="ghost-versions"><a href="ghost-grid.html" class="is-on">Ghost grid</a><a href="heatmap.html" class="">Demand glow</a></nav><script>
 (() => {
   const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const DATES = [15, 16, 17, 18, 19, 20, 21];
@@ -989,6 +1020,7 @@ body.heat-off .hm-legend { visibility: hidden; }
     return sw;
   };
   const sideBlock = () => {
+    document.querySelectorAll('.sideBar .pl-10').forEach((n) => { n.classList.remove('pl-10', 'pr-4'); n.classList.add('hm-side-pad'); });
     const status = [...document.querySelectorAll('div')].find((n) => n.textContent.trim() === 'Lesson status' && n.children.length === 0);
     const side = document.createElement('div');
     side.className = 'mt-6 flex flex-col ghost-side';
@@ -1211,10 +1243,20 @@ body.heat-off .hm-legend { visibility: hidden; }
     });
     scroller.addEventListener('mouseleave', () => { ptr.in = false; });
   };
+  const LIT = {
+    3: { c: 'rgb(8,140,95)', w: 1.2, r: 9 },
+    2: { c: 'rgba(13,190,130,.75)', w: 1.2, r: 9 },
+    1: { c: 'rgba(13,190,130,.35)', w: 1.2, r: 9 },
+    0: { c: 'rgba(156,156,172,.4)', w: 1.2, r: 9 },
+  };
+  const gridIcon = (v) => `<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16"><defs>`
+    + `<radialGradient id="hm-lit-g${v}" cx="8" cy="8" r="${LIT[v].r}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>`
+    + `<mask id="hm-lit-m${v}"><rect width="16" height="16" fill="url(#hm-lit-g${v})"/></mask></defs>`
+    + `<g mask="url(#hm-lit-m${v})" stroke="${LIT[v].c}" stroke-width="${LIT[v].w}"><path d="M5.5 0V16M10.5 0V16M0 5.5H16M0 10.5H16"/></g></svg>`;
+  const setCursorLevel = (el, v) => { if (el.dataset.level !== String(v)) { el.dataset.level = v; el.innerHTML = gridIcon(v); } };
   const levelCursor = (offClass, skip = '[role=event-time]') => {
     const el = document.createElement('div');
     el.className = 'hm-cursor';
-    el.innerHTML = '<i></i>'.repeat(9);
     scroller.appendChild(el);
     const hide = () => { el.classList.remove('is-on'); scroller.classList.remove('hm-no-cursor'); };
     scroller.addEventListener('mousemove', (e) => {
@@ -1223,8 +1265,8 @@ body.heat-off .hm-legend { visibility: hidden; }
       if (d < 0) { hide(); return; }
       const b = cols[d].getBoundingClientRect(); const h = Math.floor(((e.clientY - b.top) / b.height) * 24);
       const box = scroller.getBoundingClientRect();
-      el.dataset.level = DEMAND[d][h] || 0;
-      el.style.transform = `translate(${e.clientX - box.left + scroller.scrollLeft - 7}px, ${e.clientY - box.top + scroller.scrollTop - 7}px)`;
+      setCursorLevel(el, DEMAND[d][h] || 0);
+      el.style.transform = `translate(${e.clientX - box.left + scroller.scrollLeft - 10}px, ${e.clientY - box.top + scroller.scrollTop - 10}px)`;
       el.classList.add('is-on'); scroller.classList.add('hm-no-cursor');
     });
     scroller.addEventListener('mouseleave', hide);
@@ -1262,12 +1304,59 @@ body.heat-off .hm-legend { visibility: hidden; }
     });
     scroller.addEventListener('mouseleave', off);
   };
-  window.HM = { lowHoverFrames, levelCursor, cursorGrid, openModal, closeModal, DAYS, DATES, SCORE, DEMAND, LEVEL, recommend, hm, range, label, cols, scroller, place, availBlock, isOpen, heatLayer, addSwitch, sideBlock, openPop, closePop, showToast, openTime, popHtml };
+  const ICON = {"earth-sm": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M12.5199 8.04617C13.186 7.97987 13.9121 7.74667 14.3714 7.5498C14.4134 7.53181 14.4571 7.51796 14.5018 7.50845C14.696 7.46717 14.8684 7.42376 15.0215 7.37926C14.7487 4.21949 12.3796 1.65918 9.31195 1.09593C9.24464 1.16756 9.17995 1.23867 9.11775 1.3081C9.07939 1.35092 9.03974 1.39572 8.99985 1.4408L8.99982 1.44082C8.88619 1.56922 8.77061 1.6998 8.67747 1.79295C8.56005 1.91036 8.41211 2.14645 8.28468 2.48662C8.16116 2.81632 8.07679 3.19113 8.05136 3.54067C8.02516 3.90094 8.06578 4.17399 8.13541 4.33665C8.19239 4.46975 8.23702 4.47669 8.27845 4.48246C8.99609 4.58236 9.55532 4.77883 9.98456 5.08214C10.4253 5.39362 10.6772 5.7811 10.8351 6.16727C10.9547 6.46009 11.0276 6.77857 11.0842 7.02613C11.0962 7.0787 11.1075 7.12807 11.1184 7.17332C11.1886 7.46608 11.2524 7.65688 11.3514 7.80527C11.4027 7.8823 11.4984 7.9605 11.6995 8.01255C11.9081 8.06656 12.187 8.0793 12.5199 8.04617ZM1.02819 7.99022C1.02819 4.29631 3.88541 1.26974 7.51036 1C7.2825 1.28822 7.1039 1.64222 6.97182 1.9948C6.80356 2.44396 6.68867 2.9499 6.6531 3.43897C6.61831 3.91731 6.65495 4.44073 6.84659 4.88839C7.05088 5.3656 7.45154 5.78282 8.08515 5.87102C8.66066 5.95114 8.98508 6.09253 9.17549 6.22708C9.35434 6.35347 9.45808 6.50385 9.53732 6.6977C9.60967 6.87471 9.65127 7.05446 9.70638 7.29259L9.70641 7.29272L9.70651 7.29313C9.72142 7.35756 9.73732 7.42626 9.75509 7.50034C9.83035 7.81406 9.93894 8.21407 10.1849 8.58294C10.4784 9.02317 10.9143 9.25749 11.3481 9.36978C11.7744 9.48011 12.2337 9.48353 12.6587 9.44123C13.4761 9.35988 14.311 9.09396 14.8598 8.8654C14.9062 8.8552 14.9521 8.84478 14.9975 8.83414C14.5807 12.3076 11.6237 15 8.03796 15C7.94798 15 7.85838 14.9983 7.76921 14.9949C7.94775 14.3939 8.24547 13.3852 8.43799 12.401C8.5459 11.8495 8.62701 11.2758 8.6294 10.7677C8.63158 10.302 8.57211 9.71454 8.22873 9.29727C7.78936 8.76336 7.14374 8.61331 6.55241 8.61387C5.95945 8.61442 5.29866 8.76332 4.65037 8.96491C3.65178 9.27543 2.54378 9.75862 1.57085 10.1829L1.57083 10.1829C1.51426 10.2076 1.45815 10.232 1.40255 10.2563C1.15986 9.54546 1.02819 8.78322 1.02819 7.99022ZM6.35212 14.796C4.49523 14.3375 2.9299 13.139 1.98702 11.5312C2.05231 11.5028 2.11785 11.4743 2.1836 11.4456L2.18364 11.4456C3.14456 11.0268 4.14939 10.5889 5.06666 10.3036C5.66594 10.1173 6.16928 10.0162 6.55372 10.0158C6.9398 10.0155 7.08487 10.1136 7.1462 10.1881L7.14527 10.187C7.14526 10.187 7.14538 10.1872 7.14561 10.1876C7.14857 10.1925 7.16991 10.2279 7.19024 10.3192C7.21381 10.425 7.22835 10.5714 7.22746 10.7611C7.22567 11.1418 7.16283 11.617 7.06211 12.1319C6.87951 13.0653 6.59294 14.0308 6.41447 14.6321L6.38318 14.7376C6.37286 14.7573 6.36251 14.7767 6.35212 14.796Z\" fill=\"currentColor\"/></svg>", "refresh-sm": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M11.4733 2.99546C11.6421 2.82668 11.7205 2.58765 11.6844 2.35171C11.6483 2.11577 11.502 1.9111 11.2905 1.8005C8.63644 0.412727 5.28461 0.82813 3.05637 3.05637C0.818349 5.29439 0.409094 8.66588 1.81892 11.3255C2.01292 11.6915 2.46687 11.8309 2.83284 11.6369C3.19882 11.4429 3.33823 10.989 3.14424 10.623C2.03324 8.52709 2.35936 5.8747 4.11703 4.11703C5.60278 2.63128 7.72783 2.16839 9.6157 2.73178L8.83913 3.50835C8.54624 3.80125 8.54624 4.27612 8.83913 4.56901C9.13202 4.86191 9.6069 4.86191 9.89979 4.56901L11.4733 2.99546ZM4.17795 12.6707C4.00918 12.8394 3.93081 13.0785 3.96691 13.3144C4.003 13.5503 4.14924 13.755 4.36076 13.8656C7.01486 15.2534 10.3667 14.838 12.5949 12.6097C14.8329 10.3717 15.2422 7.00023 13.8324 4.34059C13.6384 3.97462 13.1844 3.8352 12.8185 4.0292C12.4525 4.2232 12.3131 4.67715 12.5071 5.04312C13.6181 7.13902 13.2919 9.79141 11.5343 11.5491C10.0485 13.0348 7.92347 13.4977 6.03559 12.9343L6.81216 12.1578C7.10506 11.8649 7.10506 11.39 6.81216 11.0971C6.51927 10.8042 6.0444 10.8042 5.7515 11.0971L4.17795 12.6707Z\" fill=\"currentColor\"/></svg>", "time-sm": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M11.6315 4.33923C14.0636 6.77133 14.0636 10.7145 11.6315 13.1466C9.19938 15.5787 5.25616 15.5787 2.82407 13.1466C0.391974 10.7145 0.391981 6.77133 2.82407 4.33923C5.25616 1.90713 9.19938 1.90713 11.6315 4.33923ZM9.72209 6.24862C9.47888 6.0054 9.0841 6.00618 8.84089 6.24938L6.64437 8.4459C6.52783 8.5626 6.46242 8.72043 6.46234 8.88536C6.46234 9.05053 6.52757 9.20954 6.64437 9.32634L8.36259 11.0446C8.60572 11.2874 8.99987 11.2874 9.24303 11.0446C9.48616 10.8014 9.48677 10.4066 9.24379 10.1634L7.96578 8.88536L9.72132 7.12982C9.9645 6.88665 9.96517 6.49184 9.72209 6.24862Z\" fill=\"currentColor\"/><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M11.081 0.853009C11.385 0.548997 11.8779 0.548997 12.1819 0.853009L15.1177 3.7888C15.4218 4.09282 15.4218 4.58572 15.1177 4.88973C14.8137 5.19374 14.3208 5.19374 14.0168 4.88973L11.081 1.95393C10.777 1.64992 10.777 1.15702 11.081 0.853009Z\" fill=\"currentColor\"/></svg>", "hot-sm": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M6.57796 1.37533C6.35716 2.07649 5.75595 3.33642 4.12094 5.0074C1.30032 7.89363 0.926516 12.5432 5.26035 14.8295C5.61615 15.0172 5.91316 14.9016 6.13636 14.6699C6.87436 13.905 7.19477 12.7827 7.09877 11.3041C7.07177 10.8966 7.25477 10.7906 7.61717 11.0694C8.64498 11.8593 9.31578 13.0763 9.31578 14.3845C9.31578 14.8295 9.49519 15.0648 9.91339 14.9844C12.677 14.4524 16.0448 10.5183 12.4154 4.7578C12.1982 4.4647 11.8772 4.4647 11.8826 4.86741C11.8886 5.36185 11.8316 5.8551 11.7122 6.33525C11.63 6.66885 11.3138 6.66408 11.2394 6.33525C10.787 4.33424 9.52939 2.63348 7.46597 1.22998C6.90916 0.851703 6.70696 0.967271 6.57796 1.37533Z\" fill=\"currentColor\"/></svg>", "night-sm": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M14.1638 9.34652C14.2313 9.09619 13.9526 8.90644 13.7197 9.02034C12.9714 9.38628 12.1303 9.59169 11.2411 9.59169C8.12112 9.59169 5.59185 7.06242 5.59185 3.9424C5.59185 3.41507 5.6641 2.90463 5.79924 2.42041C5.86896 2.17058 5.63179 1.93076 5.39779 2.04268C3.28506 3.0531 1.82568 5.21041 1.82568 7.70858C1.82568 11.1753 4.63599 13.9856 8.10267 13.9856C11.0027 13.9856 13.4434 12.0189 14.1638 9.34652Z\" fill=\"currentColor\"/></svg>", "today-sm": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M12 0C12.5523 0 13 0.447715 13 1V2H13.5C14.6046 2 15.5 2.89543 15.5 4V14C15.5 15.1046 14.6046 16 13.5 16H2.5C1.39543 16 0.5 15.1046 0.5 14V4C0.5 2.89543 1.39543 2 2.5 2H3V1C3 0.447715 3.44772 0 4 0C4.55228 0 5 0.447715 5 1V2H11V1C11 0.447715 11.4477 0 12 0ZM2.5 12.5C2.5 13.3284 3.17157 14 4 14H12C12.8284 14 13.5 13.3284 13.5 12.5V5.5H2.5V12.5Z\" fill=\"currentColor\"/><path d=\"M10 9C11.1046 9 12 9.89543 12 11C12 12.1046 11.1046 13 10 13C8.89543 13 8 12.1046 8 11C8 9.89543 8.89543 9 10 9Z\" fill=\"currentColor\"/><path d=\"M12 11C12 12.1046 11.1046 13 10 13C8.89543 13 8 12.1046 8 11C8 9.89543 8.89543 9 10 9C11.1046 9 12 9.89543 12 11Z\" fill=\"currentColor\"/></svg>", "upvote-sm": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M12.2257 6.0203C12.713 6.0203 13.1394 6.20305 13.444 6.56853C13.6876 6.93401 13.8094 7.36041 13.7485 7.7868L13.0785 11.868C12.7739 13.0863 11.9211 14 10.8247 14H5.76883H5.55564V5.84878L7.71807 2.54822C7.90081 2.30457 8.2663 2.06091 8.63178 2C8.87543 2 9.05818 2 9.30183 2.06091C9.54548 2.12183 9.72823 2.30457 9.91097 2.54822C9.97188 2.67005 10.0328 2.79188 10.0328 2.91371C10.0328 2.96847 10.0451 3.02323 10.0587 3.08352C10.0752 3.15736 10.0937 3.2395 10.0937 3.3401C10.1546 3.64467 10.1546 4.07107 10.1546 4.43655C10.1546 4.71873 10.1385 5.00091 10.1228 5.27478C10.1081 5.53299 10.0937 5.78382 10.0937 6.0203H12.2257ZM4.64193 6.08122H4.00234C3.33229 6.08122 2.78406 6.62944 2.78406 7.23858L2.23584 12.0508V12.1117C2.23584 13.1472 3.08863 14 4.06325 14H4.64193V6.08122Z\" fill=\"currentColor\"/></svg>", "student": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M4.75 20.375C4.75 17.2684 7.2684 14.75 10.375 14.75H13.625C16.7316 14.75 19.25 17.2684 19.25 20.375C19.25 21.6867 18.1867 22.75 16.875 22.75H7.125C5.81332 22.75 4.75 21.6867 4.75 20.375Z\" fill=\"currentColor\"/><circle cx=\"12\" cy=\"9.25\" r=\"4.5\" fill=\"currentColor\"/></svg>", "teacher": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M4.75 20.375C4.75 17.2684 7.2684 14.75 10.375 14.75H13.625C16.7316 14.75 19.25 17.2684 19.25 20.375C19.25 21.6867 18.1867 22.75 16.875 22.75H7.125C5.81332 22.75 4.75 21.6867 4.75 20.375Z\" fill=\"currentColor\"/><path d=\"M12.2954 1.31064C12.1068 1.22979 11.8932 1.22979 11.7046 1.31064L4.70456 4.31064C4.4288 4.42883 4.25 4.69998 4.25 5C4.25 5.30002 4.4288 5.57117 4.70456 5.68936L7.75 6.99455V9.5C7.75 11.8472 9.65279 13.75 12 13.75C14.3472 13.75 16.25 11.8472 16.25 9.5V6.99455L18.25 6.1374V9C18.25 9.41421 18.5858 9.75 19 9.75C19.4142 9.75 19.75 9.41421 19.75 9V5C19.75 4.69998 19.5712 4.42883 19.2954 4.31064L12.2954 1.31064ZM9.25 8.04954C9.78286 7.93536 10.8873 7.75 12 7.75C13.1127 7.75 14.2171 7.93536 14.75 8.04954V9.5C14.75 11.0188 13.5188 12.25 12 12.25C10.4812 12.25 9.25 11.0188 9.25 9.5V8.04954Z\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" fill=\"currentColor\"/></svg>"};
+  const dots = (n, on) => Array.from({ length: 8 }, (_, i) => `<i class="${i < n ? on : ''}"></i>`).join('');
+  const howGap = (areas) => `<div class="hm-how-gap"><div class="hm-how-row"><span class="hm-how-ico">${ICON.student}</span><span class="hm-how-label">Students looking</span><span class="hm-how-dots">${dots(7, 'is-student')}</span></div>`
+    + `<div class="hm-how-row"><span class="hm-how-ico">${ICON.teacher}</span><span class="hm-how-label">Teachers open</span><span class="hm-how-dots">${dots(2, 'is-teacher')}</span></div>`
+    + [[3, 'High'], [2, 'Medium'], [1, 'Low']].map(([v, name]) => `<div class="hm-how-row hm-how-level-row${v === 3 ? ' is-first' : ''}"><span class="hm-how-ico">${gridIcon(v)}</span>`
+      + `<span class="hm-how-label">${name} demand</span>${areas ? `<span class="hm-how-mark"><span class="hm-how-area is-${v}"></span></span>` : ''}</div>`).join('') + '</div>';
+  const rule = (icon, text) => `<li><span class="hm-how-ico">${ICON[icon]}</span>${text}</li>`;
+  const demandSide = ({ offClass, frames, onToggle }) => {
+    const side = sideBlock();
+    side.classList.add('hm-in-side');
+    side.innerHTML = '<div class="hm-side-head"><span class="hm-side-title"><span class="text-sm font-bold leading-5 text-gray1">Student demand</span>'
+      + '<button type="button" class="hm-info" aria-label="How student demand works"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 8C15 11.866 11.866 15 8 15C4.13401 15 1 11.866 1 8C1 4.13401 4.13401 1 8 1C11.866 1 15 4.13401 15 8Z" fill="currentColor"/><path d="M8 10.8391C8.36804 10.8391 8.66673 11.1371 8.66699 11.5051C8.66699 11.8733 8.3682 12.1721 8 12.1721C7.63188 12.172 7.33398 11.8733 7.33398 11.5051C7.33424 11.1372 7.63204 10.8392 8 10.8391Z" fill="white"/><path d="M6.93457 4.23853C7.35975 4.03824 7.83319 3.96153 8.2998 4.01782C8.76642 4.07419 9.20793 4.26115 9.57324 4.55688C9.93861 4.85269 10.213 5.2459 10.3652 5.69067C10.5174 6.13539 10.541 6.61393 10.4336 7.07153C10.3261 7.52907 10.092 7.94711 9.75781 8.27759C9.42354 8.60804 9.00272 8.83841 8.54395 8.94067V9.3313C8.54396 9.47612 8.48649 9.61592 8.38477 9.71899C8.28307 9.82193 8.1447 9.88018 8 9.88208C7.85649 9.88019 7.71966 9.82242 7.61816 9.72095C7.51668 9.61947 7.45895 9.48261 7.45703 9.33911V8.46899C7.45713 8.32499 7.51437 8.18704 7.61621 8.08521C7.71811 7.98339 7.85595 7.92604 8 7.92603C8.28795 7.93323 8.57147 7.85414 8.81445 7.69946C9.05744 7.5447 9.24898 7.3209 9.36426 7.05688C9.47949 6.79287 9.51359 6.50042 9.46191 6.21704C9.41015 5.93357 9.27538 5.67141 9.07422 5.46509C8.87311 5.25882 8.61498 5.11682 8.33301 5.05786C8.05094 4.99894 7.75717 5.0255 7.49023 5.13403C7.22329 5.24258 6.9949 5.42915 6.83398 5.66821C6.67321 5.9072 6.587 6.18877 6.58691 6.47681C6.58685 6.62081 6.52953 6.75874 6.42773 6.8606C6.32592 6.96241 6.18792 7.01966 6.04395 7.01978C5.8998 7.01978 5.7611 6.96252 5.65918 6.8606C5.5574 6.75874 5.50006 6.6208 5.5 6.47681C5.50443 6.00687 5.64106 5.54735 5.89453 5.15161C6.1482 4.75577 6.50928 4.43896 6.93457 4.23853Z" fill="white"/></svg></button></span>'
+      + '<span class="ghost-switch is-on" role="switch" aria-checked="true" tabindex="0"><span class="ghost-switch-track"><span class="ghost-switch-thumb"></span></span></span></div>'
+      + '<div class="hm-side-body"><div class="hm-side-list"></div></div>';
+    const sw = side.querySelector('.ghost-switch');
+    sw.addEventListener('click', () => {
+      const on = sw.classList.toggle('is-on');
+      sw.setAttribute('aria-checked', on);
+      document.body.classList.toggle(offClass, !on);
+      closePop();
+      onToggle(on);
+    });
+    const howHtml = () => '<div class="hm-how"><div class="hm-how-title">How student demand works</div>' + frames
+      + '<div class="hm-how-sub">How we pick suggested times</div>'
+      + `<ul class="hm-how-rules">${rule('today-sm', 'You haven\'t opened it yet')}${rule('night-sm', 'Not overnight (00:00-07:00)')}${rule('upvote-sm', 'Next to your open hours first, up to 4')}</ul>`
+      + '<div class="hm-how-note">From recent searches and bookings, updated weekly. Not a booking guarantee.</div></div>';
+    const info = side.querySelector('.hm-info');
+    const LEAVE_MS = 300;
+    let open = false; let leaveTimer = null;
+    const keep = () => clearTimeout(leaveTimer);
+    const leave = () => { keep(); if (open) leaveTimer = setTimeout(closePop, LEAVE_MS); };
+    [info, pop].forEach((n) => { n.addEventListener('mouseenter', keep); n.addEventListener('mouseleave', leave); });
+    info.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const at = info.getBoundingClientRect();
+      openPop({ left: at.left, right: at.right, top: 0 }, howHtml(), () => { open = false; keep(); });
+      open = true;
+      pop.style.maxHeight = ''; pop.style.overflowY = '';
+      const h = pop.offsetHeight; const edge = 16; const mid = at.top + at.height / 2;
+      const TITLE = 31; 
+      if (mid - TITLE + h <= innerHeight - edge) pop.style.top = `${mid - TITLE}px`;
+      else if (mid + TITLE - h >= edge) pop.style.top = `${mid + TITLE - h}px`;
+      else if (h <= innerHeight - edge * 2) pop.style.top = `${innerHeight - edge - h}px`;
+      else { pop.style.top = `${edge}px`; pop.style.maxHeight = `${innerHeight - edge * 2}px`; pop.style.overflowY = 'auto'; }
+    });
+    return { side, listBox: side.querySelector('.hm-side-list') };
+  };
+  window.HM = { demandSide, howGap, gridIcon, setCursorLevel, lowHoverFrames, levelCursor, cursorGrid, openModal, closeModal, DAYS, DATES, SCORE, DEMAND, LEVEL, recommend, hm, range, label, cols, scroller, place, availBlock, isOpen, heatLayer, addSwitch, sideBlock, openPop, closePop, showToast, openTime, popHtml };
 })();
 </script><script>
 window.HM_HOVER = 'grid';
 (() => {
-  const { openModal, cursorGrid, lowHoverFrames, DAYS, DATES, DEMAND, LEVEL, recommend, isOpen, hm, label, cols, scroller, place, addSwitch, sideBlock, openPop, closePop, showToast, openTime, popHtml } = window.HM;
+  const { demandSide, howGap, gridIcon, setCursorLevel, openModal, cursorGrid, lowHoverFrames, DAYS, DATES, DEMAND, LEVEL, recommend, isOpen, hm, label, cols, scroller, place, addSwitch, sideBlock, openPop, closePop, showToast, openTime, popHtml } = window.HM;
   const GHOSTS = recommend();
   const P = 7; 
   const R = 220; 
@@ -1281,7 +1370,7 @@ window.HM_HOVER = 'grid';
   cv.className = 'hm-pixels';
   scroller.appendChild(cv);
   const ctx = cv.getContext('2d');
-  const px3 = (v) => `<span class="hm-px3" data-level="${v}">${'<i></i>'.repeat(9)}</span>`;
+  const px3 = gridIcon; 
   const HOVER = window.HM_HOVER === 'grid' ? 'grid' : 'pixels';
   if (HOVER === 'grid') cursorGrid('ghosts-off', { line: 0.5, skip: (d, h) => GHOSTS.some((g) => !g.done && g.day === d && h >= Math.floor(g.from) && h < g.to) });
   const card = document.createElement('div');
@@ -1289,7 +1378,6 @@ window.HM_HOVER = 'grid';
   scroller.appendChild(card);
   const cursor = document.createElement('div');
   cursor.className = 'hm-cursor';
-  cursor.innerHTML = '<i></i>'.repeat(9);
   scroller.appendChild(cursor);
   let colW = 0; let W = 0; let H = 0; let x0 = 0;
   let N = 0; let SX; let SY; let SW; let SD; let SH; let map; let peak; let seen; let seed;
@@ -1391,10 +1479,10 @@ window.HM_HOVER = 'grid';
     card.classList.toggle('is-on', inGrid);
     cursor.classList.toggle('is-on', inGrid);
     scroller.classList.toggle('hm-no-cursor', inGrid);
-    cursor.style.transform = `translate(${x + x0 - 7}px, ${y - 7}px)`;
+    cursor.style.transform = `translate(${x + x0 - 10}px, ${y - 10}px)`;
     if (!inGrid) return;
     const v = DEMAND[d][h] || 0;
-    cursor.dataset.level = v;
+    setCursorLevel(cursor, v);
     let a = h; let b = h + 1;
     if (v) { while (DEMAND[d][a - 1] === v) a -= 1; while (DEMAND[d][b] === v) b += 1; }
     const key = `${d}-${a}-${b}-${v}`;
@@ -1415,14 +1503,18 @@ window.HM_HOVER = 'grid';
     if (e.relatedTarget && scroller.contains(e.relatedTarget)) return;
     light();
   });
-  const side = sideBlock();
+  const { listBox } = demandSide({
+    offClass: 'ghosts-off',
+    frames: howGap(),
+    onToggle: () => light(),
+  });
   const renderSide = () => {
     const left = GHOSTS.filter((g) => !g.done);
-    side.innerHTML = '<div class="text-sm font-bold leading-5 text-gray1 mb-1">Times students want this week</div>'
+    listBox.innerHTML = '<div class="text-tiny font-medium leading-4dot5 text-gray3 hm-side-label">Suggested times to open</div>'
       + (left.length
-        ? `<div class="text-tiny leading-4dot5 text-gray3 mb-2">The busiest times for students this week that you haven't opened</div>${left.map((g) => `<button type="button" class="ghost-side-row" data-g="${g.id}">${px3(3)}<span>${DAYS[g.day]} ${DATES[g.day]} · ${hm(g.from)}-${hm(g.to)}</span></button>`).join('')}`
+        ? left.map((g) => `<button type="button" class="ghost-side-row" data-g="${g.id}"><span class="hm-row-mark">${px3(3)}</span><span>${DAYS[g.day]} ${DATES[g.day]} · ${hm(g.from)}-${hm(g.to)}</span></button>`).join('')
         : '<div class="text-tiny leading-4dot5 text-gray3">You\'re open at every busy time this week.</div>');
-    side.querySelectorAll('[data-g]').forEach((b) => b.addEventListener('click', (e) => {
+    listBox.querySelectorAll('[data-g]').forEach((b) => b.addEventListener('click', (e) => {
       e.stopPropagation();
       const g = GHOSTS.find((x) => x.id === b.dataset.g);
       scroller.scrollTo({ top: (g.from - 2) * 112, behavior: 'smooth' });
@@ -1450,7 +1542,7 @@ window.HM_HOVER = 'grid';
   GHOSTS.forEach((g) => {
     const el = place(document.createElement('div'), g.from, g.to, 1);
     el.classList.add('ghost-event');
-    el.innerHTML = `<div class="ghost-slot"><div class="text-tiny font-medium leading-4dot5 text-gray3">${hm(g.from)} - ${hm(g.to)}</div><div class="ghost-tag">${px3(3)}High student demand</div><div class="ghost-why">${reasonFor(g)}</div><span class="ghost-open">+ Open this time</span><button type="button" class="ghost-x" aria-label="Hide this suggestion">×</button></div>`;
+    el.innerHTML = `<div class="ghost-slot"><div class="text-tiny font-medium leading-4dot5 text-gray3">${hm(g.from)} - ${hm(g.to)}</div><div class="ghost-tag">${px3(3)}<span>High demand</span></div><div class="ghost-why">${reasonFor(g)}</div><span class="ghost-open">+ Open this time</span><button type="button" class="ghost-x" aria-label="Hide this suggestion">×</button></div>`;
     el.addEventListener('click', (e) => {
       e.stopPropagation();
       if (e.target.closest('.ghost-x')) { hide(g); showToast('Hidden for this week', () => back(g)); return; }
@@ -1459,13 +1551,6 @@ window.HM_HOVER = 'grid';
     cols[g.day].appendChild(el);
     g.el = el;
   });
-  const legend = `<span class="hm-legend"><span class="hm-key">${px3(1)}Low</span><span class="hm-key">${px3(2)}Medium</span><span class="hm-key">${px3(3)}High</span></span>`;
-  addSwitch('Show student demand', (on) => {
-    document.body.classList.toggle('ghosts-off', !on);
-    side.style.display = on ? '' : 'none';
-    light();
-    closePop();
-  }, legend);
   renderSide();
   scroller.scrollTop = 112 * 13.25;
 })();
