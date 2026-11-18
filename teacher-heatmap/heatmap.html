@@ -1331,7 +1331,7 @@ body.heat-off .hm-side-body, body.ghosts-off .hm-side-body { display: none; }
       + `<ul class="hm-how-rules">${rule('today-sm', 'You haven\'t opened it yet')}${rule('night-sm', 'Not overnight (00:00-07:00)')}${rule('upvote-sm', 'Next to your open hours first, up to 4')}</ul>`
       + '<div class="hm-how-note">From recent searches and bookings, updated weekly. Not a booking guarantee.</div></div>';
     const info = side.querySelector('.hm-info');
-    const LEAVE_MS = 300;
+    const LEAVE_MS = 600; 
     let open = false; let leaveTimer = null;
     const keep = () => clearTimeout(leaveTimer);
     const leave = () => { keep(); if (open) leaveTimer = setTimeout(closePop, LEAVE_MS); };
