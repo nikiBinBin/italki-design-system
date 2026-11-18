@@ -862,9 +862,10 @@ body.heat-off .hm-legend { visibility: hidden; }
 .hm-key { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; line-height: 16px; color: rgb(81 81 100); }
 .hm-key i { display: inline-block; width: 14px; height: 10px; border-radius: 2px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
 .hm-swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; flex: none; }
-.hm-side-head { display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+.hm-side-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; user-select: none; }
+.hm-side-head .ghost-switch { cursor: pointer; }
 .hm-side-head .ghost-switch { margin-right: 0; }
-.hm-side-title { display: inline-flex; align-items: center; gap: 6px; }
+.hm-side-title { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .hm-info { display: inline-flex; width: 16px; height: 16px; padding: 0; border: 0; background: none; color: rgb(156 156 172); cursor: pointer; transition: color .15s ease; }  
 .hm-info:hover, .hm-info:focus-visible { color: rgb(81 81 100); }
 .hm-info:focus:not(:focus-visible) { outline: none; }
@@ -904,6 +905,9 @@ body.heat-off .hm-legend { visibility: hidden; }
 .hm-side-pad { padding-left: 24px; padding-right: 24px; }
 .hm-side-body { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
 .hm-side-label { margin-bottom: 8px; }
+.hm-top-group { display: inline-flex; align-items: center; gap: 6px; }
+.hm-top-toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; line-height: 20px; font-weight: 500; color: rgb(49 49 64); cursor: pointer; user-select: none; }
+.hm-top-group .ghost-switch { margin-right: 0; }
 .hm-in-side .ghost-side-row { gap: 6px; padding-top: 3px; padding-bottom: 3px; }
 .hm-side-body .hm-legend { gap: 12px; }
 body.heat-off .hm-side-body, body.ghosts-off .hm-side-body { display: none; }
@@ -1009,15 +1013,13 @@ body.heat-off .hm-side-body, body.ghosts-off .hm-side-body { display: none; }
     col.insertBefore(layer, col.firstChild);
     return layer;
   });
-  const addSwitch = (text, onChange, extra = '') => {
+  const addToToolbar = (html) => {
     const week = [...document.querySelectorAll('div')].find((n) => n.textContent.trim() === 'Week' && n.children.length === 0);
-    const sw = document.createElement('div');
-    sw.className = 'ghost-toolbar';
-    sw.innerHTML = `${extra}<label class="ghost-switch is-on"><span class="ghost-switch-track"><span class="ghost-switch-thumb"></span></span><span class="text-sm font-bold leading-5 text-gray2">${text}</span></label>`;
-    week.parentElement.insertBefore(sw, week);
-    const lab = sw.querySelector('label');
-    lab.addEventListener('click', (e) => { e.preventDefault(); onChange(lab.classList.toggle('is-on')); });
-    return sw;
+    const el = document.createElement('div');
+    el.className = 'ghost-toolbar';
+    el.innerHTML = html;
+    week.parentElement.insertBefore(el, week);
+    return el;
   };
   const sideBlock = () => {
     document.querySelectorAll('.sideBar .pl-10').forEach((n) => { n.classList.remove('pl-10', 'pr-4'); n.classList.add('hm-side-pad'); });
@@ -1311,15 +1313,20 @@ body.heat-off .hm-side-body, body.ghosts-off .hm-side-body { display: none; }
     + [[3, 'High'], [2, 'Medium'], [1, 'Low']].map(([v, name]) => `<div class="hm-how-row hm-how-level-row${v === 3 ? ' is-first' : ''}"><span class="hm-how-ico">${gridIcon(v)}</span>`
       + `<span class="hm-how-label">${name} demand</span>${areas ? `<span class="hm-how-mark"><span class="hm-how-area is-${v}"></span></span>` : ''}</div>`).join('') + '</div>';
   const rule = (icon, text) => `<li><span class="hm-how-ico">${ICON[icon]}</span>${text}</li>`;
-  const demandSide = ({ offClass, frames, onToggle }) => {
-    const side = sideBlock();
-    side.classList.add('hm-in-side');
-    side.innerHTML = '<div class="hm-side-head"><span class="hm-side-title"><span class="text-sm font-bold leading-5 text-gray1">Student demand</span>'
-      + '<button type="button" class="hm-info" aria-label="How student demand works"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 8C15 11.866 11.866 15 8 15C4.13401 15 1 11.866 1 8C1 4.13401 4.13401 1 8 1C11.866 1 15 4.13401 15 8Z" fill="currentColor"/><path d="M8 10.8391C8.36804 10.8391 8.66673 11.1371 8.66699 11.5051C8.66699 11.8733 8.3682 12.1721 8 12.1721C7.63188 12.172 7.33398 11.8733 7.33398 11.5051C7.33424 11.1372 7.63204 10.8392 8 10.8391Z" fill="white"/><path d="M6.93457 4.23853C7.35975 4.03824 7.83319 3.96153 8.2998 4.01782C8.76642 4.07419 9.20793 4.26115 9.57324 4.55688C9.93861 4.85269 10.213 5.2459 10.3652 5.69067C10.5174 6.13539 10.541 6.61393 10.4336 7.07153C10.3261 7.52907 10.092 7.94711 9.75781 8.27759C9.42354 8.60804 9.00272 8.83841 8.54395 8.94067V9.3313C8.54396 9.47612 8.48649 9.61592 8.38477 9.71899C8.28307 9.82193 8.1447 9.88018 8 9.88208C7.85649 9.88019 7.71966 9.82242 7.61816 9.72095C7.51668 9.61947 7.45895 9.48261 7.45703 9.33911V8.46899C7.45713 8.32499 7.51437 8.18704 7.61621 8.08521C7.71811 7.98339 7.85595 7.92604 8 7.92603C8.28795 7.93323 8.57147 7.85414 8.81445 7.69946C9.05744 7.5447 9.24898 7.3209 9.36426 7.05688C9.47949 6.79287 9.51359 6.50042 9.46191 6.21704C9.41015 5.93357 9.27538 5.67141 9.07422 5.46509C8.87311 5.25882 8.61498 5.11682 8.33301 5.05786C8.05094 4.99894 7.75717 5.0255 7.49023 5.13403C7.22329 5.24258 6.9949 5.42915 6.83398 5.66821C6.67321 5.9072 6.587 6.18877 6.58691 6.47681C6.58685 6.62081 6.52953 6.75874 6.42773 6.8606C6.32592 6.96241 6.18792 7.01966 6.04395 7.01978C5.8998 7.01978 5.7611 6.96252 5.65918 6.8606C5.5574 6.75874 5.50006 6.6208 5.5 6.47681C5.50443 6.00687 5.64106 5.54735 5.89453 5.15161C6.1482 4.75577 6.50928 4.43896 6.93457 4.23853Z" fill="white"/></svg></button></span>'
-      + '<span class="ghost-switch is-on" role="switch" aria-checked="true" tabindex="0"><span class="ghost-switch-track"><span class="ghost-switch-thumb"></span></span></span></div>'
-      + '<div class="hm-side-body"><div class="hm-side-list"></div></div>';
-    const sw = side.querySelector('.ghost-switch');
-    sw.addEventListener('click', () => {
+  const HELP = '<button type="button" class="hm-info" aria-label="How student demand works"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 8C15 11.866 11.866 15 8 15C4.13401 15 1 11.866 1 8C1 4.13401 4.13401 1 8 1C11.866 1 15 4.13401 15 8Z" fill="currentColor"/><path d="M8 10.8391C8.36804 10.8391 8.66673 11.1371 8.66699 11.5051C8.66699 11.8733 8.3682 12.1721 8 12.1721C7.63188 12.172 7.33398 11.8733 7.33398 11.5051C7.33424 11.1372 7.63204 10.8392 8 10.8391Z" fill="white"/><path d="M6.93457 4.23853C7.35975 4.03824 7.83319 3.96153 8.2998 4.01782C8.76642 4.07419 9.20793 4.26115 9.57324 4.55688C9.93861 4.85269 10.213 5.2459 10.3652 5.69067C10.5174 6.13539 10.541 6.61393 10.4336 7.07153C10.3261 7.52907 10.092 7.94711 9.75781 8.27759C9.42354 8.60804 9.00272 8.83841 8.54395 8.94067V9.3313C8.54396 9.47612 8.48649 9.61592 8.38477 9.71899C8.28307 9.82193 8.1447 9.88018 8 9.88208C7.85649 9.88019 7.71966 9.82242 7.61816 9.72095C7.51668 9.61947 7.45895 9.48261 7.45703 9.33911V8.46899C7.45713 8.32499 7.51437 8.18704 7.61621 8.08521C7.71811 7.98339 7.85595 7.92604 8 7.92603C8.28795 7.93323 8.57147 7.85414 8.81445 7.69946C9.05744 7.5447 9.24898 7.3209 9.36426 7.05688C9.47949 6.79287 9.51359 6.50042 9.46191 6.21704C9.41015 5.93357 9.27538 5.67141 9.07422 5.46509C8.87311 5.25882 8.61498 5.11682 8.33301 5.05786C8.05094 4.99894 7.75717 5.0255 7.49023 5.13403C7.22329 5.24258 6.9949 5.42915 6.83398 5.66821C6.67321 5.9072 6.587 6.18877 6.58691 6.47681C6.58685 6.62081 6.52953 6.75874 6.42773 6.8606C6.32592 6.96241 6.18792 7.01966 6.04395 7.01978C5.8998 7.01978 5.7611 6.96252 5.65918 6.8606C5.5574 6.75874 5.50006 6.6208 5.5 6.47681C5.50443 6.00687 5.64106 5.54735 5.89453 5.15161C6.1482 4.75577 6.50928 4.43896 6.93457 4.23853Z" fill="white"/></svg></button>';
+  const SWITCH = '<span class="ghost-switch is-on" role="switch" aria-checked="true" tabindex="0"><span class="ghost-switch-track"><span class="ghost-switch-thumb"></span></span></span>';
+  const demandSide = ({ offClass, frames, onToggle, top = false }) => {
+    let root;
+    if (top) {
+      root = addToToolbar(`<span class="hm-top-group"><span class="hm-top-toggle">${SWITCH}<span>Student demand</span></span>${HELP}</span>`);
+    } else {
+      root = sideBlock();
+      root.classList.add('hm-in-side');
+      root.innerHTML = `<div class="hm-side-head"><span class="hm-side-title"><span class="text-sm font-bold leading-5 text-gray1">Student demand</span>${HELP}</span>${SWITCH}</div>`
+        + '<div class="hm-side-body"><div class="hm-side-list"></div></div>';
+    }
+    const sw = root.querySelector('.ghost-switch');
+    (top ? root.querySelector('.hm-top-toggle') : sw).addEventListener('click', () => {
       const on = sw.classList.toggle('is-on');
       sw.setAttribute('aria-checked', on);
       document.body.classList.toggle(offClass, !on);
@@ -1327,10 +1334,10 @@ body.heat-off .hm-side-body, body.ghosts-off .hm-side-body { display: none; }
       onToggle(on);
     });
     const howHtml = () => '<div class="hm-how"><div class="hm-how-title">How student demand works</div>' + frames
-      + '<div class="hm-how-sub">How we pick suggested times</div>'
-      + `<ul class="hm-how-rules">${rule('today-sm', 'You haven\'t opened it yet')}${rule('night-sm', 'Not overnight (00:00-07:00)')}${rule('upvote-sm', 'Next to your open hours first, up to 4')}</ul>`
+      + (top ? '' : '<div class="hm-how-sub">How we pick suggested times</div>'
+        + `<ul class="hm-how-rules">${rule('today-sm', 'You haven\'t opened it yet')}${rule('night-sm', 'Not overnight (00:00-07:00)')}${rule('upvote-sm', 'Next to your open hours first, up to 4')}</ul>`)
       + '<div class="hm-how-note">From recent searches and bookings, updated weekly. Not a booking guarantee.</div></div>';
-    const info = side.querySelector('.hm-info');
+    const info = root.querySelector('.hm-info');
     const LEAVE_MS = 600; 
     let open = false; let leaveTimer = null;
     const keep = () => clearTimeout(leaveTimer);
@@ -1342,21 +1349,27 @@ body.heat-off .hm-side-body, body.ghosts-off .hm-side-body { display: none; }
       openPop({ left: at.left, right: at.right, top: 0 }, howHtml(), () => { open = false; keep(); });
       open = true;
       pop.style.maxHeight = ''; pop.style.overflowY = '';
-      const h = pop.offsetHeight; const edge = 16; const mid = at.top + at.height / 2;
+      const h = pop.offsetHeight; const edge = 16;
+      if (top) {
+        pop.style.left = `${Math.min(at.left - 16, innerWidth - edge - pop.offsetWidth)}px`;
+        pop.style.top = `${at.bottom + 8}px`;
+        return;
+      }
+      const mid = at.top + at.height / 2;
       const TITLE = 31; 
       if (mid - TITLE + h <= innerHeight - edge) pop.style.top = `${mid - TITLE}px`;
       else if (mid + TITLE - h >= edge) pop.style.top = `${mid + TITLE - h}px`;
       else if (h <= innerHeight - edge * 2) pop.style.top = `${innerHeight - edge - h}px`;
       else { pop.style.top = `${edge}px`; pop.style.maxHeight = `${innerHeight - edge * 2}px`; pop.style.overflowY = 'auto'; }
     });
-    return { side, listBox: side.querySelector('.hm-side-list') };
+    return { root, listBox: root.querySelector('.hm-side-list') };
   };
-  window.HM = { demandSide, howGap, gridIcon, setCursorLevel, lowHoverFrames, levelCursor, cursorGrid, openModal, closeModal, DAYS, DATES, SCORE, DEMAND, LEVEL, recommend, hm, range, label, cols, scroller, place, availBlock, isOpen, heatLayer, addSwitch, sideBlock, openPop, closePop, showToast, openTime, popHtml };
+  window.HM = { demandSide, howGap, gridIcon, setCursorLevel, lowHoverFrames, levelCursor, cursorGrid, openModal, closeModal, DAYS, DATES, SCORE, DEMAND, LEVEL, recommend, hm, range, label, cols, scroller, place, availBlock, isOpen, heatLayer, addToToolbar, sideBlock, openPop, closePop, showToast, openTime, popHtml };
 })();
 </script><script>
 window.HM_HOVER = 'grid';
 (() => {
-  const { demandSide, howGap, gridIcon, setCursorLevel, openModal, cursorGrid, lowHoverFrames, DAYS, DATES, DEMAND, LEVEL, recommend, isOpen, hm, label, cols, scroller, place, addSwitch, sideBlock, openPop, closePop, showToast, openTime, popHtml } = window.HM;
+  const { demandSide, howGap, gridIcon, setCursorLevel, openModal, cursorGrid, lowHoverFrames, DAYS, DATES, DEMAND, LEVEL, recommend, isOpen, hm, label, cols, scroller, place, sideBlock, openPop, closePop, showToast, openTime, popHtml } = window.HM;
   const GHOSTS = recommend();
   const P = 7; 
   const R = 220; 
