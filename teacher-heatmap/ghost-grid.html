@@ -904,8 +904,6 @@ body.heat-off .hm-legend { visibility: hidden; }
 .hm-side-list .ghost-side-row { width: calc(100% + 12px); margin: 0 -6px; padding-left: 6px; padding-right: 6px; border-radius: 12px; box-sizing: border-box; }  
 .hm-more { margin-top: 6px; padding: 0; border: 0; background: none; font: inherit; font-size: 12px; line-height: 18px; font-weight: 600; color: rgb(81 81 100); cursor: pointer; }
 .hm-more:hover { color: rgb(49 49 64); text-decoration: underline; }
-.hm-peek { z-index: 2; margin: 2px 3px; border-radius: 6px; box-shadow: inset 0 0 0 2px rgba(13,190,130,.8); background: rgba(13,190,130,.12); pointer-events: none; animation: hm-peek 1.6s ease-out forwards; }
-@keyframes hm-peek { 0%, 60% { opacity: 1; } 100% { opacity: 0; } }
 .hm-row-mark.is-2 { border-color: rgba(13,190,130,.5); }
 .ghost-event.is-level-2 .ghost-slot { border-color: rgba(13,190,130,.5); }
 .hm-side-list .ghost-side-row:hover { background: rgba(13,190,130,.12); }
@@ -1004,7 +1002,7 @@ body.hm-side-collapsed .hm-hide-bar svg { transform: rotate(180deg); }
         if (ok && start == null) start = h;
         if (!ok && start != null) {
           const avg = hours.slice(start, h).reduce((a, b) => a + b, 0) / (h - start);
-          out.push({ id: `r${d}-${start}`, day: d, from: start, to: h, v, level: LEVEL[v], score: avg, next: start > 0 && isOpen(d, start - 1), before: h < 24 && isOpen(d, h) });
+          out.push({ id: `r${d}-${start}`, day: d, from: start, to: h, v, level: LEVEL[v], score: avg, peak: Math.max(...hours.slice(start, h)), next: start > 0 && isOpen(d, start - 1), before: h < 24 && isOpen(d, h) });
           start = null;
         }
       }
@@ -1012,10 +1010,10 @@ body.hm-side-collapsed .hm-hide-bar svg { transform: rotate(180deg); }
     return out;
   };
   const recommend = () => {
-    const high = runsWhere((score) => score >= RECOMMEND_MIN, 3);
-    const out = high.length ? high : runsWhere((_, level) => level === 2, 2);
-    const near = (r) => (r.next || r.before ? 1 : 0);
-    return out.sort((a, b) => near(b) - near(a) || b.score - a.score).slice(0, MAX_RECOMMEND);
+    const rank = (list) => list.sort((a, b) => (b.peak >= RECOMMEND_MIN) - (a.peak >= RECOMMEND_MIN)
+      || (b.next || b.before) - (a.next || a.before) || b.score - a.score);
+    const high = runsWhere((_, level) => level === 3, 3);
+    return rank(high.length ? high : runsWhere((_, level) => level === 2, 2)).slice(0, MAX_RECOMMEND);
   };
   const noBusyHours = () => DEMAND.every((hours) => hours.every((v) => !v || v < 2));
   document.querySelectorAll('.italki-day-slot .italki-event').forEach((n) => n.remove());
@@ -1426,7 +1424,7 @@ window.HM_HOVER = 'grid';
   const ctx = cv.getContext('2d');
   const px3 = gridIcon; 
   const HOVER = window.HM_HOVER === 'grid' ? 'grid' : 'pixels';
-  if (HOVER === 'grid') cursorGrid('ghosts-off', { line: 0.5, skip: (d, h) => GHOSTS.some((g) => !g.done && g.day === d && h >= Math.floor(g.from) && h < g.to) });
+  if (HOVER === 'grid') cursorGrid('ghosts-off', { line: 0.5, skip: (d, h) => [...GHOSTS, ...extras].some((g) => !g.done && g.day === d && h >= Math.floor(g.from) && h < g.to) });
   const card = document.createElement('div');
   card.className = 'hm-card';
   scroller.appendChild(card);
@@ -1576,43 +1574,38 @@ window.HM_HOVER = 'grid';
     return out;
   };
   let showMore = false;
-  const peek = (day, from, to) => {
-    const el = place(document.createElement('div'), from, to, 1);
-    el.classList.add('hm-peek');
-    cols[day].appendChild(el);
-    setTimeout(() => el.remove(), 1600);
+  let extras = [];
+  const showExtras = () => {
+    extras = moreRuns().map((r) => ({ ...r, id: `m${r.day}-${r.from}`, v: tier, level: LEVEL[tier], extra: true }));
+    extras.forEach(makeBlock);
   };
+  const dropExtras = () => { extras.forEach((g) => g.el.remove()); extras = []; };
   const renderSide = () => {
     const left = GHOSTS.filter((g) => !g.done);
-    const more = moreRuns();
     const row = (attrs, mark, d, f, to) => `<button type="button" class="ghost-side-row" ${attrs}>${mark}<span>${DAYS[d]} ${DATES[d]} · ${hm(f)}-${hm(to)}</span></button>`;
     listBox.innerHTML = '<div class="text-tiny font-medium leading-4dot5 text-gray3 hm-side-label">Suggested times to open</div>'
       + (left.length
         ? left.map((g) => row(`data-g="${g.id}"`, `<span class="hm-row-mark is-${g.v}">${px3(g.v)}</span>`, g.day, g.from, g.to)).join('')
         : `<div class="text-tiny leading-4dot5 text-gray3">${noBusyHours() ? 'No busy times this week.' : 'You\'re open at every busy time this week.'}</div>`)
-      + (more.length && showMore
-        ? more.map((r, i) => row(`data-more="${i}"`, `<span class="hm-row-mark is-${tier}">${px3(tier)}</span>`, r.day, r.from, r.to)).join('')
-        : '')
-      + (more.length ? `<button type="button" class="hm-more">${showMore ? 'Show less' : `Show more (${more.length})`}</button>` : '');
+      + extras.filter((g) => !g.done).map((g) => row(`data-g="${g.id}"`, `<span class="hm-row-mark is-${g.v}">${px3(g.v)}</span>`, g.day, g.from, g.to)).join('')
+      + (showMore || moreRuns().length ? `<button type="button" class="hm-more">${showMore ? 'Show less' : `Show more (${moreRuns().length})`}</button>` : '');
     listBox.querySelectorAll('[data-g]').forEach((b) => b.addEventListener('click', (e) => {
       e.stopPropagation();
-      const g = GHOSTS.find((x) => x.id === b.dataset.g);
+      const g = [...GHOSTS, ...extras].find((x) => x.id === b.dataset.g);
       scroller.scrollTo({ top: (g.from - 2) * 112, behavior: 'smooth' });
       g.el.classList.remove('is-flash'); void g.el.offsetWidth; g.el.classList.add('is-flash');
     }));
-    listBox.querySelectorAll('[data-more]').forEach((b) => b.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const r = more[+b.dataset.more];
-      scroller.scrollTo({ top: (r.from - 2) * 112, behavior: 'smooth' });
-      setTimeout(() => peek(r.day, r.from, r.to), 350);
-    }));
     const toggle = listBox.querySelector('.hm-more');
-    if (toggle) toggle.addEventListener('click', (e) => { e.stopPropagation(); showMore = !showMore; renderSide(); });
+    if (toggle) toggle.addEventListener('click', (e) => { e.stopPropagation(); showMore = !showMore; if (showMore) showExtras(); else dropExtras(); renderSide(); });
   };
   document.addEventListener('hm-schedule', renderSide);
   const hide = (g) => { g.done = true; g.el.classList.add('is-leaving'); setTimeout(() => { g.el.style.display = 'none'; }, 200); renderSide(); };
   const back = (g) => { g.done = false; g.el.style.display = ''; g.el.classList.remove('is-leaving'); renderSide(); };
   const reasonFor = (g) => {
+    if (g.extra) {
+      if (g.from < 7) return 'Overnight in your time zone';
+      return 'More than 4 busy times this week';
+    }
     const openBlock = (pred) => [...cols[g.day].querySelectorAll('[data-avail]')].find(pred);
     const prev = g.next && openBlock((n) => +n.dataset.to === g.from);
     const after = g.before && openBlock((n) => +n.dataset.from === g.to);
@@ -1628,7 +1621,7 @@ window.HM_HOVER = 'grid';
       showToast(`Availability added: ${label(g.day, g.from, g.to)}`, () => { undo(); back(g); });
     },
   });
-  GHOSTS.forEach((g) => {
+  function makeBlock(g) {
     const el = place(document.createElement('div'), g.from, g.to, 1);
     el.classList.add('ghost-event', `is-level-${g.v}`);
     el.innerHTML = `<div class="ghost-slot"><div class="text-tiny font-medium leading-4dot5 text-gray3">${hm(g.from)} - ${hm(g.to)}</div><div class="ghost-tag">${px3(g.v)}<span>${g.level} demand</span></div><div class="ghost-why">${reasonFor(g)}</div><span class="ghost-open">+ Open this time</span><button type="button" class="ghost-x" aria-label="Hide this suggestion">×</button></div>`;
@@ -1639,7 +1632,8 @@ window.HM_HOVER = 'grid';
     });
     cols[g.day].appendChild(el);
     g.el = el;
-  });
+  }
+  GHOSTS.forEach(makeBlock);
   renderSide();
   scroller.scrollTop = 112 * 13.25;
 })();
