@@ -856,7 +856,7 @@ body.heat-off .hm-gridlight, body.ghosts-off .hm-gridlight { display: none; }
 .hm-full .hm-cell.is-active { background-image: linear-gradient(rgba(13,190,130,0.12), rgba(13,190,130,0.12)); }
 body.heat-off .hm-full { display: none; }
 body.heat-off .hm-legend { visibility: hidden; }
-.ghost-toolbar { display: inline-flex; align-items: center; gap: 20px; margin-right: 24px; }
+.ghost-toolbar { display: inline-flex; align-items: center; gap: 20px; margin-right: 8px; }  
 .ghost-toolbar .ghost-switch { margin-right: 0; }
 .hm-legend { display: inline-flex; align-items: center; gap: 10px; }
 .hm-key { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; line-height: 16px; color: rgb(81 81 100); }
@@ -905,8 +905,12 @@ body.heat-off .hm-legend { visibility: hidden; }
 .hm-side-pad { padding-left: 24px; padding-right: 24px; }
 .hm-side-body { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
 .hm-side-label { margin-bottom: 8px; }
-.hm-top-group { display: inline-flex; align-items: center; gap: 6px; }
-.hm-top-toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; line-height: 20px; font-weight: 500; color: rgb(49 49 64); cursor: pointer; user-select: none; }
+.hm-top-group { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 8px 0 12px; border-radius: 999px; background: rgb(245 246 249); }  
+.hm-top-group { cursor: pointer; }
+.hm-top-group:hover .hm-info { color: rgb(81 81 100); }
+.hm-top-group .hm-info { margin-right: 4px; }
+.hm-top-toggle { display: inline-flex; align-items: center; }
+.hm-top-name { font-size: 14px; line-height: 20px; font-weight: 500; color: rgb(49 49 64); user-select: none; }
 .hm-top-group .ghost-switch { margin-right: 0; }
 .hm-in-side .ghost-side-row { gap: 6px; padding-top: 3px; padding-bottom: 3px; }
 .hm-side-body .hm-legend { gap: 12px; }
@@ -1014,11 +1018,11 @@ body.heat-off .hm-side-body, body.ghosts-off .hm-side-body { display: none; }
     return layer;
   });
   const addToToolbar = (html) => {
-    const week = [...document.querySelectorAll('div')].find((n) => n.textContent.trim() === 'Week' && n.children.length === 0);
+    const month = [...document.querySelectorAll('div')].find((n) => n.textContent.trim() === 'Month' && n.children.length === 0);
     const el = document.createElement('div');
     el.className = 'ghost-toolbar';
     el.innerHTML = html;
-    week.parentElement.insertBefore(el, week);
+    month.after(el);
     return el;
   };
   const sideBlock = () => {
@@ -1318,7 +1322,7 @@ body.heat-off .hm-side-body, body.ghosts-off .hm-side-body { display: none; }
   const demandSide = ({ offClass, frames, onToggle, top = false }) => {
     let root;
     if (top) {
-      root = addToToolbar(`<span class="hm-top-group"><span class="hm-top-toggle">${SWITCH}<span>Student demand</span></span>${HELP}</span>`);
+      root = addToToolbar(`<span class="hm-top-group"><span class="hm-top-name">Student demand</span>${HELP}<span class="hm-top-toggle">${SWITCH}</span></span>`);
     } else {
       root = sideBlock();
       root.classList.add('hm-in-side');
@@ -1326,13 +1330,14 @@ body.heat-off .hm-side-body, body.ghosts-off .hm-side-body { display: none; }
         + '<div class="hm-side-body"><div class="hm-side-list"></div></div>';
     }
     const sw = root.querySelector('.ghost-switch');
-    (top ? root.querySelector('.hm-top-toggle') : sw).addEventListener('click', () => {
+    const flip = () => {
       const on = sw.classList.toggle('is-on');
       sw.setAttribute('aria-checked', on);
       document.body.classList.toggle(offClass, !on);
       closePop();
       onToggle(on);
-    });
+    };
+    sw.addEventListener('click', (e) => { e.stopPropagation(); flip(); });
     const howHtml = () => '<div class="hm-how"><div class="hm-how-title">How student demand works</div>' + frames
       + (top ? '' : '<div class="hm-how-sub">How we pick suggested times</div>'
         + `<ul class="hm-how-rules">${rule('today-sm', 'You haven\'t opened it yet')}${rule('night-sm', 'Not overnight (00:00-07:00)')}${rule('upvote-sm', 'Next to your open hours first, up to 4')}</ul>`)
@@ -1342,8 +1347,8 @@ body.heat-off .hm-side-body, body.ghosts-off .hm-side-body { display: none; }
     let open = false; let leaveTimer = null;
     const keep = () => clearTimeout(leaveTimer);
     const leave = () => { keep(); if (open) leaveTimer = setTimeout(closePop, LEAVE_MS); };
-    [info, pop].forEach((n) => { n.addEventListener('mouseenter', keep); n.addEventListener('mouseleave', leave); });
-    info.addEventListener('click', (e) => {
+    [top ? root.querySelector('.hm-top-group') : info, pop].forEach((n) => { n.addEventListener('mouseenter', keep); n.addEventListener('mouseleave', leave); });
+    (top ? root.querySelector('.hm-top-group') : info).addEventListener('click', (e) => {
       e.stopPropagation();
       const at = info.getBoundingClientRect();
       openPop({ left: at.left, right: at.right, top: 0 }, howHtml(), () => { open = false; keep(); });
