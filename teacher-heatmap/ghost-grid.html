@@ -1109,10 +1109,11 @@ body.heat-off .hm-legend { visibility: hidden; }
   });
   document.addEventListener('mouseup', () => {
     if (!drag) return;
-    const { d, box } = drag;
+    const { d, box, moved, start } = drag;
     const [a, z] = paint();
     drag = null;
     swallowClick = true;
+    if (!moved && window.HM.clickAt && window.HM.clickAt(d, start)) { box.remove(); return; }
     openModal({ day: d, from: a, to: z, level: null, onConfirm: () => {
       const undo = openTime(d, a, z);
       showToast(`Availability added: ${label(d, a, z)}`, undo);

@@ -891,7 +891,7 @@ body.heat-off .hm-legend { visibility: hidden; }
 
 
 <div style="visibility: visible;"><div></div><div></div></div><img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2264%22%20height%3D%2264%22%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2232%22%20fill%3D%22%23E5E8ED%22%2F%3E%3C%2Fsvg%3E" border="0" height="0" width="0" style="position: absolute; visibility: hidden;">
-<div class="ghost-note"><b>Prototype · sample data.</b> Hover a framed time for details; + Open this time opens the whole time. Click or drag anywhere, frames included, to pick your own time, as in the real calendar.</div><nav class="ghost-versions"><a href="ghost-grid.html" class="">Ghost grid</a><a href="heatmap.html" class="is-on">Demand glow</a></nav><script>
+<div class="ghost-note"><b>Prototype · sample data.</b> Hover a framed time for details; click it to open Set availability with the whole time filled in. Drag, inside a frame or not, to pick your own time, as in the real calendar.</div><nav class="ghost-versions"><a href="ghost-grid.html" class="">Ghost grid</a><a href="heatmap.html" class="is-on">Demand glow</a></nav><script>
 (() => {
   const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const DATES = [15, 16, 17, 18, 19, 20, 21];
@@ -1109,10 +1109,11 @@ body.heat-off .hm-legend { visibility: hidden; }
   });
   document.addEventListener('mouseup', () => {
     if (!drag) return;
-    const { d, box } = drag;
+    const { d, box, moved, start } = drag;
     const [a, z] = paint();
     drag = null;
     swallowClick = true;
+    if (!moved && window.HM.clickAt && window.HM.clickAt(d, start)) { box.remove(); return; }
     openModal({ day: d, from: a, to: z, level: null, onConfirm: () => {
       const undo = openTime(d, a, z);
       showToast(`Availability added: ${label(d, a, z)}`, undo);
@@ -1326,6 +1327,21 @@ body.heat-off .hm-legend { visibility: hidden; }
     if (after) return `Right before your ${hm(r.to)}-${hm(+after.dataset.to)} block`;
     return r.v === 2 ? 'Students often look for lessons now' : 'Many Japanese learners look for lessons now';
   };
+  const openRun = (r) => {
+    hoverOff();
+    openModal({ day: r.day, from: r.from, to: r.to, level: LEVEL[r.v], reason: reasonFor(r), onConfirm: () => {
+      const undo = openTime(r.day, r.from, r.to);
+      renderSide();
+      showToast(`Availability added: ${label(r.day, r.from, r.to)}`, () => { undo(); renderSide(); });
+    } });
+  };
+  window.HM.clickAt = (d, at) => {
+    if (document.body.classList.contains('heat-off')) return false;
+    const f = [...cols[d].querySelectorAll('.hm-rec')].find((n) => at >= +n.dataset.from && at < +n.dataset.to);
+    if (!f) return false;
+    openRun({ day: d, from: +f.dataset.from, to: +f.dataset.to, v: +f.dataset.v });
+    return true;
+  };
   const renderRec = () => {
     document.querySelectorAll('.hm-rec').forEach((n) => n.remove());
     const runsNow = [];
@@ -1343,15 +1359,7 @@ body.heat-off .hm-legend { visibility: hidden; }
       el.dataset.from = r.from; el.dataset.to = r.to; el.dataset.v = r.v; el.dataset.id = r.id;
       el.style.top = `calc(${(r.from / 24) * 100}% + 3px)`; el.style.height = `calc(${((r.to - r.from) / 24) * 100}% - 6px)`;
       el.innerHTML = '<button type="button" class="hm-rec-open" role="event-time">+ Open this time</button>';
-      el.querySelector('button').addEventListener('click', (e) => {
-        e.stopPropagation();
-        hoverOff();
-        openModal({ day: r.day, from: r.from, to: r.to, level: LEVEL[r.v], reason: reasonFor(r), onConfirm: () => {
-          const undo = openTime(r.day, r.from, r.to);
-          renderSide();
-          showToast(`Availability added: ${label(r.day, r.from, r.to)}`, () => { undo(); renderSide(); });
-        } });
-      });
+      el.querySelector('button').addEventListener('click', (e) => { e.stopPropagation(); openRun(r); });
       cols[r.day].appendChild(el);
     });
   };
