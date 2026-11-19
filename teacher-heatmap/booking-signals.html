@@ -1062,6 +1062,8 @@ body.heat-off .hm-week-note { display: none; }
 .hm-how-v4 .hm-why-row .hm-how-area { width: 32px; height: 32px; border-radius: 6px; }  
 .hm-how-v4 .hm-why-row b { font-size: 14px; line-height: 20px; }
 .hm-how-v4 .hm-why-row b + span { font-size: 12px; line-height: 16px; }
+.ghost-pop:has(.hm-how-v4) { width: 340px; }  
+.hm-how-v4 .hm-why-row b { white-space: nowrap; }
 .hm-how-v4 .hm-open-all { display: block; width: 100%; margin-top: 16px; font-weight: 600; }  
 .hm-card-hint.hm-card-hint-flush { padding-left: 0; margin-left: 0; }
 .hm-now-line { position: absolute; left: 0; right: 0; z-index: 50; height: 1px; background: rgb(255 68 56); pointer-events: none; }  
@@ -1112,6 +1114,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
 .hm-card-avatars { display: flex; flex: 0 0 auto; }
 .hm-card-avatars .hm-card-avatar + .hm-card-avatar { margin-left: -6px; box-shadow: 0 0 0 2px #fff; }
 .hm-card-avatar { flex: 0 0 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: rgb(255 214 153); color: rgb(122 72 0); font-size: 12px; line-height: 1; font-weight: 700; }  
+.hm-card-avatar[style*=background-image] { background-color: rgb(229 232 237); background-size: cover; background-position: center; }
 .hm-card-swatch { flex: 0 0 auto; width: 20px; height: 14px; border-radius: 4px; border-width: 1px; border-style: dashed; box-sizing: border-box; }
 .hm-why button.hm-why-row:not(.is-on) b { color: rgb(110 110 128); }
 .hm-how-v4 button.hm-why-row { transition: opacity .15s ease; }
@@ -1338,7 +1341,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
           <div class="av-label">Repeat</div>
           <span class="av-select av-wide">Please select<i></i></span>
         </div>
-        <div class="av-foot"><button type="button" class="ant-btn css-14h52wa ant-btn-secondary ant-btn-sm" data-act="ok">Confirm</button></div>
+        <div class="av-foot"><button type="button" class="ant-btn css-14h52wa ant-btn-secondary" data-act="ok">Confirm</button></div>
       </div>`;
     modal.querySelector('.av-x').onclick = closeModal;
     modal.querySelector('[data-act=ok]').onclick = () => { closeModal(); onConfirm(); };
@@ -1615,6 +1618,8 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     [4, 21, 22, [null, null, 'Mia', null]],
     [6, 17, 18, ['Anna', 'Leo', null, 'Mia']],
   ];
+  const FACE = { Anna: '01', Leo: '06', Mia: '05' };
+  const av = (n, tag = 'span') => `<${tag} class="hm-card-avatar" style="background-image:url(faces/${FACE[n]}.jpg)"></${tag}>`;
   const habits = HISTORY.map(([d, a, b, wks]) => [d, a, b, wks.filter(Boolean).length, [...new Set(wks.filter(Boolean))], wks]).filter((r) => r[3] >= 2);
   const GAPS = [
     { day: 6, from: 9, to: 11, need: "Kids' English", price: 'under $15' },
@@ -1691,7 +1696,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     const RANKQ = { reg: 0, gap: 1, a: 2 };
     const best = marks().filter((x) => x.kind !== 'quiet').sort((x, y) => RANKQ[x.kind] - RANKQ[y.kind] || pos(x.day) - pos(y.day) || x.from - y.from).slice(0, 2);
     if (!best.length) return '';
-    return `<div class="hm-card-better"><b>Better times this week</b>${best.map((x) => `<span>${x.kind === 'reg' ? `<i class="hm-card-avatar">${x.who[0][0]}</i>` : x.kind === 'gap' ? NEW_ICON : ''}${DAYS[x.day]} ${DATES[x.day]} · ${hm(x.from)}-${hm(x.to)}</span>`).join('')}</div>`;
+    return `<div class="hm-card-better"><b>Better times this week</b>${best.map((x) => `<span>${x.kind === 'reg' ? av(x.who[0], 'i') : x.kind === 'gap' ? NEW_ICON : ''}${DAYS[x.day]} ${DATES[x.day]} · ${hm(x.from)}-${hm(x.to)}</span>`).join('')}</div>`;
   };
   const HEAD = { reg: (m) => (m.who.length > 1 ? "Current students' time" : `${m.who[0]}'s usual time`), gap: () => 'New students need teachers', a: () => 'Busy for similar teachers', quiet: () => 'Quiet for similar teachers' };
   // Different students: say who, and that one of them may book (Niki 2026-11-19).
@@ -1756,13 +1761,11 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     const box = scroller.getBoundingClientRect();
     if (card.dataset.run !== m.id) {
       card.dataset.run = m.id;
-      const who = m.kind === 'reg' ? `<span class="hm-card-avatars" aria-hidden="true">${m.who.map((w) => `<span class="hm-card-avatar">${w[0]}</span>`).join('')}</span>` : m.kind === 'gap' ? NEW_ICON : '';
+      const who = m.kind === 'reg' ? `<span class="hm-card-avatars" aria-hidden="true">${m.who.map((w) => av(w)).join('')}</span>` : m.kind === 'gap' ? NEW_ICON : '';
       card.innerHTML = `<div class="hm-card-top"><div class="hm-card-time">${DAYS[m.day]}, ${MONTHS[m.day]} ${DATES[m.day]} · ${hm(m.from)}-${hm(m.to)}</div>${who}</div>`
         + `<div class="hm-card-level">${HEAD[m.kind](m)}</div><div class="hm-card-hint hm-card-hint-flush">${WHY[m.kind](m)}</div>${m.kind === 'gap' ? GAP_DOTS(m) : m.kind === 'reg' ? CAME(m) : m.kind === 'quiet' ? BETTER(m) : ''}`;
     }
     if (!card.classList.contains('is-on') || card.dataset.pin !== m.id) {
-      // A card coming up somewhere new appears in place; no slide from where it last was
-      // (Niki 2026-11-19: it jumped around when moving between sidebar times).
       card.style.transitionProperty = 'opacity'; requestAnimationFrame(() => requestAnimationFrame(() => { card.style.transitionProperty = ''; }));
       card.dataset.pin = m.id;
       const fr = run.getBoundingClientRect();
@@ -1773,8 +1776,6 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     }
     card.classList.add('is-on');
   };
-  // Panel: one row per mark, its swatch beside who and why. No levels, no picker.
-  // Rows are the switches, as on the other option-3 pages: a corner badge marks what is shown.
   const row = (k, area, who, rule, muted) => (muted
     ? `<div class="hm-why-row is-muted"><span class="hm-how-mark"><span class="hm-how-area ${area}"></span></span><span><b>${who}</b><span>${rule}</span></span></div>`
     : `<button type="button" class="hm-why-row hm-level-pick${show[k] ? ' is-on' : ''}" data-mark="${k}" aria-pressed="${show[k]}"><span class="hm-how-mark"><span class="hm-how-area ${area}"><i class="hm-pick-badge${k === 'quiet' ? ' is-quiet' : ''}" aria-hidden="true"></i></span></span><span><b>${who}</b><span>${rule}</span></span></button>`);
@@ -1799,7 +1800,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
       <div class="av-body"><div class="hm-bulk-lead">Students can book you at these times. Untick any you can't teach.</div>
       <div class="hm-bulk-list">${list.map((r, i) => `<label class="hm-bulk-row"><span class="COMPLETE ant-wave-target css-1ozrthf COMPLETE-checked"><input class="COMPLETE-input" type="checkbox" checked data-i="${i}"><span class="COMPLETE-inner"></span></span><span>${DAYS[r.day]}, ${MONTHS[r.day]} ${DATES[r.day]}</span><b>${hm(r.from)}-${hm(r.to)}</b></label>`).join('')}</div>
       <div class="hm-bulk-note"></div></div>
-      <div class="av-foot"><button type="button" class="ant-btn css-14h52wa ant-btn-default ant-btn-sm hm-bulk-cancel">Cancel</button><button type="button" class="ant-btn css-14h52wa ant-btn-secondary ant-btn-sm" data-act="ok"></button></div></div>`;
+      <div class="av-foot"><button type="button" class="ant-btn css-14h52wa ant-btn-default hm-bulk-cancel">Cancel</button><button type="button" class="ant-btn css-14h52wa ant-btn-secondary" data-act="ok"></button></div></div>`;
     const picked = () => list.filter((_, i) => modal.querySelector(`[data-i="${i}"]`).checked);
     const sync = () => {
       const p = picked(); const hours = p.reduce((t, r) => t + r.to - r.from, 0);
@@ -1954,7 +1955,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   const side = sideBlock();
   side.classList.add('hm-sugg');
   const rowIcon = (m) => (m.kind === 'reg'
-    ? `<span class="hm-sugg-ico"><span class="hm-sugg-one"><span class="hm-card-avatar">${m.who[0][0]}</span>${m.who.length > 1 ? `<b class="hm-sugg-n">${m.who.length}</b>` : ''}</span></span>`
+    ? `<span class="hm-sugg-ico"><span class="hm-sugg-one">${av(m.who[0])}${m.who.length > 1 ? `<b class="hm-sugg-n">${m.who.length}</b>` : ''}</span></span>`
     : m.kind === 'gap' ? `<span class="hm-sugg-ico">${NEW_ICON}</span>` : '<span class="hm-sugg-ico"><span class="hm-how-area is-a hm-sugg-swatch"></span></span>');
   const SIDE_MAX = 5; let sideAll = false;
   const renderSide = () => {
