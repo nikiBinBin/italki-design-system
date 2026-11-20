@@ -732,6 +732,7 @@ a:hover .css-14h52wa.ant-badge .ant-badge-count { background: rgb(255, 67, 56); 
 :root { --hm-g: 13,190,130; --hm-g-edge: 8,160,108; --hm-g-strong: 8,150,100; }
 body.hm-bs { --hm-g: 0,179,119; --hm-g-edge: 0,179,119; --hm-g-strong: 0,179,119; }  
 body.hm-bs .hm-side-list { background: #ECFFF9; }
+body.hm-bs .hm-side-list .ghost-side-row { font-weight: 400; }  
 body.hm-bs .hm-sugg-n { box-shadow: 0 0 0 1.5px #ECFFF9; }
 body.hm-bs .hm-side-list.is-quiet { background: rgb(245 246 249); }
 body.hm-bs .hm-side-list.is-quiet .ghost-side-row:hover { background: rgb(233 233 238); }
@@ -1025,30 +1026,72 @@ body.heat-off .hm-week-note { display: none; }
 .hm-open-high { display: block; width: 100%; margin-top: 12px; padding: 10px 12px; border: 1px solid rgb(var(--hm-g-strong)); border-radius: 999px; background: #fff; color: rgb(var(--hm-g-strong)); font: inherit; font-size: 14px; line-height: 20px; font-weight: 700; cursor: pointer; }
 .hm-open-high:hover { background: rgba(var(--hm-g),.08); }
 .hm-bulk-lead { font-size: 14px; line-height: 20px; color: rgb(49 49 64); }
-.hm-intro { position: relative; width: 480px; }
-.hm-intro .av-x { z-index: 1; }
-.hm-intro-hero { display: grid; place-items: center; height: 168px; background: #ECFFF9; }
-.hm-intro-cal { display: grid; grid-template-columns: 64px 128px 64px; height: 120px; border-radius: 10px; background: #fff; box-shadow: 0 4px 16px rgba(0,0,0,.06); overflow: hidden; }
-.hm-intro-cal > span { border-left: 1px solid rgb(233 233 235); background: repeating-linear-gradient(to bottom, transparent 0 29px, rgb(240 240 244) 29px 30px); }
+.hm-intro { width: 520px; }  
+.hm-intro .av-head { border-bottom-color: var(--ui-color-divider, #F5F6F9); }
+.hm-intro .av-foot { border-top-color: var(--ui-color-divider, #F5F6F9); }  
+.hm-intro-body { padding: 24px; }
+.hm-intro-hero { display: grid; place-items: center; height: 160px; border-radius: 8px; background: #ECFFF9; }
+.hm-intro-hero { position: relative; height: 200px !important; background: none !important; display: flex !important; flex-direction: column; align-items: stretch !important; border: 1px solid rgb(233 233 235); border-radius: 8px; overflow: hidden; }
+.hm-intro-hero .hm-intro-cal { flex: 1; height: auto !important; border: 0 !important; border-radius: 0 !important; }
+.hm-ia-bar { flex: none; display: flex; justify-content: flex-end; align-items: center; gap: 8px; height: 32px; padding: 0 10px; border-bottom: 1px solid rgb(233 233 235); white-space: nowrap; gap: 10px; }  
+.hm-ia-pill { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 6px 0 10px; border-radius: 999px; background: rgb(245 246 249); font-size: 10px; color: rgb(49 49 64); }
+.hm-ia-sw { position: relative; width: 22px; height: 12px; border-radius: 999px; background: rgb(73 73 89); }
+.hm-ia-sw::after { content: ''; position: absolute; right: 2px; top: 2px; width: 8px; height: 8px; border-radius: 50%; background: #fff; }
+.hm-ia-panel { position: absolute; right: 10px; top: 40px; z-index: 5; width: 186px; padding: 6px; border-radius: 8px; background: #fff; box-shadow: 0 6px 18px rgba(0,0,0,.14); opacity: 0; }
+.hm-ia-row { display: flex; align-items: center; gap: 4px; padding: 2px 0; border-radius: 5px; font-size: 9px; line-height: 14px; font-weight: 600; color: rgb(156 156 172); }
+.hm-ia-row.is-on { color: rgb(49 49 64); }
+.hm-ia-row.is-muted { opacity: .5; }
+.hm-ia-swatch { position: relative; flex: none; width: 20px; height: 16px; border-radius: 3px; border: 1px dashed rgba(var(--hm-g),.5); background: #fff; box-sizing: border-box; overflow: hidden; }
+.hm-ia-swatch.is-reg { border-color: rgba(var(--hm-g-edge),.85); box-shadow: inset 0 0 7px rgba(var(--hm-g),.55); }
+.hm-ia-swatch.is-gap { border-color: rgba(var(--hm-g),.75); box-shadow: inset 0 0 4px rgba(var(--hm-g),.25); }
+.hm-ia-swatch.is-quiet { border-color: rgba(110,110,128,.7); background: rgb(245 246 249); }
+.hm-ia-row.is-on .hm-ia-swatch::after { content: ''; position: absolute; right: 0; top: 0; width: 7px; height: 7px; background: rgb(var(--hm-g-strong)); clip-path: polygon(0 0, 100% 0, 100% 100%); }
+.hm-ia-row.is-on .hm-ia-swatch.is-quiet::after { background: rgb(110 110 128); }  
+.hm-intro-cal { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); width: 100%; height: 100%; border: 1px solid rgb(233 233 235); border-radius: 8px; background: #fff; overflow: hidden; box-sizing: border-box; }
+.hm-intro-cal > span { border-left: 1px solid rgb(233 233 235); background: repeating-linear-gradient(to bottom, transparent 0 34px, rgb(240 240 244) 34px 35px); }
 .hm-intro-cal > span:first-child { border-left: 0; }
-.hm-intro-mark { position: relative; }
-.hm-intro-mark::before { content: ''; position: absolute; inset: 14px 8px; border: 1px dashed rgba(var(--hm-g-edge),.85); border-radius: 8px; background: #fff; box-shadow: inset 0 0 26px rgba(var(--hm-g),.32), inset 0 0 8px rgba(var(--hm-g),.16); }
-.hm-intro-faces { position: absolute; top: 22px; right: 16px; display: flex; }
-.hm-intro-faces i, .hm-intro-ico > i { display: block; width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid #fff; background: center/cover rgb(229 232 237); }
-.hm-intro-faces i + i { margin-left: -7px; }
-.hm-intro-open { position: absolute; left: 50%; top: 58%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgb(var(--hm-g-strong)); white-space: nowrap; }
-.hm-intro-open b { font-size: 11px; line-height: 14px; color: rgb(49 49 64); }
-.hm-intro-body { padding: 24px 32px 8px; }
-.hm-intro-title { font-size: 22px; line-height: 30px; font-weight: 700; color: rgb(49 49 64); }
-.hm-intro-lead { margin-top: 6px; font-size: 14px; line-height: 20px; color: rgb(110 110 128); }
-.hm-intro-row { display: flex; gap: 12px; align-items: flex-start; margin-top: 18px; }
+.hm-ia-frame, .hm-ia-avail { position: absolute; border-radius: 8px; box-sizing: border-box; }
+.hm-ia-frame { border: 1px dashed rgba(var(--hm-g-edge),.85); background: #fff; box-shadow: inset 0 0 26px rgba(var(--hm-g),.32), inset 0 0 8px rgba(var(--hm-g),.16); }
+.hm-ia-avail { padding: 6px 8px; background: rgba(13,226,152,.12); font-size: 10px; line-height: 14px; color: rgb(110 110 128); }
+.hm-ia-frame .hm-intro-open { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgb(var(--hm-g-strong)); white-space: nowrap; }
+.hm-ia-frame .hm-intro-open svg { width: 20px; height: 20px; }
+.hm-ia-frame .hm-intro-open b { font-size: 10px; line-height: 13px; color: rgb(49 49 64); }
+.hm-ia-card { position: absolute; width: 204px; padding: 9px 11px; border-radius: 9px; background: #fff; box-shadow: 0 4px 14px rgba(0,0,0,.12); display: flex; flex-direction: column; gap: 2px; font-size: 10px; line-height: 14px; color: rgb(81 81 100); box-sizing: border-box; }
+.hm-ia-top { display: flex; justify-content: space-between; align-items: center; color: rgb(156 156 172); margin-bottom: 3px; }
+.hm-ia-top svg { width: 14px; height: 14px; color: rgb(var(--hm-g-strong)); }
+.hm-ia-card .hm-intro-faces { display: flex; }
+.hm-ia-card .hm-intro-faces i { display: block; width: 14px; height: 14px; border-radius: 50%; border: 1px solid #fff; background: center/cover rgb(229 232 237); }
+.hm-ia-card .hm-intro-faces i + i { margin-left: -5px; }
+.hm-ia-card b { font-size: 11px; line-height: 15px; font-weight: 700; color: rgb(49 49 64); }
+.hm-ia-log { display: grid; grid-template-columns: 1fr auto; row-gap: 1px; margin-top: 5px; padding-top: 5px; border-top: 1px solid var(--ui-color-divider, #F5F6F9); color: rgb(49 49 64); }
+.hm-ia-log span:nth-child(2n) { color: rgb(110 110 128); }
+.hm-ia-gap { display: grid; grid-template-columns: 1fr auto; row-gap: 3px; align-items: center; margin-top: 6px; padding: 6px 8px; border-radius: 6px; background: rgb(245 246 249); color: rgb(49 49 64); }
+.hm-ia-dots { display: flex; gap: 2px; }
+.hm-ia-dots i { width: 5px; height: 5px; border-radius: 50%; background: rgb(229 232 237); }
+.hm-ia-dots i.on { background: rgb(var(--hm-g-strong)); }
+.hm-ia-dots.is-t i.on { background: rgb(73 73 89); }
+.hm-ia-pointer { position: absolute; left: 0; top: 0; filter: drop-shadow(0 1px 1px rgba(0,0,0,.2)); }
+.hm-ia-frame, .hm-ia-avail, .hm-ia-card, .hm-ia-pointer, .hm-ia-frame .hm-intro-open { opacity: 0; }
+.hm-ia-frame.is-gap { border-color: rgba(var(--hm-g),.75); box-shadow: inset 0 0 14px rgba(var(--hm-g),.16); }
+.hm-ia-frame.is-a { border-color: rgba(var(--hm-g),.45); box-shadow: none; }
+.hm-ia-frame.is-quiet { border-color: rgba(110,110,128,.7); background: rgba(245,246,249,.55); box-shadow: none; }
+.hm-ia-avail { z-index: 1; }
+.hm-ia-frame { z-index: 2; }
+.hm-ia-card { z-index: 3; }
+.hm-ia-pointer { z-index: 4; }
+.hm-ia-better { margin-top: 6px; padding: 6px 8px; border-radius: 6px; background: rgb(245 246 249); display: flex; flex-direction: column; gap: 3px; color: rgb(49 49 64); }
+.hm-ia-better em { font-style: normal; color: rgb(110 110 128); }
+.hm-ia-better span { display: flex; align-items: center; gap: 5px; }
+.hm-ia-better i { width: 13px; height: 13px; border-radius: 50%; background: center/cover rgb(229 232 237); }
+.hm-ia-better svg { flex: none; width: 13px; height: 13px; color: rgb(var(--hm-g-strong)); }
+.hm-intro-lead { margin-top: 20px; font-size: 14px; line-height: 22px; color: rgb(49 49 64); }
+.hm-intro-row { display: flex; gap: 12px; align-items: flex-start; margin-top: 16px; }
 .hm-intro-row > span:last-child { display: flex; flex-direction: column; gap: 2px; font-size: 14px; line-height: 20px; color: rgb(110 110 128); }
 .hm-intro-row b { font-weight: 600; color: rgb(49 49 64); }
 .hm-intro-ico { flex: 0 0 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; background: #ECFFF9; color: rgb(var(--hm-g-strong)); }
-.hm-intro-ico > i { width: 24px; height: 24px; border: 0; }
 .hm-intro-ico .hm-card-icon { flex: none; }
-.hm-intro-note { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--ui-color-divider, #F5F6F9); font-size: 12px; line-height: 18px; color: rgb(156 156 172); }
-.hm-intro .av-foot { border-top: 0; padding: 16px 32px 24px; }
+.hm-intro-note { font-size: 12px; line-height: 18px; color: rgb(156 156 172); }
+.hm-intro .av-foot { justify-content: space-between; align-items: center; gap: 16px; }  
 .hm-tips .av-body { display: flex; flex-direction: column; gap: 16px; }
 .hm-tip { display: flex; flex-direction: column; gap: 2px; font-size: 14px; line-height: 20px; color: rgb(110 110 128); }
 .hm-tip b { font-weight: 600; color: rgb(49 49 64); }
@@ -1126,7 +1169,7 @@ body.heat-off .hm-week-note { display: none; }
 .hm-card-hint.hm-card-hint-flush { padding-left: 0; margin-left: 0; }
 .hm-now-line { position: absolute; left: 0; right: 0; z-index: 50; height: 1px; background: rgb(255 68 56); pointer-events: none; }  
 .hm-now-line span { position: absolute; top: -9px; left: 0; transform: translateX(-100%); height: 22px; padding: 2px 4px; border-radius: 6px; background: rgb(255 68 56); color: #fff; font-size: 12px; line-height: 18px; font-weight: 500; }
-.hm-sugg-ico { display: inline-flex; align-items: center; justify-content: flex-start; flex: 0 0 30px; width: 30px; }  
+.hm-sugg-ico { display: inline-flex; align-items: center; justify-content: flex-start; flex: 0 0 26px; width: 26px; }    
 .hm-sugg-ico.hm-card-avatars .hm-card-avatar + .hm-card-avatar { margin-left: -8px; }
 .hm-sugg-ico .hm-card-avatar { flex-basis: 18px !important; width: 18px; height: 18px !important; font-size: 10px !important; }
 body.heat-off .hm-sugg { display: none !important; }
@@ -2151,27 +2194,115 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   });
   const INTRO_KEY = 'booking-signals-intro-seen';
   const introSeen = (() => { try { return localStorage.getItem(INTRO_KEY) === '1'; } catch { return false; } })();
+  const USERS_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.75 7.5a4.25 4.25 0 1 1 8.5 0a4.25 4.25 0 0 1-8.5 0Z"/><path d="M6.5 13.5h5a5 5 0 0 1 5 5v1.25c0 .97-.78 1.75-1.75 1.75H3.25c-.97 0-1.75-.78-1.75-1.75V18.5a5 5 0 0 1 5-5Z"/><path d="M15.4 3.55a4 4 0 1 1 0 7.9a5.75 5.75 0 0 0 0-7.9Z"/><path d="M17.9 13.6a4 4 0 0 1 4.6 3.95v2.2c0 .97-.78 1.75-1.75 1.75h-2.6c.23-.45.35-.95.35-1.5V18.5c0-1.95-.2-3.5-.6-4.9Z"/></svg>'; 
+  const playIntro = (cal, faces, PLUS) => {
+    const SOFT = 'cubic-bezier(.25,.8,.25,1)';
+    const W = cal.clientWidth / 4; const H = cal.clientHeight;
+    const face1 = faces.split('</i>')[0] + '</i>';
+    const card = (inner) => `<div class="hm-ia-card">${inner}</div>`;
+    const REG = card(`<div class="hm-ia-top"><span>Sat, Nov 21 · 17:00-18:00</span><span class="hm-intro-faces">${faces}</span></div><b>Current students’ time</b><span>3 of the last 4 Saturdays</span><div class="hm-ia-log"><span>Anna</span><span>Oct 24</span><span>Leo</span><span>Oct 31</span><span>Mia</span><span>Nov 14</span></div>`);
+    const GAP = card(`<div class="hm-ia-top"><span>Fri, Nov 20 · 20:00-22:00</span>${NEW_ICON}</div><b>Few similar teachers open</b><span>Business English under $25</span><div class="hm-ia-gap"><span>New students</span><span class="hm-ia-dots">${'<i class=on></i>'.repeat(7)}<i></i></span><span>Teachers open</span><span class="hm-ia-dots is-t">${'<i class=on></i>'.repeat(2)}${'<i></i>'.repeat(6)}</span></div>`);
+    const BUSY = card(`<div class="hm-ia-top"><span>Sun, Nov 22 · 14:00-16:00</span></div><b>Busy for similar teachers</b><span>Teachers with your language, type and price get booked more then</span>`);
+    const QUIET = card(`<div class="hm-ia-top"><span>Mon, Nov 23 · 09:00-12:00</span></div><b>Not booked lately</b><span>No bookings the last 3 Mondays</span><div class="hm-ia-better"><em>Better times this week</em><span>${face1}Sat 21 · 17:00-18:00</span><span>${NEW_ICON.replace('width="20" height="20"', 'width="13" height="13"')}Fri 20 · 20:00-22:00</span></div>`);
+    const scenes = NEW_T
+      ? [[1, 14, H - 28, 'gap', GAP, 'right', true, '20:00 - 22:00'], [2, 30, H - 50, 'a', BUSY, 'left', true, '14:00 - 16:00', 'a']]
+      : [[1, 14, H - 28, 'reg', REG, 'right', true, '17:00 - 18:00'], [2, 34, H - 56, 'gap', GAP, 'left', true, '20:00 - 22:00'], [0, 22, H - 40, 'quiet', QUIET, 'right', false, '09:00 - 12:00', 'quiet']];
+    const ptr = document.createElement('div');
+    ptr.innerHTML = '<svg class="hm-ia-pointer" width="18" height="18" viewBox="0 0 24 24"><path d="M5 3l14 8-6.2 1.6L10 19z" fill="#313140" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+    const hero = cal.parentElement; const DY = cal.offsetTop;
+    const pointer = ptr.firstChild; hero.appendChild(pointer);
+    const ROWS = [['reg', 'Current students'], ['gap', 'Few similar teachers open'], ['a', 'Busy for similar teachers'], ['quiet', 'Not booked lately']];
+    const panel = hero.querySelector('.hm-ia-bar');
+    panel.innerHTML = ROWS.map(([k, t]) => `<div class="hm-ia-row${NEW_T && k === 'reg' ? ' is-muted' : ''}" data-k="${k}" title="${t}"><i class="hm-ia-swatch is-${k}"></i></div>`).join('');
+    const resetLegend = () => panel.querySelectorAll('.hm-ia-row').forEach((r) => r.classList.toggle('is-on', !NEW_T ? ['reg', 'gap'].includes(r.dataset.k) : r.dataset.k === 'gap'));
+    resetLegend();
+    const made = [];
+    const add = (html) => { const t = document.createElement('div'); t.innerHTML = html; const el = t.firstChild; cal.appendChild(el); made.push(el); return el; };
+    const place = (el, d, top, h) => Object.assign(el.style, { left: `${d * W + 3}px`, top: `${top}px`, width: `${W - 6}px`, height: `${h}px` });
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const build = ([d, top, h, kind, html, side, open, time, legend]) => {
+      const base = kind === 'quiet' ? add(`<div class="hm-ia-avail is-base">${time}</div>`) : null;
+      if (base) place(base, d, top, h);
+      const frame = add(`<div class="hm-ia-frame is-${kind}">${open ? `<span class="hm-intro-open">${PLUS}<b>Open this time</b></span>` : ''}</div>`);
+      place(frame, d, top, h);
+      const result = open ? add(`<div class="hm-ia-avail">${time}</div>`) : null;
+      if (result) place(result, d, top, h);
+      const c = add(html);
+      Object.assign(c.style, { top: `${Math.max(8, top)}px`, left: side === 'right' ? `${(d + 1) * W + 4}px` : `${d * W - 204 - 4}px` });
+      return { frame, result, card: c, base, open, legend, x: d * W + W / 2 - 2, y: top + h / 2 - 4 };
+    };
+    const built = scenes.map(build);
+    if (reduced) { const f = built[0]; f.frame.style.opacity = 1; f.card.style.opacity = 1; return; }
+    const alive = () => cal.isConnected && modal.classList.contains('is-open');
+    const run = (el, frames, opts) => el.animate(frames, { fill: 'forwards', ...opts }).finished.catch(() => {});
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    let px = cal.clientWidth - 30; let py = DY + H - 20;
+    const moveTo = (x, y, dur = 700) => { const from = `translate(${px}px, ${py}px)`; px = x; py = y; return run(pointer, [{ transform: from }, { transform: `translate(${x}px, ${y}px)` }], { duration: dur, easing: SOFT }); };
+    const loop = async () => {
+      while (alive()) {
+        made.forEach((el) => el.getAnimations().forEach((an) => an.cancel()));
+        pointer.getAnimations().forEach((an) => an.cancel());
+        px = cal.clientWidth - 30; py = DY + H - 20; resetLegend();
+        built.filter((sc) => sc.base).forEach((sc) => run(sc.base, [{ opacity: 0 }, { opacity: 1 }], { duration: 400 }));
+        for (const sc of built) {
+          if (!alive()) return;
+          if (sc.legend) {
+            const press = () => run(pointer, [{ transform: `translate(${px}px, ${py}px)` }, { transform: `translate(${px}px, ${py}px) scale(.88)` }, { transform: `translate(${px}px, ${py}px)` }], { duration: 160 });
+            run(pointer, [{ opacity: 0 }, { opacity: 1 }], { duration: 200 });
+            const row = panel.querySelector(`[data-k="${sc.legend}"]`);
+            await moveTo(row.offsetLeft + row.offsetWidth / 2 - 2, row.offsetTop + row.offsetHeight / 2 - 2);
+            await press();
+            row.classList.add('is-on');
+            await wait(500);
+          }
+          await run(sc.frame, [{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'none' }], { duration: 600, easing: SOFT });
+          run(pointer, [{ opacity: 0 }, { opacity: 1 }], { duration: 200 });
+          await moveTo(sc.x, DY + sc.y);
+          const label = sc.frame.querySelector('.hm-intro-open');
+          if (label) run(label, [{ opacity: 0 }, { opacity: 1 }], { duration: 150 });
+          await run(sc.card, [{ opacity: 0, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }], { duration: 300, easing: SOFT });
+          await wait(1400);
+          if (sc.open) {
+            run(pointer, [{ transform: `translate(${px}px, ${py}px)` }, { transform: `translate(${px}px, ${py}px) scale(.88)` }, { transform: `translate(${px}px, ${py}px)` }], { duration: 160 });
+            if (label) run(label.querySelector('svg'), [{ transform: 'none' }, { transform: 'scale(.85)' }, { transform: 'none' }], { duration: 160 });
+            await wait(200);
+            run(sc.card, [{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: 'ease-in' });
+            run(sc.frame, [{ opacity: 1 }, { opacity: 0 }], { duration: 300, easing: 'ease-in' });
+            await run(sc.result, [{ opacity: 0 }, { opacity: 1 }], { duration: 400 });
+          } else {
+            await wait(1200);
+          }
+          await wait(500);
+        }
+        run(pointer, [{ opacity: 1 }, { opacity: 0 }], { duration: 250 });
+        await wait(900);
+        await Promise.all(made.filter((el) => getComputedStyle(el).opacity !== '0').map((el) => run(el, [{ opacity: getComputedStyle(el).opacity }, { opacity: 0 }], { duration: 400, easing: 'ease-in' })));
+        await wait(400);
+      }
+    };
+    loop();
+  };
   const openIntro = () => {
     const row = (ico, t, d) => `<div class="hm-intro-row"><span class="hm-intro-ico">${ico}</span><span><b>${t}</b><span>${d}</span></span></div>`;
     const faces = ['01', '06', '05'].map((f) => `<i style="background-image:url(faces/${f}.jpg)"></i>`).join('');
     const PLUS = '<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="currentColor"/><path d="M12 7v10M7 12h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>';
     modal.innerHTML = `<div class="av-modal hm-intro" role="dialog" aria-label="Meet Suggested times">
-      <button type="button" class="av-x" aria-label="Close">×</button>
-      <div class="hm-intro-hero" aria-hidden="true"><div class="hm-intro-cal"><span></span><span class="hm-intro-mark"><span class="hm-intro-faces">${NEW_T ? NEW_ICON : faces}</span><span class="hm-intro-open">${PLUS}<b>Open this time</b></span></span><span></span></div></div>
-      <div class="hm-intro-body">
-        <div class="hm-intro-title">Meet Suggested times</div>
+      <div class="av-head"><span>Meet Suggested times</span><button type="button" class="av-x" aria-label="Close">×</button></div>
+      <div class="av-body hm-intro-body">
+        <div class="hm-intro-hero" aria-hidden="true"><div class="hm-ia-bar"></div><div class="hm-intro-cal"><span></span><span></span><span></span><span></span></div></div>
         <div class="hm-intro-lead">See which times are worth opening, and why, right on your calendar.</div>
-        ${NEW_T ? '' : row(faces.split('</i>')[0] + '</i>', 'Your current students’ times', 'Times they often book that you haven’t opened yet.')}
+        ${NEW_T ? '' : row(USERS_ICON, 'Your current students’ times', 'Times they often book that you haven’t opened yet.')}
         ${row(NEW_ICON, 'Where few teachers are open', 'New students look for your lesson and price then.')}
         ${row(PLUS, 'Open it in one click', 'Hover a green frame to see why, then Open this time.')}
-        <div class="hm-intro-note">Turn it off any time with the Suggested times switch.</div>
       </div>
-      <div class="av-foot"><button type="button" class="ant-btn css-14h52wa ant-btn-secondary" data-act="ok">Got it</button></div></div>`;
+      <div class="av-foot"><span class="hm-intro-note">Turn it off any time with the Suggested times switch.</span><button type="button" class="ant-btn css-14h52wa ant-btn-secondary" data-act="ok">Got it</button></div></div>`;
     const done = () => { closeModal(); try { localStorage.setItem(INTRO_KEY, '1'); } catch {  } };
-    modal.querySelector('.av-x').onclick = done; modal.querySelector('[data-act=ok]').onclick = done;
+    modal.querySelector('.av-x').onclick = done;
+    modal.querySelector('[data-act=ok]').onclick = () => { done(); setTimeout(() => document.querySelector('.hm-top-group').click(), 250); };
     modal.classList.add('is-open');
+    playIntro(modal.querySelector('.hm-intro-cal'), faces, PLUS);
   };
-  if (!introSeen && !prefs.student) setTimeout(openIntro, 400);
+  if (!prefs.student) setTimeout(openIntro, 400);
   document.addEventListener('click', (e) => {
     if (!e.target.closest || !e.target.closest('[data-reset-demo]')) return;
     e.preventDefault();
@@ -2216,7 +2347,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     : m.kind === 'gap' ? `<span class="hm-sugg-ico">${NEW_ICON}</span>` : '<span class="hm-sugg-ico"><span class="hm-how-area is-a hm-sugg-swatch"></span></span>');
   const SIDE_MAX = 5; let sideAll = false;
   const QUIET_MAX = 3; let quietAll = false;
-  const SNOOZE_ICON = '<svg class="hm-snooze-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16.5 17H21.5L16.5 22H21.5M21.9506 13C21.9833 12.6711 22 12.3375 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C12.1677 22 12.3344 21.9959 12.5 21.9877C12.6678 21.9795 12.8345 21.9671 13 21.9506M12 6V12L15.7384 13.8692" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const SNOOZE_ICON = '<svg class="hm-snooze-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 7C12.5523 7 13 7.44772 13 8V11.5858L14.2071 12.7929C14.5976 13.1834 14.5976 13.8166 14.2071 14.2071C13.8166 14.5976 13.1834 14.5976 12.7929 14.2071L11.2929 12.7071C11.1054 12.5196 11 12.2652 11 12V8C11 7.44772 11.4477 7 12 7Z"/><path d="M18.7423 15.1674L19.9573 15.8235C20.728 16.2396 21.3843 16.594 21.8403 16.9407C22.3187 17.3045 22.75 17.7893 22.75 18.5001C22.75 19.2108 22.3187 19.6956 21.8403 20.0594C21.3843 20.4061 20.728 20.7605 19.9573 21.1766L18.7423 21.8328C18.1525 22.1513 17.6488 22.4233 17.2547 22.5788C17.0514 22.659 16.8202 22.7321 16.5841 22.7472C16.3297 22.7634 16.0298 22.7131 15.7695 22.5006C15.3535 22.1609 15.237 21.6937 15.2511 21.2917C15.2644 20.9143 15.3901 20.5446 15.5199 20.2446C15.6538 19.935 15.8198 19.6381 15.9603 19.3977C16.0173 19.3003 16.0666 19.2176 16.109 19.1464C16.1827 19.0229 16.2359 18.9337 16.2731 18.8613C16.3956 18.6226 16.404 18.5352 16.4039 18.4985C16.4038 18.4612 16.3946 18.3755 16.2731 18.1389C16.2359 18.0664 16.1827 17.9773 16.109 17.8537C16.0666 17.7825 16.0173 17.6999 15.9603 17.6024C15.8198 17.362 15.6538 17.0652 15.5199 16.7555C15.3901 16.4555 15.2644 16.0858 15.2511 15.7084C15.237 15.3064 15.3535 14.8392 15.7695 14.4995C16.0298 14.287 16.3297 14.2367 16.5841 14.2529C16.8202 14.268 17.0514 14.3412 17.2547 14.4214C17.6488 14.5768 18.1525 14.8488 18.7423 15.1674Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12 3.20455C7.1424 3.20455 3.20455 7.1424 3.20455 12C3.20455 16.8576 7.1424 20.7955 12 20.7955C12.3054 20.7955 12.6069 20.7799 12.9037 20.7497C13.4406 20.6949 13.9203 21.0859 13.975 21.6228C14.0298 22.1598 13.6388 22.6394 13.1019 22.6941C12.7393 22.7311 12.3717 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 12.735 22.6761 13.4538 22.535 14.149C22.4276 14.6779 21.9118 15.0197 21.3828 14.9123C20.8539 14.8049 20.5121 14.2891 20.6195 13.7601C20.7348 13.1922 20.7955 12.6037 20.7955 12C20.7955 7.1424 16.8576 3.20455 12 3.20455Z"/></svg>';
   const renderSide = () => {
     const RANK = { reg: STRONG ? 0 : 1.5, gap: 1, a: 2 };
     const list = marks(0).filter((m) => m.kind !== 'quiet').sort((x, y) => RANK[x.kind] - RANK[y.kind] || pos(x.day) - pos(y.day) || x.from - y.from);
