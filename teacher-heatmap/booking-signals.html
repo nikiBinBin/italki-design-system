@@ -1634,6 +1634,10 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     return map;
   })();
   const show = { reg: true, gap: true, a: false, quiet: false };
+  const PREFS = 'booking-signals-prefs';
+  const prefs = (() => { try { return JSON.parse(localStorage.getItem(PREFS)) || {}; } catch { return {}; } })();
+  const savePrefs = () => { try { localStorage.setItem(PREFS, JSON.stringify(prefs)); } catch {  } };
+  Object.keys(show).forEach((k) => { if (typeof prefs.show?.[k] === 'boolean') show[k] = prefs.show[k]; });
   const LOW_A = (() => {
     const all = []; SCORE.forEach((hours, d) => hours.forEach((v, h) => all.push({ d, h, v })));
     const ranked = all.filter((x) => x.v != null).sort((a, b) => a.v - b.v); const map = SCORE.map((hours) => hours.map(() => false));
@@ -1796,6 +1800,9 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     + (!document.querySelector('[data-avail]') && toOpen().length ? '<button type="button" class="ant-btn css-14h52wa ant-btn-primary ant-btn-sm hm-open-all" data-open-all>Open all suggested times</button>' : '')
     + '</div>';
   demandSide({ offClass: 'heat-off', frames: '', onToggle: (on) => { hoverOff(); if (on) document.querySelector('.hm-top-group').click(); }, title: 'Suggested times', how: HOW, top: true, alignRight: true });
+  const mainSw = document.querySelector('.hm-top-group .ghost-switch');
+  mainSw.addEventListener('click', () => { prefs.on = mainSw.classList.contains('is-on'); savePrefs(); });
+  if (prefs.on === false && mainSw.classList.contains('is-on')) { mainSw.classList.remove('is-on'); mainSw.setAttribute('aria-checked', false); document.body.classList.add('heat-off'); }
   const pill = document.querySelector('.hm-top-group');
   pill.addEventListener('mouseenter', () => pill.querySelector('.hm-info').dispatchEvent(new MouseEvent('mouseenter')));
   const openAll = () => {
@@ -1826,6 +1833,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     const b = e.target.closest && e.target.closest('[data-mark]'); if (!b) return;
     e.stopPropagation(); const k = b.dataset.mark;
     show[k] = !show[k]; b.classList.toggle('is-on', show[k]); b.setAttribute('aria-pressed', show[k]);
+    prefs.show = { ...show }; savePrefs();
     hoverOff(); render();
   }, true);
   document.addEventListener('click', (e) => {
