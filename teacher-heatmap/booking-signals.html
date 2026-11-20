@@ -970,6 +970,7 @@ body.hm-bt-mono .hm-how-area.is-1 { border-color: rgba(13,190,130,.4); box-shado
 .hm-gap-flag { position: absolute; top: 6px; right: 6px; display: inline-flex; width: 16px; height: 16px; color: rgb(0 179 189); }
 .hm-week-note { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 6; width: max-content; white-space: nowrap; padding: 6px 12px; border-radius: 999px; background: rgb(49 49 64); color: #fff; font-size: 12px; line-height: 16px; font-weight: 600; pointer-events: none; }
 .hm-week-note[hidden] { display: none; }
+body.hm-student-view [data-avail], body.hm-student-view .event-booked-lesson, body.hm-student-view [role=event-time]:has(.event-booked-lesson), body.hm-student-view .hm-top-group, body.hm-student-view .hm-run, body.hm-student-view .hm-rec, body.hm-student-view .hm-sugg, body.hm-student-view .hm-card-rec, body.hm-student-view .hm-week-note, body.hm-student-view .hm-gridlight { display: none !important; }
 body.heat-off .hm-week-note { display: none; }
 .hm-how-check { align-items: flex-start; cursor: pointer; }
 .hm-cb-input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
@@ -1612,6 +1613,16 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   document.body.classList.add('hm-real-select', 'hm-bt-card');
   const NEW_T = new URLSearchParams(location.search).get('teacher') === 'new';
   if (NEW_T) document.querySelectorAll('[data-avail], .event-booked-lesson').forEach((n) => (n.closest('[role=event-time]') || n).remove());
+  const AVAIL_KEY = `booking-signals-avail-${NEW_T ? 'new' : 'has'}`;
+  const savedAvail = (() => { try { return JSON.parse(localStorage.getItem(AVAIL_KEY)); } catch { return null; } })();
+  if (Array.isArray(savedAvail)) {
+    document.querySelectorAll('[data-avail]').forEach((n) => n.remove());
+    savedAvail.forEach(([d, a, b]) => availBlock(d, a, b));
+  }
+  document.addEventListener('hm-schedule', () => {
+    const now = [...document.querySelectorAll('[data-avail]')].map((n) => [cols.indexOf(n.closest('.italki-day-slot')), +n.dataset.from, +n.dataset.to]);
+    try { localStorage.setItem(AVAIL_KEY, JSON.stringify(now)); } catch {  }
+  });
   const HISTORY = NEW_T ? [] : [
     [2, 21, 22, ['Anna', 'Anna', null, 'Anna']],
     [1, 8, 9, [null, 'Leo', 'Leo', null]],
@@ -1929,12 +1940,27 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   const bar = document.querySelector('.ghost-versions');
   bar.querySelectorAll('a').forEach((a) => { a.href = a.getAttribute('href') + location.search; });
   bar.insertAdjacentHTML('beforeend', (bar.querySelector('a') ? '<i class="ghost-sep"></i>' : '')
-    + `<a href="?" class="${NEW_T ? '' : 'is-on'}">Has students</a><a href="?teacher=new" class="${NEW_T ? 'is-on' : ''}">New teacher</a>`);
+    + `<a href="?" class="${NEW_T ? '' : 'is-on'}">Has students</a><a href="?teacher=new" class="${NEW_T ? 'is-on' : ''}">New teacher</a><a href="#" data-reset-demo>Reset</a>`);
+  const roleRows = [...document.querySelectorAll('.sideBar .cursor-pointer')].filter((n) => /^(Teacher|Student)$/.test(n.textContent.trim()));
+  const ACTIVE = ['role-active', 'bg-gray2', "after:absolute", 'after:left-[6px]', 'after:top-[6px]', 'after:block', 'after:h-2', 'after:w-2', 'after:rounded-100', 'after:bg-white', "after:content-['']"];
+  const setRole = (student) => {
+    roleRows.forEach((row) => {
+      const dot = row.querySelector('span'); const on = (row.textContent.trim() === 'Student') === student;
+      dot.classList.toggle('bg-gray5', !on); ACTIVE.forEach((c) => dot.classList.toggle(c, on));
+    });
+    document.body.classList.toggle('hm-student-view', student);
+    hoverOff(); cardOff();
+  };
+  roleRows.forEach((row) => row.addEventListener('click', () => { const student = row.textContent.trim() === 'Student'; setRole(student); prefs.student = student; savePrefs(); }));
+  if (prefs.student) setRole(true);
+  cols.forEach((c) => c.addEventListener('mousedown', (e) => { if (document.body.classList.contains('hm-student-view')) e.stopPropagation(); }, true));
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest || !e.target.closest('[data-reset-demo]')) return;
+    e.preventDefault();
+    try { ['booking-signals-prefs', 'booking-signals-avail-has', 'booking-signals-avail-new'].forEach((k) => localStorage.removeItem(k)); } catch {  }
+    location.reload();
+  });
   document.addEventListener('hm-schedule', () => render());
-  // Open time works as in the calendar today (Niki 2026-11-19: delete the existing way, no extra
-  // button on quiet marks): a click opens the Availability popover (EditAvailableTime) with the
-  // date and time, whether it repeats, and delete / edit icons. A one-off block is deleted at once
-  // with "Availability deleted successfully" (CA041). Sample blocks don't repeat.
   const ICO = { del: '<svg width="24" height="24" aria-hidden="true" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.8691 12C12.8691 13.6568 11.526 15 9.86914 15H4.12988C3.57772 14.9999 3.1299 14.5522 3.12988 14V5.26074H12.8691V12ZM8 1C9.08271 1.00007 9.99903 1.70723 10.3154 2.68457H13.4775C13.8917 2.68457 14.2274 3.02047 14.2275 3.43457C14.2275 3.84878 13.8918 4.18457 13.4775 4.18457H2.52148C2.10727 4.18457 1.77148 3.84878 1.77148 3.43457C1.77162 3.02047 2.10735 2.68457 2.52148 2.68457H5.68457C6.00101 1.70723 6.91726 1 8 1Z" fill="currentColor"/></svg>', edit: '<svg width="24" height="24" aria-hidden="true" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.31738 1.37112C9.64522 1.04329 10.177 1.04329 10.5049 1.37112L12.7539 3.62014C13.0817 3.94798 13.0817 4.47981 12.7539 4.80764L6.88965 10.6719C6.59964 10.9619 6.20603 11.125 5.7959 11.125H4.10449C3.49458 11.1249 3.00004 10.6305 3 10.0205V8.32913C3 7.919 3.16312 7.52538 3.45312 7.23538L9.31738 1.37112Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M2 13.625C2 13.0727 2.44772 12.625 3 12.625H13C13.5523 12.625 14 13.0727 14 13.625C14 14.1773 13.5523 14.625 13 14.625H3C2.44772 14.625 2 14.1773 2 13.625Z" fill="currentColor"/></svg>', cal: '<svg width="20" height="20" aria-hidden="true" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 1.75C16.4142 1.75 16.75 2.08579 16.75 2.5V3.25H19C20.5188 3.25 21.75 4.48122 21.75 6V10.5V16C21.75 19.1756 19.1756 21.75 16 21.75H3C2.58579 21.75 2.25 21.4142 2.25 21V10.5V6C2.25 4.48122 3.48122 3.25 5 3.25H7.25V2.5C7.25 2.08579 7.58579 1.75 8 1.75C8.41421 1.75 8.75 2.08579 8.75 2.5V3.25H15.25V2.5C15.25 2.08579 15.5858 1.75 16 1.75ZM7.25 4.75V5.5C7.25 5.91421 7.58579 6.25 8 6.25C8.41421 6.25 8.75 5.91421 8.75 5.5V4.75H15.25V5.5C15.25 5.91421 15.5858 6.25 16 6.25C16.4142 6.25 16.75 5.91421 16.75 5.5V4.75H19C19.6904 4.75 20.25 5.30964 20.25 6V9.75H3.75V6C3.75 5.30964 4.30964 4.75 5 4.75H7.25ZM3.75 11.25H20.25V16C20.25 18.3472 18.3472 20.25 16 20.25H3.75V11.25Z" fill="currentColor"/></svg>', rep: '<svg width="20" height="20" aria-hidden="true" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.4664 4.0311C17.6352 3.86233 17.7135 3.62329 17.6774 3.38735C17.6413 3.15141 17.4951 2.94674 17.2836 2.83614C13.2453 0.724615 8.14678 1.35771 4.75823 4.74626C1.35479 8.14969 0.73105 13.2782 2.87612 17.3248C3.07012 17.6908 3.52407 17.8302 3.89004 17.6362C4.25602 17.4422 4.39543 16.9883 4.20143 16.6223C2.35519 13.1394 2.8958 8.73 5.81889 5.80692C8.47 3.15581 12.3437 2.46443 15.64 3.73614L13.9143 5.4619C13.6214 5.75479 13.6214 6.22967 13.9143 6.52256C14.2072 6.81545 14.682 6.81545 14.9749 6.52256L17.4664 4.0311ZM6.53405 19.9689C6.36528 20.1377 6.28691 20.3767 6.32301 20.6126C6.3591 20.8486 6.50535 21.0533 6.71686 21.1639C10.7551 23.2754 15.8537 22.6423 19.2422 19.2537C22.6456 15.8503 23.2694 10.7218 21.1243 6.67518C20.9303 6.30921 20.4764 6.16979 20.1104 6.36379C19.7444 6.55779 19.605 7.01174 19.799 7.37771C21.6452 10.8606 21.1046 15.27 18.1815 18.1931C15.5304 20.8442 11.6567 21.5356 8.36042 20.2639L10.0862 18.5381C10.3791 18.2452 10.3791 17.7703 10.0862 17.4774C9.79328 17.1845 9.31841 17.1845 9.02551 17.4774L6.53405 19.9689Z" fill="currentColor"/></svg>' };
   const availPop = document.createElement('div');
   availPop.className = 'hm-avail-pop';
