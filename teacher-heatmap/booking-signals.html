@@ -1107,14 +1107,17 @@ body.heat-off .hm-week-note { display: none; }
 .hm-intro-row.is-inline { align-items: center; }
 .hm-intro-row.is-inline > span:last-child { flex-direction: row; align-items: baseline; gap: 8px; }  
 .hm-intro-legend-title { margin-top: 22px; font-size: 14px; line-height: 22px; font-weight: 700; color: rgb(49 49 64); }  
-.hm-intro-legend { margin-top: 18px; padding: 0 16px; border-radius: 12px; background: rgb(245 246 249); }
+.hm-intro-legend { margin-top: 18px; padding: 0 16px; border-radius: 12px; background: rgb(245 246 249); transition: background-color .15s ease; }
+.hm-intro-legend:has(.hm-intro-fold:hover) { background: rgb(236 237 242); }
+.hm-intro-fold:hover .hm-intro-chev { color: rgb(49 49 64); }
+.hm-intro-fold:focus-visible { outline: 2px solid rgb(var(--hm-g)); outline-offset: 2px; border-radius: 8px; }
 .hm-intro-legend .hm-intro-ico.is-swatch .hm-ia-swatch { background-color: #fff; }
 .hm-intro-fold { display: flex; align-items: center; gap: 12px; width: 100%; height: 48px; padding: 0; border: 0; background: none; font: inherit; font-size: 14px; color: rgb(49 49 64); cursor: pointer; text-align: left; }
 .hm-intro-swatches { display: flex; gap: 6px; }
 .hm-intro-swatches .hm-ia-row { padding: 0; }
 .hm-intro-swatches .hm-ia-swatch { width: 18px; height: 14px; background-color: #fff; }
 .hm-intro-fold-label { flex: 1; font-weight: 600; }
-.hm-intro-chev { flex: none; color: rgb(110 110 128); transition: transform .2s cubic-bezier(.25,.8,.25,1); }
+.hm-intro-chev { flex: none; color: rgb(110 110 128); transition: transform .2s cubic-bezier(.25,.8,.25,1), color .15s ease; }
 .hm-intro-legend.is-open .hm-intro-chev { transform: rotate(180deg); }
 .hm-intro-legend-rows { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .4s cubic-bezier(.4,0,.2,1); }  
 .hm-intro-legend-inner { min-height: 0; overflow: hidden; opacity: 0; transition: opacity .2s ease; }
