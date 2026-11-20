@@ -1641,7 +1641,9 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     return map;
   })();
   let wk = 0;
-  const TODAY = 3; 
+  const NOW = new Date();
+  const TODAY = NOW.getDay();
+  const dayAt = (k) => new Date(NOW.getFullYear(), NOW.getMonth(), NOW.getDate() + k);
   const pos = (d) => (d - TODAY + 7) % 7;
   const nowH = () => { const t = new Date(); return t.getHours() + t.getMinutes() / 60; };
   const pastHour = (d, h) => wk === 0 && d === TODAY && h < Math.ceil(nowH());
@@ -1668,16 +1670,18 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     });
     return out;
   };
-  const UNBOOKED = NEW_T ? [] : [[3, 9, 12], [1, 9, 12]];
-  const unbooked = (d, h) => UNBOOKED.some(([ud, a, b]) => ud === d && h >= a && h < b);
+  const QUIET_MIN = 3;
+  const UNBOOKED = NEW_T ? [] : [[3, 9, 12, 6], [1, 9, 12, 3]];
+  const unbooked = (d, h) => (UNBOOKED.find(([ud, a, b]) => ud === d && h >= a && h < b) || [])[3] || 0;
   const qRuns = () => {
     const out = [];
     cols.forEach((_, d) => {
-      let start = null;
+      let start = null; let weeks = 0;
       for (let h = 0; h <= 24; h += 1) {
-        const on = h < 24 && LOW_A[d][h] && isOpen(d, h) && unbooked(d, h);
-        if (on && start === null) start = h;
-        if (!on && start !== null) { out.push({ id: `q${d}-${start}`, kind: 'quiet', day: d, from: start, to: h }); start = null; }
+        const w = h < 24 && LOW_A[d][h] && isOpen(d, h) ? unbooked(d, h) : 0;
+        const on = w >= QUIET_MIN;
+        if (start !== null && (!on || w !== weeks)) { out.push({ id: `q${d}-${start}`, kind: 'quiet', day: d, from: start, to: h, weeks }); start = null; }
+        if (on && start === null) { start = h; weeks = w; }
       }
     });
     return out;
@@ -1688,7 +1692,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   const GAP_DOTS = (m) => `<div class="hm-card-gap"><span>New students</span><span class="hm-how-dots">${dot(m.want || 7, 'is-student')}</span>`
     + `<span>Teachers open</span><span class="hm-how-dots">${dot(m.open || 2, 'is-teacher')}</span></div>`;
   const MON3 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const weekDate = (m, k) => { const t = new Date(2026, 10, 18 + pos(m.day) - 7 * (4 - k)); return `${MON3[t.getMonth()]} ${t.getDate()}`; };  
+  const weekDate = (m, k) => { const t = dayAt(pos(m.day) - 7 * (4 - k)); return `${MON3[t.getMonth()]} ${t.getDate()}`; };  
   const CAME = (m) => {
     if (m.who.length === 1) { const k = m.wks.map((w, x) => (w ? x : -1)).filter((x) => x >= 0).pop(); return `<div class="hm-card-log"><span>Last booked</span><span>${weekDate(m, k)}</span></div>`; }
     return `<div class="hm-card-log">${m.wks.map((w, k) => (w ? `<span>${w}</span><span>${weekDate(m, k)}</span>` : '')).join('')}</div>`;
@@ -1699,12 +1703,12 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     if (!best.length) return '';
     return `<div class="hm-card-better"><b>Better times this week</b>${best.map((x) => `<span>${x.kind === 'reg' ? av(x.who[0], 'i') : x.kind === 'gap' ? NEW_ICON : ''}${DAYS[x.day]} ${DATES[x.day]} · ${hm(x.from)}-${hm(x.to)}</span>`).join('')}</div>`;
   };
-  const HEAD = { reg: (m) => (m.who.length > 1 ? "Current students' time" : `${m.who[0]}'s usual time`), gap: () => 'Few similar teachers open', a: () => 'Busy for similar teachers', quiet: () => 'Quiet for similar teachers' };
+  const HEAD = { reg: (m) => (m.who.length > 1 ? "Current students' time" : `${m.who[0]}'s usual time`), gap: () => 'Few similar teachers open', a: () => 'Busy for similar teachers', quiet: () => 'Not booked lately' };
   // Different students: say who, and that one of them may book (Niki 2026-11-19).
   // How often, said against the weekday so it reads as a habit (Niki 2026-11-19).
   const WEEKDAY = ['Sundays', 'Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', 'Saturdays'];
   const WHY = { // Frequency in the line; who and when go in the log under it.
-    reg: (m) => `${m.n} of the last 4 ${WEEKDAY[m.day]}`, gap: (m) => `${m.need} ${m.price}`, a: () => 'Teachers with your language, type and price get booked more then', quiet: (m) => `No bookings the last 4 ${WEEKDAY[m.day]}` };
+    reg: (m) => `${m.n} of the last 4 ${WEEKDAY[m.day]}`, gap: (m) => `${m.need} ${m.price}`, a: () => 'Teachers with your language, type and price get booked more then', quiet: (m) => `No bookings the last ${m.weeks} ${WEEKDAY[m.day]}` };
   const toOpen = () => marks().filter((m) => m.kind !== 'quiet');
   const place = (el, r) => { el.style.top = `calc(${(r.from / 24) * 100}% + 3px)`; el.style.height = `calc(${((r.to - r.from) / 24) * 100}% - 6px)`; };
   let marked = new Set();
@@ -1714,7 +1718,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     marked = new Set(all.flatMap((r) => Array.from({ length: r.to - r.from }, (_, k) => `${r.day}-${r.from + k}`)));
     all.forEach((r) => {
       const frame = document.createElement('div');
-      frame.className = { reg: STRONG ? 'hm-run hm-run-3' : 'hm-run hm-run-need', gap: 'hm-run hm-run-need', a: 'hm-run hm-run-a', quiet: 'hm-run hm-run-quiet' }[r.kind];
+      frame.className = { reg: 'hm-run hm-run-3', gap: 'hm-run hm-run-need', a: 'hm-run hm-run-a', quiet: 'hm-run hm-run-quiet' }[r.kind];
       frame.dataset.id = r.id;
       place(frame, r);
       // Quiet marks sit on open time, so they draw over it; the rest stay behind events.
@@ -1783,12 +1787,12 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   const HOW = () => '<div class="hm-how hm-how-v4">'
     + '<div class="hm-show-label">Worth opening</div><div class="hm-how-gap hm-why">'
     + (NEW_T ? row('reg', 'is-reg', 'Current students', 'After your first lessons', true)
-      : row('reg', 'is-reg', 'Current students', 'Booked here most weeks'))
+      : row('reg', 'is-reg', 'Current students', 'Often booked here'))
     + row('gap', 'is-need', 'Few similar teachers open', 'New students, your lesson and price')
     + row('a', 'is-a', 'Busy for similar teachers', 'Same language, type and price')
     + '</div>'
     + (NEW_T ? '' : '<div class="hm-show-label">Try a better time</div><div class="hm-how-gap hm-why">'
-      + row('quiet', 'is-quiet', 'Quiet for similar teachers', 'No bookings in 4 weeks') + '</div>')
+      + row('quiet', 'is-quiet', 'Not booked lately', 'Also quiet for similar teachers') + '</div>')
     + (!document.querySelector('[data-avail]') && toOpen().length ? '<button type="button" class="ant-btn css-14h52wa ant-btn-primary ant-btn-sm hm-open-all" data-open-all>Open all suggested times</button>' : '')
     + '</div>';
   demandSide({ offClass: 'heat-off', frames: '', onToggle: (on) => { hoverOff(); if (on) document.querySelector('.hm-top-group').click(); }, title: 'Suggested times', how: HOW, top: true, alignRight: true });
@@ -1851,7 +1855,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   note.style.top = `${scroller.offsetTop + 12}px`;
   const goWeek = (n) => {
     wk = Math.max(0, Math.min(1, n)); hoverOff();
-    const at = (k) => new Date(2026, 10, 18 + 7 * wk + k);
+    const at = (k) => dayAt(7 * wk + k);
     rangeEl.textContent = `${MON[at(0).getMonth()]} ${at(0).getDate()} - ${MON[at(6).getMonth()]} ${at(6).getDate()}, ${at(6).getFullYear()}`;
     DATES.forEach((_, d) => { const t = at(pos(d)); DATES[d] = t.getDate(); MONTHS[d] = MON[t.getMonth()]; if (dayNums[d]) dayNums[d].textContent = DATES[d]; });
     lessons.forEach((l) => { const d = cols.indexOf(l.closest('.italki-day-slot')); l.style.display = wk || pos(d) >= 4 ? 'none' : ''; });
@@ -1937,7 +1941,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     availPop.innerHTML = `<div class="hm-avail-head"><span>Availability</span><button type="button" class="hm-avail-x" aria-label="Close">×</button></div>`
       + `<div class="hm-avail-row">${ICO.cal}<span>${DAYS[d]}, ${MONTHS[d]} ${DATES[d]}, ${hm(from)} - ${hm(to)}</span></div>`
       + `<div class="hm-avail-row">${ICO.rep}<span>Doesn't repeat</span></div>`
-      + (quiet ? `<div class="hm-avail-note"><b>Quiet for similar teachers</b><span>${WHY.quiet(quiet)}</span></div>` : '')
+      + (quiet ? `<div class="hm-avail-note"><b>Not booked lately</b><span>${WHY.quiet(quiet)}</span></div>` : '')
       + `<div class="hm-avail-actions"><button type="button" data-act="del" aria-label="Delete">${ICO.del}</button><button type="button" data-act="edit" aria-label="Edit">${ICO.edit}</button></div>`;
     const r = blk.getBoundingClientRect();
     availPop.style.left = `${r.right + 8 + 284 > innerWidth - 16 ? r.left - 8 - 284 : r.right + 8}px`;
