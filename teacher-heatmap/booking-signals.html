@@ -1033,7 +1033,8 @@ body.heat-off .hm-week-note { display: none; }
 .hm-intro-hero { display: grid; place-items: center; height: 160px; border-radius: 8px; background: #ECFFF9; }
 .hm-intro-hero { position: relative; height: 200px !important; background: none !important; display: flex !important; flex-direction: column; align-items: stretch !important; border: 1px solid rgb(233 233 235); border-radius: 8px; overflow: hidden; }
 .hm-intro-hero .hm-intro-cal { flex: 1; height: auto !important; border: 0 !important; border-radius: 0 !important; }
-.hm-ia-bar { flex: none; display: flex; justify-content: flex-end; align-items: center; gap: 8px; height: 32px; padding: 0 10px; border-bottom: 1px solid rgb(233 233 235); white-space: nowrap; gap: 10px; }  
+.hm-ia-legend { display: flex; align-items: center; gap: 10px; }
+.hm-ia-bar { flex: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: 32px; padding: 0 10px; border-bottom: 1px solid rgb(233 233 235); white-space: nowrap; gap: 10px; }  
 .hm-ia-pill { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 6px 0 10px; border-radius: 999px; background: rgb(245 246 249); font-size: 10px; color: rgb(49 49 64); }
 .hm-ia-sw { position: relative; width: 22px; height: 12px; border-radius: 999px; background: rgb(73 73 89); }
 .hm-ia-sw::after { content: ''; position: absolute; right: 2px; top: 2px; width: 8px; height: 8px; border-radius: 50%; background: #fff; }
@@ -2213,7 +2214,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     const pointer = ptr.firstChild; hero.appendChild(pointer);
     const ROWS = [['reg', 'Current students'], ['gap', 'Few similar teachers open'], ['a', 'Busy for similar teachers'], ['quiet', 'Not booked lately']];
     const panel = hero.querySelector('.hm-ia-bar');
-    panel.innerHTML = ROWS.map(([k, t]) => `<div class="hm-ia-row${NEW_T && k === 'reg' ? ' is-muted' : ''}" data-k="${k}" title="${t}"><i class="hm-ia-swatch is-${k}"></i></div>`).join('');
+    panel.innerHTML = '<span class="hm-ia-pill">Suggested times<i class="hm-ia-sw"></i></span><span class="hm-ia-legend">' + ROWS.map(([k, t]) => `<div class="hm-ia-row${NEW_T && k === 'reg' ? ' is-muted' : ''}" data-k="${k}" title="${t}"><i class="hm-ia-swatch is-${k}"></i></div>`).join('') + '</span>';
     const resetLegend = () => panel.querySelectorAll('.hm-ia-row').forEach((r) => r.classList.toggle('is-on', !NEW_T ? ['reg', 'gap'].includes(r.dataset.k) : r.dataset.k === 'gap'));
     resetLegend();
     const made = [];
@@ -2244,6 +2245,8 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
         pointer.getAnimations().forEach((an) => an.cancel());
         px = cal.clientWidth - 30; py = DY + H - 20; resetLegend();
         built.filter((sc) => sc.base).forEach((sc) => run(sc.base, [{ opacity: 0 }, { opacity: 1 }], { duration: 400 }));
+        await Promise.all(built.filter((sc) => !sc.legend).map((sc) => run(sc.frame, [{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'none' }], { duration: 600, easing: SOFT })));
+        await wait(400);
         for (const sc of built) {
           if (!alive()) return;
           if (sc.legend) {
@@ -2255,8 +2258,8 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
             row.classList.add('is-on');
             await wait(500);
           }
-          await run(sc.frame, [{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'none' }], { duration: 600, easing: SOFT });
-          run(pointer, [{ opacity: 0 }, { opacity: 1 }], { duration: 200 });
+          if (sc.legend) await run(sc.frame, [{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'none' }], { duration: 600, easing: SOFT });
+          if (getComputedStyle(pointer).opacity === '0') run(pointer, [{ opacity: 0 }, { opacity: 1 }], { duration: 200 });
           await moveTo(sc.x, DY + sc.y);
           const label = sc.frame.querySelector('.hm-intro-open');
           if (label) run(label, [{ opacity: 0 }, { opacity: 1 }], { duration: 150 });
