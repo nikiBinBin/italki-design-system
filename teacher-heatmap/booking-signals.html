@@ -733,6 +733,12 @@ a:hover .css-14h52wa.ant-badge .ant-badge-count { background: rgb(255, 67, 56); 
 body.hm-bs { --hm-g: 0,179,119; --hm-g-edge: 0,179,119; --hm-g-strong: 0,179,119; }  
 body.hm-bs .hm-side-list { background: #ECFFF9; }
 body.hm-bs .hm-sugg-n { box-shadow: 0 0 0 1.5px #ECFFF9; }
+body.hm-bs .hm-side-list.is-quiet { background: rgb(245 246 249); }
+body.hm-bs .hm-side-list.is-quiet .ghost-side-row:hover { background: rgb(233 233 238); }
+.hm-snooze-icon { flex: none; color: rgb(110 110 128); }
+.hm-sugg-two { display: flex; flex-direction: column; align-items: flex-start; }
+.hm-sugg-two small { font-size: 12px; line-height: 16px; color: rgb(110 110 128); }
+body.hm-bs .hm-run-quiet.is-glow::after { box-shadow: inset 0 0 22px 4px rgba(110,110,128,.28); }
 .ghost-slot { position: absolute; inset: 2px 3px; border: 1px dashed rgb(var(--hm-g)); border-radius: 6px;
   background: rgba(13,226,152,0.04); padding: 6px 10px; transition: background-color .15s ease, border-color .15s ease, opacity .2s ease; }
 .ghost-event:hover .ghost-slot, .ghost-event.is-active .ghost-slot { background: rgb(229 248 240); border-style: solid; }  
@@ -1019,6 +1025,30 @@ body.heat-off .hm-week-note { display: none; }
 .hm-open-high { display: block; width: 100%; margin-top: 12px; padding: 10px 12px; border: 1px solid rgb(var(--hm-g-strong)); border-radius: 999px; background: #fff; color: rgb(var(--hm-g-strong)); font: inherit; font-size: 14px; line-height: 20px; font-weight: 700; cursor: pointer; }
 .hm-open-high:hover { background: rgba(var(--hm-g),.08); }
 .hm-bulk-lead { font-size: 14px; line-height: 20px; color: rgb(49 49 64); }
+.hm-intro { position: relative; width: 480px; }
+.hm-intro .av-x { z-index: 1; }
+.hm-intro-hero { display: grid; place-items: center; height: 168px; background: #ECFFF9; }
+.hm-intro-cal { display: grid; grid-template-columns: 64px 128px 64px; height: 120px; border-radius: 10px; background: #fff; box-shadow: 0 4px 16px rgba(0,0,0,.06); overflow: hidden; }
+.hm-intro-cal > span { border-left: 1px solid rgb(233 233 235); background: repeating-linear-gradient(to bottom, transparent 0 29px, rgb(240 240 244) 29px 30px); }
+.hm-intro-cal > span:first-child { border-left: 0; }
+.hm-intro-mark { position: relative; }
+.hm-intro-mark::before { content: ''; position: absolute; inset: 14px 8px; border: 1px dashed rgba(var(--hm-g-edge),.85); border-radius: 8px; background: #fff; box-shadow: inset 0 0 26px rgba(var(--hm-g),.32), inset 0 0 8px rgba(var(--hm-g),.16); }
+.hm-intro-faces { position: absolute; top: 22px; right: 16px; display: flex; }
+.hm-intro-faces i, .hm-intro-ico > i { display: block; width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid #fff; background: center/cover rgb(229 232 237); }
+.hm-intro-faces i + i { margin-left: -7px; }
+.hm-intro-open { position: absolute; left: 50%; top: 58%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgb(var(--hm-g-strong)); white-space: nowrap; }
+.hm-intro-open b { font-size: 11px; line-height: 14px; color: rgb(49 49 64); }
+.hm-intro-body { padding: 24px 32px 8px; }
+.hm-intro-title { font-size: 22px; line-height: 30px; font-weight: 700; color: rgb(49 49 64); }
+.hm-intro-lead { margin-top: 6px; font-size: 14px; line-height: 20px; color: rgb(110 110 128); }
+.hm-intro-row { display: flex; gap: 12px; align-items: flex-start; margin-top: 18px; }
+.hm-intro-row > span:last-child { display: flex; flex-direction: column; gap: 2px; font-size: 14px; line-height: 20px; color: rgb(110 110 128); }
+.hm-intro-row b { font-weight: 600; color: rgb(49 49 64); }
+.hm-intro-ico { flex: 0 0 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; background: #ECFFF9; color: rgb(var(--hm-g-strong)); }
+.hm-intro-ico > i { width: 24px; height: 24px; border: 0; }
+.hm-intro-ico .hm-card-icon { flex: none; }
+.hm-intro-note { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--ui-color-divider, #F5F6F9); font-size: 12px; line-height: 18px; color: rgb(156 156 172); }
+.hm-intro .av-foot { border-top: 0; padding: 16px 32px 24px; }
 .hm-tips .av-body { display: flex; flex-direction: column; gap: 16px; }
 .hm-tip { display: flex; flex-direction: column; gap: 2px; font-size: 14px; line-height: 20px; color: rgb(110 110 128); }
 .hm-tip b { font-weight: 600; color: rgb(49 49 64); }
@@ -2119,10 +2149,33 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     document.dispatchEvent(new Event('hm-schedule'));
     showToast(x.say);
   });
+  const INTRO_KEY = 'booking-signals-intro-seen';
+  const introSeen = (() => { try { return localStorage.getItem(INTRO_KEY) === '1'; } catch { return false; } })();
+  const openIntro = () => {
+    const row = (ico, t, d) => `<div class="hm-intro-row"><span class="hm-intro-ico">${ico}</span><span><b>${t}</b><span>${d}</span></span></div>`;
+    const faces = ['01', '06', '05'].map((f) => `<i style="background-image:url(faces/${f}.jpg)"></i>`).join('');
+    const PLUS = '<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="currentColor"/><path d="M12 7v10M7 12h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>';
+    modal.innerHTML = `<div class="av-modal hm-intro" role="dialog" aria-label="Meet Suggested times">
+      <button type="button" class="av-x" aria-label="Close">×</button>
+      <div class="hm-intro-hero" aria-hidden="true"><div class="hm-intro-cal"><span></span><span class="hm-intro-mark"><span class="hm-intro-faces">${NEW_T ? NEW_ICON : faces}</span><span class="hm-intro-open">${PLUS}<b>Open this time</b></span></span><span></span></div></div>
+      <div class="hm-intro-body">
+        <div class="hm-intro-title">Meet Suggested times</div>
+        <div class="hm-intro-lead">See which times are worth opening, and why, right on your calendar.</div>
+        ${NEW_T ? '' : row(faces.split('</i>')[0] + '</i>', 'Your current students’ times', 'Times they often book that you haven’t opened yet.')}
+        ${row(NEW_ICON, 'Where few teachers are open', 'New students look for your lesson and price then.')}
+        ${row(PLUS, 'Open it in one click', 'Hover a green frame to see why, then Open this time.')}
+        <div class="hm-intro-note">Turn it off any time with the Suggested times switch.</div>
+      </div>
+      <div class="av-foot"><button type="button" class="ant-btn css-14h52wa ant-btn-secondary" data-act="ok">Got it</button></div></div>`;
+    const done = () => { closeModal(); try { localStorage.setItem(INTRO_KEY, '1'); } catch {  } };
+    modal.querySelector('.av-x').onclick = done; modal.querySelector('[data-act=ok]').onclick = done;
+    modal.classList.add('is-open');
+  };
+  if (!introSeen && !prefs.student) setTimeout(openIntro, 400);
   document.addEventListener('click', (e) => {
     if (!e.target.closest || !e.target.closest('[data-reset-demo]')) return;
     e.preventDefault();
-    try { ['booking-signals-prefs', 'booking-signals-avail-has', 'booking-signals-avail-new'].forEach((k) => localStorage.removeItem(k)); } catch {  }
+    try { ['booking-signals-prefs', 'booking-signals-avail-has', 'booking-signals-avail-new', 'booking-signals-intro-seen'].forEach((k) => localStorage.removeItem(k)); } catch {  }
     location.reload();
   });
   document.addEventListener('hm-schedule', () => render());
@@ -2162,18 +2215,26 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     ? `<span class="hm-sugg-ico"><span class="hm-sugg-one">${av(m.who[0])}${m.who.length > 1 ? `<b class="hm-sugg-n">${m.who.length}</b>` : ''}</span></span>`
     : m.kind === 'gap' ? `<span class="hm-sugg-ico">${NEW_ICON}</span>` : '<span class="hm-sugg-ico"><span class="hm-how-area is-a hm-sugg-swatch"></span></span>');
   const SIDE_MAX = 5; let sideAll = false;
+  const QUIET_MAX = 3; let quietAll = false;
+  const SNOOZE_ICON = '<svg class="hm-snooze-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16.5 17H21.5L16.5 22H21.5M21.9506 13C21.9833 12.6711 22 12.3375 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C12.1677 22 12.3344 21.9959 12.5 21.9877C12.6678 21.9795 12.8345 21.9671 13 21.9506M12 6V12L15.7384 13.8692" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const renderSide = () => {
     const RANK = { reg: STRONG ? 0 : 1.5, gap: 1, a: 2 };
     const list = marks(0).filter((m) => m.kind !== 'quiet').sort((x, y) => RANK[x.kind] - RANK[y.kind] || pos(x.day) - pos(y.day) || x.from - y.from);
     const head = '<div class="text-sm font-bold leading-5 text-gray1 mb-2">Times worth opening</div>';
+    const qlist = show.quiet ? marks(0).filter((m) => m.kind === 'quiet').sort((x, y) => y.weeks - x.weeks || pos(x.day) - pos(y.day) || x.from - y.from) : [];
+    const quietHtml = qlist.length ? '<div class="text-sm font-bold leading-5 text-gray1 mb-2 mt-5">Try a better time</div>'
+      + `<div class="hm-side-list is-quiet">${qlist.slice(0, quietAll ? qlist.length : QUIET_MAX).map((m) => `<button type="button" class="ghost-side-row" data-go="${m.id}"><span class="hm-sugg-ico">${SNOOZE_ICON}</span><span class="hm-sugg-two"><span>${DAYS[m.day]} ${dayAt(pos(m.day)).getDate()} · ${hm(m.from)}-${hm(m.to)}</span><small>No bookings for ${m.weeks} weeks</small></span></button>`).join('')}${qlist.length > QUIET_MAX ? `<button type="button" class="hm-more" data-qmore>${quietAll ? 'Show less' : `Show more (${qlist.length - QUIET_MAX})`}</button>` : ''}</div>` : '';
     side.innerHTML = head
       + (list.length
         ? `<div class="hm-side-list">${list.slice(0, sideAll ? list.length : SIDE_MAX).map((m) => `<button type="button" class="ghost-side-row" data-go="${m.id}">${rowIcon(m)}<span>${DAYS[m.day]} ${dayAt(pos(m.day)).getDate()} · ${hm(m.from)}-${hm(m.to)}</span></button>`).join('')}${list.length > SIDE_MAX ? `<button type="button" class="hm-more" data-more>${sideAll ? 'Show less' : `Show more (${list.length - SIDE_MAX})`}</button>` : ''}</div>`
-        : `<div class="text-tiny leading-4dot5 text-gray3">${wk ? 'Suggestions cover the next 7 days.' : 'No suggestions left this week.'}</div>`);
+        : `<div class="text-tiny leading-4dot5 text-gray3">${wk ? 'Suggestions cover the next 7 days.' : 'No suggestions left this week.'}</div>`)
+      + quietHtml;
+    const qmore = side.querySelector('[data-qmore]');
+    if (qmore) qmore.addEventListener('click', () => { quietAll = !quietAll; renderSide(); });
     const more = side.querySelector('[data-more]');
     if (more) more.addEventListener('click', () => { sideAll = !sideAll; renderSide(); });
     side.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => {
-      const m = list.find((x) => x.id === b.dataset.go);
+      const m = list.concat(qlist).find((x) => x.id === b.dataset.go);
       hoverOff(); cardOff();
       if (wk) goWeek(0); 
       const rec = cols[m.day].querySelector(`.hm-rec[data-id="${m.id}"]`);
