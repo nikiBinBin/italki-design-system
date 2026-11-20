@@ -917,7 +917,8 @@ body.heat-off .hm-legend { visibility: hidden; }
 .hm-side-list .ghost-side-row:hover { background: rgba(13,190,130,.12); }
 .hm-views { display: inline-flex; align-items: center; height: 32px; margin-right: 16px; padding: 0 4px; border-radius: 999px; background: rgb(245 246 249); box-sizing: border-box; }
 .hm-views > div { position: relative; display: inline-flex; align-items: center; height: 32px; margin: 0 !important; padding: 0 14px; color: rgb(156 156 172); }
-.hm-views > div.is-on { color: rgb(49 49 64) !important; }  
+.hm-views > div.is-on { color: rgb(49 49 64) !important; }
+.hm-views > div:not(.is-on) { color: rgb(156 156 172) !important; }  
 .hm-views > div + div::before { content: ''; position: absolute; left: 0; top: 10px; bottom: 10px; width: 1px; background: rgb(229 232 237); }
 .hm-top-group { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px 0 16px; border-radius: 999px; background: rgb(245 246 249); }  
 .hm-top-group { cursor: pointer; }
@@ -970,6 +971,25 @@ body.hm-bt-mono .hm-how-area.is-1 { border-color: rgba(13,190,130,.4); box-shado
 .hm-gap-flag { position: absolute; top: 6px; right: 6px; display: inline-flex; width: 16px; height: 16px; color: rgb(0 179 189); }
 .hm-week-note { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 6; width: max-content; white-space: nowrap; padding: 6px 12px; border-radius: 999px; background: rgb(49 49 64); color: #fff; font-size: 12px; line-height: 16px; font-weight: 600; pointer-events: none; }
 .hm-week-note[hidden] { display: none; }
+.hm-month { position: relative; display: flex; flex-direction: column; min-width: 1140px; }
+.hm-month[hidden], .italki-week-view[hidden] { display: none !important; }
+.hm-month .italki-month-header { display: flex; height: 44px; }
+.hm-month .italki-month-header > div { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 500; color: rgb(110 110 128); }
+.hm-month .italki-month-content { display: flex; flex-direction: column; height: max(830px, calc(100vh - 179px)); overflow-y: auto; }
+.hm-month .italki-month-row { position: relative; flex: 1 0 max(68px, calc(max(830px, 100vh - 179px) / 5)); border-top: 1px solid #e9e9eb; }
+.hm-month .italki-row-bg { position: absolute; inset: 0; display: flex; }
+.hm-month .italki-day-bg { flex: 1; position: relative; }
+.hm-month .italki-day-bg + .italki-day-bg { box-shadow: inset 1px 0 0 0 #e5e8ed; }
+.hm-month .italki-day-bg.is-open { background: rgba(13, 226, 152, 0.1); }
+.hm-month .italki-day-bg.is-open::after { content: ''; position: absolute; top: 0; right: 0; width: 0; height: 0; border: 8px solid #0DE298; border-bottom-color: transparent; border-left-color: transparent; }
+.hm-month .italki-row-content { position: relative; }
+.hm-month .italki-month-dates, .hm-month .italki-month-events { display: flex; }
+.hm-month .italki-month-date { flex: 1; margin-top: 12px; text-align: center; font-size: 14px; font-weight: 500; line-height: 24px; color: rgb(49 49 64); cursor: pointer; }
+.hm-month .italki-month-date.is-today { color: rgb(0 179 189); }
+.hm-month .italki-month-date.is-out { color: rgb(156 156 172); }
+.hm-month .italki-month-events > div { flex: 1; min-width: 0; }
+.hm-month-lesson { display: flex; align-items: center; height: 24px; margin: 0 8px 2px; padding: 0 6px; border-radius: 4px; background: rgb(0 179 189); font-size: 12px; font-weight: 500; line-height: 24px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+body.hm-month-view .hm-top-group { display: none !important; }
 body.hm-student-view [data-avail], body.hm-student-view .event-booked-lesson, body.hm-student-view [role=event-time]:has(.event-booked-lesson), body.hm-student-view .hm-top-group, body.hm-student-view .hm-run, body.hm-student-view .hm-rec, body.hm-student-view .hm-sugg, body.hm-student-view .hm-card-rec, body.hm-student-view .hm-week-note, body.hm-student-view .hm-gridlight { display: none !important; }
 body.heat-off .hm-week-note { display: none; }
 .hm-how-check { align-items: flex-start; cursor: pointer; }
@@ -995,6 +1015,9 @@ body.heat-off .hm-week-note { display: none; }
 .hm-open-high { display: block; width: 100%; margin-top: 12px; padding: 10px 12px; border: 1px solid rgb(8 150 100); border-radius: 999px; background: #fff; color: rgb(8 150 100); font: inherit; font-size: 14px; line-height: 20px; font-weight: 700; cursor: pointer; }
 .hm-open-high:hover { background: rgba(13,190,130,.08); }
 .hm-bulk-lead { font-size: 14px; line-height: 20px; color: rgb(49 49 64); }
+.hm-tips .av-body { display: flex; flex-direction: column; gap: 16px; }
+.hm-tip { display: flex; flex-direction: column; gap: 2px; font-size: 14px; line-height: 20px; color: rgb(110 110 128); }
+.hm-tip b { font-weight: 600; color: rgb(49 49 64); }
 .hm-bulk-list { margin-top: 12px; max-height: 280px; overflow: auto; border: 1px solid rgb(233 233 235); border-radius: 12px; }
 .hm-bulk-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; font-size: 14px; line-height: 20px; color: rgb(49 49 64); cursor: pointer; }
 .hm-bulk-row + .hm-bulk-row { border-top: 1px solid rgb(240 240 244); }
@@ -1612,6 +1635,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   const { availBlock, sideBlock, place: placeBlock, range, modal, closeModal, MONTHS, demandSide, cursorGrid, openModal, openTime, showToast, label, DAYS, DATES, SCORE, hm, cols, scroller, isOpen } = window.HM;
   document.body.classList.add('hm-real-select', 'hm-bt-card');
   const NEW_T = new URLSearchParams(location.search).get('teacher') === 'new';
+  const LESSON_TPL = document.querySelector('.event-booked-lesson')?.closest('[role=event-time]')?.cloneNode(true);
   if (NEW_T) document.querySelectorAll('[data-avail], .event-booked-lesson').forEach((n) => (n.closest('[role=event-time]') || n).remove());
   const AVAIL_KEY = `booking-signals-avail-${NEW_T ? 'new' : 'has'}`;
   const savedAvail = (() => { try { return JSON.parse(localStorage.getItem(AVAIL_KEY)); } catch { return null; } })();
@@ -1649,6 +1673,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   const prefs = (() => { try { return JSON.parse(localStorage.getItem(PREFS)) || {}; } catch { return {}; } })();
   const savePrefs = () => { try { localStorage.setItem(PREFS, JSON.stringify(prefs)); } catch {  } };
   Object.keys(show).forEach((k) => { if (typeof prefs.show?.[k] === 'boolean') show[k] = prefs.show[k]; });
+  const showLater = { a: prefs.later?.a !== false };
   const LOW_A = (() => {
     const all = []; SCORE.forEach((hours, d) => hours.forEach((v, h) => all.push({ d, h, v })));
     const ranked = all.filter((x) => x.v != null).sort((a, b) => a.v - b.v); const map = SCORE.map((hours) => hours.map(() => false));
@@ -1663,22 +1688,25 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   const nowH = () => { const t = new Date(); return t.getHours() + t.getMinutes() / 60; };
   const pastHour = (d, h) => wk === 0 && d === TODAY && h < Math.ceil(nowH());
   const free = (d, from, to) => ![...Array(to - from)].some((_, i) => isOpen(d, from + i));
-  const marks = () => (wk ? [] : [
+  const marks = (w = wk) => (w ? [
+    ...(showLater.a ? aRuns(false) : []),
+    ...(show.quiet ? qRuns() : []),
+  ] : [
     ...habits.filter(([d, a, b]) => free(d, a, b)).map(([d, a, b, n, who, wks]) => ({ id: `r${d}-${a}`, kind: 'reg', day: d, from: a, to: b, who, n, wks })),
     ...GAPS.filter((g) => free(g.day, g.from, g.to)).map((g) => ({ id: `g${g.day}-${g.from}`, kind: 'gap', ...g })),
     ...(show.a ? aRuns() : []),
     ...(show.quiet ? qRuns() : []),
-  ]).filter((m) => show[m.kind]).map((m) => {
-    if (m.day !== TODAY || m.from >= Math.ceil(nowH())) return m;
+  ].filter((m) => show[m.kind])).map((m) => {
+    if (w || m.day !== TODAY || m.from >= Math.ceil(nowH())) return m;
     const from = Math.ceil(nowH()); return { ...m, from, id: `${m.id}-${from}` };
   }).filter((m) => m.from < m.to).sort((a, c) => pos(a.day) - pos(c.day) || a.from - c.from);
   const taken = (d, h) => habits.some(([rd, a, b]) => rd === d && h >= a && h < b) || GAPS.some((g) => g.day === d && h >= g.from && h < g.to);
-  const aRuns = () => {
+  const aRuns = (thisWeek = true) => {
     const out = [];
     cols.forEach((_, d) => {
       let start = null;
       for (let h = 0; h <= 24; h += 1) {
-        const on = h < 24 && TOP_A[d][h] && !isOpen(d, h) && !taken(d, h);
+        const on = h < 24 && TOP_A[d][h] && !isOpen(d, h) && !(thisWeek && taken(d, h));
         if (on && start === null) start = h;
         if (!on && start !== null) { out.push({ id: `a${d}-${start}`, kind: 'a', day: d, from: start, to: h }); start = null; }
       }
@@ -1714,17 +1742,17 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   };
   const BETTER = () => {
     const RANKQ = { reg: STRONG ? 0 : 1.5, gap: 1, a: 2 };
-    const best = marks().filter((x) => x.kind !== 'quiet').sort((x, y) => RANKQ[x.kind] - RANKQ[y.kind] || pos(x.day) - pos(y.day) || x.from - y.from).slice(0, 2);
+    const best = marks(0).filter((x) => x.kind !== 'quiet').sort((x, y) => RANKQ[x.kind] - RANKQ[y.kind] || pos(x.day) - pos(y.day) || x.from - y.from).slice(0, 2);
     if (!best.length) return '';
-    return `<div class="hm-card-better"><b>Better times this week</b>${best.map((x) => `<span>${x.kind === 'reg' ? av(x.who[0], 'i') : x.kind === 'gap' ? NEW_ICON : ''}${DAYS[x.day]} ${DATES[x.day]} · ${hm(x.from)}-${hm(x.to)}</span>`).join('')}</div>`;
+    return `<div class="hm-card-better"><b>Better times this week</b>${best.map((x) => `<span>${x.kind === 'reg' ? av(x.who[0], 'i') : x.kind === 'gap' ? NEW_ICON : ''}${DAYS[x.day]} ${dayAt(pos(x.day)).getDate()} · ${hm(x.from)}-${hm(x.to)}</span>`).join('')}</div>`;
   };
   const HEAD = { reg: (m) => (m.who.length > 1 ? "Current students' time" : `${m.who[0]}'s usual time`), gap: () => 'Few similar teachers open', a: () => 'Busy for similar teachers', quiet: () => 'Not booked lately' };
   // Different students: say who, and that one of them may book (Niki 2026-11-19).
   // How often, said against the weekday so it reads as a habit (Niki 2026-11-19).
   const WEEKDAY = ['Sundays', 'Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', 'Saturdays'];
   const WHY = { // Frequency in the line; who and when go in the log under it.
-    reg: (m) => `${m.n} of the last 4 ${WEEKDAY[m.day]}`, gap: (m) => `${m.need} ${m.price}`, a: () => 'Teachers with your language, type and price get booked more then', quiet: (m) => `No bookings the last ${m.weeks} ${WEEKDAY[m.day]}` };
-  const toOpen = () => marks().filter((m) => m.kind !== 'quiet');
+    reg: (m) => `${m.n} of the last 4 ${WEEKDAY[m.day]}`, gap: (m) => `${m.need} ${m.price}`, a: () => (wk ? 'Most weeks, teachers with your language, type and price get booked more then' : 'Teachers with your language, type and price get booked more then'), quiet: (m) => `No bookings the last ${m.weeks} ${WEEKDAY[m.day]}` };
+  const toOpen = () => marks(0).filter((m) => m.kind !== 'quiet');
   const place = (el, r) => { el.style.top = `calc(${(r.from / 24) * 100}% + 3px)`; el.style.height = `calc(${((r.to - r.from) / 24) * 100}% - 6px)`; };
   let marked = new Set();
   let render = () => {
@@ -1796,14 +1824,17 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     }
     card.classList.add('is-on');
   };
+  const isShown = (k) => (wk && k === 'a' ? showLater.a : show[k]);
   const row = (k, area, who, rule, muted) => (muted
     ? `<div class="hm-why-row is-muted"><span class="hm-how-mark"><span class="hm-how-area ${area}"></span></span><span><b>${who}</b><span>${rule}</span></span></div>`
-    : `<button type="button" class="hm-why-row hm-level-pick${show[k] ? ' is-on' : ''}" data-mark="${k}" aria-pressed="${show[k]}"><span class="hm-how-mark"><span class="hm-how-area ${area}"><i class="hm-pick-badge${k === 'quiet' ? ' is-quiet' : ''}" aria-hidden="true"></i></span></span><span><b>${who}</b><span>${rule}</span></span></button>`);
+    : `<button type="button" class="hm-why-row hm-level-pick${isShown(k) ? ' is-on' : ''}" data-mark="${k}" aria-pressed="${isShown(k)}"><span class="hm-how-mark"><span class="hm-how-area ${area}"><i class="hm-pick-badge${k === 'quiet' ? ' is-quiet' : ''}" aria-hidden="true"></i></span></span><span><b>${who}</b><span>${rule}</span></span></button>`);
   const HOW = () => '<div class="hm-how hm-how-v4">'
     + '<div class="hm-show-label">Worth opening</div><div class="hm-how-gap hm-why">'
     + (NEW_T ? row('reg', 'is-reg', 'Current students', 'After your first lessons', true)
-      : row('reg', 'is-reg', 'Current students', 'Often booked here'))
-    + row('gap', 'is-need', 'Few similar teachers open', 'New students, your lesson and price')
+      : wk ? row('reg', 'is-reg', 'Current students', 'Next 7 days only', true)
+        : row('reg', 'is-reg', 'Current students', 'Often booked here'))
+    + (wk ? row('gap', 'is-need', 'Few similar teachers open', 'Next 7 days only', true)
+      : row('gap', 'is-need', 'Few similar teachers open', 'New students, your lesson and price'))
     + row('a', 'is-a', 'Busy for similar teachers', 'Same language, type and price')
     + '</div>'
     + (NEW_T ? '' : '<div class="hm-show-label">Try a better time</div><div class="hm-how-gap hm-why">'
@@ -1843,8 +1874,8 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   document.addEventListener('click', (e) => {
     const b = e.target.closest && e.target.closest('[data-mark]'); if (!b) return;
     e.stopPropagation(); const k = b.dataset.mark;
-    show[k] = !show[k]; b.classList.toggle('is-on', show[k]); b.setAttribute('aria-pressed', show[k]);
-    prefs.show = { ...show }; savePrefs();
+    if (wk && k === 'a') { showLater.a = !showLater.a; prefs.later = { ...showLater }; } else { show[k] = !show[k]; prefs.show = { ...show }; }
+    b.classList.toggle('is-on', isShown(k)); b.setAttribute('aria-pressed', isShown(k)); savePrefs();
     hoverOff(); render();
   }, true);
   document.addEventListener('click', (e) => {
@@ -1866,12 +1897,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   const todayEl = [...document.querySelectorAll('div,span,button')].find((n) => n.children.length === 0 && n.textContent.trim() === 'Today');
   const dayNums = [...document.querySelectorAll('span.text-lg.font-bold')].filter((n) => /^\d+$/.test(n.textContent.trim())).slice(0, 7);
   const lessons = [...document.querySelectorAll('.event-booked-lesson')].map((n) => n.closest('[role=event-time]'));
-  const note = document.createElement('div');
-  note.className = 'hm-week-note';
-  note.textContent = 'Forecast covers the next 7 days';
   const host = scroller.parentElement; if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
-  host.appendChild(note);
-  note.style.top = `${scroller.offsetTop + 12}px`;
   const goWeek = (n) => {
     wk = Math.max(0, Math.min(1, n)); hoverOff();
     const at = (k) => dayAt(7 * wk + k);
@@ -1879,7 +1905,6 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     DATES.forEach((_, d) => { const t = at(pos(d)); DATES[d] = t.getDate(); MONTHS[d] = MON[t.getMonth()]; if (dayNums[d]) dayNums[d].textContent = DATES[d]; });
     lessons.forEach((l) => { const d = cols.indexOf(l.closest('.italki-day-slot')); l.style.display = wk || pos(d) >= 4 ? 'none' : ''; });
     prevEl.style.opacity = wk === 0 ? '.4' : ''; nextEl.style.opacity = wk === 1 ? '.4' : '';
-    note.hidden = !wk;
     paintPast();
     render();
   };
@@ -1940,7 +1965,10 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   const bar = document.querySelector('.ghost-versions');
   bar.querySelectorAll('a').forEach((a) => { a.href = a.getAttribute('href') + location.search; });
   bar.insertAdjacentHTML('beforeend', (bar.querySelector('a') ? '<i class="ghost-sep"></i>' : '')
-    + `<a href="?" class="${NEW_T ? '' : 'is-on'}">Has students</a><a href="?teacher=new" class="${NEW_T ? 'is-on' : ''}">New teacher</a><a href="#" data-reset-demo>Reset</a>`);
+    + `<a href="?" class="${NEW_T ? '' : 'is-on'}">Has students</a><a href="?teacher=new" class="${NEW_T ? 'is-on' : ''}">New teacher</a><a href="#" data-sim>Simulate a booking</a><a href="#" data-reset-demo>Reset</a>`);
+  // Calendar View: Teacher / Student switch like the real sidebar (Niki 2026-11-20). The student
+  // calendar shows the teacher's own lessons as a student (none in this sample), so no open time,
+  // no teaching lessons, no suggestions and no creating time. Remembered with the other switches.
   const roleRows = [...document.querySelectorAll('.sideBar .cursor-pointer')].filter((n) => /^(Teacher|Student)$/.test(n.textContent.trim()));
   const ACTIVE = ['role-active', 'bg-gray2', "after:absolute", 'after:left-[6px]', 'after:top-[6px]', 'after:block', 'after:h-2', 'after:w-2', 'after:rounded-100', 'after:bg-white', "after:content-['']"];
   const setRole = (student) => {
@@ -1953,7 +1981,140 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   };
   roleRows.forEach((row) => row.addEventListener('click', () => { const student = row.textContent.trim() === 'Student'; setRole(student); prefs.student = student; savePrefs(); }));
   if (prefs.student) setRole(true);
+  // No creating time on the student calendar.
   cols.forEach((c) => c.addEventListener('mousedown', (e) => { if (document.body.classList.contains('hm-student-view')) e.stopPropagation(); }, true));
+  // Month view (Niki 2026-11-20: Month can be switched too), rebuilt from teach-web's legacy
+  // Calendar/components/Month (Month.tsx, DateContentRow.tsx, BookedLessonMonthView.tsx): a 44px
+  // weekday header; weeks as rows of at least a fifth of the content height; the day number centred,
+  // teal on today, grey outside the month, "Nov 1" on a month's first day; a day with open time gets
+  // a light green fill and a green corner (no time chips); lessons are full-width chips coloured by
+  // status. A click on a date opens that week. Suggested times are week-only, so the switch hides
+  // here; a sidebar time goes back to Week. Days past the sample's two weeks are empty.
+  const weekView = scroller.parentElement;
+  const monthView = document.createElement('div');
+  monthView.className = 'italki-month-view hm-month'; monthView.hidden = true;
+  weekView.after(monthView);
+  let monthAt = new Date(NOW.getFullYear(), NOW.getMonth(), 1);
+  const FULLMON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const fmt = (h) => `${String(Math.floor(h)).padStart(2, '0')}:${String(Math.round((h % 1) * 60)).padStart(2, '0')}`;
+  const inSample = (t) => { const k = Math.round((t - dayAt(0)) / 864e5); return k >= 0 && k <= 13 && !document.body.classList.contains('hm-student-view') ? k : -1; };
+  const hasOpen = (t) => inSample(t) >= 0 && [...cols[t.getDay()].querySelectorAll('[data-avail]')].some((n) => +n.dataset.to > +n.dataset.from);
+  const lessonsOn = (t) => {
+    const k = inSample(t); const d = t.getDay();
+    if (k < 0 || k > 6 || pos(d) >= 4) return [];
+    return [...cols[d].querySelectorAll('.event-booked-lesson')].map((n) => {
+      const ev = n.closest('[role=event-time]'); const from = parseFloat(ev.style.top) / 100 * 24; const to = from + parseFloat(ev.style.height) / 100 * 24;
+      return { from, label: `${fmt(Math.round(from * 4) / 4)}-${fmt(Math.round(to * 4) / 4)}` };
+    }).sort((a, b) => a.from - b.from);
+  };
+  const renderMonth = () => {
+    const y = monthAt.getFullYear(); const m = monthAt.getMonth();
+    rangeEl.textContent = `${FULLMON[m]} ${y}`;
+    const first = new Date(y, m, 1); const start = new Date(y, m, 1 - first.getDay());
+    const rows = Math.ceil((first.getDay() + new Date(y, m + 1, 0).getDate()) / 7);
+    const today = dayAt(0);
+    let html = `<div class="italki-month-header">${DAYS.map((x) => `<div>${x}</div>`).join('')}</div><div class="italki-month-content">`;
+    for (let r = 0; r < rows; r += 1) {
+      const week = Array.from({ length: 7 }, (_, i) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + r * 7 + i));
+      html += `<div class="italki-month-row"><div class="italki-row-bg">${week.map((t) => `<div class="italki-day-bg${hasOpen(t) ? ' is-open' : ''}"></div>`).join('')}</div><div class="italki-row-content"><div class="italki-month-dates">${week.map((t) => `<div class="italki-month-date${+t === +today ? ' is-today' : ''}${t.getMonth() !== m ? ' is-out' : ''}" data-date="${+t}">${t.getDate() === 1 ? `${MON[t.getMonth()]} 1` : t.getDate()}</div>`).join('')}</div><div class="italki-month-events">${week.map((t) => `<div>${lessonsOn(t).map((l) => `<div class="hm-month-lesson">${l.label}</div>`).join('')}</div>`).join('')}</div></div></div>`;
+    }
+    monthView.innerHTML = `${html}</div>`;
+    monthView.querySelectorAll('[data-date]').forEach((n) => n.addEventListener('click', () => {
+      const k = Math.round((+n.dataset.date - dayAt(0)) / 864e5);
+      setView(false); prefs.month = false; savePrefs();
+      if (k >= 7 && k <= 13) goWeek(1); else goWeek(0);
+    }));
+  };
+  const setView = (month) => {
+    viewSwitch[0].classList.toggle('is-on', !month); viewSwitch[1].classList.toggle('is-on', month);
+    weekView.hidden = month; monthView.hidden = !month;
+    document.body.classList.toggle('hm-month-view', month);
+    hoverOff(); cardOff();
+    if (month) { monthAt = new Date(NOW.getFullYear(), NOW.getMonth(), 1); renderMonth(); } else goWeek(wk);
+  };
+  viewSwitch.forEach((n, i) => { n.style.cursor = 'pointer'; n.addEventListener('click', () => { setView(i === 1); prefs.month = i === 1; savePrefs(); }); });
+  [[prevEl, -1], [nextEl, 1], [todayEl, 0]].forEach(([el, step]) => el.addEventListener('click', (e) => {
+    if (!document.body.classList.contains('hm-month-view')) return;
+    e.stopImmediatePropagation();
+    monthAt = step ? new Date(monthAt.getFullYear(), monthAt.getMonth() + step, 1) : new Date(NOW.getFullYear(), NOW.getMonth(), 1);
+    renderMonth();
+  }, true));
+  document.addEventListener('click', (e) => {
+    if (document.body.classList.contains('hm-month-view') && e.target.closest && e.target.closest('.hm-sugg [data-go]')) { setView(false); prefs.month = false; savePrefs(); }
+  }, true);
+  document.addEventListener('hm-schedule', () => { if (!monthView.hidden) renderMonth(); });
+  roleRows.forEach((row) => row.addEventListener('click', () => { if (!monthView.hidden) renderMonth(); }));
+  if (prefs.month) setView(true);
+  const createBtn = [...document.querySelectorAll('span')].find((n) => n.children.length === 0 && n.textContent.trim() === 'Create').closest('button, [role=button], div');
+  createBtn.style.cursor = 'pointer';
+  createBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); hoverOff(); cardOff();
+    const d = TODAY; const from = Math.min(23, Math.ceil(nowH()));
+    openModal({ day: d, from, to: from + 1, onConfirm: () => {
+      const undo = openTime(d, from, from + 1);
+      showToast(`Availability added: ${label(d, from, from + 1)}`, undo);
+    } });
+  });
+  const tipsBtn = [...document.querySelectorAll('div')].find((n) => n.textContent.trim() === 'View Tips' && n.getAttribute('role') === 'button');
+  tipsBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const tip = (t, s2) => `<div class="hm-tip"><b>${t}</b><span>${s2}</span></div>`;
+    modal.innerHTML = `<div class="av-modal hm-tips" role="dialog" aria-label="Calendar tips">
+      <div class="av-head"><span>Calendar tips</span><button type="button" class="av-x" aria-label="Close">×</button></div>
+      <div class="av-body">${tip('Drag to open time', 'Drag over empty hours, or use Create.')}${tip('Edit or delete open time', 'Click an open time block.')}${tip('Suggested times', 'Turn it on to see times worth opening this week.')}</div>
+      <div class="av-foot"><button type="button" class="ant-btn css-14h52wa ant-btn-secondary" data-act="ok">Got it</button></div></div>`;
+    modal.querySelector('.av-x').onclick = closeModal; modal.querySelector('[data-act=ok]').onclick = closeModal;
+    modal.classList.add('is-open');
+  });
+  const putLesson = (d, a, b, who) => {
+    if (!LESSON_TPL) return;
+    cols[d].querySelectorAll('[data-avail]').forEach((n) => {
+      const f = +n.dataset.from; const t = +n.dataset.to;
+      if (t <= a || f >= b) return;
+      n.remove(); if (f < a) availBlock(d, f, a); if (t > b) availBlock(d, b, t);
+    });
+    const ev = LESSON_TPL.cloneNode(true);
+    ev.dataset.sim = '1';
+    ev.style.top = `${(a / 24) * 100}%`; ev.style.height = `${((b - a) / 24) * 100}%`; ev.style.minHeight = ev.style.height;
+    ev.querySelector('.text-tiny').textContent = `${hm(a)} - ${hm(b)}`;
+    const face = ev.querySelector('.ghost-avatar');
+    if (face && FACE[who]) Object.assign(face.style, { display: 'inline-block', width: '18px', height: '18px', borderRadius: '50%', background: `center/cover url(faces/${FACE[who]}.jpg)` });
+    cols[d].appendChild(ev);
+    lessons.push(ev);
+  };
+  const simLog = prefs.sim || [];
+  const applySim = (x) => {
+    if (x.type === 'quiet') {
+      putLesson(x.day, x.from, x.to, 'Mia');
+      const u = UNBOOKED.find(([d, a, b]) => d === x.day && x.from >= a && x.from < b);
+      if (u) { const i = UNBOOKED.indexOf(u); UNBOOKED.splice(i, 1, ...[[u[0], u[1], x.from, u[3]], [u[0], x.to, u[2], u[3]]].filter((r) => r[2] > r[1])); }
+    }
+    if (x.type === 'gap') { const i = GAPS.findIndex((g) => g.day === x.day && g.from === x.from); if (i >= 0) GAPS.splice(i, 1); }
+    if (x.type === 'reg') {
+      putLesson(x.day, x.from, x.to, x.who);
+      const i = habits.findIndex(([d, a]) => d === x.day && a === x.from);
+      if (i >= 0) habits.splice(i, 1);
+    }
+  };
+  const nextSim = () => {
+    const done = new Set(simLog.map((x) => x.type));
+    const future = (m) => !(m.day === TODAY && m.from < Math.ceil(nowH()));
+    if (!done.has('quiet')) { const q = qRuns().filter(future)[0]; if (q) return { type: 'quiet', day: q.day, from: q.from, to: q.from + 1, say: `A student booked ${label(q.day, q.from, q.from + 1)}. It is no longer marked Not booked lately.` }; }
+    if (!done.has('gap')) { const g = GAPS.find((x) => future(x) && free(x.day, x.from, x.to)); if (g) return { type: 'gap', day: g.day, from: g.from, say: `Similar teachers opened ${label(g.day, g.from, g.to)}. The gap is covered, so the mark is gone.` }; }
+    if (!done.has('reg')) { const r = marks(0).find((m) => m.kind === 'reg'); if (r) return { type: 'reg', day: r.day, from: r.from, to: r.to, who: r.who[r.who.length - 1], say: `You opened ${label(r.day, r.from, r.to)} and ${r.who[r.who.length - 1]} booked it.` }; }
+    return null;
+  };
+  simLog.forEach(applySim);
+  if (simLog.length) { document.dispatchEvent(new Event('hm-schedule')); requestAnimationFrame(() => render()); }
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest && e.target.closest('[data-sim]'); if (!b) return;
+    e.preventDefault(); hoverOff(); cardOff();
+    const x = nextSim();
+    if (!x) { showToast('Nothing left to simulate. Use Reset to start again.'); return; }
+    applySim(x); simLog.push(x); prefs.sim = simLog; savePrefs();
+    document.dispatchEvent(new Event('hm-schedule'));
+    showToast(x.say);
+  });
   document.addEventListener('click', (e) => {
     if (!e.target.closest || !e.target.closest('[data-reset-demo]')) return;
     e.preventDefault();
@@ -1999,17 +2160,18 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   const SIDE_MAX = 5; let sideAll = false;
   const renderSide = () => {
     const RANK = { reg: STRONG ? 0 : 1.5, gap: 1, a: 2 };
-    const list = marks().filter((m) => m.kind !== 'quiet').sort((x, y) => RANK[x.kind] - RANK[y.kind] || pos(x.day) - pos(y.day) || x.from - y.from);
+    const list = marks(0).filter((m) => m.kind !== 'quiet').sort((x, y) => RANK[x.kind] - RANK[y.kind] || pos(x.day) - pos(y.day) || x.from - y.from);
     const head = '<div class="text-sm font-bold leading-5 text-gray1 mb-2">Worth opening</div>';
     side.innerHTML = head
       + (list.length
-        ? `<div class="hm-side-list">${list.slice(0, sideAll ? list.length : SIDE_MAX).map((m) => `<button type="button" class="ghost-side-row" data-go="${m.id}">${rowIcon(m)}<span>${DAYS[m.day]} ${DATES[m.day]} · ${hm(m.from)}-${hm(m.to)}</span></button>`).join('')}${list.length > SIDE_MAX ? `<button type="button" class="hm-more" data-more>${sideAll ? 'Show less' : `Show more (${list.length - SIDE_MAX})`}</button>` : ''}</div>`
+        ? `<div class="hm-side-list">${list.slice(0, sideAll ? list.length : SIDE_MAX).map((m) => `<button type="button" class="ghost-side-row" data-go="${m.id}">${rowIcon(m)}<span>${DAYS[m.day]} ${dayAt(pos(m.day)).getDate()} · ${hm(m.from)}-${hm(m.to)}</span></button>`).join('')}${list.length > SIDE_MAX ? `<button type="button" class="hm-more" data-more>${sideAll ? 'Show less' : `Show more (${list.length - SIDE_MAX})`}</button>` : ''}</div>`
         : `<div class="text-tiny leading-4dot5 text-gray3">${wk ? 'Suggestions cover the next 7 days.' : 'No suggestions left this week.'}</div>`);
     const more = side.querySelector('[data-more]');
     if (more) more.addEventListener('click', () => { sideAll = !sideAll; renderSide(); });
     side.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => {
       const m = list.find((x) => x.id === b.dataset.go);
       hoverOff(); cardOff();
+      if (wk) goWeek(0); 
       const rec = cols[m.day].querySelector(`.hm-rec[data-id="${m.id}"]`);
       rec.scrollIntoView({ block: 'center', behavior: 'smooth' });
       setTimeout(() => {
