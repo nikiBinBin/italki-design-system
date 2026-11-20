@@ -1100,9 +1100,9 @@ body.heat-off .hm-week-note { display: none; }
 .hm-sugg-ico.hm-card-avatars .hm-card-avatar + .hm-card-avatar { margin-left: -8px; }
 .hm-sugg-ico .hm-card-avatar { flex-basis: 18px !important; width: 18px; height: 18px !important; font-size: 10px !important; }
 body.heat-off .hm-sugg { display: none !important; }
-.hm-run.is-glow { animation: hm-glow .9s ease-in-out 3; }  
-@keyframes hm-glow { 50% { box-shadow: inset 0 0 22px 4px rgba(var(--hm-g),.4); } }  
-@media (prefers-reduced-motion: reduce) { .hm-run.is-glow { animation: none; } }
+.hm-run.is-glow::after { content: ''; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 22px 4px rgba(var(--hm-g),.4); opacity: 0; animation: hm-glow .9s ease-in-out 3; }
+@keyframes hm-glow { 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .hm-run.is-glow::after { animation: none; } }
 body.hm-bt-card .italki-day-slot { cursor: pointer; }
 .hm-sugg .hm-side-list .ghost-side-row { border-radius: 6px; }    
 .hm-card-gap { display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 16px; row-gap: 8px; margin-top: 10px; padding: 10px 12px; border-radius: 8px; background: rgb(245 246 249); font-size: 13px; line-height: 18px; color: rgb(81 81 100); }
