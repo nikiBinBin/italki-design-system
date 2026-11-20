@@ -1027,6 +1027,8 @@ body.heat-off .hm-week-note { display: none; }
 .hm-open-high:hover { background: rgba(var(--hm-g),.08); }
 .hm-bulk-lead { font-size: 14px; line-height: 20px; color: rgb(49 49 64); }
 .hm-intro { width: 520px; }  
+.hm-intro { max-height: calc(100vh - 48px); display: flex; flex-direction: column; }
+.hm-intro .hm-intro-body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }  
 .hm-intro .av-head { border-bottom-color: var(--ui-color-divider, #F5F6F9); }
 .hm-intro .av-foot { border-top-color: var(--ui-color-divider, #F5F6F9); }  
 .hm-intro-body { padding: 24px; }
@@ -1100,8 +1102,36 @@ body.heat-off .hm-week-note { display: none; }
 .hm-intro-ico.is-swatch .hm-ia-row { padding: 0; }
 .hm-intro-ico.is-swatch .hm-ia-swatch { width: 24px; height: 20px; border-radius: 4px; }
 .hm-intro-row.is-muted { opacity: .55; }
-.hm-intro-legend-title { margin-top: 18px; font-size: 12px; line-height: 18px; font-weight: 600; color: rgb(110 110 128); }
-.hm-intro-legend-title + .hm-intro-row { margin-top: 10px; }
+.hm-intro-row.is-line { align-items: center; margin-top: 10px; }
+.hm-intro-row.is-line > span:last-child { font-size: 14px; line-height: 20px; color: rgb(49 49 64); }
+.hm-intro-row.is-inline { align-items: center; }
+.hm-intro-row.is-inline > span:last-child { flex-direction: row; align-items: baseline; gap: 8px; }  
+.hm-intro-legend-title { margin-top: 22px; font-size: 14px; line-height: 22px; font-weight: 700; color: rgb(49 49 64); }  
+.hm-intro-legend { margin-top: 18px; padding: 0 16px; border-radius: 12px; background: rgb(245 246 249); }
+.hm-intro-legend .hm-intro-ico.is-swatch .hm-ia-swatch { background-color: #fff; }
+.hm-intro-fold { display: flex; align-items: center; gap: 12px; width: 100%; height: 48px; padding: 0; border: 0; background: none; font: inherit; font-size: 14px; color: rgb(49 49 64); cursor: pointer; text-align: left; }
+.hm-intro-swatches { display: flex; gap: 6px; }
+.hm-intro-swatches .hm-ia-row { padding: 0; }
+.hm-intro-swatches .hm-ia-swatch { width: 18px; height: 14px; background-color: #fff; }
+.hm-intro-fold-label { flex: 1; font-weight: 600; }
+.hm-intro-chev { flex: none; color: rgb(110 110 128); transition: transform .2s cubic-bezier(.25,.8,.25,1); }
+.hm-intro-legend.is-open .hm-intro-chev { transform: rotate(180deg); }
+.hm-intro-legend-rows { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .4s cubic-bezier(.4,0,.2,1); }  
+.hm-intro-legend-inner { min-height: 0; overflow: hidden; opacity: 0; transition: opacity .2s ease; }
+.hm-intro-legend-rows .hm-intro-ico.is-swatch { flex: 0 0 18px; width: 18px; height: 20px; justify-content: start; place-items: center start; }
+.hm-intro-legend-rows .hm-intro-ico.is-swatch .hm-ia-swatch { width: 18px; height: 14px; }
+.hm-intro-legend-rows .hm-intro-row { gap: 16px; }
+.hm-intro-legend.is-open .hm-intro-legend-inner { opacity: 1; transition-delay: .08s; }
+.hm-intro-legend-inner > :last-child { margin-bottom: 14px; }
+@media (prefers-reduced-motion: reduce) { .hm-intro-legend-rows, .hm-intro-legend-inner { transition: none; } }
+.hm-intro-legend.is-open .hm-intro-legend-rows { grid-template-rows: 1fr; }
+.hm-intro-legend-inner > .hm-intro-row:first-child { margin-top: 0; }
+.hm-intro-legend-rows .hm-intro-row { margin-top: 14px; }
+.hm-intro-legend-rows .hm-intro-row b { display: flex; align-items: center; gap: 8px; font-size: 14px; line-height: 20px; }
+.hm-intro-tag { font-style: normal; font-size: 11px; line-height: 16px; font-weight: 600; padding: 0 6px; border-radius: 4px; background: rgb(233 233 238); color: rgb(110 110 128); }
+.hm-intro-tag.is-on { background: #ECFFF9; color: rgb(var(--hm-g-strong)); }
+.hm-intro-legend-note { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgb(233 233 238); font-size: 12px; line-height: 18px; color: rgb(110 110 128); }
+.hm-intro-legend-rows .hm-intro-row > span:last-child > span { font-size: 12px; line-height: 18px; color: rgb(110 110 128); }
 .hm-intro-legend-tip { margin-top: 14px; font-size: 12px; line-height: 18px; color: rgb(156 156 172); }
 .av-mask:has(.hm-intro) { align-items: center; padding: 24px; }
 .hm-intro-note { font-size: 12px; line-height: 18px; color: rgb(156 156 172); }
@@ -2222,7 +2252,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
       ? [[1, 14, H - 28, 'gap', GAP, 'right', true, '20:00 - 22:00'], [2, 30, H - 50, 'a', BUSY, 'left', true, '14:00 - 16:00', 'a']]
       : [[1, 14, H - 28, 'reg', REG, 'right', true, '17:00 - 18:00'], [2, 34, H - 56, 'gap', GAP, 'left', true, '20:00 - 22:00'], [0, 22, H - 40, 'quiet', QUIET, 'right', false, '09:00 - 12:00', 'quiet']];
     const ptr = document.createElement('div');
-    ptr.innerHTML = '<svg class="hm-ia-pointer" width="18" height="18" viewBox="0 0 24 24"><path d="M5 3l14 8-6.2 1.6L10 19z" fill="#313140" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+    ptr.innerHTML = '<svg class="hm-ia-pointer" width="26" height="26" viewBox="0 0 24 24"><path d="M5 3l14 8-6.2 1.6L10 19z" fill="#313140" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>';
     const hero = cal.parentElement; const DY = cal.offsetTop;
     const pointer = ptr.firstChild; hero.appendChild(pointer);
     const ROWS = [['reg', 'Current students'], ['gap', 'Few similar teachers open'], ['a', 'Busy for similar teachers'], ['quiet', 'Not booked lately']];
@@ -2306,7 +2336,8 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     loop();
   };
   const openIntro = () => {
-    const legendRow = (k, t, d, on, muted) => `<div class="hm-intro-row${muted ? ' is-muted' : ''}"><span class="hm-intro-ico is-swatch"><span class="hm-ia-row${on ? ' is-on' : ''}"><i class="hm-ia-swatch is-${k}"></i></span></span><span><b>${t}</b><span>${d}</span></span></div>`;
+    const legendRow = (k, t, d, on, muted) => `<div class="hm-intro-row${muted ? ' is-muted' : ''}"><span class="hm-intro-ico is-swatch"><span class="hm-ia-row${on ? ' is-on' : ''}"><i class="hm-ia-swatch is-${k}"></i></span></span><span><b>${t}<em class="hm-intro-tag${on ? ' is-on' : ''}">${on ? 'On by default' : 'Off by default'}</em></b><span>${d}</span></span></div>`;
+    const line = (ico, t) => `<div class="hm-intro-row is-line"><span class="hm-intro-ico">${ico}</span><span>${t}</span></div>`;
     const row = (ico, t, d) => `<div class="hm-intro-row"><span class="hm-intro-ico">${ico}</span><span><b>${t}</b><span>${d}</span></span></div>`;
     const faces = ['01', '06', '05'].map((f) => `<i style="background-image:url(faces/${f}.jpg)"></i>`).join('');
     const PLUS = '<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="currentColor"/><path d="M12 7v10M7 12h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>';
@@ -2314,18 +2345,24 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
       <div class="av-head"><span>Meet Suggested times</span><button type="button" class="av-x" aria-label="Close">×</button></div>
       <div class="av-body hm-intro-body">
         <div class="hm-intro-hero" aria-hidden="true"><div class="hm-ia-bar"></div><div class="hm-intro-cal"><span></span><span></span><span></span><span></span></div></div>
-        <div class="hm-intro-lead">See which times are worth opening, and why, right on your calendar.</div>
-        ${NEW_T ? '' : row(USERS_ICON, 'Your current students’ times', 'Times they often book that you haven’t opened yet.')}
-        ${row(NEW_ICON, 'Where few teachers are open', 'New students look for your lesson and price then.')}
-        ${row(PLUS, 'Open it in one click', 'Hover a green frame to see why, then Open this time.')}
-        <div class="hm-intro-legend-title">What each mark means</div>
-        ${legendRow('reg', 'Current students', NEW_T ? 'Shows after your first lessons.' : 'Times they often book that you haven’t opened yet.', !NEW_T, NEW_T)}
-        ${legendRow('gap', 'Few similar teachers open', 'New students look for your lesson and price then.', true)}
-        ${legendRow('a', 'Busy for similar teachers', 'Off by default. Teachers like you get booked more then.', false)}
-        ${legendRow('quiet', 'Not booked lately', 'Off by default. Open time with no bookings for weeks.', false)}
-        <div class="hm-intro-legend-tip">Click a mark in the legend to show or hide it.</div>
+        <div class="hm-intro-lead">Times worth opening, and why, right on your calendar.</div>
+        ${NEW_T ? '' : line(USERS_ICON, 'Your current students’ usual times')}
+        ${line(NEW_ICON, 'Times new students want and few teachers offer')}
+        ${line(PLUS, 'Hover to see why, click to open')}
+        <div class="hm-intro-legend">
+          <button type="button" class="hm-intro-fold" aria-expanded="false"><span class="hm-intro-swatches">${['reg', 'gap', 'a', 'quiet'].map((k) => `<span class="hm-ia-row${(NEW_T ? ['gap'] : ['reg', 'gap']).includes(k) ? ' is-on' : ''}"><i class="hm-ia-swatch is-${k}"></i></span>`).join('')}</span><span class="hm-intro-fold-label">What the marks mean</span><svg class="hm-intro-chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="hm-intro-legend-rows"><div class="hm-intro-legend-inner">
+        ${legendRow('reg', 'Current students', NEW_T ? 'Shows after your first lessons with returning students.' : 'Times your current students booked in 2 or more of the last 4 weeks that you haven’t opened yet.', !NEW_T, NEW_T)}
+        ${legendRow('gap', 'Few similar teachers open', 'New students are looking for your kind of lesson and price, and few similar teachers are open.', true)}
+        ${legendRow('a', 'Busy for similar teachers', 'Hours when teachers with your language, lesson type and price get booked most.', false)}
+        ${legendRow('quiet', 'Not booked lately', 'Your open time with no bookings for weeks, when similar teachers are quiet too. The card suggests better times.', false)}
+            <div class="hm-intro-legend-note">Darker green means a stronger reason. Suggestions cover the next 7 days; after that, only similar teachers’ weekly pattern shows. They update as bookings come in.</div>
+          </div></div>
+        </div>
       </div>
-      <div class="av-foot"><span class="hm-intro-note">Turn it off any time with the Suggested times switch.</span><button type="button" class="ant-btn css-14h52wa ant-btn-secondary" data-act="ok">Got it</button></div></div>`;
+      <div class="av-foot"><span class="hm-intro-note">Turn it off any time with the switch.</span><button type="button" class="ant-btn css-14h52wa ant-btn-secondary" data-act="ok">Got it</button></div></div>`;
+    const fold = modal.querySelector('.hm-intro-fold');
+    fold.addEventListener('click', () => { const open = fold.getAttribute('aria-expanded') !== 'true'; fold.setAttribute('aria-expanded', open); fold.parentElement.classList.toggle('is-open', open); });
     const done = () => { closeModal(); try { localStorage.setItem(INTRO_KEY, '1'); } catch {  } };
     modal.querySelector('.av-x').onclick = done;
     modal.querySelector('[data-act=ok]').onclick = () => { done(); setTimeout(() => document.querySelector('.hm-top-group').click(), 250); };
