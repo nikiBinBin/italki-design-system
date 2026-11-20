@@ -1620,6 +1620,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   ];
   const FACE = { Anna: '01', Leo: '06', Mia: '05' };
   const av = (n, tag = 'span') => `<${tag} class="hm-card-avatar" style="background-image:url(faces/${FACE[n]}.jpg)"></${tag}>`;
+  const STRONG = HISTORY.flatMap((r) => r[3]).filter(Boolean).length >= 8;
   const habits = HISTORY.map(([d, a, b, wks]) => [d, a, b, wks.filter(Boolean).length, [...new Set(wks.filter(Boolean))], wks]).filter((r) => r[3] >= 2);
   const GAPS = [
     { day: 6, from: 9, to: 11, need: "Kids' English", price: 'under $15' },
@@ -1693,12 +1694,12 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     return `<div class="hm-card-log">${m.wks.map((w, k) => (w ? `<span>${w}</span><span>${weekDate(m, k)}</span>` : '')).join('')}</div>`;
   };
   const BETTER = () => {
-    const RANKQ = { reg: 0, gap: 1, a: 2 };
+    const RANKQ = { reg: STRONG ? 0 : 1.5, gap: 1, a: 2 };
     const best = marks().filter((x) => x.kind !== 'quiet').sort((x, y) => RANKQ[x.kind] - RANKQ[y.kind] || pos(x.day) - pos(y.day) || x.from - y.from).slice(0, 2);
     if (!best.length) return '';
     return `<div class="hm-card-better"><b>Better times this week</b>${best.map((x) => `<span>${x.kind === 'reg' ? av(x.who[0], 'i') : x.kind === 'gap' ? NEW_ICON : ''}${DAYS[x.day]} ${DATES[x.day]} · ${hm(x.from)}-${hm(x.to)}</span>`).join('')}</div>`;
   };
-  const HEAD = { reg: (m) => (m.who.length > 1 ? "Current students' time" : `${m.who[0]}'s usual time`), gap: () => 'New students need teachers', a: () => 'Busy for similar teachers', quiet: () => 'Quiet for similar teachers' };
+  const HEAD = { reg: (m) => (m.who.length > 1 ? "Current students' time" : `${m.who[0]}'s usual time`), gap: () => 'Few similar teachers open', a: () => 'Busy for similar teachers', quiet: () => 'Quiet for similar teachers' };
   // Different students: say who, and that one of them may book (Niki 2026-11-19).
   // How often, said against the weekday so it reads as a habit (Niki 2026-11-19).
   const WEEKDAY = ['Sundays', 'Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', 'Saturdays'];
@@ -1713,7 +1714,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     marked = new Set(all.flatMap((r) => Array.from({ length: r.to - r.from }, (_, k) => `${r.day}-${r.from + k}`)));
     all.forEach((r) => {
       const frame = document.createElement('div');
-      frame.className = { reg: 'hm-run hm-run-3', gap: 'hm-run hm-run-need', a: 'hm-run hm-run-a', quiet: 'hm-run hm-run-quiet' }[r.kind];
+      frame.className = { reg: STRONG ? 'hm-run hm-run-3' : 'hm-run hm-run-need', gap: 'hm-run hm-run-need', a: 'hm-run hm-run-a', quiet: 'hm-run hm-run-quiet' }[r.kind];
       frame.dataset.id = r.id;
       place(frame, r);
       // Quiet marks sit on open time, so they draw over it; the rest stay behind events.
@@ -1783,7 +1784,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     + '<div class="hm-show-label">Worth opening</div><div class="hm-how-gap hm-why">'
     + (NEW_T ? row('reg', 'is-reg', 'Current students', 'After your first lessons', true)
       : row('reg', 'is-reg', 'Current students', 'Booked here most weeks'))
-    + row('gap', 'is-need', 'New students need teachers', 'For your lesson and price')
+    + row('gap', 'is-need', 'Few similar teachers open', 'New students, your lesson and price')
     + row('a', 'is-a', 'Busy for similar teachers', 'Same language, type and price')
     + '</div>'
     + (NEW_T ? '' : '<div class="hm-show-label">Try a better time</div><div class="hm-how-gap hm-why">'
@@ -1959,7 +1960,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     : m.kind === 'gap' ? `<span class="hm-sugg-ico">${NEW_ICON}</span>` : '<span class="hm-sugg-ico"><span class="hm-how-area is-a hm-sugg-swatch"></span></span>');
   const SIDE_MAX = 5; let sideAll = false;
   const renderSide = () => {
-    const RANK = { reg: 0, gap: 1, a: 2 };
+    const RANK = { reg: STRONG ? 0 : 1.5, gap: 1, a: 2 };
     const list = marks().filter((m) => m.kind !== 'quiet').sort((x, y) => RANK[x.kind] - RANK[y.kind] || pos(x.day) - pos(y.day) || x.from - y.from);
     const head = '<div class="text-sm font-bold leading-5 text-gray1 mb-2">Worth opening</div>';
     side.innerHTML = head
