@@ -1037,7 +1037,12 @@ body.heat-off .hm-week-note { display: none; }
 .hm-ia-bar { flex: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: 32px; padding: 0 10px; border-bottom: 1px solid rgb(233 233 235); white-space: nowrap; gap: 10px; }  
 .hm-ia-pill { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 6px 0 10px; border-radius: 999px; background: rgb(245 246 249); font-size: 10px; color: rgb(49 49 64); }
 .hm-ia-sw { position: relative; width: 22px; height: 12px; border-radius: 999px; background: rgb(73 73 89); }
-.hm-ia-sw::after { content: ''; position: absolute; right: 2px; top: 2px; width: 8px; height: 8px; border-radius: 50%; background: #fff; }
+.hm-ia-sw { transition: background-color .2s ease; }
+.hm-ia-sw::after { content: ''; position: absolute; right: 2px; top: 2px; width: 8px; height: 8px; border-radius: 50%; background: #fff; transition: transform .2s cubic-bezier(.25,.8,.25,1); }
+.hm-ia-sw.is-off { background: rgb(196 196 207); }
+.hm-ia-sw.is-off::after { transform: translateX(-10px); }
+.hm-ia-legend { transition: opacity .2s ease; }
+.hm-ia-bar.is-off .hm-ia-legend { opacity: .35; }
 .hm-ia-panel { position: absolute; right: 10px; top: 40px; z-index: 5; width: 186px; padding: 6px; border-radius: 8px; background: #fff; box-shadow: 0 6px 18px rgba(0,0,0,.14); opacity: 0; }
 .hm-ia-row { display: flex; align-items: center; gap: 4px; padding: 2px 0; border-radius: 5px; font-size: 9px; line-height: 14px; font-weight: 600; color: rgb(156 156 172); }
 .hm-ia-row.is-on { color: rgb(49 49 64); }
@@ -1052,7 +1057,7 @@ body.heat-off .hm-week-note { display: none; }
 .hm-intro-cal > span { border-left: 1px solid rgb(233 233 235); background: repeating-linear-gradient(to bottom, transparent 0 34px, rgb(240 240 244) 34px 35px); }
 .hm-intro-cal > span:first-child { border-left: 0; }
 .hm-ia-frame, .hm-ia-avail { position: absolute; border-radius: 8px; box-sizing: border-box; }
-.hm-ia-frame { border: 1px dashed rgba(var(--hm-g-edge),.85); background: #fff; box-shadow: inset 0 0 26px rgba(var(--hm-g),.32), inset 0 0 8px rgba(var(--hm-g),.16); }
+.hm-ia-frame { border: 1px dashed rgba(var(--hm-g-edge),.85); background: transparent; box-shadow: inset 0 0 26px rgba(var(--hm-g),.32), inset 0 0 8px rgba(var(--hm-g),.16); }
 .hm-ia-avail { padding: 6px 8px; background: rgba(13,226,152,.12); font-size: 10px; line-height: 14px; color: rgb(110 110 128); }
 .hm-ia-frame .hm-intro-open { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgb(var(--hm-g-strong)); white-space: nowrap; }
 .hm-ia-frame .hm-intro-open svg { width: 20px; height: 20px; }
@@ -2243,7 +2248,14 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
       while (alive()) {
         made.forEach((el) => el.getAnimations().forEach((an) => an.cancel()));
         pointer.getAnimations().forEach((an) => an.cancel());
-        px = cal.clientWidth - 30; py = DY + H - 20; resetLegend();
+        resetLegend();
+        const sw = hero.querySelector('.hm-ia-sw'); const swOn = (on) => { sw.classList.toggle('is-off', !on); panel.classList.toggle('is-off', !on); };
+        const swX = sw.offsetLeft + sw.offsetWidth / 2 - 3; const swY = sw.offsetTop + sw.offsetHeight / 2 - 3;
+        const tap = () => run(pointer, [{ transform: `translate(${px}px, ${py}px)` }, { transform: `translate(${px}px, ${py}px) scale(.88)` }, { transform: `translate(${px}px, ${py}px)` }], { duration: 160 });
+        swOn(false);
+        if (getComputedStyle(pointer).opacity === '0') { px = swX + 60; py = swY + 40; run(pointer, [{ opacity: 0 }, { opacity: 1 }], { duration: 200 }); }
+        await moveTo(swX, swY, 500);
+        await tap(); swOn(true);
         built.filter((sc) => sc.base).forEach((sc) => run(sc.base, [{ opacity: 0 }, { opacity: 1 }], { duration: 400 }));
         await Promise.all(built.filter((sc) => !sc.legend).map((sc) => run(sc.frame, [{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'none' }], { duration: 600, easing: SOFT })));
         await wait(400);
@@ -2277,10 +2289,10 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
           }
           await wait(500);
         }
-        run(pointer, [{ opacity: 1 }, { opacity: 0 }], { duration: 250 });
-        await wait(900);
+        await moveTo(swX, swY);
+        await tap(); swOn(false);
         await Promise.all(made.filter((el) => getComputedStyle(el).opacity !== '0').map((el) => run(el, [{ opacity: getComputedStyle(el).opacity }, { opacity: 0 }], { duration: 400, easing: 'ease-in' })));
-        await wait(400);
+        await wait(700);
       }
     };
     loop();
