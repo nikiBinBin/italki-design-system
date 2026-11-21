@@ -1,0 +1,44 @@
+# The site is published from a filtered copy of main, not from main itself: the
+# repository is public and holds working documents that the site has no reason to
+# serve. Everything the catalog fetches stays; the notes, the intakes and the agent
+# instructions do not. .git and .github are dropped by upload-pages-artifact itself.
+#
+# To go back to serving main as it stands:
+#   gh api -X PUT repos/OWNER/REPO/pages -f build_type=legacy
+name: pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Keep only what the site serves
+        run: |
+          rm -rf .claude docs/intakes maintenance/scripts
+          rm -f AGENTS.md CLAUDE.md README.md docs/EXECUTION.md docs/PATTERNS.md
+          test -f index.html && test -f CNAME && test -d Assets
+          test -f docs/COMPONENTS.md && test -f docs/DESIGN.md
+          test -f teacher-browse/v12.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deploy
+        uses: actions/deploy-pages@v4
