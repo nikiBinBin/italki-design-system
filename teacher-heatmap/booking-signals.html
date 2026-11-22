@@ -890,6 +890,12 @@ html:has(.av-mask.is-open), body:has(.av-mask.is-open) { overflow: hidden; }
 .hm-rec-open { position: absolute; right: 10px; bottom: 8px; padding: 0; border: 0; background: none; font: inherit; font-size: 12px; line-height: 18px; font-weight: 700; color: rgb(49 49 64); cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .15s ease; }
 .hm-rec-open:hover { text-decoration: underline; }
 .hm-rec.is-hover .hm-rec-open { opacity: 1; pointer-events: auto; }
+/* Press: frame and hover tint sink 2%, the plus a little more; 120ms, back on release. */
+.hm-run:not(.hm-run-1), .hm-rec { transition: transform .12s cubic-bezier(.25,.8,.25,1), background-color .12s ease; }
+body .hm-run.is-pressed, .hm-rec.is-pressed { transform: scale(.97); }
+.hm-rec.is-pressed { background: rgba(var(--hm-g),.12); }
+.hm-rec.is-pressed .hm-rec-open.is-center svg { transform: scale(.88); }
+@media (prefers-reduced-motion: reduce) { .hm-run, .hm-rec { transition: none; } body .hm-run.is-pressed, .hm-rec.is-pressed { transform: none; } }
 .hm-rec-open.is-center { left: 50%; top: 50%; right: auto; bottom: auto; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 8px; white-space: nowrap; }
 /* Green plus that grows a little on hover (Niki 2026-11-19). */
 .hm-rec-open.is-center svg { color: rgb(var(--hm-g-strong)); transition: transform .15s ease; }
@@ -2235,6 +2241,13 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
       hit.className = 'hm-rec';
       Object.assign(hit.dataset, { day: r.day, from: r.from, to: r.to, id: r.id });
       hit.innerHTML = r.kind === 'quiet' ? '' : '<button type="button" class="hm-rec-open is-center" role="event-time"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="currentColor"/><path d="M12 7v10M7 12h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span>Open this time</span></button>';
+      // Press (Niki 2026-11-22): the frame and its button sink together while held.
+      if (r.kind !== 'quiet') {
+        const btn = hit.querySelector('.hm-rec-open');
+        const press = (on) => { frame.classList.toggle('is-pressed', on); hit.classList.toggle('is-pressed', on); };
+        btn.addEventListener('pointerdown', () => press(true));
+        ['pointerup', 'pointerleave', 'pointercancel'].forEach((t) => btn.addEventListener(t, () => press(false)));
+      }
       if (r.kind !== 'quiet') hit.querySelector('.hm-rec-open').addEventListener('click', (e) => {
         e.stopPropagation(); sticky = null; hoverOff(); cardOff();
         openModal({ day: r.day, from: r.from, to: r.to, onConfirm: () => {
@@ -2343,10 +2356,12 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
   // Turning it on opens the panel too, so teachers find the marks can be picked (Niki 2026-11-19).
   demandSide({ offClass: 'heat-off', frames: '', onToggle: (on) => { hoverOff(); if (on) document.querySelector('.hm-top-group').click(); }, title: 'Suggested times', how: HOW, top: true, alignRight: true });
 
-  // The main switch remembers its state too; restored without opening the panel.
+  // The main switch remembers its state too; restored without opening the panel. Off until the
+  // teacher turns it on (Niki 2026-11-22): the intro's Got it opens the panel beside the switch, and
+  // the teacher switches it on there.
   const mainSw = document.querySelector('.hm-top-group .ghost-switch');
   mainSw.addEventListener('click', () => { prefs.on = mainSw.classList.contains('is-on'); savePrefs(); });
-  if (prefs.on === false && mainSw.classList.contains('is-on')) { mainSw.classList.remove('is-on'); mainSw.setAttribute('aria-checked', false); document.body.classList.add('heat-off'); }
+  if (prefs.on !== true && mainSw.classList.contains('is-on')) { mainSw.classList.remove('is-on'); mainSw.setAttribute('aria-checked', false); document.body.classList.add('heat-off'); }
   // Hovering anywhere on the pill opens the panel, not only the help icon (Niki 2026-11-19).
   const pill = document.querySelector('.hm-top-group');
   // Same as hovering the help icon: opens, and closes again once the pointer leaves pill and panel.
@@ -2808,7 +2823,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
           </div></div>
         </div>
       </div>
-      <div class="av-foot"><span class="hm-intro-note">Turn it off any time with the switch.</span><button type="button" class="ant-btn css-14h52wa ant-btn-secondary" data-act="ok">Got it</button></div></div>`;
+      <div class="av-foot"><span class="hm-intro-note">Turn it on with the switch at the top.</span><button type="button" class="ant-btn css-14h52wa ant-btn-secondary" data-act="ok">Got it</button></div></div>`;
     const fold = modal.querySelector('.hm-intro-fold');
     fold.addEventListener('click', () => { const open = fold.getAttribute('aria-expanded') !== 'true'; fold.setAttribute('aria-expanded', open); fold.parentElement.classList.toggle('is-open', open); });
     const done = () => { closeModal(); try { localStorage.setItem(INTRO_KEY, '1'); } catch { /* storage blocked */ } };
