@@ -2644,16 +2644,24 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
       Object.assign(c.style, { top: `${Math.max(8, top)}px`, left: side === 'right' ? `${(d + 1) * W + 4}px` : `${d * W - 204 - 4}px` });
       return { frame, result, card: c, base, open, legend, x: d * W + W / 2 - 2, y: top + h / 2 - 4 };
     };
-    const built = scenes.map(build);
+    let built = scenes.map(build);
     if (reduced) { const f = built[0]; f.frame.style.opacity = 1; f.card.style.opacity = 1; return; }
     const alive = () => cal.isConnected && modal.classList.contains('is-open');
-    const run = (el, frames, opts) => el.animate(frames, { fill: 'forwards', ...opts }).finished.catch(() => {});
+    // persist(): filling animations the browser auto-removes as 'replaced' could still leave their end
+    // state behind after the loop's reset, so the opened blocks came back between loops (Niki
+    // 2026-11-22: an extra frame with three green blocks). Kept, every one is cancelled at the reset.
+    const run = (el, frames, opts) => { const an = el.animate(frames, { fill: 'forwards', ...opts }); an.persist(); return an.finished.catch(() => {}); };
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     let px = cal.clientWidth - 30; let py = DY + H - 20;
     const moveTo = (x, y, dur = 700) => { const from = `translate(${px}px, ${py}px)`; px = x; py = y; return run(pointer, [{ transform: from }, { transform: `translate(${x}px, ${y}px)` }], { duration: dur, easing: SOFT }); };
     const loop = async () => {
       while (alive()) {
-        made.forEach((el) => el.getAnimations().forEach((an) => an.cancel()));
+        // A fresh set of blocks, frames and cards every loop (Niki 2026-11-22: from the second loop on an
+        // extra frame showed the opened blocks, labels flashed and an old card sat on top). Chrome kept
+        // painting the end state of animations already cancelled on reused elements; new elements
+        // carry nothing over.
+        made.splice(0).forEach((el) => { el.getAnimations().forEach((an) => an.cancel()); el.remove(); });
+        built = scenes.map(build);
         pointer.getAnimations().forEach((an) => an.cancel());
         resetLegend();
         const sw = hero.querySelector('.hm-ia-sw'); const swOn = (on) => { sw.classList.toggle('is-off', !on); panel.classList.toggle('is-off', !on); };
@@ -2663,6 +2671,9 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
         if (getComputedStyle(pointer).opacity === '0') { px = swX + 60; py = swY + 40; run(pointer, [{ opacity: 0 }, { opacity: 1 }], { duration: 200 }); }
         await moveTo(swX, swY, 500);
         await tap(); swOn(true);
+        // Each loop starts clean: labels left visible by the last loop would flash on the next hover
+        // (Niki 2026-11-22: icon和文字会闪一下).
+        built.forEach((sc) => sc.frame.querySelectorAll('.hm-intro-open, .hm-intro-open svg').forEach((n) => n.getAnimations().forEach((x) => x.cancel())));
         built.filter((sc) => sc.base).forEach((sc) => run(sc.base, [{ opacity: 0 }, { opacity: 1 }], { duration: 400 }));
         await Promise.all(built.filter((sc) => !sc.legend).map((sc) => run(sc.frame, [{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'none' }], { duration: 600, easing: SOFT })));
         await wait(400);
@@ -2681,7 +2692,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
           if (getComputedStyle(pointer).opacity === '0') run(pointer, [{ opacity: 0 }, { opacity: 1 }], { duration: 200 });
           await moveTo(sc.x, DY + sc.y);
           const label = sc.frame.querySelector('.hm-intro-open');
-          if (label) run(label, [{ opacity: 0 }, { opacity: 1 }], { duration: 150 });
+          if (label) run(label, [{ opacity: getComputedStyle(label).opacity }, { opacity: 1 }], { duration: 150 });
           await run(sc.card, [{ opacity: 0, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }], { duration: 300, easing: SOFT });
           await wait(1400);
           if (sc.open) {
