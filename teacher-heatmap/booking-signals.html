@@ -1157,6 +1157,7 @@ body.heat-off .hm-week-note { display: none; }
 
 /* Layers as on the calendar: open time and frames below, the reason card above them, the pointer on top (Niki 2026-11-20). */
 .hm-ia-avail { z-index: 1; }
+.hm-ia-click { position: absolute; z-index: 7; width: 36px; height: 36px; border-radius: 50%; background: rgba(49,49,64,.22); pointer-events: none; opacity: 0; }
 .hm-ia-frame { z-index: 2; }
 .hm-ia-card { z-index: 3; }
 .hm-ia-pointer { z-index: 4; }
@@ -2684,11 +2685,29 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
           await run(sc.card, [{ opacity: 0, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }], { duration: 300, easing: SOFT });
           await wait(1400);
           if (sc.open) {
-            run(pointer, [{ transform: `translate(${px}px, ${py}px)` }, { transform: `translate(${px}px, ${py}px) scale(.88)` }, { transform: `translate(${px}px, ${py}px)` }], { duration: 160 });
-            if (label) run(label.querySelector('svg'), [{ transform: 'none' }, { transform: 'scale(.85)' }, { transform: 'none' }], { duration: 160 });
-            await wait(200);
+            // A real press (Niki 2026-11-22: 鼠标也要表现出按下的感觉): the pointer dips and holds a beat,
+            // and a soft ring spreads from its tip.
+            run(pointer, [{ transform: `translate(${px}px, ${py}px)` }, { transform: `translate(${px}px, ${py + 1}px) scale(.78)`, offset: .35 }, { transform: `translate(${px}px, ${py + 1}px) scale(.78)`, offset: .6 }, { transform: `translate(${px}px, ${py}px)` }], { duration: 260, easing: 'ease-out' });
+            { const ring = document.createElement('i'); ring.className = 'hm-ia-click';
+              Object.assign(ring.style, { left: `${px}px`, top: `${py}px` }); pointer.parentElement.insertBefore(ring, pointer);
+              run(ring, [{ opacity: .55, transform: 'translate(-50%, -50%) scale(.3)' }, { opacity: 0, transform: 'translate(-50%, -50%) scale(1)' }], { duration: 480, easing: SOFT }).then(() => ring.remove()); }
+            if (label) run(label.querySelector('svg'), [{ transform: 'none' }, { transform: 'scale(.85)', offset: .4 }, { transform: 'scale(.85)', offset: .6 }, { transform: 'none' }], { duration: 260 });
+            await wait(240);
+            // The plus swells and fades as the block comes out from under it, so the click visibly
+            // becomes the block (Niki 2026-11-22: 加号放大变浅色). A copy of the plus leaves the frame,
+            // so it stays on top while the frame fades.
+            if (label) {
+              const svg = label.querySelector('svg'); const a = svg.getBoundingClientRect(); const c = cal.getBoundingClientRect(); const k = c.width / cal.offsetWidth || 1; // rects are in zoomed px
+              const ghost = svg.cloneNode(true);
+              Object.assign(ghost.style, { position: 'absolute', left: `${(a.left - c.left) / k}px`, top: `${(a.top - c.top) / k}px`, width: `${a.width / k}px`, height: `${a.height / k}px`, zIndex: 5, pointerEvents: 'none', color: getComputedStyle(svg).color });
+              cal.appendChild(ghost);
+              run(ghost, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(2.2)' }], { duration: 300, easing: SOFT }).then(() => ghost.remove());
+            }
             run(sc.card, [{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: 'ease-in' });
             run(sc.frame, [{ opacity: 1 }, { opacity: 0 }], { duration: 300, easing: 'ease-in' });
+            // One step at a time (Niki 2026-11-22: 动画不要有重叠感): press, then the suggestion dissolves,
+            // then the block arrives.
+            await wait(300);
             // The opened block grows out of the middle of the slot (Niki 2026-11-22: the height grow was not
             // smooth; fade + uniform scale from the centre, where the plus was clicked).
             sc.result.style.transformOrigin = 'center'; // from the middle of the slot, where the plus is (Niki 2026-11-22)
