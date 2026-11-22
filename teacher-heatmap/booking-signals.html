@@ -816,10 +816,19 @@ body.ghosts-off .ghost-event { display: none !important; }  /* the calendar's Ta
 .ghost-pop p { margin: 0; }
 .ghost-pop .ant-btn { min-width: 0; }
 
-.ghost-toast { position: fixed; z-index: 1001; left: 50%; top: 84px; transform: translate(-50%, -8px); padding: 10px 16px; border-radius: 8px;
-  background: rgb(49 49 64); color: #fff; font-size: 14px; line-height: 20px; opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease; }
-.ghost-toast.is-open { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
-.ghost-toast button { margin-left: 12px; border: 0; background: none; color: #fff; font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
+/* panda message (antd 5 tokens from @italki/panda seed): top 8px + 8px notice padding, content
+   padding 14px 12px, radius LG 10, boxShadow, icon 16px + 8px, text 14/22 colorText. Enters like
+   MessageMoveIn: from -100% with opacity, 300ms ease-in-out-circ. */
+.ghost-toast { position: fixed; z-index: 1010; left: 0; right: 0; top: 16px; display: flex; justify-content: center; pointer-events: none;
+  opacity: 0; transform: translateY(-100%); transition: opacity .3s cubic-bezier(.78,.14,.15,.86), transform .3s cubic-bezier(.78,.14,.15,.86); }
+.ghost-toast.is-open { opacity: 1; transform: none; }
+.ghost-toast-card { display: inline-flex; align-items: center; padding: 14px 12px; border-radius: 10px; background: #fff; pointer-events: auto;
+  box-shadow: 0 6px 16px 0 rgba(0,0,0,.08), 0 3px 6px -4px rgba(0,0,0,.12), 0 9px 28px 8px rgba(0,0,0,.05);
+  color: rgba(0,0,0,.88); font-size: 14px; line-height: 22px; }
+.ghost-toast:not(.is-open) .ghost-toast-card { pointer-events: none; }
+.ghost-toast-icon { flex: none; margin-right: 8px; }
+.ghost-toast button { margin-left: 12px; border: 0; padding: 0; background: none; color: rgb(49 49 64); font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.ghost-toast button:hover { color: #000; }
 
 .ghost-note { position: fixed; z-index: 999; right: 16px; bottom: 56px; max-width: 200px; padding: 8px 10px; border-radius: 8px;
   background: rgb(255 248 220); color: rgb(81 81 100); font-size: 12px; line-height: 16px; }
@@ -866,10 +875,17 @@ body.ghosts-off .hm-pixels, body.ghosts-off .hm-card, body.ghosts-off .hm-cursor
 .hm-run-1 { border-color: rgba(var(--hm-g),.35); box-shadow: inset 0 0 14px rgba(var(--hm-g),.10); }
 .hm-run-2 { border-color: rgba(var(--hm-g),.55); box-shadow: inset 0 0 22px rgba(var(--hm-g),.22), inset 0 0 6px rgba(var(--hm-g),.10); }
 .hm-run-3 { border-color: rgba(var(--hm-g-edge),.85); box-shadow: inset 0 0 32px rgba(var(--hm-g),.42), inset 0 0 10px rgba(var(--hm-g),.22); }
+body .hm-run.hm-run-3.is-later { border-color: rgba(var(--hm-g-edge),.6); box-shadow: inset 0 0 26px rgba(var(--hm-g),.24), inset 0 0 8px rgba(var(--hm-g),.12); }  /* later weeks, less certain (Niki 2026-11-22) */
 .hm-run-1 { opacity: 0; transition: opacity .35s ease; }
 .hm-run-1.is-hover { opacity: 1; transition-duration: .15s; }
 body.heat-off .hm-run, body.ghosts-off .hm-run { display: none; }
 /* Recommended runs: a hover target over the frame, "+ Open this time" bottom-right, a card. */
+/* The capture froze the page at its 1289px window (main 1219px inline), so shorter windows scrolled the
+   whole page and the top bar went with it. The real calendar fills the window under its 70px bar. */
+#teacher-calendar-main { height: calc(100vh - 70px) !important; }
+/* A modal (the new-feature intro, Set availability) holds the page still behind it (Niki 2026-11-22). */
+html:has(.av-mask.is-open), body:has(.av-mask.is-open) { overflow: hidden; }
+.av-mask { overscroll-behavior: contain; }
 .hm-rec { position: absolute; left: 3px; right: 4px; z-index: 1; border-radius: 8px; pointer-events: none; }
 .hm-rec-open { position: absolute; right: 10px; bottom: 8px; padding: 0; border: 0; background: none; font: inherit; font-size: 12px; line-height: 18px; font-weight: 700; color: rgb(49 49 64); cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .15s ease; }
 .hm-rec-open:hover { text-decoration: underline; }
@@ -1567,17 +1583,26 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
   document.addEventListener('click', closePop);
   scroller.addEventListener('scroll', closePop);
 
-  // Toast with undo.
+  // Toast: the real calendar's panda message (message.success / message.info, Niki 2026-11-22):
+  // white card, 10px radius, filled tick in panda's success green, top centre. Undo stays for the demo.
+  // tone defaults to success when there is an undo, info otherwise.
+  const MSG_ICON = {
+    success: ['rgb(13 226 152)', 'M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm193.5 301.7l-210.6 292a31.8 31.8 0 01-51.7 0L318.5 484.9c-3.8-5.3 0-12.7 6.5-12.7h46.9c10.2 0 19.9 4.9 25.9 13.3l71.2 98.8 157.2-218c6-8.3 15.6-13.3 25.9-13.3H699c6.5 0 10.3 7.4 6.5 12.7z'],
+    info: ['rgb(0 179 189)', 'M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm32 664c0 4.4-3.6 8-8 8h-48c-4.4 0-8-3.6-8-8V456c0-4.4 3.6-8 8-8h48c4.4 0 8 3.6 8 8v272zm-32-344a48.01 48.01 0 010-96 48.01 48.01 0 010 96z'],
+  };
   const toast = document.createElement('div');
   toast.className = 'ghost-toast';
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-live', 'polite');
   document.body.appendChild(toast);
   let toastTimer;
-  const showToast = (html, undo) => {
-    toast.innerHTML = html + (undo ? ' <button type="button">Undo</button>' : '');
-    toast.classList.add('is-open');
+  const showToast = (html, undo, tone = undo ? 'success' : 'info') => {
+    const [c, d] = MSG_ICON[tone];
+    toast.innerHTML = `<div class="ghost-toast-card"><svg class="ghost-toast-icon" viewBox="64 64 896 896" width="16" height="16" aria-hidden="true"><path fill="${c}" d="${d}"/></svg><span>${html}</span>${undo ? '<button type="button">Undo</button>' : ''}</div>`;
+    toast.classList.remove('is-open'); void toast.offsetWidth; toast.classList.add('is-open');
     if (undo) toast.querySelector('button').onclick = () => { undo(); toast.classList.remove('is-open'); };
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('is-open'), 5000);
+    toastTimer = setTimeout(() => toast.classList.remove('is-open'), undo ? 5000 : 3000);
   };
 
   // Open a time; touching availability merges into one block, like the real calendar.
@@ -2085,7 +2110,9 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
   // Wednesday; the clock is the real one.
   const nowH = () => { const t = new Date(); return t.getHours() + t.getMinutes() / 60; };
   const pastHour = (d, h) => wk === 0 && d === TODAY && h < Math.ceil(nowH());
-  const free = (d, from, to) => ![...Array(to - from)].some((_, i) => isOpen(d, from + i));
+  // Any open time inside the run takes the mark away, a 15-minute slot too (Niki 2026-11-22: a slot
+  // added inside a frame left the frame drawn over it).
+  const free = (d, from, to) => ![...cols[d].querySelectorAll('[data-avail]')].some((n) => +n.dataset.from < to && +n.dataset.to > from);
   // Past the next 7 days (Niki 2026-11-20): gaps are date-specific and stop at 7 days (Magara 5.4: 93%
   // of new students' lessons fall within 7 days). Current students carry on (Niki 2026-11-22): their
   // signal is a weekly habit, not a date, about half their hours are booked a week or more ahead, and
@@ -2179,7 +2206,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
   // How often, said against the weekday so it reads as a habit (Niki 2026-11-19).
   const WEEKDAY = ['Sundays', 'Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', 'Saturdays'];
   const WHY = { // Frequency in the line; who and when go in the log under it.
-    reg: (m) => (wk ? `Usually booked on ${WEEKDAY[m.day]}` : `${m.n} of the last 4 ${WEEKDAY[m.day]}`), gap: (m) => `${m.need} ${m.price}`, a: () => (wk ? 'Most weeks, teachers with your language, type and price get booked more then' : 'Teachers with your language, type and price get booked more then'), quiet: (m) => `No bookings the last ${m.weeks} ${WEEKDAY[m.day]}` };
+    reg: (m) => (wk ? `Usually booked on ${WEEKDAY[m.day]}${regBooked.has(`${m.day}-${m.from}`) ? ' · booked again this week' : ''}` : `${m.n} of the last 4 ${WEEKDAY[m.day]}`), gap: (m) => `${m.need} ${m.price}`, a: () => (wk ? 'Most weeks, teachers with your language, type and price get booked more then' : 'Teachers with your language, type and price get booked more then'), quiet: (m) => `No bookings the last ${m.weeks} ${WEEKDAY[m.day]}` };
 
   const toOpen = () => marks(0).filter((m) => m.kind !== 'quiet');
   const place = (el, r) => { el.style.top = `calc(${(r.from / 24) * 100}% + 3px)`; el.style.height = `calc(${((r.to - r.from) / 24) * 100}% - 6px)`; };
@@ -2192,6 +2219,9 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
       const frame = document.createElement('div');
       frame.className = { reg: 'hm-run hm-run-3', gap: 'hm-run hm-run-need', a: 'hm-run hm-run-a', quiet: 'hm-run hm-run-quiet' }[r.kind];
       frame.dataset.id = r.id;
+      // Past the next 7 days a current students' time is less certain, so it shows a step lighter; a
+      // booking this week strengthens the habit and it is full strength again (Niki 2026-11-22).
+      if (r.kind === 'reg' && wk && !regBooked.has(`${r.day}-${r.from}`)) frame.classList.add('is-later');
       place(frame, r);
       // Quiet marks sit on open time, so they draw over it; the rest stay behind events.
       if (r.kind === 'quiet') cols[r.day].appendChild(frame); else cols[r.day].insertBefore(frame, cols[r.day].firstChild);
@@ -2200,7 +2230,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
       Object.assign(hit.dataset, { day: r.day, from: r.from, to: r.to, id: r.id });
       hit.innerHTML = r.kind === 'quiet' ? '' : '<button type="button" class="hm-rec-open is-center" role="event-time"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="currentColor"/><path d="M12 7v10M7 12h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span>Open this time</span></button>';
       if (r.kind !== 'quiet') hit.querySelector('.hm-rec-open').addEventListener('click', (e) => {
-        e.stopPropagation(); hoverOff();
+        e.stopPropagation(); sticky = null; hoverOff(); cardOff();
         openModal({ day: r.day, from: r.from, to: r.to, onConfirm: () => {
           const undo = openTime(r.day, r.from, r.to);
           showToast(`Availability added: ${label(r.day, r.from, r.to)}`, undo);
@@ -2227,7 +2257,9 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
   // A card brought up from the sidebar stays while the pointer travels over the calendar; it hands
   // back to normal hover once the pointer reaches any mark, or on a click (Niki 2026-11-19).
   let sticky = null;
-  scroller.addEventListener('mousedown', (e) => { if (e.target.closest && e.target.closest('.hm-card')) return; sticky = null; hoverOff(); cardOff(); });
+  // Pressing Open this time keeps the hover: clearing it hides the button (pointer-events none)
+  // before mouseup, so the click fell through to the calendar's 15-minute add (Niki 2026-11-22).
+  scroller.addEventListener('mousedown', (e) => { if (e.target.closest && e.target.closest('.hm-card, .hm-rec-open')) return; sticky = null; hoverOff(); cardOff(); });
   scroller.addEventListener('mouseleave', () => { if (sticky) return; hoverOff(); cardOff(); });
   scroller.addEventListener('mousemove', (e) => {
     // The card sits beside the mark now, so it stays while the pointer is on Open this time (Niki 2026-11-19).
@@ -2579,7 +2611,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
     const future = (m) => !(m.day === TODAY && m.from < Math.ceil(nowH()));
     if (!done.has('quiet')) { const q = qRuns().filter(future)[0]; if (q) return { type: 'quiet', day: q.day, from: q.from, to: q.from + 1, say: `A student booked ${label(q.day, q.from, q.from + 1)}. It is no longer marked Not booked lately.` }; }
     if (!done.has('gap')) { const g = GAPS.find((x) => future(x) && free(x.day, x.from, x.to)); if (g) return { type: 'gap', day: g.day, from: g.from, say: `Similar teachers opened ${label(g.day, g.from, g.to)}. The gap is covered, so the mark is gone.` }; }
-    if (!done.has('reg')) { const r = marks(0).find((m) => m.kind === 'reg'); if (r) return { type: 'reg', day: r.day, from: r.from, to: r.to, who: r.who[r.who.length - 1], say: `You opened ${label(r.day, r.from, r.to)} and ${r.who[r.who.length - 1]} booked it.` }; }
+    if (!done.has('reg')) { const r = marks(0).find((m) => m.kind === 'reg'); if (r) return { type: 'reg', day: r.day, from: r.from, to: r.to, who: r.who[r.who.length - 1], say: `You opened ${label(r.day, r.from, r.to)} and ${r.who[r.who.length - 1]} booked it. Next week this time shows stronger.` }; }
     return null;
   };
   simLog.forEach(applySim);
@@ -2820,7 +2852,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
     availPop.querySelector('.hm-avail-x').onclick = closeAvail;
     availPop.querySelector('[data-act=del]').onclick = () => {
       closeAvail(); blk.remove(); document.dispatchEvent(new Event('hm-schedule'));
-      showToast('Availability deleted successfully');
+      showToast('Availability deleted successfully', null, 'success');
     };
     availPop.querySelector('[data-act=edit]').onclick = () => {
       closeAvail();
