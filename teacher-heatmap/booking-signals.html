@@ -2689,7 +2689,12 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
             await wait(200);
             run(sc.card, [{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: 'ease-in' });
             run(sc.frame, [{ opacity: 1 }, { opacity: 0 }], { duration: 300, easing: 'ease-in' });
-            await run(sc.result, [{ opacity: 0 }, { opacity: 1 }], { duration: 400 });
+            // The opened block grows out of the middle of the slot (Niki 2026-11-22: the height grow was not
+            // smooth; fade + uniform scale from the centre, where the plus was clicked).
+            sc.result.style.transformOrigin = 'center'; // from the middle of the slot, where the plus is (Niki 2026-11-22)
+            // A visible bounce in size (Niki 2026-11-22: 放大缩小的弹性): grows past full size, dips under,
+            // a smaller overshoot, then rests.
+            await run(sc.result, [{ opacity: 0, transform: 'scale(.5)', easing: 'cubic-bezier(.2,.7,.3,1)' }, { opacity: 1, transform: 'scale(1.1)', offset: .38, easing: 'ease-in-out' }, { transform: 'scale(.94)', offset: .62, easing: 'ease-in-out' }, { transform: 'scale(1.03)', offset: .82, easing: 'ease-in-out' }, { opacity: 1, transform: 'none' }], { duration: 680 });
           } else {
             await wait(1200);
           }
