@@ -2662,7 +2662,10 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
         // carry nothing over.
         made.splice(0).forEach((el) => { el.getAnimations().forEach((an) => an.cancel()); el.remove(); });
         built = scenes.map(build);
-        pointer.getAnimations().forEach((an) => an.cancel());
+        // The pointer carries over: it ends the loop on the switch and starts the next one there, so
+        // nothing jumps between the last frame and the first (Niki 2026-11-22: 鼠标位置会闪一下).
+        { const shown = getComputedStyle(pointer).opacity; pointer.getAnimations().forEach((an) => an.cancel());
+          pointer.style.transform = `translate(${px}px, ${py}px)`; pointer.style.opacity = shown; }
         resetLegend();
         const sw = hero.querySelector('.hm-ia-sw'); const swOn = (on) => { sw.classList.toggle('is-off', !on); panel.classList.toggle('is-off', !on); };
         const swX = sw.offsetLeft + sw.offsetWidth / 2 - 3; const swY = sw.offsetTop + sw.offsetHeight / 2 - 3;
