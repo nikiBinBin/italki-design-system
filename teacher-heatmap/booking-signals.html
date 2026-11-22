@@ -883,6 +883,10 @@ body.heat-off .hm-run, body.ghosts-off .hm-run { display: none; }
 /* The capture froze the page at its 1289px window (main 1219px inline), so shorter windows scrolled the
    whole page and the top bar went with it. The real calendar fills the window under its 70px bar. */
 #teacher-calendar-main { height: calc(100vh - 70px) !important; }
+/* With the page fitted to the window, a long sidebar (Try a better time on) scrolls inside itself, as the
+   real one does, and Hide sidebar stays pinned at its foot instead of riding over the links (Niki 2026-11-22). */
+#teacher-calendar-main .sideBar { overflow-y: auto; overflow-x: hidden; }
+#teacher-calendar-main .sideBar > .absolute.bottom-0 { position: sticky; flex: none; margin-top: auto; background: #fff; z-index: 2; }
 /* A modal (the new-feature intro, Set availability) holds the page still behind it (Niki 2026-11-22). */
 html:has(.av-mask.is-open), body:has(.av-mask.is-open) { overflow: hidden; }
 .av-mask { overscroll-behavior: contain; }
@@ -1008,7 +1012,8 @@ body.heat-off .hm-legend { visibility: hidden; }
 .hm-views > div:not(.is-on) { color: rgb(156 156 172) !important; }  /* over the snapshot's Tailwind text colour */
 .hm-views > div + div::before { content: ''; position: absolute; left: 0; top: 10px; bottom: 10px; width: 1px; background: rgb(229 232 237); }
 .hm-top-group { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px 0 16px; border-radius: 999px; background: rgb(245 246 249); }  /* a gray6 pill like Today; the pill opens the help panel, the switch toggles (Niki 2026-11-18) */
-.hm-top-group { cursor: pointer; }
+.hm-top-group { cursor: pointer; transition: background-color .15s ease; }
+.hm-top-group:hover { background: rgb(233 234 240); }  /* hover, same step as the legend fold row (Niki 2026-11-22) */
 .hm-top-group:hover .hm-info { color: rgb(81 81 100); }
 .hm-top-group .hm-info { margin-right: 18px; }  /* longer pill, the switch set apart at the end (Niki 2026-11-18) */
 .hm-top-toggle { display: inline-flex; align-items: center; }
@@ -1392,6 +1397,18 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
 .hm-how-v4 button.hm-why-row:not(.is-on):hover b { color: rgb(49 49 64); }
 .hm-how-v4 button.hm-why-row:not(.is-on):hover .hm-pick-badge { opacity: .35; }
 .ghost-sep { width: 1px; margin: 6px 4px; background: rgba(255,255,255,.25); }
+/* Booking signals demo bar: label + segmented teacher switch, then actions (Niki 2026-11-22). */
+.ghost-versions:has(.gv-seg) { align-items: center; gap: 6px; padding: 4px 6px 4px 14px; }
+.ghost-versions .gv-label { color: rgba(255,255,255,.55); font-size: 12px; line-height: 18px; font-weight: 600; }
+.ghost-versions .gv-seg { display: inline-flex; padding: 2px; border-radius: 999px; background: rgba(255,255,255,.12); }
+.ghost-versions .gv-seg a { padding: 5px 12px; opacity: .75; transition: opacity .15s ease, background-color .15s ease; }
+.ghost-versions .gv-seg a:hover { opacity: 1; }
+.ghost-versions .gv-seg a.is-on { opacity: 1; }
+.ghost-versions:has(.gv-seg) .ghost-sep { align-self: stretch; margin: 6px 4px; }
+.ghost-versions .gv-act { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border: 0; border-radius: 999px; background: none; color: #fff; font: inherit; font-size: 13px; line-height: 18px; font-weight: 600; cursor: pointer; opacity: .85; transition: opacity .15s ease, background-color .15s ease; }
+.ghost-versions .gv-act:hover { opacity: 1; background: rgba(255,255,255,.12); }
+.ghost-versions .gv-act:active { transform: scale(.96); }
+.ghost-versions .gv-act:focus-visible, .ghost-versions .gv-seg a:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
 .hm-why-row.is-muted .hm-why-chip { background: rgb(240 240 244); color: rgb(156 156 172); }
 .hm-why-row.is-muted b { color: rgb(156 156 172); }
 </style>
@@ -2223,9 +2240,27 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
   const toOpen = () => marks(0).filter((m) => m.kind !== 'quiet');
   const place = (el, r) => { el.style.top = `calc(${(r.from / 24) * 100}% + 3px)`; el.style.height = `calc(${((r.to - r.from) / 24) * 100}% - 6px)`; };
   let marked = new Set();
+  let shown = [];
+  // Open a suggested frame as one piece: the button, or a plain click anywhere inside it.
+  const openMark = (r) => {
+    sticky = null; hoverOff(); cardOff();
+    openModal({ day: r.day, from: r.from, to: r.to, onConfirm: () => {
+      const undo = openTime(r.day, r.from, r.to);
+      showToast(`Availability added: ${label(r.day, r.from, r.to)}`, undo);
+    } });
+  };
+  // A click (no drag) inside a frame takes the frame's whole time, from its first row, not the
+  // 15 minutes under the pointer (Niki 2026-11-22). A drag inside it still picks its own range.
+  window.HM.clickAt = (d, at) => {
+    if (document.body.classList.contains('heat-off')) return false;
+    const r = shown.find((m) => m.kind !== 'quiet' && m.day === d && at >= m.from && at < m.to);
+    if (!r) return false;
+    openMark(r); return true;
+  };
   let render = () => {
     document.querySelectorAll('.hm-run, .hm-rec').forEach((n) => n.remove());
     const all = marks();
+    shown = all;
     marked = new Set(all.flatMap((r) => Array.from({ length: r.to - r.from }, (_, k) => `${r.day}-${r.from + k}`)));
     all.forEach((r) => {
       const frame = document.createElement('div');
@@ -2248,13 +2283,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
         btn.addEventListener('pointerdown', () => press(true));
         ['pointerup', 'pointerleave', 'pointercancel'].forEach((t) => btn.addEventListener(t, () => press(false)));
       }
-      if (r.kind !== 'quiet') hit.querySelector('.hm-rec-open').addEventListener('click', (e) => {
-        e.stopPropagation(); sticky = null; hoverOff(); cardOff();
-        openModal({ day: r.day, from: r.from, to: r.to, onConfirm: () => {
-          const undo = openTime(r.day, r.from, r.to);
-          showToast(`Availability added: ${label(r.day, r.from, r.to)}`, undo);
-        } });
-      });
+      if (r.kind !== 'quiet') hit.querySelector('.hm-rec-open').addEventListener('click', (e) => { e.stopPropagation(); openMark(r); });
       place(hit, r);
       cols[r.day].appendChild(hit);
     });
@@ -2284,6 +2313,9 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
     // The card sits beside the mark now, so it stays while the pointer is on Open this time (Niki 2026-11-19).
     // While the Availability popover is open, no hover card competes with it (Niki 2026-11-19).
     if (e.target.closest && e.target.closest('.hm-card.is-live')) { clearTimeout(leaveT); return; }
+    // Holding Open this time is a press, not a drag: a 1px move while held cleared the hover and the
+    // button lost the click (Niki 2026-11-22).
+    if (e.buttons && e.target.closest && e.target.closest('.hm-rec-open')) return;
     if (e.buttons || document.body.classList.contains('heat-off') || document.querySelector('.hm-avail-pop.is-open')) { hoverOff(); cardOff(); return; }
     const d = cols.findIndex((c) => { const b = c.getBoundingClientRect(); return e.clientX >= b.left && e.clientX < b.right; });
     if (d < 0) { if (sticky) return; offSoon(); return; }
@@ -2366,6 +2398,12 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
   const pill = document.querySelector('.hm-top-group');
   // Same as hovering the help icon: opens, and closes again once the pointer leaves pill and panel.
   pill.addEventListener('mouseenter', () => pill.querySelector('.hm-info').dispatchEvent(new MouseEvent('mouseenter')));
+  // A click anywhere on the pill flips the switch (Niki 2026-11-22); the panel already opens on hover.
+  // Only real clicks: the code's own pill.click() (Got it, switching on) still just opens the panel.
+  pill.addEventListener('click', (e) => {
+    if (!e.isTrusted || e.target.closest('.ghost-switch')) return;
+    e.stopPropagation(); mainSw.click();
+  }, true);
   // Open all (empty calendar only), confirmed time by time, as on the one-colour page.
   const openAll = () => {
     const list = toOpen();
@@ -2488,7 +2526,12 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
   const bar = document.querySelector('.ghost-versions');
   bar.querySelectorAll('a').forEach((a) => { a.href = a.getAttribute('href') + location.search; });
   bar.insertAdjacentHTML('beforeend', (bar.querySelector('a') ? '<i class="ghost-sep"></i>' : '')
-    + `<a href="?" class="${NEW_T ? '' : 'is-on'}">Has students</a><a href="?teacher=new" class="${NEW_T ? 'is-on' : ''}">New teacher</a><a href="#" data-sim>Simulate a booking</a><a href="#" data-reset-demo>Reset</a>`);
+    // Two kinds of control (Niki 2026-11-22): which teacher (one of two, a segmented switch) and what
+    // to do to the demo (actions, plain buttons with an icon), a line between them.
+    + `<span class="gv-label">Teacher</span><span class="gv-seg"><a href="?" class="${NEW_T ? '' : 'is-on'}">Has students</a><a href="?teacher=new" class="${NEW_T ? 'is-on' : ''}">New</a></span>`
+    + '<i class="ghost-sep"></i>'
+    + '<button type="button" class="gv-act" data-sim><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>Simulate a booking</button>'
+    + '<button type="button" class="gv-act" data-reset-demo><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Reset</button>');
   // Calendar View: Teacher / Student switch like the real sidebar (Niki 2026-11-20). The student
   // calendar shows the teacher's own lessons as a student (none in this sample), so no open time,
   // no teaching lessons, no suggestions and no creating time. Remembered with the other switches.
