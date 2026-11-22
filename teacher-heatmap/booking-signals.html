@@ -2670,12 +2670,20 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
       regBooked.add(`${x.day}-${x.from}`);
     }
   };
+  // Only marks on screen play (Niki 2026-11-22: the first click booked a Not booked lately time,
+  // which is off by default, so only a lesson appeared). Order: current students, gaps, then quiet.
   const nextSim = () => {
     const done = new Set(simLog.map((x) => x.type));
     const future = (m) => !(m.day === TODAY && m.from < Math.ceil(nowH()));
-    if (!done.has('quiet')) { const q = qRuns().filter(future)[0]; if (q) return { type: 'quiet', day: q.day, from: q.from, to: q.from + 1, say: `A student booked ${label(q.day, q.from, q.from + 1)}. It is no longer marked Not booked lately.` }; }
-    if (!done.has('gap')) { const g = GAPS.find((x) => future(x) && free(x.day, x.from, x.to)); if (g) return { type: 'gap', day: g.day, from: g.from, say: `Similar teachers opened ${label(g.day, g.from, g.to)}. The gap is covered, so the mark is gone.` }; }
-    if (!done.has('reg')) { const r = marks(0).find((m) => m.kind === 'reg'); if (r) return { type: 'reg', day: r.day, from: r.from, to: r.to, who: r.who[r.who.length - 1], say: `You opened ${label(r.day, r.from, r.to)} and ${r.who[r.who.length - 1]} booked it. Next week this time shows stronger.` }; }
+    const pick = {
+      reg: () => { const r = marks(0).find((m) => m.kind === 'reg'); return r && { type: 'reg', day: r.day, from: r.from, to: r.to, who: r.who[r.who.length - 1], say: `You opened ${label(r.day, r.from, r.to)} and ${r.who[r.who.length - 1]} booked it. Next week this time shows stronger.` }; },
+      gap: () => { const g = GAPS.find((x) => future(x) && free(x.day, x.from, x.to)); return g && { type: 'gap', day: g.day, from: g.from, say: `Similar teachers opened ${label(g.day, g.from, g.to)}. The gap is covered, so the mark is gone.` }; },
+      quiet: () => { const q = qRuns().filter(future)[0]; return q && { type: 'quiet', day: q.day, from: q.from, to: q.from + 1, say: `A student booked ${label(q.day, q.from, q.from + 1)}. It is no longer marked Not booked lately.` }; },
+    };
+    for (const k of ['reg', 'gap', 'quiet']) {
+      if (done.has(k) || !show[k]) continue;
+      const x = pick[k](); if (x) return x;
+    }
     return null;
   };
   simLog.forEach(applySim);
@@ -2683,8 +2691,9 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
   document.addEventListener('click', (e) => {
     const b = e.target.closest && e.target.closest('[data-sim]'); if (!b) return;
     e.preventDefault(); hoverOff(); cardOff();
+    if (document.body.classList.contains('heat-off')) { showToast('Turn on Suggested times to see suggestions follow bookings.'); return; }
     const x = nextSim();
-    if (!x) { showToast('Nothing left to simulate. Use Reset to start again.'); return; }
+    if (!x) { showToast(['reg', 'gap', 'quiet'].some((k) => !show[k] && !simLog.some((y) => y.type === k)) ? 'Nothing left to simulate for the marks on screen. Turn on more marks, or Reset.' : 'Nothing left to simulate. Use Reset to start again.'); return; }
     applySim(x); simLog.push(x); prefs.sim = simLog; savePrefs();
     document.dispatchEvent(new Event('hm-schedule'));
     showToast(x.say);
