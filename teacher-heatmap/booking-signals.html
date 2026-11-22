@@ -433,6 +433,7 @@ a:hover .css-14h52wa.ant-badge .ant-badge-count { background: rgb(255, 67, 56); 
   100% { transform: scale(0); opacity: 0; }
 }
 .data-ant-cssinjs-cache-path { content: "18uebsj|Shared|ant:1mpwbun;18uebsj|Button|ant-btn|anticon:1wkg0j7;18uebsj|Avatar|ant-avatar|anticon:1g4uvtl;18uebsj|Modal|ant-modal|anticon:10xsd5d;18uebsj|Badge|ant-badge|anticon:3idsph"; }
+
 .css-2d7p5[class^="ant-wave"], .css-2d7p5[class*=" ant-wave"] { font-size: 14px; box-sizing: border-box; }
 .css-2d7p5[class^="ant-wave"]::before, .css-2d7p5[class*=" ant-wave"]::before, .css-2d7p5[class^="ant-wave"]::after, .css-2d7p5[class*=" ant-wave"]::after { box-sizing: border-box; }
 .css-2d7p5[class^="ant-wave"] [class^="ant-wave"], .css-2d7p5[class*=" ant-wave"] [class^="ant-wave"], .css-2d7p5[class^="ant-wave"] [class*=" ant-wave"], .css-2d7p5[class*=" ant-wave"] [class*=" ant-wave"] { box-sizing: border-box; }
@@ -473,6 +474,7 @@ a:hover .css-14h52wa.ant-badge .ant-badge-count { background: rgb(255, 67, 56); 
 .css-2d7p5.ACTION-disabled::after { display: none; }
 .css-2d7p5.ACTION-disabled + span { color: rgba(0, 0, 0, 0.25); }
 .css-2d7p5.ACTION-disabled.ACTION-indeterminate .ACTION-inner::after { background: rgba(0, 0, 0, 0.25); }
+
 .css-17m0op5[class^="ant-wave"], .css-17m0op5[class*=" ant-wave"] { font-size: 14px; box-sizing: border-box; }
 .css-17m0op5[class^="ant-wave"]::before, .css-17m0op5[class*=" ant-wave"]::before, .css-17m0op5[class^="ant-wave"]::after, .css-17m0op5[class*=" ant-wave"]::after { box-sizing: border-box; }
 .css-17m0op5[class^="ant-wave"] [class^="ant-wave"], .css-17m0op5[class*=" ant-wave"] [class^="ant-wave"], .css-17m0op5[class^="ant-wave"] [class*=" ant-wave"], .css-17m0op5[class*=" ant-wave"] [class*=" ant-wave"] { box-sizing: border-box; }
@@ -513,6 +515,7 @@ a:hover .css-14h52wa.ant-badge .ant-badge-count { background: rgb(255, 67, 56); 
 .css-17m0op5.UPCOMING-disabled::after { display: none; }
 .css-17m0op5.UPCOMING-disabled + span { color: rgba(0, 0, 0, 0.25); }
 .css-17m0op5.UPCOMING-disabled.UPCOMING-indeterminate .UPCOMING-inner::after { background: rgba(0, 0, 0, 0.25); }
+
 .css-1ikb415[class^="ant-wave"], .css-1ikb415[class*=" ant-wave"] { font-size: 14px; box-sizing: border-box; }
 .css-1ikb415[class^="ant-wave"]::before, .css-1ikb415[class*=" ant-wave"]::before, .css-1ikb415[class^="ant-wave"]::after, .css-1ikb415[class*=" ant-wave"]::after { box-sizing: border-box; }
 .css-1ikb415[class^="ant-wave"] [class^="ant-wave"], .css-1ikb415[class*=" ant-wave"] [class^="ant-wave"], .css-1ikb415[class^="ant-wave"] [class*=" ant-wave"], .css-1ikb415[class*=" ant-wave"] [class*=" ant-wave"] { box-sizing: border-box; }
@@ -553,6 +556,7 @@ a:hover .css-14h52wa.ant-badge .ant-badge-count { background: rgb(255, 67, 56); 
 .css-1ikb415.WAIT-disabled::after { display: none; }
 .css-1ikb415.WAIT-disabled + span { color: rgba(0, 0, 0, 0.25); }
 .css-1ikb415.WAIT-disabled.WAIT-indeterminate .WAIT-inner::after { background: rgba(0, 0, 0, 0.25); }
+
 .css-1ozrthf[class^="ant-wave"], .css-1ozrthf[class*=" ant-wave"] { font-size: 14px; box-sizing: border-box; }
 .css-1ozrthf[class^="ant-wave"]::before, .css-1ozrthf[class*=" ant-wave"]::before, .css-1ozrthf[class^="ant-wave"]::after, .css-1ozrthf[class*=" ant-wave"]::after { box-sizing: border-box; }
 .css-1ozrthf[class^="ant-wave"] [class^="ant-wave"], .css-1ozrthf[class*=" ant-wave"] [class^="ant-wave"], .css-1ozrthf[class^="ant-wave"] [class*=" ant-wave"], .css-1ozrthf[class*=" ant-wave"] [class*=" ant-wave"] { box-sizing: border-box; }
@@ -730,10 +734,13 @@ a:hover .css-14h52wa.ant-badge .ant-badge-count { background: rgb(255, 67, 56); 
 <style id="ghost-prototype">
 .ghost-event { cursor: pointer; }
 :root { --hm-g: 13,190,130; --hm-g-edge: 8,160,108; --hm-g-strong: 8,150,100; }
-body.hm-bs { --hm-g: 0,179,119; --hm-g-edge: 0,179,119; --hm-g-strong: 0,179,119; }  
+/* Booking signals uses the design system's green #00B377 for its marks (Niki 2026-11-20). */
+body.hm-bs { --hm-g: 0,179,119; --hm-g-edge: 0,179,119; --hm-g-strong: 0,179,119; }  /* marks, Open this time, icons and badges */
+/* Sidebar list on the design system's light green (--ui-color-success-surface, Niki 2026-11-20); the count badge's ring matches it. */
 body.hm-bs .hm-side-list { background: #ECFFF9; }
-body.hm-bs .hm-side-list .ghost-side-row { font-weight: 400; }  
+body.hm-bs .hm-side-list .ghost-side-row { font-weight: 400; }  /* times in regular weight, size unchanged (Niki 2026-11-20) */
 body.hm-bs .hm-sugg-n { box-shadow: 0 0 0 1.5px #ECFFF9; }
+/* Try a better time group in the sidebar: grey, like the quiet frames (Niki 2026-11-20). */
 body.hm-bs .hm-side-list.is-quiet { background: rgb(245 246 249); }
 body.hm-bs .hm-side-list.is-quiet .ghost-side-row:hover { background: rgb(233 233 238); }
 .hm-snooze-icon { flex: none; color: rgb(110 110 128); }
@@ -742,7 +749,7 @@ body.hm-bs .hm-side-list.is-quiet .ghost-side-row:hover { background: rgb(233 23
 body.hm-bs .hm-run-quiet.is-glow::after { box-shadow: inset 0 0 22px 4px rgba(110,110,128,.28); }
 .ghost-slot { position: absolute; inset: 2px 3px; border: 1px dashed rgb(var(--hm-g)); border-radius: 6px;
   background: rgba(13,226,152,0.04); padding: 6px 10px; transition: background-color .15s ease, border-color .15s ease, opacity .2s ease; }
-.ghost-event:hover .ghost-slot, .ghost-event.is-active .ghost-slot { background: rgb(229 248 240); border-style: solid; }  
+.ghost-event:hover .ghost-slot, .ghost-event.is-active .ghost-slot { background: rgb(229 248 240); border-style: solid; }  /* opaque on hover so the grid lines don't run through the text (Niki 2026-11-18) */
 .ghost-tag { display: inline-flex; align-items: center; gap: 6px; margin-top: 2px; font-size: 12px; line-height: 18px; font-weight: 500; color: rgb(81 81 100); }
 .ghost-open { position: absolute; right: 8px; bottom: 6px; font-size: 12px; line-height: 18px; font-weight: 700; color: rgb(49 49 64);
   opacity: 0; transition: opacity .15s ease; }
@@ -753,18 +760,23 @@ body.hm-bs .hm-run-quiet.is-glow::after { box-shadow: inset 0 0 22px 4px rgba(11
 .ghost-event:hover .ghost-why { opacity: 1; }
 .ghost-event.is-flash .ghost-slot { animation: ghost-flash 1.2s ease-out .3s; }
 @keyframes ghost-flash { 0%, 100% { background: rgba(13,226,152,0.04); } 30% { background: rgba(13,226,152,0.28); border-style: solid; } }
+/* Drag selection on empty time (rebuilt; the snapshot has no calendar scripts). */
 .av-drag { position: absolute; left: 2px; right: 3px; z-index: 3; border-radius: 4px; background: rgba(81,81,100,0.12); box-shadow: inset 0 0 0 1px rgba(81,81,100,0.35);
   padding: 4px 8px; font-size: 12px; line-height: 16px; font-weight: 500; color: rgb(49 49 64); pointer-events: none; overflow: hidden; }
+/* Best times: the click / drag selection exactly as the real calendar draws it (DayColumn
+   italki-slot-selection: full width, light green, time top-left, no outline). Scoped to that page. */
 body.hm-real-select .av-drag { left: 0; right: 0; z-index: 50; border-radius: 0; background: rgba(13,226,152,0.1); box-shadow: none;
   padding: 8px 0 0 12px; font-size: 12px; line-height: 18px; font-weight: 500; color: rgb(156 156 172); }
+/* Set availability modal (rebuilt from the real one on Moon). */
 .av-mask { position: fixed; inset: 0; z-index: 1100; display: none; align-items: flex-start; justify-content: center; padding-top: 80px; background: rgba(0,0,0,.45); }
 .av-mask.is-open { display: flex; }
 .av-modal { width: 448px; border-radius: 12px; background: #fff; box-shadow: 0 8px 32px rgba(0,0,0,.18); overflow: hidden; }
 .av-head { position: relative; padding: 16px 48px; border-bottom: 1px solid rgb(233 233 235); text-align: center; font-size: 14px; line-height: 20px; font-weight: 700; color: rgb(49 49 64); }
 .av-x { position: absolute; right: 14px; top: 12px; width: 28px; height: 28px; border: 0; background: none; font-size: 20px; color: rgb(81 81 100); cursor: pointer; }
 .av-body { padding: 16px 20px 20px; }
-.ghost-slot .ghost-tag { align-items: flex-start; margin-top: 6px; }  
-.ghost-slot .ghost-tag > :first-child { flex: none; margin-top: 1px; }  
+/* Inside a block the column is narrow: the symbol sits on the first line when the label wraps. */
+.ghost-slot .ghost-tag { align-items: flex-start; margin-top: 6px; }  /* a little more air under the time (Niki 2026-11-18) */
+.ghost-slot .ghost-tag > :first-child { flex: none; margin-top: 1px; }  /* 16px symbol on an 18px line */
 .av-label { margin-bottom: 8px; font-size: 13px; line-height: 18px; font-weight: 500; color: rgb(81 81 100); }
 .av-row { display: flex; gap: 10px; }
 .av-select { position: relative; display: inline-flex; align-items: center; height: 34px; padding: 0 28px 0 10px; min-width: 112px; border: 1px solid rgb(217 217 217); border-radius: 6px;
@@ -777,36 +789,46 @@ body.hm-real-select .av-drag { left: 0; right: 0; z-index: 50; border-radius: 0;
 .av-foot { display: flex; justify-content: flex-end; padding: 12px 16px; border-top: 1px solid rgb(233 233 235); }
 .ghost-event:hover .ghost-open, .ghost-event:hover .ghost-x, .ghost-event.is-active .ghost-x { opacity: 1; }
 .ghost-event.is-leaving .ghost-slot { opacity: 0; }
-body.ghosts-off .ghost-event { display: none !important; }  
+body.ghosts-off .ghost-event { display: none !important; }  /* the calendar's Tailwind .block is !important */
 .ghost-landed .event-available-time { animation: ghost-land .5s ease-out; }
 @keyframes ghost-land { from { background-color: rgba(13,226,152,0.28); } }
 .ghost-avatar { display: inline-block; width: 24px; height: 24px; border-radius: 50%; background: rgb(229 232 237); vertical-align: middle; }
+
 .ghost-switch { display: inline-flex; align-items: center; gap: 8px; margin-right: 24px; cursor: pointer; user-select: none; }
 .ghost-switch-track { position: relative; width: 28px; height: 16px; border-radius: 8px; background: rgb(229 232 237); transition: background-color .15s ease; }
 .ghost-switch-thumb { position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: #fff;
   box-shadow: 0 1px 2px rgba(0,0,0,.2); transition: transform .15s ease; }
 .ghost-switch.is-on .ghost-switch-track { background: rgb(81 81 100); }
 .ghost-switch.is-on .ghost-switch-thumb { transform: translateX(12px); }
+
+/* The sidebar's own column only pads the left (pl-10); keep text off the divider. */
 .ghost-side { padding-right: 0; }
 .ghost-side-row { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; margin-left: -8px; border: 0; border-radius: 6px;
   background: transparent; font: inherit; font-size: 14px; line-height: 20px; font-weight: 500; color: rgb(49 49 64); text-align: left; cursor: pointer; }
 .ghost-side-row:hover { background: rgb(245 246 249); }
+/* Sidebar rows: an 18px mark, then the time; one line each. */
 .ghost-side-row { gap: 8px; white-space: nowrap; }
+
 .ghost-pop { position: fixed; z-index: 1000; width: 300px; padding: 16px; border-radius: 12px; background: #fff;
   box-shadow: 0 6px 24px rgba(0,0,0,.12), 0 0 0 1px rgba(0,0,0,.04); opacity: 0; transform: translateY(4px); pointer-events: none;
   transition: opacity .15s ease, transform .15s ease; }
 .ghost-pop.is-open { opacity: 1; transform: none; pointer-events: auto; }
 .ghost-pop p { margin: 0; }
 .ghost-pop .ant-btn { min-width: 0; }
+
 .ghost-toast { position: fixed; z-index: 1001; left: 50%; top: 84px; transform: translate(-50%, -8px); padding: 10px 16px; border-radius: 8px;
   background: rgb(49 49 64); color: #fff; font-size: 14px; line-height: 20px; opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease; }
 .ghost-toast.is-open { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
 .ghost-toast button { margin-left: 12px; border: 0; background: none; color: #fff; font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
+
 .ghost-note { position: fixed; z-index: 999; right: 16px; bottom: 56px; max-width: 200px; padding: 8px 10px; border-radius: 8px;
   background: rgb(255 248 220); color: rgb(81 81 100); font-size: 12px; line-height: 16px; }
 @media (prefers-reduced-motion: reduce) { .ghost-pop, .ghost-toast, .ghost-slot { transition: none; } .ghost-landed .event-available-time { animation: none; } }
+
+/* Heat layer (both versions): one cell per hour, under every event, never takes the pointer. */
 .hm-layer { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
 .hm-cell { position: absolute; left: 0; right: 0; height: calc(100% / 24); }
+/* Ghost version: pixel glow drawn on a canvas around the pointer (heatmap-ghost-prototype.js). */
 .hm-key i.px { width: 14px; height: 14px; border-radius: 0; box-shadow: none;
   background-image: linear-gradient(90deg, transparent 6px, #fff 6px, #fff 7px, transparent 7px), linear-gradient(transparent 6px, #fff 6px, #fff 7px, transparent 7px); }
 .hm-key i.px1 { background-color: rgba(var(--hm-g),0.105); }
@@ -814,6 +836,7 @@ body.ghosts-off .ghost-event { display: none !important; }
 .hm-key i.px3 { background-color: rgba(var(--hm-g),0.42); }
 body.ghosts-off .hm-legend { visibility: hidden; }
 .hm-pixels { position: absolute; top: 0; z-index: 0; pointer-events: none; image-rendering: pixelated; }
+/* Trailing card + pixel cursor (ghost version, Niki 2026-11-13). */
 .hm-card { position: absolute; left: 0; top: 0; z-index: 6; pointer-events: none; width: max-content; min-width: 180px; max-width: 280px; padding: 12px 14px; border-radius: 10px; background: #fff;
   box-shadow: 0 6px 20px rgba(0,0,0,.12), 0 0 0 1px rgba(0,0,0,.04); opacity: 0; transition: opacity .18s ease; will-change: transform; }
 .hm-card.is-on { opacity: 1; }
@@ -821,7 +844,7 @@ body.ghosts-off .hm-legend { visibility: hidden; }
 @keyframes hm-swap { from { opacity: 0; transform: translateY(3px); } }
 .hm-card-time { font-size: 12px; line-height: 16px; color: rgb(156 156 172); }
 .hm-card-level { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 14px; line-height: 20px; font-weight: 700; color: rgb(49 49 64); }
-.hm-card-hint { margin-top: 4px; padding-left: 22px; font-size: 13px; line-height: 18px; color: rgb(81 81 100); }  
+.hm-card-hint { margin-top: 4px; padding-left: 22px; font-size: 13px; line-height: 18px; color: rgb(81 81 100); }  /* time 6 above the level, the reason 4 below it and indented to the level's words (16 symbol + 6 gap), Niki 2026-11-18 */
 .hm-meter { display: inline-flex; align-items: flex-end; gap: 2px; }
 .hm-meter i { width: 4px; border-radius: 1px; background: rgb(229 232 237); }
 .hm-meter i:nth-child(1) { height: 6px; } .hm-meter i:nth-child(2) { height: 10px; } .hm-meter i:nth-child(3) { height: 14px; }
@@ -830,10 +853,14 @@ body.ghosts-off .hm-legend { visibility: hidden; }
 .hm-cursor { position: absolute; left: 0; top: 0; z-index: 7; pointer-events: none; display: flex; padding: 2px;
   border-radius: 4px; background: #fff; box-shadow: 0 0 0 1px rgba(49,49,64,.35), 0 1px 3px rgba(0,0,0,.15); opacity: 0; }
 .hm-cursor.is-on { opacity: 1; }
+/* The legend's generic `.hm-key i` swatch rule must not stretch the mini squares. */
 .hm-cursor[data-level="3"] { animation: hm-cur 1.6s ease-in-out infinite; }
 @keyframes hm-cur { 50% { box-shadow: 0 0 0 1px rgba(10,170,115,.6), 0 0 0 4px rgba(var(--hm-g),.18); } }
 @media (prefers-reduced-motion: reduce) { .hm-cursor[data-level="3"] { animation: none; } .hm-card.is-swap > * { animation: none; } }
 body.ghosts-off .hm-pixels, body.ghosts-off .hm-card, body.ghosts-off .hm-cursor { display: none; }
+/* "Demand glow" version (was "PRD heatmap"; renamed 2026-11-13). Grid lines stay the calendar's own.
+   Each run of same-level hours in a day is framed by a dashed outline and glows from its edges
+   in toward the centre; High glows heavier, Low lightest (Niki 2026-11-13). */
 .hm-full .hm-cell { background: transparent; }
 .hm-run { position: absolute; left: 3px; right: 4px; z-index: 0; pointer-events: none; border-radius: 8px; border: 1px dashed; }
 .hm-run-1 { border-color: rgba(var(--hm-g),.35); box-shadow: inset 0 0 14px rgba(var(--hm-g),.10); }
@@ -842,14 +869,17 @@ body.ghosts-off .hm-pixels, body.ghosts-off .hm-card, body.ghosts-off .hm-cursor
 .hm-run-1 { opacity: 0; transition: opacity .35s ease; }
 .hm-run-1.is-hover { opacity: 1; transition-duration: .15s; }
 body.heat-off .hm-run, body.ghosts-off .hm-run { display: none; }
+/* Recommended runs: a hover target over the frame, "+ Open this time" bottom-right, a card. */
 .hm-rec { position: absolute; left: 3px; right: 4px; z-index: 1; border-radius: 8px; pointer-events: none; }
 .hm-rec-open { position: absolute; right: 10px; bottom: 8px; padding: 0; border: 0; background: none; font: inherit; font-size: 12px; line-height: 18px; font-weight: 700; color: rgb(49 49 64); cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .15s ease; }
 .hm-rec-open:hover { text-decoration: underline; }
 .hm-rec.is-hover .hm-rec-open { opacity: 1; pointer-events: auto; }
 .hm-rec-open.is-center { left: 50%; top: 50%; right: auto; bottom: auto; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 8px; white-space: nowrap; }
+/* Green plus that grows a little on hover (Niki 2026-11-19). */
 .hm-rec-open.is-center svg { color: rgb(var(--hm-g-strong)); transition: transform .15s ease; }
 .hm-rec-open.is-center:hover svg { transform: scale(1.15); }
 .hm-rec-open.is-center:hover { text-decoration: none; }
+/* With the frame's words showing (not the card page), the button sits centred under them, at the bottom. */
 body:not(.hm-bt-card) .hm-rec-open.is-center { top: auto; bottom: 10px; transform: translateX(-50%); }
 body:not(.hm-bt-card) .hm-rec.is-short.is-hover .hm-in-why { display: none; }
 .hm-rec.is-hover { background: rgba(var(--hm-g),.06); }
@@ -857,19 +887,21 @@ body:not(.hm-bt-card) .hm-rec.is-short.is-hover .hm-in-why { display: none; }
 @keyframes hm-flash { 30% { background-color: rgba(var(--hm-g),.28); } }
 .hm-card-rec { transition: opacity .18s ease, transform .08s linear; }
 body.heat-off .hm-rec, body.heat-off .hm-card-rec { display: none; }
+/* Legend swatches use the frames' own stroke colours (the shorthand border used to reset them to grey). */
 .hm-key i.hm-run-key { width: 16px; height: 12px; border-radius: 3px; border-width: 1px; border-style: dashed; box-sizing: border-box; background: none; }
 .hm-key i.hm-run-key.hm-run-1 { border-color: rgba(var(--hm-g),.35); box-shadow: inset 0 0 4px rgba(var(--hm-g),.2); }
 .hm-key i.hm-run-key.hm-run-2 { border-color: rgba(var(--hm-g),.55); box-shadow: inset 0 0 5px rgba(var(--hm-g),.4); }
 .hm-key i.hm-run-key.hm-run-3 { border-color: rgba(var(--hm-g-edge),.85); box-shadow: inset 0 0 6px rgba(var(--hm-g),.7); }
 .hm-swatch.hm-l3 { background: rgba(var(--hm-g),.7); }
 .hm-full .hm-cell.is-open { background: transparent; }
+/* Hovered / selected hour: the same green, a shade deeper, with a green edge (no grey outline). */
 .hm-full .hm-cell.is-active { box-shadow: inset 0 0 0 1.5px rgba(var(--hm-g),0.75); }
 .hm-gridlight { position: absolute; top: 0; z-index: 0; pointer-events: none; }
 body.heat-off .hm-gridlight, body.ghosts-off .hm-gridlight { display: none; }
 .hm-full .hm-cell.is-active { background-image: linear-gradient(rgba(var(--hm-g),0.12), rgba(var(--hm-g),0.12)); }
 body.heat-off .hm-full { display: none; }
 body.heat-off .hm-legend { visibility: hidden; }
-.ghost-toolbar { display: inline-flex; align-items: center; gap: 20px; margin-right: 8px; }  
+.ghost-toolbar { display: inline-flex; align-items: center; gap: 20px; margin-right: 8px; }  /* + Create's own 16px = 24 */
 .ghost-toolbar .ghost-switch { margin-right: 0; }
 .hm-legend { display: inline-flex; align-items: center; gap: 10px; }
 .hm-key { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; line-height: 16px; color: rgb(81 81 100); }
@@ -879,14 +911,17 @@ body.heat-off .hm-legend { visibility: hidden; }
 .hm-side-head .ghost-switch { cursor: pointer; }
 .hm-side-head .ghost-switch { margin-right: 0; }
 .hm-side-title { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
-.hm-info { display: inline-flex; width: 16px; height: 16px; padding: 0; border: 0; background: none; color: rgb(156 156 172); cursor: pointer; transition: color .15s ease; }  
+.hm-info { display: inline-flex; width: 16px; height: 16px; padding: 0; border: 0; background: none; color: rgb(156 156 172); cursor: pointer; transition: color .15s ease; }  /* DS icon help-sm (16px); light at rest, a step darker on hover (Niki 2026-11-18) */
 .hm-info:hover, .hm-info:focus-visible { color: rgb(81 81 100); }
 .hm-info:focus:not(:focus-visible) { outline: none; }
 .hm-how { padding: 4px 2px; color: rgb(81 81 100); }
 .hm-how-title { font-size: 16px; line-height: 22px; font-weight: 700; color: rgb(49 49 64); }
+/* Spacing says what belongs together (Niki 2026-11-18): the rules 20 below the grey picture, their
+   title 8 above the list, items 6 apart, then 16 and a gray6 hairline before the footnote (without it
+   the lower half read as one lump of text). */
 .hm-how-sub { margin: 20px 0 8px; font-size: 12px; line-height: 16px; font-weight: 600; color: rgb(156 156 172); }
 .hm-how-ico { display: inline-flex; flex: none; width: 16px; height: 16px; color: rgb(81 81 100); }
-.hm-how-gap { margin-top: 12px; padding: 12px; border-radius: 12px; background: rgb(245 246 249); }  
+.hm-how-gap { margin-top: 12px; padding: 12px; border-radius: 12px; background: rgb(245 246 249); }  /* the picture sits in the grey block; the rules below are on white (Niki 2026-11-18: tried grey on the rules and all white, kept this) */
 .hm-how-row { display: flex; align-items: center; gap: 8px; font-size: 13px; line-height: 18px; color: rgb(49 49 64); }
 .hm-how-row + .hm-how-row { margin-top: 6px; }
 .hm-how-label { flex: 1; }
@@ -904,7 +939,7 @@ body.heat-off .hm-legend { visibility: hidden; }
 .hm-how-dots i { width: 6px; height: 6px; border-radius: 50%; background: rgb(229 232 237); }
 .hm-how-dots i.is-student { background: rgb(var(--hm-g)); }
 .hm-how-dots i.is-teacher { background: rgb(81 81 100); }
-.hm-how-rules .hm-how-ico { align-items: center; justify-content: center; height: 18px; }  
+.hm-how-rules .hm-how-ico { align-items: center; justify-content: center; height: 18px; }  /* 12px icons in a 16px slot, centred on the first line (Niki 2026-11-18) */
 .hm-how-rules .hm-how-ico svg { width: 12px; height: 12px; }
 .hm-how-rules { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
 .hm-how-rules li { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 18px; color: rgb(49 49 64); }
@@ -913,45 +948,63 @@ body.heat-off .hm-legend { visibility: hidden; }
 .hm-how-foot svg { width: 12px; height: 12px; color: rgb(156 156 172); }
 .hm-how-note { margin-top: 16px; padding-top: 12px; border-top: 1px solid rgb(245 246 249); font-size: 12px; line-height: 16px; color: rgb(156 156 172); }
 .hm-how-note.is-plain { margin-top: 12px; padding-top: 0; border-top: 0; }
+/* Row marks, 18px (Niki 2026-11-18: the 12px frame was too small). The reason line under each row
+   went: the calendar's hover card says it. Ghost grid: the symbol in the blocks' dashed frame;
+   Demand glow: the High frame itself. */
 .hm-row-mark { display: inline-flex; flex: none; padding: 1px; border: 1px dashed rgb(var(--hm-g)); border-radius: 4px; background: rgba(13,226,152,0.04); }
 .hm-row-mark svg { width: 14px; height: 14px; }
 .hm-row-mark.is-frame { width: 18px; height: 18px; padding: 0; box-sizing: border-box; border-color: rgba(var(--hm-g-edge),.85); background: #fff; box-shadow: inset 0 0 6px rgba(var(--hm-g),.6); }
 .hm-side-pad { padding-left: 24px; padding-right: 24px; }
+/* Spacing by relation (Niki 2026-11-18): the times are one group, 6 apart (row padding 3 + 3); the
+   list's label sits 12 above the first mark (the marks are 8 apart); the block title 16 above the label; a mark and its time 6. */
 .hm-side-body { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
 .hm-side-label { margin-bottom: 8px; }
-.hm-side-list { margin: 0 -12px; padding: 12px; border-radius: 12px; background: rgba(var(--hm-g),.07); }  
-.hm-side-list .ghost-side-row { width: calc(100% + 12px); margin: 0 -6px; padding-left: 6px; padding-right: 6px; border-radius: 12px; box-sizing: border-box; }  
+/* Ghost grid: the suggested times sit in a grey block, bled 12px into the sidebar padding so the
+   rows keep their width (Niki 2026-11-18). */
+.hm-side-list { margin: 0 -12px; padding: 12px; border-radius: 12px; background: rgba(var(--hm-g),.07); }  /* pale demand green (Niki 2026-11-18, was gray6) */
+/* Row hover inside the block: equal 8px on both sides of the content (the row used to hang 8px off
+   the left only), a step deeper than the block rather than white (Niki 2026-11-18). */
+.hm-side-list .ghost-side-row { width: calc(100% + 12px); margin: 0 -6px; padding-left: 6px; padding-right: 6px; border-radius: 12px; box-sizing: border-box; }  /* hover 6 in from the block edge, radius 12 (Niki 2026-11-18) */
 .hm-more { margin-top: 6px; padding: 0; border: 0; background: none; font: inherit; font-size: 12px; line-height: 18px; font-weight: 600; color: rgb(81 81 100); cursor: pointer; }
 .hm-more:hover { color: rgb(49 49 64); text-decoration: underline; }
+/* Medium suggestions (the fallback when a week has no High): the dashed lines a step lighter. */
 .hm-row-mark.is-2 { border-color: rgba(var(--hm-g),.5); }
 .ghost-event.is-level-2 .ghost-slot { border-color: rgba(var(--hm-g),.5); }
 .hm-side-list .ghost-side-row:hover { background: rgba(var(--hm-g),.12); }
+/* Demand glow: the controls in the top bar (Niki 2026-11-18). */
+/* Week / Month in one grey pill like Today, the current view in dark text, a hairline between
+   (Niki 2026-11-18, from her reference). */
 .hm-views { display: inline-flex; align-items: center; height: 32px; margin-right: 16px; padding: 0 4px; border-radius: 999px; background: rgb(245 246 249); box-sizing: border-box; }
 .hm-views > div { position: relative; display: inline-flex; align-items: center; height: 32px; margin: 0 !important; padding: 0 14px; color: rgb(156 156 172); }
 .hm-views > div.is-on { color: rgb(49 49 64) !important; }
-.hm-views > div:not(.is-on) { color: rgb(156 156 172) !important; }  
+.hm-views > div:not(.is-on) { color: rgb(156 156 172) !important; }  /* over the snapshot's Tailwind text colour */
 .hm-views > div + div::before { content: ''; position: absolute; left: 0; top: 10px; bottom: 10px; width: 1px; background: rgb(229 232 237); }
-.hm-top-group { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px 0 16px; border-radius: 999px; background: rgb(245 246 249); }  
+.hm-top-group { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px 0 16px; border-radius: 999px; background: rgb(245 246 249); }  /* a gray6 pill like Today; the pill opens the help panel, the switch toggles (Niki 2026-11-18) */
 .hm-top-group { cursor: pointer; }
 .hm-top-group:hover .hm-info { color: rgb(81 81 100); }
-.hm-top-group .hm-info { margin-right: 18px; }  
+.hm-top-group .hm-info { margin-right: 18px; }  /* longer pill, the switch set apart at the end (Niki 2026-11-18) */
 .hm-top-toggle { display: inline-flex; align-items: center; }
 .hm-top-name { font-size: 14px; line-height: 20px; font-weight: 500; color: rgb(49 49 64); user-select: none; }
 .hm-top-group .ghost-switch { margin-right: 0; }
 .hm-in-side .ghost-side-row { gap: 6px; padding-top: 3px; padding-bottom: 3px; }
 .hm-side-body .hm-legend { gap: 12px; }
 body.heat-off .hm-side-body, body.ghosts-off .hm-side-body { display: none; }
+/* Folded sidebar: a 48px strip with the arrow only, pointing right to open it again. */
 body.hm-side-collapsed .sideBar { flex-basis: 48px !important; width: 48px; }
 body.hm-side-collapsed .sideBar::after { left: 48px !important; }
 body.hm-side-collapsed .sideBar > :not(.hm-hide-bar) { display: none !important; }
 body.hm-side-collapsed .hm-hide-bar { justify-content: center; padding-left: 0; padding-right: 0; }
 body.hm-side-collapsed .hm-hide-bar > :not(svg) { display: none; }
 body.hm-side-collapsed .hm-hide-bar svg { transform: rotate(180deg); }
-.hm-run-new { border-color: rgba(0,179,189,.8); box-shadow: inset 0 0 24px rgba(0,179,189,.22), inset 0 0 6px rgba(0,179,189,.1); }  
+/* Booking chance (option 3, 2026-11-18). */
+.hm-run-new { border-color: rgba(0,179,189,.8); box-shadow: inset 0 0 24px rgba(0,179,189,.22), inset 0 0 6px rgba(0,179,189,.1); }  /* DS info blue */
+/* Best times only: the green glow a touch lighter (Niki 2026-11-18); Demand glow keeps its own. */
 body.hm-real-select .hm-run-3 { box-shadow: inset 0 0 26px rgba(var(--hm-g),.32), inset 0 0 8px rgba(var(--hm-g),.16); }
 body.hm-real-select .hm-run-2 { box-shadow: inset 0 0 18px rgba(var(--hm-g),.16), inset 0 0 5px rgba(var(--hm-g),.08); }
 .hm-how-area.is-new { border-color: rgba(0,179,189,.6); box-shadow: inset 0 0 8px rgba(0,179,189,.3); }
 .hm-run-gap { border-style: solid; }
+/* Regular and new students in one hour (Niki 2026-11-18): the dashed border fades from green
+   (top-left) to blue (bottom-right), and so does the inner glow. */
 .hm-run-both { border-color: transparent; box-shadow: inset 14px 14px 22px -10px rgba(var(--hm-g),.32), inset -14px -14px 22px -10px rgba(0,179,189,.32); }
 .hm-run-both::before, .hm-run-both::after { content: ''; position: absolute; inset: -1px; border-radius: inherit; border: 1px dashed; pointer-events: none; }
 .hm-run-both::before { border-color: rgba(var(--hm-g-edge),.85); -webkit-mask: linear-gradient(135deg, #000 30%, transparent 70%); mask: linear-gradient(135deg, #000 30%, transparent 70%); }
@@ -963,25 +1016,32 @@ body.hm-real-select .hm-run-2 { box-shadow: inset 0 0 18px rgba(var(--hm-g),.16)
 .hm-in-tier svg { flex: none; width: 14px; height: 14px; }
 .hm-in-why { margin-top: 2px; font-size: 12px; line-height: 16px; color: rgb(81 81 100); }
 body.hm-bt-card .hm-rec .hm-in { display: none; }
+/* One-colour page: how many frames, Fewer / Normal / More, the Week / Month pill look (Niki 2026-11-18). */
+/* One colour: the legend rows pick how many levels show; a check badge on each shown swatch (Niki 2026-11-18). */
 .hm-level-pick { width: 100%; padding: 0; border: 0; background: none; font-family: inherit; text-align: left; cursor: pointer; }
 .hm-level-pick .hm-how-area { position: relative; overflow: hidden; }
+/* A triangle tucked into the swatch's top-right corner, with a small tick (Niki 2026-11-18). */
 .hm-pick-badge { position: absolute; top: -1px; right: -1px; width: 13px; height: 13px; opacity: 0; transition: opacity .15s ease; }
+/* The corner triangle alone marks a picked row, no tick (Niki 2026-11-19: the tick was too small to read). */
 .hm-pick-badge::before { content: ''; position: absolute; inset: 0; background: rgb(var(--hm-g-strong)); clip-path: polygon(0 0, 100% 0, 100% 100%); }
 .hm-pick-badge.is-new::before { background: rgb(0 179 189); }
 .hm-level-pick.is-on .hm-pick-badge { opacity: 1; }
 .hm-level-pick:hover .hm-how-label { color: rgb(49 49 64); }
+/* One-colour page, "All": the extra times as Low, always visible (Demand glow's Low fades in on hover only). */
 .hm-run.hm-run-lo { border-color: rgba(var(--hm-g),.35); box-shadow: inset 0 0 14px rgba(var(--hm-g),.10); }
+/* One colour: only High glows; Medium and Low are a dashed border alone, so High stands apart (Niki 2026-11-19). */
 body.hm-bt-mono .hm-run.hm-run-2 { border-color: rgba(var(--hm-g),.7); box-shadow: none; }
 body.hm-bt-mono .hm-run.hm-run-lo { border-color: rgba(var(--hm-g),.4); box-shadow: none; }
 body.hm-bt-mono .hm-how-area.is-2 { border-color: rgba(var(--hm-g),.7); box-shadow: none; }
 body.hm-bt-mono .hm-how-area.is-1 { border-color: rgba(var(--hm-g),.4); box-shadow: none; }
 .hm-card-level.is-quiet { font-weight: 600; color: rgb(81 81 100); }
 .hm-rec.is-short .hm-in-why { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.hm-rec.is-short .hm-in-tier { font-size: 12px; }  
+.hm-rec.is-short .hm-in-tier { font-size: 12px; }  /* fits one line in a one-hour frame */
 .hm-rec.is-new.is-hover, .hm-rec.is-gap.is-hover { background: rgba(0,179,189,.06); }
 .hm-gap-flag { position: absolute; top: 6px; right: 6px; display: inline-flex; width: 16px; height: 16px; color: rgb(0 179 189); }
 .hm-week-note { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 6; width: max-content; white-space: nowrap; padding: 6px 12px; border-radius: 999px; background: rgb(49 49 64); color: #fff; font-size: 12px; line-height: 16px; font-weight: 600; pointer-events: none; }
 .hm-week-note[hidden] { display: none; }
+/* Month view (Niki 2026-11-20), from teach-web legacy Calendar/components/Month. */
 .hm-month { position: relative; display: flex; flex-direction: column; min-width: 1140px; }
 .hm-month[hidden], .italki-week-view[hidden] { display: none !important; }
 .hm-month .italki-month-header { display: flex; height: 44px; }
@@ -1001,6 +1061,7 @@ body.hm-bt-mono .hm-how-area.is-1 { border-color: rgba(var(--hm-g),.4); box-shad
 .hm-month .italki-month-events > div { flex: 1; min-width: 0; }
 .hm-month-lesson { display: flex; align-items: center; height: 24px; margin: 0 8px 2px; padding: 0 6px; border-radius: 4px; background: rgb(0 179 189); font-size: 12px; font-weight: 500; line-height: 24px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 body.hm-month-view .hm-top-group { display: none !important; }
+/* Student calendar view (Niki 2026-11-20): no open time, no teaching lessons, no suggestions. */
 body.hm-student-view [data-avail], body.hm-student-view .event-booked-lesson, body.hm-student-view [role=event-time]:has(.event-booked-lesson), body.hm-student-view .hm-top-group, body.hm-student-view .hm-run, body.hm-student-view .hm-rec, body.hm-student-view .hm-sugg, body.hm-student-view .hm-card-rec, body.hm-student-view .hm-week-note, body.hm-student-view .hm-gridlight { display: none !important; }
 body.heat-off .hm-week-note { display: none; }
 .hm-how-check { align-items: flex-start; cursor: pointer; }
@@ -1017,26 +1078,34 @@ body.heat-off .hm-week-note { display: none; }
 .hm-how-area.is-gap { border-style: solid; border-color: rgba(0,179,189,.8); box-shadow: inset 0 0 8px rgba(0,179,189,.3); }
 .hm-how-check .hm-how-label { font-weight: 600; }
 .hm-how-swatches { display: inline-flex; gap: 4px; }
-.hm-how-area.is-reg { border-color: rgba(var(--hm-g-edge),.75); background: #fff; box-shadow: inset 0 0 9px rgba(var(--hm-g),.45); }  
+/* One swatch for both regular-student tiers: deep on the left fading to light (Niki 2026-11-18). */
+.hm-how-area.is-reg { border-color: rgba(var(--hm-g-edge),.75); background: #fff; box-shadow: inset 0 0 9px rgba(var(--hm-g),.45); }  /* glows in from the edges, like the frames */
 .hm-how-swatches .hm-how-mark { width: auto; }
 .hm-how-swatches .hm-how-area { width: 24px; height: 18px; border-radius: 4px; }
 .hm-why { display: grid; gap: 12px; margin: 14px 0 16px; }
-.hm-show-label { font-size: 14px; line-height: 20px; font-weight: 700; color: rgb(49 49 64); }  
+.hm-show-label { font-size: 14px; line-height: 20px; font-weight: 700; color: rgb(49 49 64); }  /* bridges who-books to the level picker (Niki 2026-11-19: top and bottom felt disconnected) */
 .hm-show-label + .hm-how-gap { margin-top: 8px; }
 .hm-open-high { display: block; width: 100%; margin-top: 12px; padding: 10px 12px; border: 1px solid rgb(var(--hm-g-strong)); border-radius: 999px; background: #fff; color: rgb(var(--hm-g-strong)); font: inherit; font-size: 14px; line-height: 20px; font-weight: 700; cursor: pointer; }
 .hm-open-high:hover { background: rgba(var(--hm-g),.08); }
 .hm-bulk-lead { font-size: 14px; line-height: 20px; color: rgb(49 49 64); }
-.hm-intro { width: 520px; }  
+/* New-feature intro (Niki 2026-11-20), on the calendar's own modal: header, body, footer. */
+.hm-intro { width: 520px; }  /* the design system's default modal width */
 .hm-intro { max-height: calc(100vh - 48px); display: flex; flex-direction: column; }
-.hm-intro .hm-intro-body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }  
+.hm-intro .hm-intro-body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }  /* header and footer stay, the body scrolls on short screens (Modal B-08) */
 .hm-intro .av-head { border-bottom-color: var(--ui-color-divider, #F5F6F9); }
-.hm-intro .av-foot { border-top-color: var(--ui-color-divider, #F5F6F9); }  
+.hm-intro .av-foot { border-top-color: var(--ui-color-divider, #F5F6F9); }  /* the Modal's divider token, as .ui-modal__header/__footer */
 .hm-intro-body { padding: 24px; }
 .hm-intro-hero { display: grid; place-items: center; height: 160px; border-radius: 8px; background: #ECFFF9; }
+/* The hero plays how it works, a 6.4s loop (Niki 2026-11-20: 做成动画释义): a suggested frame appears,
+   the pointer comes to it and its reason card rises beside it, the pointer presses Open this time, the frame
+   becomes opened time. Arrivals on the soft curve; reduced motion shows the frame and card at rest. */
+/* Drawn like the real calendar (Niki 2026-11-20: 释义图和真实的一致): the frame has no faces of its own,
+   Open this time shows only while the pointer is on it, and the card is the real reason card, smaller. */
 .hm-intro-hero { position: relative; height: 200px !important; background: none !important; display: flex !important; flex-direction: column; align-items: stretch !important; border: 1px solid rgb(233 233 235); border-radius: 8px; overflow: hidden; }
 .hm-intro-hero .hm-intro-cal { flex: 1; height: auto !important; border: 0 !important; border-radius: 0 !important; }
+/* The mini top bar and legend (Niki 2026-11-20: 把图例的联动也加入进去). */
 .hm-ia-legend { display: flex; align-items: center; gap: 10px; }
-.hm-ia-bar { flex: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: 32px; padding: 0 10px; border-bottom: 1px solid rgb(233 233 235); white-space: nowrap; gap: 10px; }  
+.hm-ia-bar { flex: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: 32px; padding: 0 10px; border-bottom: 1px solid rgb(233 233 235); white-space: nowrap; gap: 10px; }  /* the legend swatches only, in one row, top right: the mapping, no words (Niki 2026-11-20) */
 .hm-ia-pill { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 6px 0 10px; border-radius: 999px; background: rgb(245 246 249); font-size: 10px; color: rgb(49 49 64); }
 .hm-ia-sw { position: relative; width: 22px; height: 12px; border-radius: 999px; background: rgb(73 73 89); }
 .hm-ia-sw { transition: background-color .2s ease; }
@@ -1054,7 +1123,7 @@ body.heat-off .hm-week-note { display: none; }
 .hm-ia-swatch.is-gap { border-color: rgba(var(--hm-g),.75); box-shadow: inset 0 0 4px rgba(var(--hm-g),.25); }
 .hm-ia-swatch.is-quiet { border-color: rgba(110,110,128,.7); background: rgb(245 246 249); }
 .hm-ia-row.is-on .hm-ia-swatch::after { content: ''; position: absolute; right: 0; top: 0; width: 7px; height: 7px; background: rgb(var(--hm-g-strong)); clip-path: polygon(0 0, 100% 0, 100% 100%); }
-.hm-ia-row.is-on .hm-ia-swatch.is-quiet::after { background: rgb(110 110 128); }  
+.hm-ia-row.is-on .hm-ia-swatch.is-quiet::after { background: rgb(110 110 128); }  /* no green band: the calendar fills the picture (Niki 2026-11-20) */
 .hm-intro-cal { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); width: 100%; height: 100%; border: 1px solid rgb(233 233 235); border-radius: 8px; background: #fff; overflow: hidden; box-sizing: border-box; }
 .hm-intro-cal > span { border-left: 1px solid rgb(233 233 235); background: repeating-linear-gradient(to bottom, transparent 0 34px, rgb(240 240 244) 34px 35px); }
 .hm-intro-cal > span:first-child { border-left: 0; }
@@ -1079,10 +1148,14 @@ body.heat-off .hm-week-note { display: none; }
 .hm-ia-dots i.on { background: rgb(var(--hm-g-strong)); }
 .hm-ia-dots.is-t i.on { background: rgb(73 73 89); }
 .hm-ia-pointer { position: absolute; left: 0; top: 0; filter: drop-shadow(0 1px 1px rgba(0,0,0,.2)); }
+/* The hero now plays scenes from JS (WAAPI), one per reason (Niki 2026-11-20: 多演示 2 个效果).
+   Everything starts hidden; reduced motion shows the first scene at rest. */
 .hm-ia-frame, .hm-ia-avail, .hm-ia-card, .hm-ia-pointer, .hm-ia-frame .hm-intro-open { opacity: 0; }
 .hm-ia-frame.is-gap { border-color: rgba(var(--hm-g),.75); box-shadow: inset 0 0 14px rgba(var(--hm-g),.16); }
 .hm-ia-frame.is-a { border-color: rgba(var(--hm-g),.45); box-shadow: none; }
 .hm-ia-frame.is-quiet { border-color: rgba(110,110,128,.7); background: rgba(245,246,249,.55); box-shadow: none; }
+
+/* Layers as on the calendar: open time and frames below, the reason card above them, the pointer on top (Niki 2026-11-20). */
 .hm-ia-avail { z-index: 1; }
 .hm-ia-frame { z-index: 2; }
 .hm-ia-card { z-index: 3; }
@@ -1105,13 +1178,16 @@ body.heat-off .hm-week-note { display: none; }
 .hm-intro-row.is-line { align-items: center; margin-top: 10px; }
 .hm-intro-row.is-line > span:last-child { font-size: 14px; line-height: 20px; color: rgb(49 49 64); }
 .hm-intro-row.is-inline { align-items: center; }
-.hm-intro-row.is-inline > span:last-child { flex-direction: row; align-items: baseline; gap: 8px; }  
-.hm-intro-legend-title { margin-top: 22px; font-size: 14px; line-height: 22px; font-weight: 700; color: rgb(49 49 64); }  
+.hm-intro-row.is-inline > span:last-child { flex-direction: row; align-items: baseline; gap: 8px; }  /* name and 'On by default' on one line (Niki 2026-11-20) */
+.hm-intro-legend-title { margin-top: 22px; font-size: 14px; line-height: 22px; font-weight: 700; color: rgb(49 49 64); }  /* a section heading, same size as the text above it (Niki 2026-11-20) */
+/* The four marks on a grey block, as the legend panel groups them (Niki 2026-11-20). */
 .hm-intro-legend { margin-top: 18px; padding: 0 16px; border-radius: 12px; background: rgb(245 246 249); transition: background-color .15s ease; }
+/* Hover on the fold row (Niki 2026-11-20): the grey block deepens one step, chevron darkens. */
 .hm-intro-legend:has(.hm-intro-fold:hover) { background: rgb(236 237 242); }
 .hm-intro-fold:hover .hm-intro-chev { color: rgb(49 49 64); }
 .hm-intro-fold:focus-visible { outline: 2px solid rgb(var(--hm-g)); outline-offset: 2px; border-radius: 8px; }
 .hm-intro-legend .hm-intro-ico.is-swatch .hm-ia-swatch { background-color: #fff; }
+/* Legend folded by default (Niki 2026-11-20). */
 .hm-intro-fold { display: flex; align-items: center; gap: 12px; width: 100%; height: 48px; padding: 0; border: 0; background: none; font: inherit; font-size: 14px; color: rgb(49 49 64); cursor: pointer; text-align: left; }
 .hm-intro-swatches { display: flex; gap: 6px; }
 .hm-intro-swatches .hm-ia-row { padding: 0; }
@@ -1119,8 +1195,10 @@ body.heat-off .hm-week-note { display: none; }
 .hm-intro-fold-label { flex: 1; font-weight: 600; }
 .hm-intro-chev { flex: none; color: rgb(110 110 128); transition: transform .2s cubic-bezier(.25,.8,.25,1), color .15s ease; }
 .hm-intro-legend.is-open .hm-intro-chev { transform: rotate(180deg); }
-.hm-intro-legend-rows { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .4s cubic-bezier(.4,0,.2,1); }  
+/* Opens by growing, not jumping (Niki 2026-11-20: 立马变高，不丝滑): grid rows 0fr -> 1fr, 320ms on the soft curve, content fades in. */
+.hm-intro-legend-rows { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .4s cubic-bezier(.4,0,.2,1); }  /* even ease both ways: the soft curve did most of the growth in the first 60ms */
 .hm-intro-legend-inner { min-height: 0; overflow: hidden; opacity: 0; transition: opacity .2s ease; }
+/* Row swatches line up with the swatches in the header row (Niki 2026-11-20: 图例左对齐). */
 .hm-intro-legend-rows .hm-intro-ico.is-swatch { flex: 0 0 18px; width: 18px; height: 20px; justify-content: start; place-items: center start; }
 .hm-intro-legend-rows .hm-intro-ico.is-swatch .hm-ia-swatch { width: 18px; height: 14px; }
 .hm-intro-legend-rows .hm-intro-row { gap: 16px; }
@@ -1136,9 +1214,10 @@ body.heat-off .hm-week-note { display: none; }
 .hm-intro-legend-note { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgb(233 233 238); font-size: 12px; line-height: 18px; color: rgb(110 110 128); }
 .hm-intro-legend-rows .hm-intro-row > span:last-child > span { font-size: 12px; line-height: 18px; color: rgb(110 110 128); }
 .hm-intro-legend-tip { margin-top: 14px; font-size: 12px; line-height: 18px; color: rgb(156 156 172); }
+/* The intro sits in the middle of the screen, as the design system's Modal (Niki 2026-11-20). */
 .av-mask:has(.hm-intro) { align-items: center; padding: 24px; }
 .hm-intro-note { font-size: 12px; line-height: 18px; color: rgb(156 156 172); }
-.hm-intro .av-foot { justify-content: space-between; align-items: center; gap: 16px; }  
+.hm-intro .av-foot { justify-content: space-between; align-items: center; gap: 16px; }  /* the note sits beside Got it (Niki 2026-11-20) */
 .hm-tips .av-body { display: flex; flex-direction: column; gap: 16px; }
 .hm-tip { display: flex; flex-direction: column; gap: 2px; font-size: 14px; line-height: 20px; color: rgb(110 110 128); }
 .hm-tip b { font-weight: 600; color: rgb(49 49 64); }
@@ -1168,10 +1247,10 @@ body.heat-off .hm-week-note { display: none; }
 .hm-top-group .hm-mode > div.is-on { background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
 .hm-bt-side .hm-side-body { margin-top: 0; }
 .hm-row-mark.is-person { color: rgb(var(--hm-g)); }
-.hm-row-mark.is-new { color: rgb(0 179 189); border-color: rgb(0 179 189); background: rgba(0,179,189,.05); }  
+.hm-row-mark.is-new { color: rgb(0 179 189); border-color: rgb(0 179 189); background: rgba(0,179,189,.05); }  /* DS Status/Info blue */
 .hm-how-ico.is-regular { color: rgb(var(--hm-g)); }
 .hm-how-ico.is-new { color: rgb(0 179 189); }
-.hm-gap-alert { display: flex; align-items: flex-start; gap: 6px; margin: 0 -12px; padding: 10px 6px 10px 12px; border-radius: 12px; background: rgb(237 250 250); }  
+.hm-gap-alert { display: flex; align-items: flex-start; gap: 6px; margin: 0 -12px; padding: 10px 6px 10px 12px; border-radius: 12px; background: rgb(237 250 250); }  /* DS info surface */
 .hm-gap-alert[hidden] { display: none; }
 .hm-gap-ico { display: inline-flex; flex: none; width: 16px; height: 16px; margin-top: 1px; color: rgb(0 179 189); }
 .hm-gap-body { flex: 1; display: flex; flex-direction: column; gap: 2px; padding: 0; border: 0; background: none; font: inherit; text-align: left; cursor: pointer; }
@@ -1195,7 +1274,7 @@ body.heat-off .hm-week-note { display: none; }
 .ghost-versions a.is-on { background: #fff; color: rgb(49 49 64); opacity: 1; }
 .hm-run.hm-run-need { border-color: rgba(var(--hm-g),.75); box-shadow: inset 0 0 14px rgba(var(--hm-g),.16); }
 .hm-how-area.is-need { border-color: rgba(var(--hm-g),.75); background: #fff; box-shadow: inset 0 0 6px rgba(var(--hm-g),.22); }
-.hm-run.hm-run-a { border-color: rgba(var(--hm-g),.6); box-shadow: inset 0 0 14px rgba(var(--hm-g),.10); }  
+.hm-run.hm-run-a { border-color: rgba(var(--hm-g),.6); box-shadow: inset 0 0 14px rgba(var(--hm-g),.10); }  /* the lightest glow, like Demand glow's Low, so it is not a bare white box (Niki 2026-11-19) */
 .hm-run.hm-run-quiet { z-index: 2; border-color: rgb(140 140 158); border-width: 1.5px; box-shadow: none; }
 .hm-how-area.is-quiet { border-color: rgb(140 140 158); box-shadow: none; background: #fff; }
 .hm-pick-badge.is-quiet::before { background: rgb(110 110 128); }
@@ -1207,29 +1286,33 @@ body.heat-off .hm-week-note { display: none; }
 .hm-how-v4 .hm-how-gap.hm-why { margin: 8px 0 0; gap: 14px; }
 .hm-how-v4 .hm-why-row { gap: 12px; align-items: center; }
 .hm-how-v4 .hm-why-row > .hm-how-mark { margin: 0; }
-.hm-how-v4 .hm-why-row .hm-how-area { width: 32px; height: 32px; border-radius: 6px; }  
+.hm-how-v4 .hm-why-row .hm-how-area { width: 32px; height: 32px; border-radius: 6px; }  /* as tall as title + line beside it (Niki 2026-11-19) */
 .hm-how-v4 .hm-why-row b { font-size: 14px; line-height: 20px; }
 .hm-how-v4 .hm-why-row b + span { font-size: 12px; line-height: 16px; }
-.ghost-pop:has(.hm-how-v4) { width: 340px; }  
+.ghost-pop:has(.hm-how-v4) { width: 340px; }  /* row titles stay on one line (Niki 2026-11-19) */
 .hm-how-v4 .hm-why-row b { white-space: nowrap; }
-.hm-how-v4 .hm-open-all { display: block; width: 100%; margin-top: 16px; font-weight: 600; }  
+.hm-how-v4 .hm-open-all { display: block; width: 100%; margin-top: 16px; font-weight: 600; }  /* DS dark grey button, Panda type="primary" (Niki 2026-11-19: light grey read as switching all three rows on) */
 .hm-card-hint.hm-card-hint-flush { padding-left: 0; margin-left: 0; }
-.hm-now-line { position: absolute; left: 0; right: 0; z-index: 50; height: 1px; background: rgb(255 68 56); pointer-events: none; }  
+.hm-now-line { position: absolute; left: 0; right: 0; z-index: 50; height: 1px; background: rgb(255 68 56); pointer-events: none; }  /* the real calendar's TimeIndicator (bg-red2) */
 .hm-now-line span { position: absolute; top: -9px; left: 0; transform: translateX(-100%); height: 22px; padding: 2px 4px; border-radius: 6px; background: rgb(255 68 56); color: #fff; font-size: 12px; line-height: 18px; font-weight: 500; }
-.hm-sugg-ico { display: inline-flex; align-items: center; justify-content: flex-start; flex: 0 0 26px; width: 26px; }    
+.hm-sugg-ico { display: inline-flex; align-items: center; justify-content: flex-start; flex: 0 0 26px; width: 26px; }  /* 30 left too much air before the text; 26 keeps the count badge off the text (Niki 2026-11-20) */  /* one fixed column so the times line up, however many avatars (Niki 2026-11-19) */
 .hm-sugg-ico.hm-card-avatars .hm-card-avatar + .hm-card-avatar { margin-left: -8px; }
 .hm-sugg-ico .hm-card-avatar { flex-basis: 18px !important; width: 18px; height: 18px !important; font-size: 10px !important; }
 body.heat-off .hm-sugg { display: none !important; }
+/* A mark found from the sidebar blinks three times once the calendar has scrolled to it. */
 .hm-run.is-glow::after { content: ''; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 22px 4px rgba(var(--hm-g),.4); opacity: 0; animation: hm-glow .9s ease-in-out 3; }
+/* Three 0.9s pulses (Niki 2026-11-20: 2s too slow, 0.6s too quick). The pulse is one extra inner glow laid over the mark's own,
+   so every kind brightens by the same amount: replacing the mark's shadow made weak marks jump and strong ones barely move. */
 @keyframes hm-glow { 50% { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .hm-run.is-glow::after { animation: none; } }
+/* Every time that can still take availability shows the hand, as a clickable surface (Niki 2026-11-19); time gone stays plain. */
 body.hm-bt-card .italki-day-slot { cursor: pointer; }
-.hm-sugg .hm-side-list .ghost-side-row { border-radius: 6px; }    
+.hm-sugg .hm-side-list .ghost-side-row { border-radius: 6px; }  /* concentric: block radius 12 minus the 6px inset (Niki 2026-11-19: hover corners looked off) */  /* Tailwind .flex is !important in this snapshot */
 .hm-card-gap { display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 16px; row-gap: 8px; margin-top: 10px; padding: 10px 12px; border-radius: 8px; background: rgb(245 246 249); font-size: 13px; line-height: 18px; color: rgb(81 81 100); }
 .hm-card-gap .hm-how-dots i { width: 7px; height: 7px; }
-.hm-card-level.is-stacked { flex-direction: column; align-items: flex-start; gap: 6px; }  
-body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  
-.hm-avail-pop { position: fixed; z-index: 1001; width: 284px; border-radius: 12px; background: #fff; box-shadow: 0 0 14px rgba(0,40,117,.07), 0 4px 16px rgba(0,0,0,.08); display: none; }  
+.hm-card-level.is-stacked { flex-direction: column; align-items: flex-start; gap: 6px; }  /* several faces: the title on its own line under them (Niki 2026-11-19) */
+body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /* every mark's card as wide as the gap card (Niki 2026-11-19: that size is right) */
+.hm-avail-pop { position: fixed; z-index: 1001; width: 284px; border-radius: 12px; background: #fff; box-shadow: 0 0 14px rgba(0,40,117,.07), 0 4px 16px rgba(0,0,0,.08); display: none; }  /* the calendar's own Availability popover (EditAvailableTime) */
 .hm-avail-pop.is-open { display: block; }
 .hm-avail-head { display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 16px; border-bottom: 1px solid rgb(245 246 249); font-size: 16px; line-height: 24px; font-weight: 700; color: rgb(49 49 64); }
 .hm-avail-x { border: 0; background: none; font-size: 20px; color: rgb(81 81 100); cursor: pointer; }
@@ -1239,7 +1322,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
 .hm-avail-note b { display: block; font-weight: 600; color: rgb(49 49 64); }
 .hm-avail-actions { display: flex; justify-content: flex-end; gap: 16px; padding: 12px 16px 16px; }
 .hm-avail-actions button { width: 24px; height: 24px; padding: 0; border: 0; background: none; color: rgb(81 81 100); cursor: pointer; }
-.hm-card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 22px; }  
+.hm-card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 22px; }  /* who sits beside the date line only; the title keeps the full width */
 .hm-card-top > .hm-card-avatars, .hm-card-top > .hm-card-icon { flex: 0 0 auto; margin: -2px 0 -4px; }
 .hm-card-top .hm-card-avatar { width: 22px; height: 22px; flex-basis: 22px; font-size: 11px; }
 .hm-card-top > .hm-card-icon { width: 22px; height: 22px; }
@@ -1261,10 +1344,12 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
 .hm-card-icon { flex: 0 0 20px; color: rgb(var(--hm-g-strong)); }
 .hm-card-avatars { display: flex; flex: 0 0 auto; }
 .hm-card-avatars .hm-card-avatar + .hm-card-avatar { margin-left: -6px; box-shadow: 0 0 0 2px #fff; }
-.hm-card-avatar { flex: 0 0 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: rgb(255 214 153); color: rgb(122 72 0); font-size: 12px; line-height: 1; font-weight: 700; }  
+.hm-card-avatar { flex: 0 0 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: rgb(255 214 153); color: rgb(122 72 0); font-size: 12px; line-height: 1; font-weight: 700; }  /* the regular's avatar (sample: initial) */
 .hm-card-avatar[style*=background-image] { background-color: rgb(229 232 237); background-size: cover; background-position: center; }
 .hm-card-swatch { flex: 0 0 auto; width: 20px; height: 14px; border-radius: 4px; border-width: 1px; border-style: dashed; box-sizing: border-box; }
 .hm-why button.hm-why-row:not(.is-on) b { color: rgb(110 110 128); }
+/* Make the corner badge read as "shown" (Niki 2026-11-19): an unticked row fades, swatch and all;
+   hovering it brings the row back and previews a faint badge, so the row reads as clickable. */
 .hm-how-v4 button.hm-why-row { transition: opacity .15s ease; }
 .hm-how-v4 button.hm-why-row:not(.is-on) .hm-how-mark { opacity: .45; transition: opacity .15s ease; }
 .hm-how-v4 button.hm-why-row:not(.is-on):hover .hm-how-mark { opacity: 1; }
@@ -1285,12 +1370,19 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
 
 <div style="visibility: visible;"><div></div><div></div></div><img src="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2264%22%20height%3D%2264%22%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2232%22%20fill%3D%22%23E5E8ED%22%2F%3E%3C%2Fsvg%3E" border="0" height="0" width="0" style="position: absolute; visibility: hidden;">
 <nav class="ghost-versions"></nav><script>
+// Shared by both teacher-heatmap prototypes (ghost slots, PRD heatmap), 2026-11-12.
+// Runs on a static snapshot of the Moon teacher calendar (week Nov 15-21, 2026). Everything
+// here is sample data. Exposes window.HM for the variant script that runs after it.
 (() => {
   const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const DATES = [15, 16, 17, 18, 19, 20, 21];
+  // Month per column; a page that moves through weeks can cross into December (best-times, 2026-11-18).
   const MONTHS = DATES.map(() => 'Nov');
   const AVAIL = [[1, 9, 12], [1, 19, 21], [2, 19, 21], [3, 9, 12], [3, 19, 22], [4, 19, 21], [5, 9, 11], [6, 10, 13]];
   const LESSONS = [[1, 19, 20], [3, 20, 21], [4, 19.5, 20.5], [6, 10, 11]];
+  // Sample demand score per day and hour, 0-100; null = not enough data (never shown as Low).
+  // Levels come from the score: Low < 40, Medium 40-69, High >= 70. Recommendations use a
+  // higher bar, RECOMMEND_MIN, so only the busiest High hours become suggestions.
   const SCORE = DAYS.map((_, d) => Array.from({ length: 24 }, (_, h) => {
     if (h < 7 || h === 23) return null;
     const weekend = d === 0 || d === 6;
@@ -1308,20 +1400,24 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     if (h === 22) return 55;
     return 28;
   }));
-  SCORE[0][14] = 74; SCORE[0][15] = 76; 
-  SCORE[2][21] = 90; SCORE[4][21] = 88; 
-  SCORE[5][20] = 62; SCORE[5][21] = 60; 
+  SCORE[0][14] = 74; SCORE[0][15] = 76; // Sunday afternoon: High, but under the recommendation bar
+  SCORE[2][21] = 90; SCORE[4][21] = 88; // Tue and Thu, right after the teacher's evening blocks
+  SCORE[5][20] = 62; SCORE[5][21] = 60; // Friday evening: Medium
   const RECOMMEND_MIN = 85;
   const MAX_RECOMMEND = 4;
+  // Night in the teacher's own time zone: the heatmap still shows it, but nothing there is
+  // recommended (Niki 2026-11-12). 00:00-07:00 is a prototype assumption.
   const NIGHT = [0, 7];
   const toLevel = (v) => (v == null ? null : v >= 70 ? 3 : v >= 40 ? 2 : 1);
   const DEMAND = SCORE.map((hours) => hours.map(toLevel));
   const LEVEL = { 1: 'Low', 2: 'Medium', 3: 'High' };
+
   const hm = (h) => { const m = Math.round(h * 60); return `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`; };
   const range = (a, b) => `${hm(a)} - ${hm(b)}`;
   const label = (day, from, to) => `${DAYS[day]}, ${MONTHS[day]} ${DATES[day]} · ${hm(from)}-${hm(to)}`;
   const cols = [...document.querySelectorAll('.italki-day-slot')];
   const scroller = document.querySelector('.italki-time-content');
+
   const place = (el, from, to, z) => {
     el.setAttribute('role', 'event-time');
     el.className = 'italki-event absolute w-full cursor-pointer block';
@@ -1336,6 +1432,13 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     return el;
   };
   const isOpen = (day, h) => [...cols[day].querySelectorAll('[data-avail]')].some((n) => h >= +n.dataset.from && h < +n.dataset.to);
+
+  // The recommendation rule (Ghost grid; Niki 2026-11-18): whole High runs the teacher has not
+  // opened, outside the night, always filled to MAX_RECOMMEND when there are enough. Runs that
+  // reach RECOMMEND_MIN come first, then runs right next to an open block (Niki 2026-11-12: easiest
+  // to say yes to, and they keep the day in one stretch), then by score. With no High run this week
+  // the same rule runs on Medium (Niki 2026-11-18). `next` marks a run that starts where an open
+  // block ends, `before` one that ends where an open block starts; `v` is the level, 3 or 2.
   const runsWhere = (fits, v) => {
     const out = [];
     SCORE.forEach((hours, d) => {
@@ -1352,6 +1455,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     });
     return out;
   };
+  // `all` returns the whole ranked list, for topping the suggestions back up to MAX_RECOMMEND.
   const recommend = (all = false) => {
     const rank = (list) => list.sort((a, b) => (b.peak >= RECOMMEND_MIN) - (a.peak >= RECOMMEND_MIN)
       || (b.next || b.before) - (a.next || a.before) || b.score - a.score);
@@ -1359,7 +1463,10 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     const ranked = rank(high.length ? high : runsWhere((_, level) => level === 2, 2));
     return all ? ranked : ranked.slice(0, MAX_RECOMMEND);
   };
+  // Nothing to suggest: either every busy hour is already open, or the week has no busy hours.
   const noBusyHours = () => DEMAND.every((hours) => hours.every((v) => !v || v < 2));
+
+  // Replace the account's real schedule with sample data.
   document.querySelectorAll('.italki-day-slot .italki-event').forEach((n) => n.remove());
   AVAIL.forEach(([d, a, b]) => availBlock(d, a, b));
   LESSONS.forEach(([d, a, b]) => {
@@ -1367,6 +1474,8 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     el.innerHTML = `<div class="event-booked-lesson relative h-full w-full bg-transparent p-[1px]"><div class="flex h-full w-full flex-row overflow-hidden rounded-dot5 border border-solid border-gray5 bg-white"><div class="mr-[6px] h-full w-[6px]" style="background:rgb(0,179,189)"></div><div class="flex w-[calc(100%_-_16px)] flex-row flex-wrap items-center py-1"><div class="mr-1"><span class="ghost-avatar"></span></div><div class="text-tiny font-medium leading-[18px] text-gray3">${range(a, b)}</div></div></div></div>`;
     cols[d].appendChild(el);
   });
+
+  // Heat layer: one div per hour, under every event, never catches the pointer.
   const heatLayer = (cls) => cols.map((col, d) => {
     const layer = document.createElement('div');
     layer.className = `hm-layer ${cls}`;
@@ -1379,6 +1488,9 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     col.insertBefore(layer, col.firstChild);
     return layer;
   });
+
+  // Toolbar switch, left of Week / Month.
+  // Something in the top bar, between Month and Create (Demand glow's demand switch, Niki 2026-11-18).
   const addToToolbar = (html) => {
     const month = [...document.querySelectorAll('div')].find((n) => n.textContent.trim() === 'Month' && n.children.length === 0);
     const el = document.createElement('div');
@@ -1387,12 +1499,17 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     month.after(el);
     return el;
   };
+
+  // Hide sidebar works in both versions, as in the real calendar: the sidebar folds to a 48px strip
+  // holding only the arrow, and everything in it (the demand block too) folds with it; the arrow
+  // opens it again (Niki 2026-11-18). The calendar takes the space, so layout listeners re-measure.
   {
     const sideBar = document.querySelector('.sideBar');
     const hideLabel = [...sideBar.querySelectorAll('div')].find((n) => n.children.length === 0 && n.textContent.trim() === 'Hide sidebar');
     const hideBar = hideLabel.parentElement;
     hideBar.classList.add('hm-hide-bar');
     hideBar.setAttribute('role', 'button');
+    // Folded, the date controls would slide under View Tips: keep them 24px clear of it.
     const tips = [...document.querySelectorAll('div,span,button,a')].find((n) => n.textContent.trim() === 'View Tips');
     const today = [...document.querySelectorAll('div,span,button')].find((n) => n.children.length === 0 && n.textContent.trim() === 'Today');
     const dates = today.closest('.flex.items-center');
@@ -1407,7 +1524,11 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
       window.dispatchEvent(new Event('resize'));
     });
   }
+
+  // Sidebar block under Lesson status.
   const sideBlock = () => {
+    // Every part of the sidebar gets 24 on both sides (was 40 left; 0 or 16 right), both versions
+    // (Niki 2026-11-18; a change to the existing sidebar, to be agreed).
     document.querySelectorAll('.sideBar .pl-10').forEach((n) => { n.classList.remove('pl-10', 'pr-4'); n.classList.add('hm-side-pad'); });
     const status = [...document.querySelectorAll('div')].find((n) => n.textContent.trim() === 'Lesson status' && n.children.length === 0);
     const side = document.createElement('div');
@@ -1415,6 +1536,8 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     status.parentElement.after(side);
     return side;
   };
+
+  // Popover.
   const pop = document.createElement('div');
   pop.className = 'ghost-pop';
   document.body.appendChild(pop);
@@ -1435,6 +1558,8 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   pop.addEventListener('click', (e) => e.stopPropagation());
   document.addEventListener('click', closePop);
   scroller.addEventListener('scroll', closePop);
+
+  // Toast with undo.
   const toast = document.createElement('div');
   toast.className = 'ghost-toast';
   document.body.appendChild(toast);
@@ -1446,6 +1571,9 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toast.classList.remove('is-open'), 5000);
   };
+
+  // Open a time; touching availability merges into one block, like the real calendar.
+  // Returns an undo function.
   const openTime = (day, from, to) => {
     const near = [...cols[day].querySelectorAll('[data-avail]')].find((n) => +n.dataset.to === from || +n.dataset.from === to);
     let real; let undo;
@@ -1459,10 +1587,12 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
       undo = () => real.remove();
     }
     real.classList.add('ghost-landed');
+    // Tell the heat layers the schedule changed: no heat is drawn inside open time.
     const changed = () => document.dispatchEvent(new Event('hm-schedule'));
     changed();
     return () => { undo(); changed(); };
   };
+
   const popHtml = (day, from, to, level, why) => `
       <div class="text-sm font-bold leading-5 text-gray1">${label(day, from, to)}</div>
       <div class="ghost-tag mt-1">${gridIcon({ High: 3, Medium: 2, Low: 1 }[level])}${level} student demand</div>
@@ -1472,6 +1602,11 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
         <button type="button" class="ant-btn css-14h52wa ant-btn-default ant-btn-sm" data-act="no">Hide</button>
         <button type="button" class="ant-btn css-14h52wa ant-btn-secondary ant-btn-sm" data-act="yes">Open this time</button>
       </div>`;
+
+  // "Set availability" modal, rebuilt from the real one (Moon, Create, 2026-11-12): title, date +
+  // start + end selects, "+ Add time slot", Repeat, Confirm. Here the time is filled in and a
+  // demand note sits on top (the PRD's note and "no guarantee" line live here, said once, at the
+  // moment of deciding). Confirm opens the time; nothing else in it works.
   const modal = document.createElement('div');
   modal.className = 'av-mask';
   document.body.appendChild(modal);
@@ -1495,6 +1630,11 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     modal.querySelector('[data-act=ok]').onclick = () => { closeModal(); onConfirm(); };
     modal.classList.add('is-open');
   };
+
+  // Drag on empty time to add availability, as the real calendar does (the snapshot has none of
+  // the calendar's own scripts, so it is rebuilt here): 15-minute steps, a selection box while
+  // dragging, then the same Set availability modal with that time filled in. A single click opens
+  // it with 15 minutes, as the real calendar does (Niki 2026-11-17).
   const STEP = 0.25;
   let drag = null; let swallowClick = false;
   const slotAt = (col, clientY) => { const r = col.getBoundingClientRect(); return Math.max(0, Math.min(24 - STEP, Math.floor((((clientY - r.top) / r.height) * 24) / STEP) * STEP)); };
@@ -1524,6 +1664,8 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   });
   document.addEventListener('mouseup', () => {
     if (!drag) return;
+    // A press without a drag is a single click: the calendar opens the modal with 15 minutes,
+    // unless the variant claims the click (Demand glow: inside a frame opens the whole frame).
     const { d, box, moved, start } = drag;
     const [a, z] = paint();
     drag = null;
@@ -1536,6 +1678,17 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     const watch = setInterval(() => { if (!modal.classList.contains('is-open')) { box.remove(); clearInterval(watch); } }, 100);
   });
   document.addEventListener('click', (e) => { if (swallowClick) { swallowClick = false; e.stopPropagation(); } }, true);
+
+  // Cursor grid (after React Bits CursorGrid, Niki 2026-11-13): the calendar's 15-minute cells
+  // around the pointer light up, outline + a faint fill, brighter near the pointer (smooth
+  // falloff) and scaled by that hour's demand: busy hours light green, quiet ones only lift the
+  // grey lines a little. A cell holds 400 ms, then fades over 800 ms, leaving a short trail.
+  // Open time and events are left alone. Drawn on a 2D canvas under the events.
+  // `offClass`: body class that switches it off (each version has its own toggle).
+  // `line`: stroke width in CSS px (Demand glow uses a hairline, Niki 2026-11-13).
+  // `skip(d, h)`: hours the light leaves alone (Demand glow: inside its framed runs).
+  // `style(d, h)` (Best times, 2026-11-18): the page's own colour per hour, { rgb, fill, stroke }
+  // as alphas at full light; without it the lines follow the shared demand levels.
   const cursorGrid = (offClass = 'heat-off', { line = 1, skip = () => false, style = null } = {}) => {
     const RADIUS = 140; const HOLD = 400; const FADE = 800; const SLOT = 28; const ROWS = 96;
     const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1546,12 +1699,17 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     let x0 = 0; let W = 0; let H = 0; let rects = []; let xLine = []; let xRight = []; let lineY = new Float32Array(ROWS + 1);
     const level = new Float32Array(7 * ROWS); const target = new Float32Array(7 * ROWS); const touched = new Float64Array(7 * ROWS).fill(-1e9);
     const layout = () => {
+      // By position, not array order: a page may reorder the columns on screen (best-times starts
+      // the week today, 2026-11-18).
       x0 = Math.min(...cols.map((c) => c.offsetLeft));
       W = Math.max(...cols.map((c) => c.offsetLeft + c.offsetWidth)) - x0; H = cols[0].offsetHeight;
       const dpr = devicePixelRatio || 1;
       cv.style.left = `${x0}px`; cv.style.width = `${W}px`; cv.style.height = `${H}px`;
       cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       rects = cols.map((c) => [c.offsetLeft - x0 + 1, c.offsetWidth - 1]);
+      // Where the calendar's own lines are, so a lit edge lands on the existing line instead of
+      // beside it (a near miss read as a double line, 2026-11-13). xLine[d]: the day's left border;
+      // lineY[q]: the line above 15-minute row q (lineY[q + 1] is the one below).
       xLine = cols.map((c) => c.offsetLeft - x0 + 0.5);
       xRight = cols.map((c) => Math.min(c.offsetLeft + c.offsetWidth - x0 + 0.5, W - 0.5));
       const top = cols[0].getBoundingClientRect().top;
@@ -1572,7 +1730,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
       cols.forEach((_, d) => {
         const [cx0, cw] = rects[d];
         for (let q = Math.max(0, Math.floor((ptr.y - RADIUS) / SLOT)); q <= Math.min(ROWS - 1, Math.floor((ptr.y + RADIUS) / SLOT)); q += 1) {
-          const dx = Math.max(cx0 - ptr.x, 0, ptr.x - (cx0 + cw)); 
+          const dx = Math.max(cx0 - ptr.x, 0, ptr.x - (cx0 + cw)); // distance to the cell, not its centre: wide day columns
           const dy = q * SLOT + SLOT / 2 - ptr.y;
           const dist = Math.hypot(dx, dy);
           if (dist > RADIUS) continue;
@@ -1606,12 +1764,16 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
             if (st.fill) { ctx.fillStyle = `rgba(${st.rgb},${(st.fill * level[k]).toFixed(3)})`; ctx.fillRect(L + 0.5, T + 0.5, R - L - 1, B - T - 1); }
             ctx.strokeStyle = `rgba(${st.rgb},${(st.stroke * level[k]).toFixed(3)})`;
           } else if (v >= 2) {
+            // High lights deep and filled; Medium only a light outline, so the two read apart.
             ctx.fillStyle = `rgba(13,190,130,${((v === 3 ? 0.2 : 0.04) * level[k]).toFixed(3)})`;
             ctx.fillRect(L + 0.5, T + 0.5, R - L - 1, B - T - 1);
             ctx.strokeStyle = v === 3 ? `rgba(8,150,100,${(0.95 * level[k]).toFixed(3)})` : `rgba(13,190,130,${(0.75 * level[k]).toFixed(3)})`;
           } else {
+            // Low and no-data: the lightest green, no grey (Niki 2026-11-13: grey read as a dark line).
             ctx.strokeStyle = `rgba(13,190,130,${((v === 1 ? 0.35 : 0.2) * level[k]).toFixed(3)})`;
           }
+          // Strokes sit exactly on the calendar's lines, 1px like them; each edge once: top and
+          // sides always, the bottom only where the cell below is dark.
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(L, B); ctx.lineTo(L, T); ctx.lineTo(R, T); ctx.lineTo(R, B);
@@ -1630,6 +1792,17 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     });
     scroller.addEventListener('mouseleave', () => { ptr.in = false; });
   };
+
+  // Pixel cursor whose filled squares show the demand of the hour under it (first made for the
+  // ghost version; Demand glow uses it too, Niki 2026-11-13). `skip` = elements where the normal
+  // cursor comes back (lessons, open time).
+  // The pointer's lit grid lines in 16px, as they look on the calendar (Niki 2026-11-18): four lines
+  // cut a 3x3, no outer edge, brightest in the middle and fading out to the ends. Colours per level
+  // as the cursor grid uses them (Low a little deeper so it reads on white; grey for very few).
+  // The one demand symbol everywhere: pointer, hover card, explainer, sidebar rows, block tags
+  // (Niki 2026-11-18, replacing the 3x3 squares).
+  // Same lines for every level, only the colour steps (Niki 2026-11-18). The steps are kept wide
+  // so they still read apart at 16px: deep green, green, pale green, grey for very few.
   const LIT = {
     3: { c: 'rgb(8,140,95)', w: 1.2, r: 9 },
     2: { c: 'rgba(13,190,130,.75)', w: 1.2, r: 9 },
@@ -1658,6 +1831,9 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     });
     scroller.addEventListener('mouseleave', hide);
   };
+
+  // Low-demand runs: no frame at rest, a faint dashed glow frame while the pointer is over them
+  // (Demand glow does this with its own card; Ghost grid uses this, Niki 2026-11-13).
   const lowHoverFrames = (offClass) => {
     const render = () => {
       document.querySelectorAll('.hm-run-low').forEach((n) => n.remove());
@@ -1691,22 +1867,48 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     });
     scroller.addEventListener('mouseleave', off);
   };
+
+
+  // The demand block in the sidebar, shared by both versions (Niki 2026-11-18): the switch
+  // and list live together there, since the sidebar already decides what the calendar shows
+  // (Lesson status). It explains itself in three layers: what it is (the gap picture in the explainer; the line
+  // under the title went, Niki 2026-11-18), why
+  // this time (a short reason on each row, the full one in the hover card), how it is worked out
+  // (the help icon). The explainer is read with the sidebar beside it: it repeats none of the
+  // sidebar's words and goes through it in the same order (the marks on the calendar, then the
+  // list), then where the numbers come from. Icons are the DS 16px set, currentColor; student and teacher are
+  // Niki's own 24px icons drawn at 16 (2026-11-18).
   const ICON = {"earth-sm": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M12.5199 8.04617C13.186 7.97987 13.9121 7.74667 14.3714 7.5498C14.4134 7.53181 14.4571 7.51796 14.5018 7.50845C14.696 7.46717 14.8684 7.42376 15.0215 7.37926C14.7487 4.21949 12.3796 1.65918 9.31195 1.09593C9.24464 1.16756 9.17995 1.23867 9.11775 1.3081C9.07939 1.35092 9.03974 1.39572 8.99985 1.4408L8.99982 1.44082C8.88619 1.56922 8.77061 1.6998 8.67747 1.79295C8.56005 1.91036 8.41211 2.14645 8.28468 2.48662C8.16116 2.81632 8.07679 3.19113 8.05136 3.54067C8.02516 3.90094 8.06578 4.17399 8.13541 4.33665C8.19239 4.46975 8.23702 4.47669 8.27845 4.48246C8.99609 4.58236 9.55532 4.77883 9.98456 5.08214C10.4253 5.39362 10.6772 5.7811 10.8351 6.16727C10.9547 6.46009 11.0276 6.77857 11.0842 7.02613C11.0962 7.0787 11.1075 7.12807 11.1184 7.17332C11.1886 7.46608 11.2524 7.65688 11.3514 7.80527C11.4027 7.8823 11.4984 7.9605 11.6995 8.01255C11.9081 8.06656 12.187 8.0793 12.5199 8.04617ZM1.02819 7.99022C1.02819 4.29631 3.88541 1.26974 7.51036 1C7.2825 1.28822 7.1039 1.64222 6.97182 1.9948C6.80356 2.44396 6.68867 2.9499 6.6531 3.43897C6.61831 3.91731 6.65495 4.44073 6.84659 4.88839C7.05088 5.3656 7.45154 5.78282 8.08515 5.87102C8.66066 5.95114 8.98508 6.09253 9.17549 6.22708C9.35434 6.35347 9.45808 6.50385 9.53732 6.6977C9.60967 6.87471 9.65127 7.05446 9.70638 7.29259L9.70641 7.29272L9.70651 7.29313C9.72142 7.35756 9.73732 7.42626 9.75509 7.50034C9.83035 7.81406 9.93894 8.21407 10.1849 8.58294C10.4784 9.02317 10.9143 9.25749 11.3481 9.36978C11.7744 9.48011 12.2337 9.48353 12.6587 9.44123C13.4761 9.35988 14.311 9.09396 14.8598 8.8654C14.9062 8.8552 14.9521 8.84478 14.9975 8.83414C14.5807 12.3076 11.6237 15 8.03796 15C7.94798 15 7.85838 14.9983 7.76921 14.9949C7.94775 14.3939 8.24547 13.3852 8.43799 12.401C8.5459 11.8495 8.62701 11.2758 8.6294 10.7677C8.63158 10.302 8.57211 9.71454 8.22873 9.29727C7.78936 8.76336 7.14374 8.61331 6.55241 8.61387C5.95945 8.61442 5.29866 8.76332 4.65037 8.96491C3.65178 9.27543 2.54378 9.75862 1.57085 10.1829L1.57083 10.1829C1.51426 10.2076 1.45815 10.232 1.40255 10.2563C1.15986 9.54546 1.02819 8.78322 1.02819 7.99022ZM6.35212 14.796C4.49523 14.3375 2.9299 13.139 1.98702 11.5312C2.05231 11.5028 2.11785 11.4743 2.1836 11.4456L2.18364 11.4456C3.14456 11.0268 4.14939 10.5889 5.06666 10.3036C5.66594 10.1173 6.16928 10.0162 6.55372 10.0158C6.9398 10.0155 7.08487 10.1136 7.1462 10.1881L7.14527 10.187C7.14526 10.187 7.14538 10.1872 7.14561 10.1876C7.14857 10.1925 7.16991 10.2279 7.19024 10.3192C7.21381 10.425 7.22835 10.5714 7.22746 10.7611C7.22567 11.1418 7.16283 11.617 7.06211 12.1319C6.87951 13.0653 6.59294 14.0308 6.41447 14.6321L6.38318 14.7376C6.37286 14.7573 6.36251 14.7767 6.35212 14.796Z\" fill=\"currentColor\"/></svg>", "refresh-sm": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M11.4733 2.99546C11.6421 2.82668 11.7205 2.58765 11.6844 2.35171C11.6483 2.11577 11.502 1.9111 11.2905 1.8005C8.63644 0.412727 5.28461 0.82813 3.05637 3.05637C0.818349 5.29439 0.409094 8.66588 1.81892 11.3255C2.01292 11.6915 2.46687 11.8309 2.83284 11.6369C3.19882 11.4429 3.33823 10.989 3.14424 10.623C2.03324 8.52709 2.35936 5.8747 4.11703 4.11703C5.60278 2.63128 7.72783 2.16839 9.6157 2.73178L8.83913 3.50835C8.54624 3.80125 8.54624 4.27612 8.83913 4.56901C9.13202 4.86191 9.6069 4.86191 9.89979 4.56901L11.4733 2.99546ZM4.17795 12.6707C4.00918 12.8394 3.93081 13.0785 3.96691 13.3144C4.003 13.5503 4.14924 13.755 4.36076 13.8656C7.01486 15.2534 10.3667 14.838 12.5949 12.6097C14.8329 10.3717 15.2422 7.00023 13.8324 4.34059C13.6384 3.97462 13.1844 3.8352 12.8185 4.0292C12.4525 4.2232 12.3131 4.67715 12.5071 5.04312C13.6181 7.13902 13.2919 9.79141 11.5343 11.5491C10.0485 13.0348 7.92347 13.4977 6.03559 12.9343L6.81216 12.1578C7.10506 11.8649 7.10506 11.39 6.81216 11.0971C6.51927 10.8042 6.0444 10.8042 5.7515 11.0971L4.17795 12.6707Z\" fill=\"currentColor\"/></svg>", "time-sm": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M11.6315 4.33923C14.0636 6.77133 14.0636 10.7145 11.6315 13.1466C9.19938 15.5787 5.25616 15.5787 2.82407 13.1466C0.391974 10.7145 0.391981 6.77133 2.82407 4.33923C5.25616 1.90713 9.19938 1.90713 11.6315 4.33923ZM9.72209 6.24862C9.47888 6.0054 9.0841 6.00618 8.84089 6.24938L6.64437 8.4459C6.52783 8.5626 6.46242 8.72043 6.46234 8.88536C6.46234 9.05053 6.52757 9.20954 6.64437 9.32634L8.36259 11.0446C8.60572 11.2874 8.99987 11.2874 9.24303 11.0446C9.48616 10.8014 9.48677 10.4066 9.24379 10.1634L7.96578 8.88536L9.72132 7.12982C9.9645 6.88665 9.96517 6.49184 9.72209 6.24862Z\" fill=\"currentColor\"/><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M11.081 0.853009C11.385 0.548997 11.8779 0.548997 12.1819 0.853009L15.1177 3.7888C15.4218 4.09282 15.4218 4.58572 15.1177 4.88973C14.8137 5.19374 14.3208 5.19374 14.0168 4.88973L11.081 1.95393C10.777 1.64992 10.777 1.15702 11.081 0.853009Z\" fill=\"currentColor\"/></svg>", "hot-sm": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M6.57796 1.37533C6.35716 2.07649 5.75595 3.33642 4.12094 5.0074C1.30032 7.89363 0.926516 12.5432 5.26035 14.8295C5.61615 15.0172 5.91316 14.9016 6.13636 14.6699C6.87436 13.905 7.19477 12.7827 7.09877 11.3041C7.07177 10.8966 7.25477 10.7906 7.61717 11.0694C8.64498 11.8593 9.31578 13.0763 9.31578 14.3845C9.31578 14.8295 9.49519 15.0648 9.91339 14.9844C12.677 14.4524 16.0448 10.5183 12.4154 4.7578C12.1982 4.4647 11.8772 4.4647 11.8826 4.86741C11.8886 5.36185 11.8316 5.8551 11.7122 6.33525C11.63 6.66885 11.3138 6.66408 11.2394 6.33525C10.787 4.33424 9.52939 2.63348 7.46597 1.22998C6.90916 0.851703 6.70696 0.967271 6.57796 1.37533Z\" fill=\"currentColor\"/></svg>", "night-sm": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M14.1638 9.34652C14.2313 9.09619 13.9526 8.90644 13.7197 9.02034C12.9714 9.38628 12.1303 9.59169 11.2411 9.59169C8.12112 9.59169 5.59185 7.06242 5.59185 3.9424C5.59185 3.41507 5.6641 2.90463 5.79924 2.42041C5.86896 2.17058 5.63179 1.93076 5.39779 2.04268C3.28506 3.0531 1.82568 5.21041 1.82568 7.70858C1.82568 11.1753 4.63599 13.9856 8.10267 13.9856C11.0027 13.9856 13.4434 12.0189 14.1638 9.34652Z\" fill=\"currentColor\"/></svg>", "today-sm": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M12 0C12.5523 0 13 0.447715 13 1V2H13.5C14.6046 2 15.5 2.89543 15.5 4V14C15.5 15.1046 14.6046 16 13.5 16H2.5C1.39543 16 0.5 15.1046 0.5 14V4C0.5 2.89543 1.39543 2 2.5 2H3V1C3 0.447715 3.44772 0 4 0C4.55228 0 5 0.447715 5 1V2H11V1C11 0.447715 11.4477 0 12 0ZM2.5 12.5C2.5 13.3284 3.17157 14 4 14H12C12.8284 14 13.5 13.3284 13.5 12.5V5.5H2.5V12.5Z\" fill=\"currentColor\"/><path d=\"M10 9C11.1046 9 12 9.89543 12 11C12 12.1046 11.1046 13 10 13C8.89543 13 8 12.1046 8 11C8 9.89543 8.89543 9 10 9Z\" fill=\"currentColor\"/><path d=\"M12 11C12 12.1046 11.1046 13 10 13C8.89543 13 8 12.1046 8 11C8 9.89543 8.89543 9 10 9C11.1046 9 12 9.89543 12 11Z\" fill=\"currentColor\"/></svg>", "upvote-sm": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M12.2257 6.0203C12.713 6.0203 13.1394 6.20305 13.444 6.56853C13.6876 6.93401 13.8094 7.36041 13.7485 7.7868L13.0785 11.868C12.7739 13.0863 11.9211 14 10.8247 14H5.76883H5.55564V5.84878L7.71807 2.54822C7.90081 2.30457 8.2663 2.06091 8.63178 2C8.87543 2 9.05818 2 9.30183 2.06091C9.54548 2.12183 9.72823 2.30457 9.91097 2.54822C9.97188 2.67005 10.0328 2.79188 10.0328 2.91371C10.0328 2.96847 10.0451 3.02323 10.0587 3.08352C10.0752 3.15736 10.0937 3.2395 10.0937 3.3401C10.1546 3.64467 10.1546 4.07107 10.1546 4.43655C10.1546 4.71873 10.1385 5.00091 10.1228 5.27478C10.1081 5.53299 10.0937 5.78382 10.0937 6.0203H12.2257ZM4.64193 6.08122H4.00234C3.33229 6.08122 2.78406 6.62944 2.78406 7.23858L2.23584 12.0508V12.1117C2.23584 13.1472 3.08863 14 4.06325 14H4.64193V6.08122Z\" fill=\"currentColor\"/></svg>", "student": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M4.75 20.375C4.75 17.2684 7.2684 14.75 10.375 14.75H13.625C16.7316 14.75 19.25 17.2684 19.25 20.375C19.25 21.6867 18.1867 22.75 16.875 22.75H7.125C5.81332 22.75 4.75 21.6867 4.75 20.375Z\" fill=\"currentColor\"/><circle cx=\"12\" cy=\"9.25\" r=\"4.5\" fill=\"currentColor\"/></svg>", "teacher": "<svg aria-hidden=\"true\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M4.75 20.375C4.75 17.2684 7.2684 14.75 10.375 14.75H13.625C16.7316 14.75 19.25 17.2684 19.25 20.375C19.25 21.6867 18.1867 22.75 16.875 22.75H7.125C5.81332 22.75 4.75 21.6867 4.75 20.375Z\" fill=\"currentColor\"/><path d=\"M12.2954 1.31064C12.1068 1.22979 11.8932 1.22979 11.7046 1.31064L4.70456 4.31064C4.4288 4.42883 4.25 4.69998 4.25 5C4.25 5.30002 4.4288 5.57117 4.70456 5.68936L7.75 6.99455V9.5C7.75 11.8472 9.65279 13.75 12 13.75C14.3472 13.75 16.25 11.8472 16.25 9.5V6.99455L18.25 6.1374V9C18.25 9.41421 18.5858 9.75 19 9.75C19.4142 9.75 19.75 9.41421 19.75 9V5C19.75 4.69998 19.5712 4.42883 19.2954 4.31064L12.2954 1.31064ZM9.25 8.04954C9.78286 7.93536 10.8873 7.75 12 7.75C13.1127 7.75 14.2171 7.93536 14.75 8.04954V9.5C14.75 11.0188 13.5188 12.25 12 12.25C10.4812 12.25 9.25 11.0188 9.25 9.5V8.04954Z\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" fill=\"currentColor\"/></svg>"};
   const dots = (n, on) => Array.from({ length: 8 }, (_, i) => `<i class="${i < n ? on : ''}"></i>`).join('');
+  // The gap in one picture, read as a sum (Niki 2026-11-18, balanced): students looking, teachers
+  // open, then the levels on the same grid: left of each name, the grid lines the pointer lights (on
+  // hover); where the dots end, how deep that area looks at rest (Niki 2026-11-18). Only Demand glow
+  // shades areas, so only it passes `areas`; Ghost grid has no such frames to show. These rows are the legend now: the sidebar has none
+  // (Niki 2026-11-18). `cursor` is the version's symbol for a level.
   const howGap = (areas) => `<div class="hm-how-gap"><div class="hm-how-row"><span class="hm-how-ico">${ICON.student}</span><span class="hm-how-label">Students looking</span><span class="hm-how-dots">${dots(7, 'is-student')}</span></div>`
     + `<div class="hm-how-row"><span class="hm-how-ico">${ICON.teacher}</span><span class="hm-how-label">Teachers open</span><span class="hm-how-dots">${dots(2, 'is-teacher')}</span></div>`
+    // Three short rows, "High / Medium / Low" without repeating "demand" (Niki 2026-11-18: one line
+    // was too dense; the title already says demand). Demand glow adds the frame each level draws.
     + [[3, 'High'], [2, 'Medium'], [1, 'Low']].map(([v, name]) => `<div class="hm-how-row hm-how-level-row${v === 3 ? ' is-first' : ''}"><span class="hm-how-ico">${gridIcon(v)}</span>`
       + `<span class="hm-how-label">${name}</span>${areas ? `<span class="hm-how-mark"><span class="hm-how-area is-${v}"></span></span>` : ''}</div>`).join('') + '</div>';
   const rule = (icon, text) => `<li><span class="hm-how-ico">${ICON[icon]}</span>${text}</li>`;
+  // The demand controls: switch, title, help icon; in the sidebar under Lesson status (Ghost grid), or
+  // in the top bar on its own (Demand glow; Niki 2026-11-18).
   const HELP = '<button type="button" class="hm-info" aria-label="How student demand works"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 8C15 11.866 11.866 15 8 15C4.13401 15 1 11.866 1 8C1 4.13401 4.13401 1 8 1C11.866 1 15 4.13401 15 8Z" fill="currentColor"/><path d="M8 10.8391C8.36804 10.8391 8.66673 11.1371 8.66699 11.5051C8.66699 11.8733 8.3682 12.1721 8 12.1721C7.63188 12.172 7.33398 11.8733 7.33398 11.5051C7.33424 11.1372 7.63204 10.8392 8 10.8391Z" fill="white"/><path d="M6.93457 4.23853C7.35975 4.03824 7.83319 3.96153 8.2998 4.01782C8.76642 4.07419 9.20793 4.26115 9.57324 4.55688C9.93861 4.85269 10.213 5.2459 10.3652 5.69067C10.5174 6.13539 10.541 6.61393 10.4336 7.07153C10.3261 7.52907 10.092 7.94711 9.75781 8.27759C9.42354 8.60804 9.00272 8.83841 8.54395 8.94067V9.3313C8.54396 9.47612 8.48649 9.61592 8.38477 9.71899C8.28307 9.82193 8.1447 9.88018 8 9.88208C7.85649 9.88019 7.71966 9.82242 7.61816 9.72095C7.51668 9.61947 7.45895 9.48261 7.45703 9.33911V8.46899C7.45713 8.32499 7.51437 8.18704 7.61621 8.08521C7.71811 7.98339 7.85595 7.92604 8 7.92603C8.28795 7.93323 8.57147 7.85414 8.81445 7.69946C9.05744 7.5447 9.24898 7.3209 9.36426 7.05688C9.47949 6.79287 9.51359 6.50042 9.46191 6.21704C9.41015 5.93357 9.27538 5.67141 9.07422 5.46509C8.87311 5.25882 8.61498 5.11682 8.33301 5.05786C8.05094 4.99894 7.75717 5.0255 7.49023 5.13403C7.22329 5.24258 6.9949 5.42915 6.83398 5.66821C6.67321 5.9072 6.587 6.18877 6.58691 6.47681C6.58685 6.62081 6.52953 6.75874 6.42773 6.8606C6.32592 6.96241 6.18792 7.01966 6.04395 7.01978C5.8998 7.01978 5.7611 6.96252 5.65918 6.8606C5.5574 6.75874 5.50006 6.6208 5.5 6.47681C5.50443 6.00687 5.64106 5.54735 5.89453 5.15161C6.1482 4.75577 6.50928 4.43896 6.93457 4.23853Z" fill="white"/></svg></button>';
   const SWITCH = '<span class="ghost-switch is-on" role="switch" aria-checked="true" tabindex="0"><span class="ghost-switch-track"><span class="ghost-switch-thumb"></span></span></span>';
+  // `title` and `how` let a new option (Booking chance, 2026-11-18) reuse the block with its own name
+  // and its own explainer; the two first options use the defaults.
   const demandSide = ({ offClass, frames, onToggle, top = false, title = 'Student demand', how = null, alignRight = false }) => {
     let root;
     if (top) {
+      // One pill: the name in regular weight like the rest of the bar, the help icon, the switch last.
+      // Only the switch toggles; anywhere else on the pill opens the help panel (Niki 2026-11-18).
       root = addToToolbar(`<span class="hm-top-group"><span class="hm-top-name">${title}</span>${HELP}<span class="hm-top-toggle">${SWITCH}</span></span>`);
     } else {
       root = sideBlock();
       root.classList.add('hm-in-side');
+      // Title and help icon on the left, the switch at the far right (Niki 2026-11-18: tried the
+      // switch first, went back).
       root.innerHTML = `<div class="hm-side-head"><span class="hm-side-title"><span class="text-sm font-bold leading-5 text-gray1">${title}</span>${HELP}</span>${SWITCH}</div>`
         + '<div class="hm-side-body"><div class="hm-side-list"></div></div>';
     }
@@ -1719,12 +1921,18 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
       onToggle(on);
     };
     sw.addEventListener('click', (e) => { e.stopPropagation(); flip(); });
+    // Pared down (Niki 2026-11-18): one picture of the gap, three rules (the fourth, high demand,
+    // is what the whole block is about), one footnote. The time zone is already on the calendar.
+    // The rules only where there is a list of suggested times (the sidebar version). Without them the
+    // footnote follows the picture with no line (Niki 2026-11-18).
     const howHtml = () => (typeof how === 'function' ? how() : how) || '<div class="hm-how"><div class="hm-how-title">How student demand works</div>' + frames
       + (top ? '' : '<div class="hm-how-sub">How we pick suggested times</div>'
         + `<ul class="hm-how-rules">${rule('today-sm', 'You haven\'t opened it yet')}${rule('night-sm', 'Not overnight (00:00-07:00)')}${rule('upvote-sm', 'Next to your open hours first, up to 4')}</ul>`)
       + `<div class="hm-how-note${top ? ' is-plain' : ''}">From recent searches and bookings, updated weekly. Not a booking guarantee.</div></div>`;
     const info = root.querySelector('.hm-info');
-    const LEAVE_MS = 600; 
+    // The pointer leaving both the icon and the panel closes it after a short delay; coming back to
+    // either in that time keeps it open (Niki 2026-11-18).
+    const LEAVE_MS = 600; // 300 felt too quick (Niki 2026-11-18)
     let open = false; let leaveTimer = null;
     const keep = () => clearTimeout(leaveTimer);
     const leave = () => { keep(); if (open) leaveTimer = setTimeout(closePop, LEAVE_MS); };
@@ -1736,31 +1944,57 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
       pop.style.maxHeight = ''; pop.style.overflowY = '';
       const h = pop.offsetHeight; const edge = 16;
       if (top) {
+        // In the top bar: under the pill, left edges lined up, since the whole pill opens it (Niki
+        // 2026-11-18: under the icon it sat off to the right); kept inside the window.
         const pill = root.querySelector('.hm-top-group').getBoundingClientRect();
+        // alignRight (Best times, Niki 2026-11-18): right edges lined up with the pill instead.
         pop.style.left = `${alignRight ? Math.max(edge, pill.right - pop.offsetWidth) : Math.min(pill.left, innerWidth - edge - pop.offsetWidth)}px`;
         pop.style.top = `${pill.bottom + 8}px`;
         return;
       }
+      // In the sidebar: right beside the icon, placed by the room on screen: below, title level
+      // with the icon, when it fits; otherwise upward, bottom level with the icon; otherwise as close
+      // as the screen allows; it scrolls inside only when taller than the screen.
       const mid = at.top + at.height / 2;
-      const TITLE = 31; 
+      const TITLE = 31; // pop top to the title's middle line
       if (mid - TITLE + h <= innerHeight - edge) pop.style.top = `${mid - TITLE}px`;
       else if (mid + TITLE - h >= edge) pop.style.top = `${mid + TITLE - h}px`;
       else if (h <= innerHeight - edge * 2) pop.style.top = `${innerHeight - edge - h}px`;
       else { pop.style.top = `${edge}px`; pop.style.maxHeight = `${innerHeight - edge * 2}px`; pop.style.overflowY = 'auto'; }
     };
     (top ? root.querySelector('.hm-top-group') : info).addEventListener('click', (e) => { e.stopPropagation(); show(); });
+    // Hovering the help icon opens it too (Niki 2026-11-18); leaving closes it as above.
     info.addEventListener('mouseenter', () => { if (!open) show(); });
     return { root, listBox: root.querySelector('.hm-side-list') };
   };
+
   window.HM = { modal, ICON, MAX_RECOMMEND, noBusyHours, demandSide, howGap, gridIcon, setCursorLevel, lowHoverFrames, levelCursor, cursorGrid, openModal, closeModal, DAYS, DATES, SCORE, DEMAND, LEVEL, recommend, hm, range, label, cols, scroller, place, MONTHS, availBlock, isOpen, heatLayer, addToToolbar, sideBlock, openPop, closePop, showToast, openTime, popHtml };
 })();
+
 </script><script>
+// Teacher demand, option 4 "Booking signals" (2026-11-19; named by Niki), its own page (regulars-gaps.html).
+// Needs heatmap-proto-common.js.
+// Built only on the two data documents (Niki 2026-11-19: leave the PRD aside):
+// - Magara's three directions (Nov 12): C's evidence is the returning part. A slot where a regular
+//   came 3-4 of the last 4 weeks is booked next week 37-39%, 2 weeks 29%. The new-student part
+//   barely separates slots (3.7% vs 2.9%), so it is not shown as a likelihood.
+// - Hannah's Heatmap Logic & Data Plan (Oct 30): a gap is matched demand (language, course
+//   category, actual price, lesson type) not covered by suitable open time. No gap, no mark: never
+//   rank times to always have something to show. More open hours alone is not success.
+// So two marks, no High / Medium / Low: your regulars' usual times that are not open (green), and
+// times where students for your course and price can't find enough teachers. One green, by
+// strength of evidence (Niki 2026-11-19: no second colour): regulars glow, gaps glow less, similar
+// teachers are a border only; quiet is grey. A new teacher
+// has no regulars and sees only gaps. Copy says who and why, no percentages, no promise.
 (() => {
   const { availBlock, sideBlock, place: placeBlock, range, modal, closeModal, MONTHS, demandSide, cursorGrid, openModal, openTime, showToast, label, DAYS, DATES, SCORE, hm, cols, scroller, isOpen } = window.HM;
   document.body.classList.add('hm-real-select', 'hm-bt-card', 'hm-bs');
   const NEW_T = new URLSearchParams(location.search).get('teacher') === 'new';
+  // A lesson block to copy for simulated bookings, taken before the new-teacher page clears lessons.
   const LESSON_TPL = document.querySelector('.event-booked-lesson')?.closest('[role=event-time]')?.cloneNode(true);
   if (NEW_T) document.querySelectorAll('[data-avail], .event-booked-lesson').forEach((n) => (n.closest('[role=event-time]') || n).remove());
+  // Open times the viewer added or deleted stay after a refresh (Niki 2026-11-20), one record per
+  // teacher mode, in this browser only. Every change fires hm-schedule; the whole set is saved then.
   const AVAIL_KEY = `booking-signals-avail-${NEW_T ? 'new' : 'has'}`;
   const savedAvail = (() => { try { return JSON.parse(localStorage.getItem(AVAIL_KEY)); } catch { return null; } })();
   if (Array.isArray(savedAvail)) {
@@ -1769,35 +2003,62 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   }
   document.addEventListener('hm-schedule', () => {
     const now = [...document.querySelectorAll('[data-avail]')].map((n) => [cols.indexOf(n.closest('.italki-day-slot')), +n.dataset.from, +n.dataset.to]);
-    try { localStorage.setItem(AVAIL_KEY, JSON.stringify(now)); } catch {  }
+    try { localStorage.setItem(AVAIL_KEY, JSON.stringify(now)); } catch { /* storage blocked */ }
   });
+
+  // Sample regulars: [day, from, to, weeks of the last 4 with a lesson, name]. Only 2+ weeks marks
+  // a time (29% and up in the backtest); one week is too weak to call a habit.
+  // Counted by time, not by student (Niki 2026-11-19): a time current students booked in 2+ of the
+  // last 4 weeks is marked, whether it was one student or a different one each week. Sample:
+  // [day, from, to, who booked it each of the last 4 weeks (null = nobody)]. Ask Magara which way
+  // the backtest counted; its 29-39% may only hold for one student's habit.
   const HISTORY = NEW_T ? [] : [
     [2, 21, 22, ['Anna', 'Anna', null, 'Anna']],
     [1, 8, 9, [null, 'Leo', 'Leo', null]],
     [4, 21, 22, [null, null, 'Mia', null]],
     [6, 17, 18, ['Anna', 'Leo', null, 'Mia']],
   ];
+  // Student photos from the design system's face set (Niki 2026-11-19: real avatars, not initials).
   const FACE = { Anna: '01', Leo: '06', Mia: '05' };
   const av = (n, tag = 'span') => `<${tag} class="hm-card-avatar" style="background-image:url(faces/${FACE[n]}.jpg)"></${tag}>`;
+  // Every teacher's current-student times are marked; how much they weigh depends on the teacher's
+  // record (Niki 2026-11-20: no threshold, a weight). 8+ lessons with current students in 4 weeks
+  // (Magara 7.9's "regulars"; Hannah 6 suggests 10 taught hours) = strong, listed first. Fewer =
+  // listed after gaps. Always the darkest glow (Niki 2026-11-20: only the order follows the weight).
+  // Sample teacher: 9 lessons.
   const STRONG = HISTORY.flatMap((r) => r[3]).filter(Boolean).length >= 8;
   const habits = HISTORY.map(([d, a, b, wks]) => [d, a, b, wks.filter(Boolean).length, [...new Set(wks.filter(Boolean))], wks]).filter((r) => r[3] >= 2);
+  // Sample gaps for this teacher's courses (sample: Kids' English $14, Business English $22).
+  // Real data almost never has one (Magara 7.6, by language x type x price band); Hannah's finer
+  // match by category and price is not measured yet. Shown here so the mark can be seen.
   const GAPS = [
     { day: 6, from: 9, to: 11, need: "Kids' English", price: 'under $15' },
     { day: 5, from: 20, to: 22, need: 'Business English', price: 'under $25' },
     { day: 0, from: 14, to: 16, need: "Kids' English", price: 'under $15' },
   ];
+
+  // A, the weekly pattern of teachers like you (language x type x price): the group's top 20% of
+  // hours by fill rate. Steady at market level (hottest hours hit 57-88%), weak for one teacher
+  // (15% vs 13% random), so it is the lightest mark and says only "teachers like you".
   const TOP_A = (() => {
     const all = []; SCORE.forEach((hours, d) => hours.forEach((v, h) => all.push({ d, h, v })));
     const n = all.length; const map = SCORE.map((hours) => hours.map(() => false));
     all.filter((x) => x.v != null).sort((a, b) => b.v - a.v).forEach((x, i) => { if (i < n * 0.2) map[x.d][x.h] = true; });
     return map;
   })();
+  // Which marks show; the legend rows switch them. Teachers like you starts off (Niki 2026-11-19).
   const show = { reg: true, gap: true, a: false, quiet: false };
+  // What the viewer switched stays after a refresh (Niki 2026-11-20). Per browser only; the page
+  // works the same when storage is blocked.
   const PREFS = 'booking-signals-prefs';
   const prefs = (() => { try { return JSON.parse(localStorage.getItem(PREFS)) || {}; } catch { return {}; } })();
-  const savePrefs = () => { try { localStorage.setItem(PREFS, JSON.stringify(prefs)); } catch {  } };
+  const savePrefs = () => { try { localStorage.setItem(PREFS, JSON.stringify(prefs)); } catch { /* storage blocked */ } };
   Object.keys(show).forEach((k) => { if (typeof prefs.show?.[k] === 'boolean') show[k] = prefs.show[k]; });
   const showLater = { a: prefs.later?.a !== false };
+  // A's bottom 20%, shown only on time already open (Niki 2026-11-19: C wants to tell teachers
+  // about unlikely times too). From A, not C's "under 2%", which the backtest cannot tell apart
+  // from an ordinary slot (2.9%). Both documents warn teachers may just delete the time, so the
+  // copy suggests moving it, never closing. Off by default.
   const LOW_A = (() => {
     const all = []; SCORE.forEach((hours, d) => hours.forEach((v, h) => all.push({ d, h, v })));
     const ranked = all.filter((x) => x.v != null).sort((a, b) => a.v - b.v); const map = SCORE.map((hours) => hours.map(() => false));
@@ -1805,18 +2066,31 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     return map;
   })();
   let wk = 0;
+  // Today is the real date (Niki 2026-11-20: the demo should not stay on Nov 18). Sample data is keyed
+  // by weekday, so any day works; the week view starts today.
   const NOW = new Date();
   const TODAY = NOW.getDay();
   const dayAt = (k) => new Date(NOW.getFullYear(), NOW.getMonth(), NOW.getDate() + k);
   const pos = (d) => (d - TODAY + 7) % 7;
+  // Time already gone today follows the calendar's own rule (DayColumn: slots up to now are gray6 and
+  // not selectable, a red now-line on today), live (Niki 2026-11-19). The prototype's "today" is
+  // Wednesday; the clock is the real one.
   const nowH = () => { const t = new Date(); return t.getHours() + t.getMinutes() / 60; };
   const pastHour = (d, h) => wk === 0 && d === TODAY && h < Math.ceil(nowH());
   const free = (d, from, to) => ![...Array(to - from)].some((_, i) => isOpen(d, from + i));
+  // Past the next 7 days (Niki 2026-11-20): gaps are date-specific and stop at 7 days (Magara 5.4: 93%
+  // of new students' lessons fall within 7 days). Current students carry on (Niki 2026-11-22): their
+  // signal is a weekly habit, not a date, about half their hours are booked a week or more ahead, and
+  // most open time is set 4+ weeks out. A is a weekly pattern too, so it shows by default there, its
+  // own switch (showLater). Not booked lately reads the teacher's own record and works on any week.
+  // marks(0) is always the next 7 days (sidebar, Open all).
+  const regBooked = new Set(); // habits booked this week (simulate); later weeks keep the habit
   const marks = (w = wk) => (w ? [
+    ...(show.reg ? habits.filter(([d, a, b]) => free(d, a, b)).map(([d, a, b, n, who, wks]) => ({ id: `r${d}-${a}`, kind: 'reg', day: d, from: a, to: b, who, n, wks })) : []),
     ...(showLater.a ? aRuns(false) : []),
     ...(show.quiet ? qRuns() : []),
   ] : [
-    ...habits.filter(([d, a, b]) => free(d, a, b)).map(([d, a, b, n, who, wks]) => ({ id: `r${d}-${a}`, kind: 'reg', day: d, from: a, to: b, who, n, wks })),
+    ...habits.filter(([d, a, b]) => free(d, a, b) && !regBooked.has(`${d}-${a}`)).map(([d, a, b, n, who, wks]) => ({ id: `r${d}-${a}`, kind: 'reg', day: d, from: a, to: b, who, n, wks })),
     ...GAPS.filter((g) => free(g.day, g.from, g.to)).map((g) => ({ id: `g${g.day}-${g.from}`, kind: 'gap', ...g })),
     ...(show.a ? aRuns() : []),
     ...(show.quiet ? qRuns() : []),
@@ -1824,19 +2098,27 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     if (w || m.day !== TODAY || m.from >= Math.ceil(nowH())) return m;
     const from = Math.ceil(nowH()); return { ...m, from, id: `${m.id}-${from}` };
   }).filter((m) => m.from < m.to).sort((a, c) => pos(a.day) - pos(c.day) || a.from - c.from);
+  // A's hours, minus open time and hours a stronger mark already covers.
   const taken = (d, h) => habits.some(([rd, a, b]) => rd === d && h >= a && h < b) || GAPS.some((g) => g.day === d && h >= g.from && h < g.to);
   const aRuns = (thisWeek = true) => {
     const out = [];
     cols.forEach((_, d) => {
       let start = null;
       for (let h = 0; h <= 24; h += 1) {
-        const on = h < 24 && TOP_A[d][h] && !isOpen(d, h) && !(thisWeek && taken(d, h));
+        const on = h < 24 && TOP_A[d][h] && !isOpen(d, h) && !(thisWeek ? taken(d, h) : habits.some(([rd, x, y]) => rd === d && h >= x && h < y));
         if (on && start === null) start = h;
         if (!on && start !== null) { out.push({ id: `a${d}-${start}`, kind: 'a', day: d, from: start, to: h }); start = null; }
       }
     });
     return out;
   };
+  // Quiet needs the teacher's own record too (Niki 2026-11-19): open in each of the last 4 weeks
+  // with no booking, AND similar teachers rarely booked then. Either alone is weak: a teacher with
+  // few bookings has almost every open hour unbooked.
+  // The weeks are the teacher's real run, not a fixed 4 (Niki 2026-11-20): count back the weeks this
+  // time was open with no booking and say that number. QUIET_MIN is where the run starts to count;
+  // a placeholder until Magara backtests next-week booking by weeks unbooked.
+  // Sample: [day, from, to, weeks open in a row with no booking].
   const QUIET_MIN = 3;
   const UNBOOKED = NEW_T ? [] : [[3, 9, 12, 6], [1, 9, 12, 3]];
   const unbooked = (d, h) => (UNBOOKED.find(([ud, a, b]) => ud === d && h >= a && h < b) || [])[3] || 0;
@@ -1853,17 +2135,31 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     });
     return out;
   };
+  // New-student opportunity icon (Niki's user-03.svg, 2026-11-19), in the marks' green.
   const NEW_ICON = '<svg width="20" height="20" aria-hidden="true" class="hm-card-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.25 7C7.25 4.37665 9.37665 2.25 12 2.25C14.6234 2.25 16.75 4.37665 16.75 7C16.75 9.62335 14.6234 11.75 12 11.75C9.37665 11.75 7.25 9.62335 7.25 7Z" fill="currentColor"/><path d="M14 13.25C14.8757 13.25 15.7053 13.4467 16.4482 13.7969L16.2598 14.3525C16.0671 14.9205 15.9565 15.2333 15.874 15.4287C15.8354 15.5201 15.8133 15.5619 15.8037 15.5781L15.8018 15.5791L15.8008 15.5811C15.7859 15.5915 15.7477 15.6161 15.6641 15.6582C15.485 15.7482 15.1981 15.869 14.6777 16.0791L13.9473 16.374C13.2729 16.6463 12.8101 17.3211 12.7549 18.0938L12.75 18.25L12.7549 18.4062C12.8101 19.1789 13.2729 19.8537 13.9473 20.126L14.6777 20.4209C15.1981 20.631 15.485 20.7518 15.6641 20.8418C15.7477 20.8839 15.7859 20.9085 15.8008 20.9189H15.8018V20.9199H15.8027L15.8037 20.9219C15.8133 20.9381 15.8354 20.9799 15.874 21.0713C15.9348 21.2153 16.0102 21.4234 16.123 21.75H7C5.48122 21.75 4.25 20.5188 4.25 19C4.25 15.8244 6.82436 13.25 10 13.25H14ZM18.2363 15.1133C18.2507 15.1289 18.2651 15.1444 18.2793 15.1602C18.4634 15.7027 18.6012 16.097 18.7227 16.3848C18.854 16.6958 18.9969 16.9574 19.2158 17.1963C19.3207 17.3107 19.4308 17.4052 19.5479 17.4893C19.6687 17.9341 19.7363 18.4001 19.7461 18.8809C19.6172 18.9565 19.4979 19.04 19.3848 19.1387L19.2158 19.3037C18.9969 19.5426 18.854 19.8042 18.7227 20.1152C18.6002 20.4054 18.4608 20.8039 18.2744 21.3535L18.25 21.4248L18.2256 21.3535C18.0392 20.8039 17.8998 20.4054 17.7773 20.1152C17.6789 19.8821 17.574 19.6761 17.4355 19.4873L17.2842 19.3037L17.1152 19.1387C16.9422 18.9876 16.7537 18.873 16.54 18.7656C16.274 18.632 15.909 18.4797 15.4053 18.2764L15.3379 18.25L15.4053 18.2236C15.909 18.0203 16.274 17.868 16.54 17.7344C16.8252 17.5911 17.0652 17.4352 17.2842 17.1963C17.5031 16.9574 17.646 16.6958 17.7773 16.3848C17.8998 16.0946 18.0392 15.6961 18.2256 15.1465L18.2363 15.1133Z" fill="currentColor"/><path d="M18.25 14C18.5638 14 18.8445 14.1954 18.9534 14.4897L19.2113 15.1867C19.5733 16.1651 19.6888 16.4309 19.8789 16.6211C20.0691 16.8112 20.3349 16.9267 21.3133 17.2887L22.0103 17.5466C22.3046 17.6555 22.5 17.9362 22.5 18.25C22.5 18.5638 22.3046 18.8445 22.0103 18.9534L21.3133 19.2113C20.3349 19.5733 20.0691 19.6888 19.8789 19.8789C19.6888 20.0691 19.5733 20.3349 19.2113 21.3133L18.9534 22.0103C18.8445 22.3046 18.5638 22.5 18.25 22.5C17.9362 22.5 17.6555 22.3046 17.5466 22.0103L17.2887 21.3133C16.9267 20.3349 16.8112 20.0691 16.6211 19.8789C16.4309 19.6888 16.1651 19.5733 15.1867 19.2113L14.4897 18.9534C14.1954 18.8445 14 18.5638 14 18.25C14 17.9362 14.1954 17.6555 14.4897 17.5466L15.1867 17.2887C16.1651 16.9267 16.4309 16.8112 16.6211 16.6211C16.8112 16.4309 16.9267 16.1651 17.2887 15.1867L17.5466 14.4897C17.6555 14.1954 17.9362 14 18.25 14Z" fill="currentColor"/></svg>';
   const names = (w) => (w.length < 3 ? w.join(' and ') : `${w.slice(0, -1).join(', ')} and ${w[w.length - 1]}`);
+  // The gap as the earlier panels drew it (Niki 2026-11-19): new students looking vs teachers open,
+  // in dots. Dots show the ratio of demand to open teacher time (Hannah's hours), not head counts;
+  // sample ratio here.
   const dot = (n, on) => Array.from({ length: 8 }, (_, i) => `<i class="${i < n ? on : ''}"></i>`).join('');
+  // Laid out as the earlier explainer had it (Niki 2026-11-19: dots-first rows read badly): a grey
+  // inset, label on the left, dots on the right, so the two rows compare at a glance.
   const GAP_DOTS = (m) => `<div class="hm-card-gap"><span>New students</span><span class="hm-how-dots">${dot(m.want || 7, 'is-student')}</span>`
     + `<span>Teachers open</span><span class="hm-how-dots">${dot(m.open || 2, 'is-teacher')}</span></div>`;
+  // Same inset for the teacher's own record (Niki 2026-11-19: other cards too): one dot per week,
+  // oldest first, filled when a current student booked that time. Quiet times show four empty dots.
+  // The date of this weekday in each of the last 4 weeks, oldest first (k = 0..3).
   const MON3 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const weekDate = (m, k) => { const t = dayAt(pos(m.day) - 7 * (4 - k)); return `${MON3[t.getMonth()]} ${t.getDate()}`; };  
+  const weekDate = (m, k) => { const t = dayAt(pos(m.day) - 7 * (4 - k)); return `${MON3[t.getMonth()]} ${t.getDate()}`; };  // no weekday: the line above already names it (Niki 2026-11-19)
+  // Several students: faces once in the title, then a light log of who came when, oldest first;
+  // missed weeks are not listed (Niki 2026-11-19: the big-avatar strip and group icon looked heavy).
   const CAME = (m) => {
+    // One student: just the most recent visit, the best hint for this week (Niki 2026-11-19).
     if (m.who.length === 1) { const k = m.wks.map((w, x) => (w ? x : -1)).filter((x) => x >= 0).pop(); return `<div class="hm-card-log"><span>Last booked</span><span>${weekDate(m, k)}</span></div>`; }
     return `<div class="hm-card-log">${m.wks.map((w, k) => (w ? `<span>${w}</span><span>${weekDate(m, k)}</span>` : '')).join('')}</div>`;
   };
+  // A quiet time says where to go instead (Niki 2026-11-19): the two strongest times worth opening
+  // this week, same icons as the sidebar, so moving the hours is one look away.
   const BETTER = () => {
     const RANKQ = { reg: STRONG ? 0 : 1.5, gap: 1, a: 2 };
     const best = marks(0).filter((x) => x.kind !== 'quiet').sort((x, y) => RANKQ[x.kind] - RANKQ[y.kind] || pos(x.day) - pos(y.day) || x.from - y.from).slice(0, 2);
@@ -1875,7 +2171,8 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   // How often, said against the weekday so it reads as a habit (Niki 2026-11-19).
   const WEEKDAY = ['Sundays', 'Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', 'Saturdays'];
   const WHY = { // Frequency in the line; who and when go in the log under it.
-    reg: (m) => `${m.n} of the last 4 ${WEEKDAY[m.day]}`, gap: (m) => `${m.need} ${m.price}`, a: () => (wk ? 'Most weeks, teachers with your language, type and price get booked more then' : 'Teachers with your language, type and price get booked more then'), quiet: (m) => `No bookings the last ${m.weeks} ${WEEKDAY[m.day]}` };
+    reg: (m) => (wk ? `Usually booked on ${WEEKDAY[m.day]}` : `${m.n} of the last 4 ${WEEKDAY[m.day]}`), gap: (m) => `${m.need} ${m.price}`, a: () => (wk ? 'Most weeks, teachers with your language, type and price get booked more then' : 'Teachers with your language, type and price get booked more then'), quiet: (m) => `No bookings the last ${m.weeks} ${WEEKDAY[m.day]}` };
+
   const toOpen = () => marks(0).filter((m) => m.kind !== 'quiet');
   const place = (el, r) => { el.style.top = `calc(${(r.from / 24) * 100}% + 3px)`; el.style.height = `calc(${((r.to - r.from) / 24) * 100}% - 6px)`; };
   let marked = new Set();
@@ -1905,23 +2202,34 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
       cols[r.day].appendChild(hit);
     });
   };
+
+  // Hover as on the one-colour page: the # pointer, and a card on a mark; nothing elsewhere.
   let hoverOn = null;
   const hoverOff = () => { if (hoverOn) { hoverOn.classList.remove('is-hover'); hoverOn = null; } };
   const card = Object.assign(document.createElement('div'), { className: 'hm-card hm-card-rec' });
+  // No # pointer (Niki 2026-11-19): it stood for demand levels, which this page no longer has.
   scroller.appendChild(card);
-  const GREEN = '0,179,119'; 
+  const GREEN = '0,179,119'; // the design system's #00B377 (Niki 2026-11-20)
+  // The card is the frame's own words; the frame under the pointer already shows which mark it is.
   const cardOff = () => { card.classList.remove('is-on'); card.dataset.run = ''; };
+  // A card brought up from the sidebar stays while the pointer travels over the calendar; it hands
+  // back to normal hover once the pointer reaches any mark, or on a click (Niki 2026-11-19).
   let sticky = null;
   scroller.addEventListener('mousedown', () => { sticky = null; hoverOff(); cardOff(); });
   scroller.addEventListener('mouseleave', () => { if (sticky) return; hoverOff(); cardOff(); });
   scroller.addEventListener('mousemove', (e) => {
+    // The card sits beside the mark now, so it stays while the pointer is on Open this time (Niki 2026-11-19).
+    // While the Availability popover is open, no hover card competes with it (Niki 2026-11-19).
     if (e.buttons || document.body.classList.contains('heat-off') || document.querySelector('.hm-avail-pop.is-open')) { hoverOff(); cardOff(); return; }
     const d = cols.findIndex((c) => { const b = c.getBoundingClientRect(); return e.clientX >= b.left && e.clientX < b.right; });
     if (d < 0) { if (sticky) return; hoverOff(); cardOff(); return; }
     const b = cols[d].getBoundingClientRect(); const h = ((e.clientY - b.top) / b.height) * 24;
     const run = [...cols[d].querySelectorAll('.hm-rec')].find((n) => h >= +n.dataset.from && h < +n.dataset.to);
+    // Travelling from the sidebar: nothing changes until the pointer reaches a mark.
     if (sticky && !run) return;
     sticky = null;
+    // Over open time or a lesson only a quiet mark explains itself.
+    // The Open button carries role=event-time too (so a click on it never starts a drag); it is part of the mark.
     if (e.target.closest('[role=event-time]') && !e.target.closest('.hm-rec-open') && !(run && run.dataset.id[0] === 'q')) { hoverOff(); cardOff(); return; }
     if (run !== hoverOn) { hoverOff(); if (run) { hoverOn = run; run.classList.add('is-hover'); } }
     const box = scroller.getBoundingClientRect();
@@ -1929,15 +2237,20 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     if (!run) { cardOff(); return; }
     showCard(marks().find((x2) => x2.id === run.dataset.id), run);
   });
+  // The card for one mark, pinned beside it (Niki 2026-11-19: it moved around when it followed the
+  // pointer). Also shown on its own when a sidebar row jumps to the mark.
   const showCard = (m, run) => {
     const box = scroller.getBoundingClientRect();
     if (card.dataset.run !== m.id) {
       card.dataset.run = m.id;
+      // Who sits top right, so every line of text starts at the same left edge (Niki 2026-11-19).
       const who = m.kind === 'reg' ? `<span class="hm-card-avatars" aria-hidden="true">${m.who.map((w) => av(w)).join('')}</span>` : m.kind === 'gap' ? NEW_ICON : '';
       card.innerHTML = `<div class="hm-card-top"><div class="hm-card-time">${DAYS[m.day]}, ${MONTHS[m.day]} ${DATES[m.day]} · ${hm(m.from)}-${hm(m.to)}</div>${who}</div>`
         + `<div class="hm-card-level">${HEAD[m.kind](m)}</div><div class="hm-card-hint hm-card-hint-flush">${WHY[m.kind](m)}</div>${m.kind === 'gap' ? GAP_DOTS(m) : m.kind === 'reg' ? CAME(m) : m.kind === 'quiet' ? BETTER(m) : ''}`;
     }
     if (!card.classList.contains('is-on') || card.dataset.pin !== m.id) {
+      // A card coming up somewhere new appears in place; no slide from where it last was
+      // (Niki 2026-11-19: it jumped around when moving between sidebar times).
       card.style.transitionProperty = 'opacity'; requestAnimationFrame(() => requestAnimationFrame(() => { card.style.transitionProperty = ''; }));
       card.dataset.pin = m.id;
       const fr = run.getBoundingClientRect();
@@ -1948,29 +2261,44 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     }
     card.classList.add('is-on');
   };
+
+  // Panel: one row per mark, its swatch beside who and why. No levels, no picker.
+  // Rows are the switches, as on the other option-3 pages: a corner badge marks what is shown.
+  // Past 7 days the panel says so itself (Niki 2026-11-20: how to show the later-weeks logic): the
+  // gaps grey out with "Next 7 days only"; current students and Busy stay on.
   const isShown = (k) => (wk && k === 'a' ? showLater.a : show[k]);
   const row = (k, area, who, rule, muted) => (muted
     ? `<div class="hm-why-row is-muted"><span class="hm-how-mark"><span class="hm-how-area ${area}"></span></span><span><b>${who}</b><span>${rule}</span></span></div>`
     : `<button type="button" class="hm-why-row hm-level-pick${isShown(k) ? ' is-on' : ''}" data-mark="${k}" aria-pressed="${isShown(k)}"><span class="hm-how-mark"><span class="hm-how-area ${area}"><i class="hm-pick-badge${k === 'quiet' ? ' is-quiet' : ''}" aria-hidden="true"></i></span></span><span><b>${who}</b><span>${rule}</span></span></button>`);
+  // Layout (Niki 2026-11-19: "整体排版设计一下"): two groups by where the mark sits. Worth opening
+  // holds the three marks on closed time; On your open times holds the quiet mark. Each group is a
+  // small heading over a grey block of legend rows, as the earlier panels put the picture on grey.
+  // No panel title (Niki 2026-11-19): it opens from the Student demand pill, and the group headings lead.
   const HOW = () => '<div class="hm-how hm-how-v4">'
     + '<div class="hm-show-label">Worth opening</div><div class="hm-how-gap hm-why">'
     + (NEW_T ? row('reg', 'is-reg', 'Current students', 'After your first lessons', true)
-      : wk ? row('reg', 'is-reg', 'Current students', 'Next 7 days only', true)
-        : row('reg', 'is-reg', 'Current students', 'Often booked here'))
+      : row('reg', 'is-reg', 'Current students', 'Often booked here'))
     + (wk ? row('gap', 'is-need', 'Few similar teachers open', 'Next 7 days only', true)
       : row('gap', 'is-need', 'Few similar teachers open', 'New students, your lesson and price'))
     + row('a', 'is-a', 'Busy for similar teachers', 'Same language, type and price')
     + '</div>'
+    // A new teacher has no open time, so this group would never show anything.
     + (NEW_T ? '' : '<div class="hm-show-label">Try a better time</div><div class="hm-how-gap hm-why">'
       + row('quiet', 'is-quiet', 'Not booked lately', 'Also quiet for similar teachers') + '</div>')
     + (!document.querySelector('[data-avail]') && toOpen().length ? '<button type="button" class="ant-btn css-14h52wa ant-btn-primary ant-btn-sm hm-open-all" data-open-all>Open all suggested times</button>' : '')
     + '</div>';
+  // Turning it on opens the panel too, so teachers find the marks can be picked (Niki 2026-11-19).
   demandSide({ offClass: 'heat-off', frames: '', onToggle: (on) => { hoverOff(); if (on) document.querySelector('.hm-top-group').click(); }, title: 'Suggested times', how: HOW, top: true, alignRight: true });
+
+  // The main switch remembers its state too; restored without opening the panel.
   const mainSw = document.querySelector('.hm-top-group .ghost-switch');
   mainSw.addEventListener('click', () => { prefs.on = mainSw.classList.contains('is-on'); savePrefs(); });
   if (prefs.on === false && mainSw.classList.contains('is-on')) { mainSw.classList.remove('is-on'); mainSw.setAttribute('aria-checked', false); document.body.classList.add('heat-off'); }
+  // Hovering anywhere on the pill opens the panel, not only the help icon (Niki 2026-11-19).
   const pill = document.querySelector('.hm-top-group');
+  // Same as hovering the help icon: opens, and closes again once the pointer leaves pill and panel.
   pill.addEventListener('mouseenter', () => pill.querySelector('.hm-info').dispatchEvent(new MouseEvent('mouseenter')));
+  // Open all (empty calendar only), confirmed time by time, as on the one-colour page.
   const openAll = () => {
     const list = toOpen();
     modal.innerHTML = `<div class="av-modal hm-bulk" role="dialog" aria-label="Open suggested times">
@@ -2006,6 +2334,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     if (!e.target.closest || !e.target.closest('[data-open-all]')) return;
     e.stopPropagation(); openAll();
   }, true);
+
   // Top bar and week view, as on the other option-3 pages: Week / Month before Today, a rolling
   // 7 days from today, the next 7 days without marks.
   const viewSwitch = ['Week', 'Month'].map((w) => [...document.querySelectorAll('div')].find((n) => n.textContent.trim() === w && n.children.length === 0));
@@ -2036,6 +2365,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   nextEl.addEventListener('click', () => goWeek(wk + 1));
   todayEl.style.cursor = 'pointer';
   todayEl.addEventListener('click', () => goWeek(0));
+
   // Grid lines light the same green on every blank hour, this week and next (Niki 2026-11-19): the
   // cue says the whole calendar can take availability; no demand level is read from them.
   cursorGrid('heat-off', { line: 0.5, skip: (d, h) => marked.has(`${d}-${h}`) || pastHour(d, h), style: () => ({ rgb: GREEN, stroke: 0.3 }) });
@@ -2085,6 +2415,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   }, true);
   goWeek(0);
   paintPast();
+
   // Teacher state switch in the version bar; page links keep the state.
   const bar = document.querySelector('.ghost-versions');
   bar.querySelectorAll('a').forEach((a) => { a.href = a.getAttribute('href') + location.search; });
@@ -2157,6 +2488,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     if (month) { monthAt = new Date(NOW.getFullYear(), NOW.getMonth(), 1); renderMonth(); } else goWeek(wk);
   };
   viewSwitch.forEach((n, i) => { n.style.cursor = 'pointer'; n.addEventListener('click', () => { setView(i === 1); prefs.month = i === 1; savePrefs(); }); });
+  // In Month, the arrows and Today move by month; capture so the week handlers never run.
   [[prevEl, -1], [nextEl, 1], [todayEl, 0]].forEach(([el, step]) => el.addEventListener('click', (e) => {
     if (!document.body.classList.contains('hm-month-view')) return;
     e.stopImmediatePropagation();
@@ -2169,6 +2501,8 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   document.addEventListener('hm-schedule', () => { if (!monthView.hidden) renderMonth(); });
   roleRows.forEach((row) => row.addEventListener('click', () => { if (!monthView.hidden) renderMonth(); }));
   if (prefs.month) setView(true);
+  // Top bar (Niki 2026-11-20: every control there works). Create opens Set availability for the next
+  // free hour today; View Tips opens a short guide in the calendar's own modal.
   const createBtn = [...document.querySelectorAll('span')].find((n) => n.children.length === 0 && n.textContent.trim() === 'Create').closest('button, [role=button], div');
   createBtn.style.cursor = 'pointer';
   createBtn.addEventListener('click', (e) => {
@@ -2190,6 +2524,12 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     modal.querySelector('.av-x').onclick = closeModal; modal.querySelector('[data-act=ok]').onclick = closeModal;
     modal.classList.add('is-open');
   });
+  // Simulate a booking (Niki 2026-11-20): suggestions are not a fixed list, they follow what gets
+  // booked. Each click plays the next event and the marks update: a student books a Not booked
+  // lately time (that hour is booked now, so it is no longer quiet); similar teachers open a gap's
+  // hours (the gap is covered, so it goes); the teacher opens a current-student time and the student
+  // books it (the time is no longer worth opening, it is a lesson). Played events are remembered, so
+  // a refresh keeps them; Reset clears them.
   const putLesson = (d, a, b, who) => {
     if (!LESSON_TPL) return;
     cols[d].querySelectorAll('[data-avail]').forEach((n) => {
@@ -2216,8 +2556,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     if (x.type === 'gap') { const i = GAPS.findIndex((g) => g.day === x.day && g.from === x.from); if (i >= 0) GAPS.splice(i, 1); }
     if (x.type === 'reg') {
       putLesson(x.day, x.from, x.to, x.who);
-      const i = habits.findIndex(([d, a]) => d === x.day && a === x.from);
-      if (i >= 0) habits.splice(i, 1);
+      regBooked.add(`${x.day}-${x.from}`);
     }
   };
   const nextSim = () => {
@@ -2239,9 +2578,17 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     document.dispatchEvent(new Event('hm-schedule'));
     showToast(x.say);
   });
+  // New-feature intro (Niki 2026-11-20): the first time a teacher opens the calendar after launch, a
+  // short modal says what Suggested times is, how to use it and how it helps. Shown once per browser
+  // (Reset brings it back). A picture of one mark on top, then three rows, one line each.
   const INTRO_KEY = 'booking-signals-intro-seen';
   const introSeen = (() => { try { return localStorage.getItem(INTRO_KEY) === '1'; } catch { return false; } })();
-  const USERS_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.75 7.5a4.25 4.25 0 1 1 8.5 0a4.25 4.25 0 0 1-8.5 0Z"/><path d="M6.5 13.5h5a5 5 0 0 1 5 5v1.25c0 .97-.78 1.75-1.75 1.75H3.25c-.97 0-1.75-.78-1.75-1.75V18.5a5 5 0 0 1 5-5Z"/><path d="M15.4 3.55a4 4 0 1 1 0 7.9a5.75 5.75 0 0 0 0-7.9Z"/><path d="M17.9 13.6a4 4 0 0 1 4.6 3.95v2.2c0 .97-.78 1.75-1.75 1.75h-2.6c.23-.45.35-.95.35-1.5V18.5c0-1.95-.2-3.5-.6-4.9Z"/></svg>'; 
+  // Current students as a group, not one person's face (Niki 2026-11-20): users-01's two figures, drawn solid.
+  const USERS_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.75 7.5a4.25 4.25 0 1 1 8.5 0a4.25 4.25 0 0 1-8.5 0Z"/><path d="M6.5 13.5h5a5 5 0 0 1 5 5v1.25c0 .97-.78 1.75-1.75 1.75H3.25c-.97 0-1.75-.78-1.75-1.75V18.5a5 5 0 0 1 5-5Z"/><path d="M15.4 3.55a4 4 0 1 1 0 7.9a5.75 5.75 0 0 0 0-7.9Z"/><path d="M17.9 13.6a4 4 0 0 1 4.6 3.95v2.2c0 .97-.78 1.75-1.75 1.75h-2.6c.23-.45.35-.95.35-1.5V18.5c0-1.95-.2-3.5-.6-4.9Z"/></svg>'; // filled, to match the other icons (Niki 2026-11-20)
+  // The intro picture plays one short scene per reason, like the real calendar (Niki 2026-11-20):
+  // a frame appears, the pointer comes to it, its card rises beside it, then either Open this time is
+  // pressed and the frame becomes open time, or (Not booked lately) the card points to better times.
+  // WAAPI, no library; one curve for arrivals; the loop stops when the modal closes.
   const playIntro = (cal, faces, PLUS) => {
     const SOFT = 'cubic-bezier(.25,.8,.25,1)';
     const W = cal.clientWidth / 4; const H = cal.clientHeight;
@@ -2251,6 +2598,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     const GAP = card(`<div class="hm-ia-top"><span>Fri, Nov 20 · 20:00-22:00</span>${NEW_ICON}</div><b>Few similar teachers open</b><span>Business English under $25</span><div class="hm-ia-gap"><span>New students</span><span class="hm-ia-dots">${'<i class=on></i>'.repeat(7)}<i></i></span><span>Teachers open</span><span class="hm-ia-dots is-t">${'<i class=on></i>'.repeat(2)}${'<i></i>'.repeat(6)}</span></div>`);
     const BUSY = card(`<div class="hm-ia-top"><span>Sun, Nov 22 · 14:00-16:00</span></div><b>Busy for similar teachers</b><span>Teachers with your language, type and price get booked more then</span>`);
     const QUIET = card(`<div class="hm-ia-top"><span>Mon, Nov 23 · 09:00-12:00</span></div><b>Not booked lately</b><span>No bookings the last 3 Mondays</span><div class="hm-ia-better"><em>Better times this week</em><span>${face1}Sat 21 · 17:00-18:00</span><span>${NEW_ICON.replace('width="20" height="20"', 'width="13" height="13"')}Fri 20 · 20:00-22:00</span></div>`);
+    // [column, top, height, kind, card, card side, open it?]
     const scenes = NEW_T
       ? [[1, 14, H - 28, 'gap', GAP, 'right', true, '20:00 - 22:00'], [2, 30, H - 50, 'a', BUSY, 'left', true, '14:00 - 16:00', 'a']]
       : [[1, 14, H - 28, 'reg', REG, 'right', true, '17:00 - 18:00'], [2, 34, H - 56, 'gap', GAP, 'left', true, '20:00 - 22:00'], [0, 22, H - 40, 'quiet', QUIET, 'right', false, '09:00 - 12:00', 'quiet']];
@@ -2258,8 +2606,11 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     ptr.innerHTML = '<svg class="hm-ia-pointer" width="26" height="26" viewBox="0 0 24 24"><path d="M5 3l14 8-6.2 1.6L10 19z" fill="#313140" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>';
     const hero = cal.parentElement; const DY = cal.offsetTop;
     const pointer = ptr.firstChild; hero.appendChild(pointer);
+    // The legend, as the real panel under the pill: the rows are the switches.
     const ROWS = [['reg', 'Current students'], ['gap', 'Few similar teachers open'], ['a', 'Busy for similar teachers'], ['quiet', 'Not booked lately']];
+    // Legend straight in the top bar, no switch (Niki 2026-11-20): the rows are the switches.
     const panel = hero.querySelector('.hm-ia-bar');
+    // The switch on the left, the legend on the right (Niki 2026-11-20).
     panel.innerHTML = '<span class="hm-ia-pill">Suggested times<i class="hm-ia-sw"></i></span><span class="hm-ia-legend">' + ROWS.map(([k, t]) => `<div class="hm-ia-row${NEW_T && k === 'reg' ? ' is-muted' : ''}" data-k="${k}" title="${t}"><i class="hm-ia-swatch is-${k}"></i></div>`).join('') + '</span>';
     const resetLegend = () => panel.querySelectorAll('.hm-ia-row').forEach((r) => r.classList.toggle('is-on', !NEW_T ? ['reg', 'gap'].includes(r.dataset.k) : r.dataset.k === 'gap'));
     resetLegend();
@@ -2339,11 +2690,15 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     loop();
   };
   const openIntro = () => {
+    // The legend explained in the intro (Niki 2026-11-20), with the same swatches as the legend.
     const legendRow = (k, t, d, on, muted) => `<div class="hm-intro-row${muted ? ' is-muted' : ''}"><span class="hm-intro-ico is-swatch"><span class="hm-ia-row${on ? ' is-on' : ''}"><i class="hm-ia-swatch is-${k}"></i></span></span><span><b>${t}<em class="hm-intro-tag${on ? ' is-on' : ''}">${on ? 'On by default' : 'Off by default'}</em></b><span>${d}</span></span></div>`;
+    // One sentence per point (Niki 2026-11-20: 每个用一条说清楚).
     const line = (ico, t) => `<div class="hm-intro-row is-line"><span class="hm-intro-ico">${ico}</span><span>${t}</span></div>`;
     const row = (ico, t, d) => `<div class="hm-intro-row"><span class="hm-intro-ico">${ico}</span><span><b>${t}</b><span>${d}</span></span></div>`;
     const faces = ['01', '06', '05'].map((f) => `<i style="background-image:url(faces/${f}.jpg)"></i>`).join('');
     const PLUS = '<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="currentColor"/><path d="M12 7v10M7 12h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>';
+    // The calendar's own modal anatomy, as the design system's Modal (Niki 2026-11-20: "弹窗组件似乎不长这样"):
+    // centred title and close in the header, content in the body, the one action alone in the footer.
     modal.innerHTML = `<div class="av-modal hm-intro" role="dialog" aria-label="Meet Suggested times">
       <div class="av-head"><span>Meet Suggested times</span><button type="button" class="av-x" aria-label="Close">×</button></div>
       <div class="av-body hm-intro-body">
@@ -2359,27 +2714,36 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
         ${legendRow('gap', 'Few similar teachers open', 'New students are looking for your kind of lesson and price, and few similar teachers are open.', true)}
         ${legendRow('a', 'Busy for similar teachers', 'Hours when teachers with your language, lesson type and price get booked most.', false)}
         ${legendRow('quiet', 'Not booked lately', 'Your open time with no bookings for weeks, when similar teachers are quiet too. The card suggests better times.', false)}
-            <div class="hm-intro-legend-note">Darker green means a stronger reason. Suggestions cover the next 7 days; after that, only similar teachers’ weekly pattern shows. They update as bookings come in.</div>
+            <div class="hm-intro-legend-note">Darker green means a stronger reason. Gaps cover the next 7 days; current students’ times and similar teachers’ pattern carry on past that. They update as bookings come in.</div>
           </div></div>
         </div>
       </div>
       <div class="av-foot"><span class="hm-intro-note">Turn it off any time with the switch.</span><button type="button" class="ant-btn css-14h52wa ant-btn-secondary" data-act="ok">Got it</button></div></div>`;
     const fold = modal.querySelector('.hm-intro-fold');
     fold.addEventListener('click', () => { const open = fold.getAttribute('aria-expanded') !== 'true'; fold.setAttribute('aria-expanded', open); fold.parentElement.classList.toggle('is-open', open); });
-    const done = () => { closeModal(); try { localStorage.setItem(INTRO_KEY, '1'); } catch {  } };
+    const done = () => { closeModal(); try { localStorage.setItem(INTRO_KEY, '1'); } catch { /* storage blocked */ } };
     modal.querySelector('.av-x').onclick = done;
+    // Got it hands over to the Suggested times panel, so the teacher sees the reasons and switches next
+    // (Niki 2026-11-20). Closing with the x just closes.
     modal.querySelector('[data-act=ok]').onclick = () => { done(); setTimeout(() => document.querySelector('.hm-top-group').click(), 250); };
     modal.classList.add('is-open');
     playIntro(modal.querySelector('.hm-intro-cal'), faces, PLUS);
   };
+  // For review it opens on every load (Niki 2026-11-20); in the product it is once per teacher (introSeen).
   if (!prefs.student) setTimeout(openIntro, 400);
+  // Back to the sample calendar and default switches.
   document.addEventListener('click', (e) => {
     if (!e.target.closest || !e.target.closest('[data-reset-demo]')) return;
     e.preventDefault();
-    try { ['booking-signals-prefs', 'booking-signals-avail-has', 'booking-signals-avail-new', 'booking-signals-intro-seen'].forEach((k) => localStorage.removeItem(k)); } catch {  }
+    try { ['booking-signals-prefs', 'booking-signals-avail-has', 'booking-signals-avail-new', 'booking-signals-intro-seen'].forEach((k) => localStorage.removeItem(k)); } catch { /* storage blocked */ }
     location.reload();
   });
   document.addEventListener('hm-schedule', () => render());
+
+  // Open time works as in the calendar today (Niki 2026-11-19: delete the existing way, no extra
+  // button on quiet marks): a click opens the Availability popover (EditAvailableTime) with the
+  // date and time, whether it repeats, and delete / edit icons. A one-off block is deleted at once
+  // with "Availability deleted successfully" (CA041). Sample blocks don't repeat.
   const ICO = { del: '<svg width="24" height="24" aria-hidden="true" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.8691 12C12.8691 13.6568 11.526 15 9.86914 15H4.12988C3.57772 14.9999 3.1299 14.5522 3.12988 14V5.26074H12.8691V12ZM8 1C9.08271 1.00007 9.99903 1.70723 10.3154 2.68457H13.4775C13.8917 2.68457 14.2274 3.02047 14.2275 3.43457C14.2275 3.84878 13.8918 4.18457 13.4775 4.18457H2.52148C2.10727 4.18457 1.77148 3.84878 1.77148 3.43457C1.77162 3.02047 2.10735 2.68457 2.52148 2.68457H5.68457C6.00101 1.70723 6.91726 1 8 1Z" fill="currentColor"/></svg>', edit: '<svg width="24" height="24" aria-hidden="true" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.31738 1.37112C9.64522 1.04329 10.177 1.04329 10.5049 1.37112L12.7539 3.62014C13.0817 3.94798 13.0817 4.47981 12.7539 4.80764L6.88965 10.6719C6.59964 10.9619 6.20603 11.125 5.7959 11.125H4.10449C3.49458 11.1249 3.00004 10.6305 3 10.0205V8.32913C3 7.919 3.16312 7.52538 3.45312 7.23538L9.31738 1.37112Z" fill="currentColor"/><path fill-rule="evenodd" clip-rule="evenodd" d="M2 13.625C2 13.0727 2.44772 12.625 3 12.625H13C13.5523 12.625 14 13.0727 14 13.625C14 14.1773 13.5523 14.625 13 14.625H3C2.44772 14.625 2 14.1773 2 13.625Z" fill="currentColor"/></svg>', cal: '<svg width="20" height="20" aria-hidden="true" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 1.75C16.4142 1.75 16.75 2.08579 16.75 2.5V3.25H19C20.5188 3.25 21.75 4.48122 21.75 6V10.5V16C21.75 19.1756 19.1756 21.75 16 21.75H3C2.58579 21.75 2.25 21.4142 2.25 21V10.5V6C2.25 4.48122 3.48122 3.25 5 3.25H7.25V2.5C7.25 2.08579 7.58579 1.75 8 1.75C8.41421 1.75 8.75 2.08579 8.75 2.5V3.25H15.25V2.5C15.25 2.08579 15.5858 1.75 16 1.75ZM7.25 4.75V5.5C7.25 5.91421 7.58579 6.25 8 6.25C8.41421 6.25 8.75 5.91421 8.75 5.5V4.75H15.25V5.5C15.25 5.91421 15.5858 6.25 16 6.25C16.4142 6.25 16.75 5.91421 16.75 5.5V4.75H19C19.6904 4.75 20.25 5.30964 20.25 6V9.75H3.75V6C3.75 5.30964 4.30964 4.75 5 4.75H7.25ZM3.75 11.25H20.25V16C20.25 18.3472 18.3472 20.25 16 20.25H3.75V11.25Z" fill="currentColor"/></svg>', rep: '<svg width="20" height="20" aria-hidden="true" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M17.4664 4.0311C17.6352 3.86233 17.7135 3.62329 17.6774 3.38735C17.6413 3.15141 17.4951 2.94674 17.2836 2.83614C13.2453 0.724615 8.14678 1.35771 4.75823 4.74626C1.35479 8.14969 0.73105 13.2782 2.87612 17.3248C3.07012 17.6908 3.52407 17.8302 3.89004 17.6362C4.25602 17.4422 4.39543 16.9883 4.20143 16.6223C2.35519 13.1394 2.8958 8.73 5.81889 5.80692C8.47 3.15581 12.3437 2.46443 15.64 3.73614L13.9143 5.4619C13.6214 5.75479 13.6214 6.22967 13.9143 6.52256C14.2072 6.81545 14.682 6.81545 14.9749 6.52256L17.4664 4.0311ZM6.53405 19.9689C6.36528 20.1377 6.28691 20.3767 6.32301 20.6126C6.3591 20.8486 6.50535 21.0533 6.71686 21.1639C10.7551 23.2754 15.8537 22.6423 19.2422 19.2537C22.6456 15.8503 23.2694 10.7218 21.1243 6.67518C20.9303 6.30921 20.4764 6.16979 20.1104 6.36379C19.7444 6.55779 19.605 7.01174 19.799 7.37771C21.6452 10.8606 21.1046 15.27 18.1815 18.1931C15.5304 20.8442 11.6567 21.5356 8.36042 20.2639L10.0862 18.5381C10.3791 18.2452 10.3791 17.7703 10.0862 17.4774C9.79328 17.1845 9.31841 17.1845 9.02551 17.4774L6.53405 19.9689Z" fill="currentColor"/></svg>' };
   const availPop = document.createElement('div');
   availPop.className = 'hm-avail-pop';
@@ -2394,6 +2758,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     availPop.innerHTML = `<div class="hm-avail-head"><span>Availability</span><button type="button" class="hm-avail-x" aria-label="Close">×</button></div>`
       + `<div class="hm-avail-row">${ICO.cal}<span>${DAYS[d]}, ${MONTHS[d]} ${DATES[d]}, ${hm(from)} - ${hm(to)}</span></div>`
       + `<div class="hm-avail-row">${ICO.rep}<span>Doesn't repeat</span></div>`
+      // A quiet block keeps its reason in the popover, since the hover card steps aside.
       + (quiet ? `<div class="hm-avail-note"><b>Not booked lately</b><span>${WHY.quiet(quiet)}</span></div>` : '')
       + `<div class="hm-avail-actions"><button type="button" data-act="del" aria-label="Delete">${ICO.del}</button><button type="button" data-act="edit" aria-label="Edit">${ICO.edit}</button></div>`;
     const r = blk.getBoundingClientRect();
@@ -2410,17 +2775,30 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
       openModal({ day: d, from, to, onConfirm: () => {} });
     };
   }));
+
+  // Sidebar module under Lesson status (Niki 2026-11-19): this week's times worth opening, in time
+  // order, so spread-out marks can be found in one place. Each row: who/why icon + the time; a click
+  // scrolls the calendar there and flashes the mark. Follows the legend's show/hide and the toggle.
   const side = sideBlock();
   side.classList.add('hm-sugg');
   const rowIcon = (m) => (m.kind === 'reg'
+    // Several students: one avatar with how many on it (Niki 2026-11-19: two squeezed avatars read badly).
     ? `<span class="hm-sugg-ico"><span class="hm-sugg-one">${av(m.who[0])}${m.who.length > 1 ? `<b class="hm-sugg-n">${m.who.length}</b>` : ''}</span></span>`
     : m.kind === 'gap' ? `<span class="hm-sugg-ico">${NEW_ICON}</span>` : '<span class="hm-sugg-ico"><span class="hm-how-area is-a hm-sugg-swatch"></span></span>');
+  // Five rows, the rest behind Show more (Niki 2026-11-19: 16 rows once similar teachers are on).
   const SIDE_MAX = 5; let sideAll = false;
+  // Try a better time (Niki 2026-11-20): only while the teacher has Not booked lately switched on, as
+  // its own group under the list, grey like the quiet frames; longest-unbooked first, 3 then Show more.
   const QUIET_MAX = 3; let quietAll = false;
+  // Its row icon is time-schedule, Solid Rounded, from Niki's icon board (Figma niki-icon, Date + Time,
+  // 1:139946; Niki 2026-11-20): a clock moving on, in grey.
   const SNOOZE_ICON = '<svg class="hm-snooze-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 7C12.5523 7 13 7.44772 13 8V11.5858L14.2071 12.7929C14.5976 13.1834 14.5976 13.8166 14.2071 14.2071C13.8166 14.5976 13.1834 14.5976 12.7929 14.2071L11.2929 12.7071C11.1054 12.5196 11 12.2652 11 12V8C11 7.44772 11.4477 7 12 7Z"/><path d="M18.7423 15.1674L19.9573 15.8235C20.728 16.2396 21.3843 16.594 21.8403 16.9407C22.3187 17.3045 22.75 17.7893 22.75 18.5001C22.75 19.2108 22.3187 19.6956 21.8403 20.0594C21.3843 20.4061 20.728 20.7605 19.9573 21.1766L18.7423 21.8328C18.1525 22.1513 17.6488 22.4233 17.2547 22.5788C17.0514 22.659 16.8202 22.7321 16.5841 22.7472C16.3297 22.7634 16.0298 22.7131 15.7695 22.5006C15.3535 22.1609 15.237 21.6937 15.2511 21.2917C15.2644 20.9143 15.3901 20.5446 15.5199 20.2446C15.6538 19.935 15.8198 19.6381 15.9603 19.3977C16.0173 19.3003 16.0666 19.2176 16.109 19.1464C16.1827 19.0229 16.2359 18.9337 16.2731 18.8613C16.3956 18.6226 16.404 18.5352 16.4039 18.4985C16.4038 18.4612 16.3946 18.3755 16.2731 18.1389C16.2359 18.0664 16.1827 17.9773 16.109 17.8537C16.0666 17.7825 16.0173 17.6999 15.9603 17.6024C15.8198 17.362 15.6538 17.0652 15.5199 16.7555C15.3901 16.4555 15.2644 16.0858 15.2511 15.7084C15.237 15.3064 15.3535 14.8392 15.7695 14.4995C16.0298 14.287 16.3297 14.2367 16.5841 14.2529C16.8202 14.268 17.0514 14.3412 17.2547 14.4214C17.6488 14.5768 18.1525 14.8488 18.7423 15.1674Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12 3.20455C7.1424 3.20455 3.20455 7.1424 3.20455 12C3.20455 16.8576 7.1424 20.7955 12 20.7955C12.3054 20.7955 12.6069 20.7799 12.9037 20.7497C13.4406 20.6949 13.9203 21.0859 13.975 21.6228C14.0298 22.1598 13.6388 22.6394 13.1019 22.6941C12.7393 22.7311 12.3717 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 12.735 22.6761 13.4538 22.535 14.149C22.4276 14.6779 21.9118 15.0197 21.3828 14.9123C20.8539 14.8049 20.5121 14.2891 20.6195 13.7601C20.7348 13.1922 20.7955 12.6037 20.7955 12C20.7955 7.1424 16.8576 3.20455 12 3.20455Z"/></svg>';
   const renderSide = () => {
+    // By weight: current students (strong teachers), gaps, then similar teachers; by time within each (Niki 2026-11-19).
     const RANK = { reg: STRONG ? 0 : 1.5, gap: 1, a: 2 };
     const list = marks(0).filter((m) => m.kind !== 'quiet').sort((x, y) => RANK[x.kind] - RANK[y.kind] || pos(x.day) - pos(y.day) || x.from - y.from);
+    // One title, Worth opening (Niki 2026-11-19: "Student demand" over it was one label too many).
+    // With the switch off the module is hidden (CSS).
     const head = '<div class="text-sm font-bold leading-5 text-gray1 mb-2">Times worth opening</div>';
     const qlist = show.quiet ? marks(0).filter((m) => m.kind === 'quiet').sort((x, y) => y.weeks - x.weeks || pos(x.day) - pos(y.day) || x.from - y.from) : [];
     const quietHtml = qlist.length ? '<div class="text-sm font-bold leading-5 text-gray1 mb-2 mt-5">Try a better time</div>'
@@ -2436,13 +2814,18 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
     if (more) more.addEventListener('click', () => { sideAll = !sideAll; renderSide(); });
     side.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => {
       const m = list.concat(qlist).find((x) => x.id === b.dataset.go);
+      // The previous card goes at once, so nothing rides along while the calendar scrolls.
       hoverOff(); cardOff();
-      if (wk) goWeek(0); 
+      if (wk) goWeek(0); // the list is the next 7 days; from a later week, go back first
       const rec = cols[m.day].querySelector(`.hm-rec[data-id="${m.id}"]`);
       rec.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      // Pulse as soon as the scroll stops (scrollend), not after a fixed wait; 600ms if nothing scrolls.
       let fired = false; const go = () => { if (fired) return; fired = true; [scroller, window].forEach((t) => t.removeEventListener('scrollend', go)); pulse(); };
       [scroller, window].forEach((t) => t.addEventListener('scrollend', go)); setTimeout(go, 600);
+      // Once the scroll settles: the mark glows twice and its card comes up beside it to say why
+      // (Niki 2026-11-19: the flash ran out during the scroll and was never seen).
       const pulse = () => {
+        // Looked up by id at this moment: the calendar may have redrawn its marks meanwhile.
         const fr = cols[m.day].querySelector(`.hm-run[data-id="${m.id}"]`); const now = cols[m.day].querySelector(`.hm-rec[data-id="${m.id}"]`);
         fr.classList.remove('is-glow'); void fr.offsetWidth; fr.classList.add('is-glow');
         hoverOff(); hoverOn = now; now.classList.add('is-hover'); card.classList.remove('is-on'); showCard(m, now); sticky = m.id;
@@ -2452,7 +2835,9 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }
   const renderMarks = render;
   render = () => { renderMarks(); renderSide(); };
   renderSide();
+
   const first = marks().reduce((mn, r) => Math.min(mn, r.from), 24);
   scroller.scrollTop = 112 * Math.max(0, Math.min(first, 24) - 1);
 })();
+
 </script></body><div id="immersive-translate-popup" style="all: initial"></div><div id="preply-vocab-extension-root" class="preply-core-style"></div><grammarly-desktop-integration data-grammarly-shadow-root="true" style="visibility: visible !important;"></grammarly-desktop-integration></html>
