@@ -983,6 +983,12 @@ body.heat-off .hm-legend { visibility: hidden; }
 .hm-side-list .ghost-side-row { width: calc(100% + 12px); margin: 0 -6px; padding-left: 6px; padding-right: 6px; border-radius: 12px; box-sizing: border-box; }  /* hover 6 in from the block edge, radius 12 (Niki 2026-11-18) */
 .hm-more { margin-top: 6px; padding: 0; border: 0; background: none; font: inherit; font-size: 12px; line-height: 18px; font-weight: 600; color: rgb(81 81 100); cursor: pointer; }
 .hm-more:hover { color: rgb(49 49 64); text-decoration: underline; }
+.hm-side-all { display: inline-flex; align-items: center; gap: 4px; margin-top: 10px; padding: 0; border: 0; background: none; font: inherit; font-size: 12px; line-height: 18px; font-weight: 700; color: rgb(49 49 64); cursor: pointer; }
+.hm-side-all svg { color: rgb(var(--hm-g-strong)); transition: transform .15s cubic-bezier(.25,.8,.25,1); }
+.hm-side-all:hover { color: #000; }
+.hm-side-all:hover svg { transform: rotate(90deg); }
+.hm-side-all:active { transform: scale(.96); }
+.hm-side-all:focus-visible { outline: 2px solid rgb(var(--hm-g)); outline-offset: 2px; border-radius: 4px; }
 /* Medium suggestions (the fallback when a week has no High): the dashed lines a step lighter. */
 .hm-row-mark.is-2 { border-color: rgba(var(--hm-g),.5); }
 .ghost-event.is-level-2 .ghost-slot { border-color: rgba(var(--hm-g),.5); }
@@ -2901,6 +2907,7 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
     const b = e.target.closest && e.target.closest('[data-better]'); if (!b) return;
     const m = marks(0).find((x) => x.id === b.dataset.better); if (m) jumpTo(m);
   });
+  const PLUS_SM = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
   const renderSide = () => {
     // By weight: current students (strong teachers), gaps, then similar teachers; by time within each (Niki 2026-11-19).
     const RANK = { reg: STRONG ? 0 : 1.5, gap: 1, a: 2 };
@@ -2914,6 +2921,9 @@ body.hm-bt-card .hm-card-rec { width: 288px; min-width: 0; max-width: none; }  /
     side.innerHTML = head
       + (list.length
         ? `<div class="hm-side-list">${list.slice(0, sideAll ? list.length : SIDE_MAX).map((m) => `<button type="button" class="ghost-side-row" data-go="${m.id}">${rowIcon(m)}<span>${DAYS[m.day]} ${dayAt(pos(m.day)).getDate()} · ${hm(m.from)}-${hm(m.to)}</span></button>`).join('')}${list.length > SIDE_MAX ? `<button type="button" class="hm-more" data-more>${sideAll ? 'Show less' : `Show more (${list.length - SIDE_MAX})`}</button>` : ''}</div>`
+          // Open all (Niki 2026-11-22: 一键添加 under the list): the same untick-and-confirm modal as the
+          // new-teacher button, every time on the list.
+          + (list.length > 1 ? `<button type="button" class="hm-side-all" data-open-all>${PLUS_SM}Open all ${list.length}</button>` : '')
         : `<div class="text-tiny leading-4dot5 text-gray3">${wk ? 'Suggestions cover the next 7 days.' : 'No suggestions left this week.'}</div>`)
       + quietHtml;
     const qmore = side.querySelector('[data-qmore]');
